@@ -57,11 +57,36 @@ class GoodsController extends Controller
         }
     }
 
-    //获取商品详情信息
+    //点击店铺获取店铺下所有的商品
+    public function shop_goods(Request $request){
+        $shop_id = $request->input('shop_id');
+        $shop_id = 1;
+        $shop_goodsInfo = DB::table('mt_goods')->where('shop_id',$shop_id)->paginate(7);
+        //var_dump($shop_goodsInfo);exit;
+        if($shop_goodsInfo){
+            $response = [
+                'error'=>'0',
+                'shop_goodsInfo'=>$shop_goodsInfo
+            ];
+            return json_encode($response,JSON_UNESCAPED_UNICODE);
+        }else{
+            $response = [
+                'error'=>'1',
+                'msg'=>'该店铺下暂未任何商品'
+            ];
+            die(json_encode($response,JSON_UNESCAPED_UNICODE));
+        }
+    }
+
+    //点击商品获取商品详情+店铺详情信息
     public function goodsinfo(Request $request){
         $goods_id = $request->input('goods_id');
-        $goodsInfo = DB::table('mt_goods')->where('goods_id',$goods_id)->first();
-        //var_dump($goodsInfo);exit;
+        //$goods_id = 1;
+        $goodsInfo = DB::table('mt_shop')
+            ->join('mt_goods','mt_shop.shop_id','=','mt_shop.shop_id')
+            ->where('mt_goods.goods_id',$goods_id)
+            ->first();
+        var_dump($goodsInfo);exit;
 
         if($goodsInfo==NULL){
             $response = [
@@ -82,10 +107,16 @@ class GoodsController extends Controller
     //根据导航栏子级分类获取店铺  根据热门项目分类id获取店铺
     public function type_shop(Request $request){
         $type_id = $request->input('type_id');
+        //$page_num = $request->input('page_num');  //当前展示页数
         //$type_id = 7;
         if($type_id){
-            $shop_type = DB::table('mt_shop')->where('t_id',$type_id)->get();
-            var_dump($shop_type);exit;
+            $shop_type = DB::table('mt_shop')->where('t_id',$type_id)->paginate(7);
+            //var_dump($shop_type);exit;
+            $response = [
+                'error'=>'0',
+                'shop_goodsInfo'=>$shop_type
+            ];
+            return json_encode($response,JSON_UNESCAPED_UNICODE);
         }else{
             $response = [
                 'error'=>'1',
@@ -96,6 +127,8 @@ class GoodsController extends Controller
     }
 
     
+
+
 
 
 

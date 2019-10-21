@@ -18,6 +18,8 @@ Route::get('/', function () {
 //Route::get('/访问方式', '文件夹名\控制器名@方法名');
 Route::get('/index', 'Index\IndexController@index');   //首页
 
+Route::get('/shop_goods', 'Index\IndexController@shop_goods');   //根据店铺id 获取店铺下所有商品
+
 Route::get('/weChat', 'User\UserController@weChat');   //微信登陆
 
 Route::get('/goodsInfo', 'Goods\GoodsController@goodsInfo');    //获取商品详情信息
