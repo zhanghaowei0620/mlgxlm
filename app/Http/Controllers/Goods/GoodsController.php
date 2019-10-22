@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Goods;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redis;
 
 class GoodsController extends Controller
 {
@@ -81,12 +82,14 @@ class GoodsController extends Controller
     //点击商品获取商品详情+店铺详情信息
     public function goodsinfo(Request $request){
         $goods_id = $request->input('goods_id');
-        //$goods_id = 1;
+        $goods_id = 1;
         $goodsInfo = DB::table('mt_shop')
             ->join('mt_goods','mt_shop.shop_id','=','mt_shop.shop_id')
             ->where('mt_goods.goods_id',$goods_id)
             ->first();
-        var_dump($goodsInfo);exit;
+        //($goodsInfo);exit;
+        $reconmend_shop = DB::table('mt_goods')->where(['shop_id'=>$goodsInfo->shop_id,'is_recommend'=>1])->limit(3)->get();
+        //var_dump($reconmend);exit;
 
         if($goodsInfo==NULL){
             $response = [
@@ -97,7 +100,8 @@ class GoodsController extends Controller
         }else{
             $response = [
                 'error'=>'0',
-                'goodsInfo'=>$goodsInfo
+                'goodsInfo'=>$goodsInfo,
+                'recommend_shop'=>$reconmend_shop
             ];
             die(json_encode($response,JSON_UNESCAPED_UNICODE));
         }
@@ -108,10 +112,10 @@ class GoodsController extends Controller
     public function type_shop(Request $request){
         $type_id = $request->input('type_id');
         //$page_num = $request->input('page_num');  //当前展示页数
-        //$type_id = 7;
+        $type_id = 7;
         if($type_id){
             $shop_type = DB::table('mt_shop')->where('t_id',$type_id)->paginate(7);
-            //var_dump($shop_type);exit;
+            var_dump($shop_type);exit;
             $response = [
                 'error'=>'0',
                 'shop_goodsInfo'=>$shop_type
@@ -126,7 +130,87 @@ class GoodsController extends Controller
         }
     }
 
-    
+    //点击加入购物车
+    public function add_cart(Request $request){
+        $goods_id = $request->input('goods_id');
+        $openid = Redis::get('openid');
+        $buy_num = $request->input('buy_num');
+//        $buy_num = 1;
+//        $goods_id = 4;
+        $goods_cart = DB::table('mt_cart')->where('goods_id',$goods_id)->get()->toArray();
+        //var_dump($goods_cart);exit;
+        if($goods_cart){
+            $update = [
+                'buy_num'=>$goods_cart[0]->buy_num+$buy_num
+            ];
+            $update_buynum = DB::table('mt_cart')->where('goods_id',$goods_id)->update($update);
+            if($update_buynum){
+                $response = [
+                    'error'=>'0',
+                    'msg'=>'加入购物车成功'
+                ];
+                return json_encode($response,JSON_UNESCAPED_UNICODE);
+            } else{
+                $response = [
+                    'error'=>'1',
+                    'msg'=>'加入购物车失败'
+                ];
+                 die(json_encode($response,JSON_UNESCAPED_UNICODE));
+            }
+        }else{
+            $goodsInfo = DB::table('mt_shop')
+                ->join('mt_goods','mt_shop.shop_id','=','mt_shop.shop_id')
+                ->where('mt_goods.goods_id',$goods_id)
+                ->first();
+            //var_dump($goodsInfo);exit;
+            $data = [
+                'goods_id'=>$goodsInfo->goods_id,
+                'shop_id'=>$goodsInfo->shop_id,
+                'openid'=>$openid,
+                'shop_name'=>$goodsInfo->shop_name,
+                'goods_name'=>$goodsInfo->goods_name,
+                'price'=>$goodsInfo->price,
+                'buy_num'=>$buy_num
+            ];
+            //var_dump($data);exit;
+            $add_cart = DB::table('mt_cart')->insertGetId($data);
+            if($add_cart){
+                $response = [
+                    'error'=>'0',
+                    'msg'=>'加入购物车成功'
+                ];
+                return json_encode($response,JSON_UNESCAPED_UNICODE);
+            }else{
+                $response = [
+                    'error'=>'1',
+                    'msg'=>'加入购物车失败'
+                ];
+                die(json_encode($response,JSON_UNESCAPED_UNICODE));
+            }
+        }
+    }
+
+    //获取购物车列表
+    public function cartList(Request $request){
+        $openid = Redis::get('openid');
+        $cartInfo = DB::table('mt_cart')->where('openid',$openid)->get()->toArray();
+        //var_dump($cartInfo);
+        if($cartInfo){
+            $response = [
+                'error'=>'0',
+                'cartInfo'=>$cartInfo
+            ];
+            return json_encode($response,JSON_UNESCAPED_UNICODE);
+        }else{
+            $response = [
+                'error'=>'1',
+                'msg'=>'购物车暂无数据，快去添加商品吧'
+            ];
+            die(json_encode($response,JSON_UNESCAPED_UNICODE));
+        }
+    }
+
+
 
 
 
