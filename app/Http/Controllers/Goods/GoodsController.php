@@ -89,7 +89,7 @@ class GoodsController extends Controller
             ->first();
         //($goodsInfo);exit;
         $reconmend_shop = DB::table('mt_goods')->where(['shop_id'=>$goodsInfo->shop_id,'is_recommend'=>1])->limit(3)->get();
-        //var_dump($reconmend);exit;
+        //var_dump($reconmend_shop);exit;
 
         if($goodsInfo==NULL){
             $response = [
@@ -115,7 +115,7 @@ class GoodsController extends Controller
         $type_id = 7;
         if($type_id){
             $shop_type = DB::table('mt_shop')->where('t_id',$type_id)->paginate(7);
-            var_dump($shop_type);exit;
+            //var_dump($shop_type);exit;
             $response = [
                 'error'=>'0',
                 'shop_goodsInfo'=>$shop_type
