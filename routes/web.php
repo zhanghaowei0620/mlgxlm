@@ -31,3 +31,21 @@ Route::get('/father_type_shop', 'Goods\GoodsController@father_type_shop');      
 Route::get('/add_cart', 'Goods\GoodsController@add_cart');      //点击商品加入购物车
 
 Route::get('/cartList', 'Goods\GoodsController@cartList');      //购物车列表
+
+Route::get('/add_order', 'Order\OrderController@add_order');      //生成订单
+
+Route::get('/order_list', 'Order\OrderController@order_list');     //订单列表
+
+Route::get('/order_status_list', 'Order\OrderController@order_status_list');     //根据订单状态获取订单信息
+
+Route::get('/order_detail', 'Order\OrderController@order_detail');     //订单详情
+
+Route::get('/user_Address', 'User\UserController@user_Address');      //添加用户地址
+
+Route::get('/user_Address_list', 'User\UserController@user_Address_list');    //地址列表
+
+Route::get('update_address', 'User\UserController@update_address');     //地址修改
+
+Route::get('delete_address', 'User\UserController@delete_address');    //地址删除
+
+Route::get('user_center', 'User\UserController@user_center');

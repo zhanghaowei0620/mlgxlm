@@ -78,4 +78,210 @@ class UserController extends Controller
             die(json_encode($response,JSON_UNESCAPED_UNICODE));
         }
     }
+
+    //用户地址添加
+    public function user_Address(Request $request){
+        $address = $request->input('address');
+        $address_detail = $request->input('address_detail');
+        $tel = $request->input('tel');
+        $postal = $request->input('postal');
+        $is_default = $request->input('is_default');
+
+        $openid = Redis::get('openid');
+        $userInfo = DB::table('mt_user')->where('openid',$openid)->first();
+        if($userInfo){
+            $uid = $userInfo->uid;
+            //var_dump($uid);
+            $data = [
+                'uid'=>$uid,
+                'address'=>$address,
+                'address_detail'=>$address_detail,
+                'tel'=>$tel,
+                'postal'=>$postal,
+                'is_default'=>$is_default
+            ];
+            $add_address = DB::table('mt_address')->insertGetId($data);
+            if($address_detail){
+                $response = [
+                    'error'=>'0',
+                    'msg'=>'地址添加成功'
+                ];
+                return json_encode($response,JSON_UNESCAPED_UNICODE);
+            }else{
+                $response = [
+                    'error'=>'1',
+                    'msg'=>'地址添加失败'
+                ];
+                die(json_encode($response,JSON_UNESCAPED_UNICODE));
+            }
+        }
+
+    }
+
+    //用户地址列表
+    public function user_Address_list(Request $request){
+        $openid = Redis::get('openid');
+        $user_addressInfo = DB::table('mt_user')
+            ->join('mt_address','mt_user.uid','=','mt_address.uid')
+            ->where('mt_user.openid',$openid)
+            ->get()->toArray();
+        if($user_addressInfo){
+            $response = [
+                'error'=>'0',
+                'data'=>$user_addressInfo
+            ];
+            return json_encode($response,JSON_UNESCAPED_UNICODE);
+        }else{
+            $response = [
+                'error'=>'1',
+                'msg'=>'暂未添加收货地址'
+            ];
+            die(json_encode($response,JSON_UNESCAPED_UNICODE));
+        }
+
+    }
+
+    //修改地址信息
+    public function update_address(Request $request){
+        $id = $request->input('address_id');
+        //$id = 1;
+        $address = $request->input('address');
+        $address_detail = $request->input('address_detail');
+        $tel = $request->input('tel');
+        $postal = $request->input('postal');
+        $is_default = $request->input('is_default');
+        //$is_default = '1';
+        if($is_default == 2){
+            $update = [
+                'address'=>$address,
+                'address_detail'=>$address_detail,
+                'tel'=>$tel,
+                'postal'=>$postal,
+                'is_default'=>$is_default
+            ];
+            $update_address = DB::table('mt_address')->where('id',$id)->update($update);
+            //var_dump($update_address);exit;
+            if($update_address==true){
+                $response = [
+                    'error'=>'0',
+                    'msg'=>'修改成功'
+                ];
+                return json_encode($response,JSON_UNESCAPED_UNICODE);
+            }else{
+                $response = [
+                    'error'=>'1',
+                    'msg'=>'修改失败'
+                ];
+                die(json_encode($response,JSON_UNESCAPED_UNICODE));
+            }
+        }else{
+            $update = [
+                'is_default'=>2
+            ];
+            $update_address_default = DB::table('mt_address')->update($update);
+            //print_r($update_address_default);exit;
+            if($update_address_default == true){
+                //echo 1111;exit;
+                $update = [
+                    'address'=>$address,
+                    'address_detail'=>$address_detail,
+                    'tel'=>$tel,
+                    'postal'=>$postal,
+                    'is_default'=>$is_default
+                ];
+                $update_address = DB::table('mt_address')->where('id',$id)->update($update);
+                //var_dump($update_address);exit;
+                if($update_address == true){
+                    $response = [
+                        'error'=>'0',
+                        'msg'=>'修改成功'
+                    ];
+                    return json_encode($response,JSON_UNESCAPED_UNICODE);
+                }else{
+                    $response = [
+                        'error'=>'1',
+                        'msg'=>'修改失败,请重试'
+                    ];
+                    die(json_encode($response,JSON_UNESCAPED_UNICODE));
+                }
+            }else{
+                $response = [
+                    'error'=>'1',
+                    'msg'=>'修改失败'
+                ];
+                die(json_encode($response,JSON_UNESCAPED_UNICODE));
+            }
+        }
+
+    }
+
+    //删除地址信息
+    public function delete_address(Request $request){
+        $address_id = $request->input('id');
+        //$address_id = 3;
+        $delete_address = DB::table('mt_address')->where('id',$address_id)->delete();
+        //var_dump($delete_address);exit;
+        if($delete_address == true){
+            $response = [
+                'error'=>'0',
+                'msg'=>'删除成功'
+            ];
+            return json_encode($response,JSON_UNESCAPED_UNICODE);
+        }else{
+            $response = [
+                'error'=>'1',
+                'msg'=>'修改失败'
+            ];
+            die(json_encode($response,JSON_UNESCAPED_UNICODE));
+        }
+    }
+
+    //用户中心
+    public function  user_center(Request $request){
+        $openid = Redis::get('openid');
+        if($openid){
+            $userInfo = DB::table('mt_user')
+                ->join('mt_coupon','mt_user.uid','=','mt_coupon.uid')
+                ->where('mt_user.openid',$openid)->get();
+            //var_dump($userInfo);
+            $coupon_num = DB::table('mt_user')
+                ->join('mt_coupon','mt_user.uid','=','mt_coupon.uid')
+                ->where('mt_user.openid',$openid)->get()->count();
+            //var_dump($coupon_num);exit;
+            if($userInfo){
+                if($coupon_num){
+                    $data = [
+                        'userInfo'=>$userInfo,
+                        'coupon_num'=>$coupon_num
+                    ];
+                    $response = [
+                        'error'=>'0',
+                        'data'=>$data
+                    ];
+                    return json_encode($response,JSON_UNESCAPED_UNICODE);
+                }else{
+                    $response = [
+                        'error'=>'3',
+                        'msg'=>'暂无优惠券,快去领取吧'
+                    ];
+                    return json_encode($response,JSON_UNESCAPED_UNICODE);
+                }
+            }else{
+                $response = [
+                    'error'=>'2',
+                    'msg'=>'信息出错'
+                ];
+                return json_encode($response,JSON_UNESCAPED_UNICODE);
+            }
+        }else{
+            $response = [
+                'error'=>'1',
+                'msg'=>'请先登录'
+            ];
+            die(json_encode($response,JSON_UNESCAPED_UNICODE));
+        }
+
+    }
+
+
 }

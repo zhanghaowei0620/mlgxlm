@@ -170,7 +170,8 @@ class GoodsController extends Controller
                 'shop_name'=>$goodsInfo->shop_name,
                 'goods_name'=>$goodsInfo->goods_name,
                 'price'=>$goodsInfo->price,
-                'buy_num'=>$buy_num
+                'buy_num'=>$buy_num,
+                'create_time'=>time()
             ];
             //var_dump($data);exit;
             $add_cart = DB::table('mt_cart')->insertGetId($data);
