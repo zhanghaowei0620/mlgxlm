@@ -134,68 +134,90 @@ class GoodsController extends Controller
     public function add_cart(Request $request){
         $goods_id = $request->input('goods_id');
         $openid = Redis::get('openid');
-        $buy_num = $request->input('buy_num');
-//        $buy_num = 1;
-//        $goods_id = 4;
-        $goods_cart = DB::table('mt_cart')->where('goods_id',$goods_id)->get()->toArray();
-        //var_dump($goods_cart);exit;
-        if($goods_cart){
-            $update = [
-                'buy_num'=>$goods_cart[0]->buy_num+$buy_num
+        if($openid){
+            $buy_num = $request->input('buy_num');
+            $user_info = DB::table('mt_user')->where('openid',$openid)->first();
+            $uid = $user_info->uid;
+//            $buy_num = 1;
+//            $goods_id = 7;
+            $where = [
+                'goods_id'=>$goods_id,
+                'collection'=>0
             ];
-            $update_buynum = DB::table('mt_cart')->where('goods_id',$goods_id)->update($update);
-            if($update_buynum){
-                $response = [
-                    'error'=>'0',
-                    'msg'=>'加入购物车成功'
+            $goods_cart = DB::table('mt_cart')->where($where)->get()->toArray();
+            //var_dump($goods_cart);exit;
+            if($goods_cart){
+                $update = [
+                    'buy_num'=>$goods_cart[0]->buy_num+$buy_num
                 ];
-                return json_encode($response,JSON_UNESCAPED_UNICODE);
-            } else{
-                $response = [
-                    'error'=>'1',
-                    'msg'=>'加入购物车失败'
+                $update_buynum = DB::table('mt_cart')->where('goods_id',$goods_id)->update($update);
+                //var_dump($update_buynum);exit;
+                if($update_buynum==true){
+                    $response = [
+                        'error'=>'0',
+                        'msg'=>'加入购物车成功'
+                    ];
+                    return json_encode($response,JSON_UNESCAPED_UNICODE);
+                } else{
+                    $response = [
+                        'error'=>'1',
+                        'msg'=>'加入购物车失败13131'
+                    ];
+                    die(json_encode($response,JSON_UNESCAPED_UNICODE));
+                }
+            }else{
+                $goodsInfo = DB::table('mt_shop')
+                    ->join('mt_goods','mt_shop.shop_id','=','mt_shop.shop_id')
+                    ->where('mt_goods.goods_id',$goods_id)
+                    ->first();
+                //var_dump($goodsInfo);exit;
+                $data = [
+                    'goods_id'=>$goodsInfo->goods_id,
+                    'shop_id'=>$goodsInfo->shop_id,
+                    'openid'=>$openid,
+                    'shop_name'=>$goodsInfo->shop_name,
+                    'goods_name'=>$goodsInfo->goods_name,
+                    'price'=>$goodsInfo->price,
+                    'buy_num'=>$buy_num,
+                    'create_time'=>time(),
+                    'collection'=>0,
+                    'uid'=>$uid
                 ];
-                 die(json_encode($response,JSON_UNESCAPED_UNICODE));
+                //var_dump($data);exit;
+                $add_cart = DB::table('mt_cart')->insertGetId($data);
+                if($add_cart){
+                    $response = [
+                        'error'=>'0',
+                        'msg'=>'加入购物车成功'
+                    ];
+                    return json_encode($response,JSON_UNESCAPED_UNICODE);
+                }else{
+                    $response = [
+                        'error'=>'1',
+                        'msg'=>'加入购物车失败'
+                    ];
+                    die(json_encode($response,JSON_UNESCAPED_UNICODE));
+                }
             }
         }else{
-            $goodsInfo = DB::table('mt_shop')
-                ->join('mt_goods','mt_shop.shop_id','=','mt_shop.shop_id')
-                ->where('mt_goods.goods_id',$goods_id)
-                ->first();
-            //var_dump($goodsInfo);exit;
-            $data = [
-                'goods_id'=>$goodsInfo->goods_id,
-                'shop_id'=>$goodsInfo->shop_id,
-                'openid'=>$openid,
-                'shop_name'=>$goodsInfo->shop_name,
-                'goods_name'=>$goodsInfo->goods_name,
-                'price'=>$goodsInfo->price,
-                'buy_num'=>$buy_num,
-                'create_time'=>time()
+            $response = [
+                'error'=>'2',
+                'msg'=>'请先登录'
             ];
-            //var_dump($data);exit;
-            $add_cart = DB::table('mt_cart')->insertGetId($data);
-            if($add_cart){
-                $response = [
-                    'error'=>'0',
-                    'msg'=>'加入购物车成功'
-                ];
-                return json_encode($response,JSON_UNESCAPED_UNICODE);
-            }else{
-                $response = [
-                    'error'=>'1',
-                    'msg'=>'加入购物车失败'
-                ];
-                die(json_encode($response,JSON_UNESCAPED_UNICODE));
-            }
+            die(json_encode($response,JSON_UNESCAPED_UNICODE));
         }
+
     }
 
     //获取购物车列表
     public function cartList(Request $request){
         $openid = Redis::get('openid');
-        $cartInfo = DB::table('mt_cart')->where('openid',$openid)->get()->toArray();
-        //var_dump($cartInfo);
+        $where = [
+            'openid'=>$openid,
+            'collection'=>0
+        ];
+        $cartInfo = DB::table('mt_cart')->where($where)->get()->toArray();
+        //var_dump($cartInfo);exit;
         if($cartInfo){
             $response = [
                 'error'=>'0',
@@ -211,6 +233,187 @@ class GoodsController extends Controller
         }
     }
 
+    //点击加入收藏-商品
+    public function  add_collection(Request $request){
+        $goods_id = $request->input('goods_id');
+        $openid = Redis::get('openid');
+        if($openid){
+            $user_info = DB::table('mt_user')->where('openid',$openid)->first();
+            $uid = $user_info->uid;
+            //        $buy_num = 1;
+            $goods_id = 8;
+            $where = [
+                'goods_id'=>$goods_id,
+                'collection'=>1
+            ];
+            $goods_cart = DB::table('mt_cart')->where($where)->get()->toArray();
+            //var_dump($goods_cart);exit;
+            if($goods_cart){
+                $response = [
+                    'error'=>'0',
+                    'msg'=>'该商品已在您的收藏夹中'
+                ];
+                return json_encode($response,JSON_UNESCAPED_UNICODE);
+            }else{
+                $goodsInfo = DB::table('mt_shop')
+                    ->join('mt_goods','mt_shop.shop_id','=','mt_shop.shop_id')
+                    ->where('mt_goods.goods_id',$goods_id)
+                    ->first();
+                //var_dump($goodsInfo);exit;
+                $data = [
+                    'goods_id'=>$goodsInfo->goods_id,
+                    'shop_id'=>$goodsInfo->shop_id,
+                    'openid'=>$openid,
+                    'shop_name'=>$goodsInfo->shop_name,
+                    'goods_name'=>$goodsInfo->goods_name,
+                    'price'=>$goodsInfo->price,
+                    'create_time'=>time(),
+                    'collection'=>1,
+                    'uid'=>$uid
+                ];
+                //var_dump($data);exit;
+                $add_cart = DB::table('mt_cart')->insertGetId($data);
+                if($add_cart){
+                    $response = [
+                        'error'=>'0',
+                        'msg'=>'加入收藏成功'
+                    ];
+                    return json_encode($response,JSON_UNESCAPED_UNICODE);
+                }else{
+                    $response = [
+                        'error'=>'1',
+                        'msg'=>'加入收藏失败'
+                    ];
+                    die(json_encode($response,JSON_UNESCAPED_UNICODE));
+                }
+            }
+        }else{
+            $response = [
+                'error'=>'2',
+                'msg'=>'请先去登录'
+            ];
+            die(json_encode($response,JSON_UNESCAPED_UNICODE));
+        }
+
+    }
+
+    //收藏列表-商品
+    public function collection_list(Request $request){
+        $openid = Redis::get('openid');
+        if($openid){
+            $where = [
+                'openid'=>$openid,
+                'collection'=>1
+            ];
+            $cartInfo = DB::table('mt_cart')->where($where)->get()->toArray();
+            //var_dump($cartInfo);exit;
+            if($cartInfo){
+                $response = [
+                    'error'=>'0',
+                    'cartInfo'=>$cartInfo
+                ];
+                return json_encode($response,JSON_UNESCAPED_UNICODE);
+            }else{
+                $response = [
+                    'error'=>'1',
+                    'msg'=>'收藏夹暂无数据，快去添加商品吧'
+                ];
+                die(json_encode($response,JSON_UNESCAPED_UNICODE));
+            }
+        }else{
+            $response = [
+                'error'=>'2',
+                'msg'=>'请先登录'
+            ];
+            die(json_encode($response,JSON_UNESCAPED_UNICODE));
+        }
+    }
+
+    //店铺收藏
+    public function shop_collection(Request $request){
+        $shop_id = $request->input('shop_id');
+        $openid = Redis::get('openid');
+        if($openid){
+            $user_info = DB::table('mt_user')->where('openid',$openid)->first();
+            $uid = $user_info->uid;
+            //$shop_id = 1;
+            $where = [
+                'shop_id'=>$shop_id,
+                'uid'=>$uid
+            ];
+            $shop_collection = DB::table('mt_shop_collection')->where($where)->get()->toArray();
+            //var_dump($shop_collection);exit;
+            if($shop_collection){
+                $response = [
+                    'error'=>'0',
+                    'msg'=>'该商品已在您的收藏夹中'
+                ];
+                return json_encode($response,JSON_UNESCAPED_UNICODE);
+            }else{
+                $data = [
+                    'shop_id'=>$shop_id,
+                    'uid'=>$uid
+                ];
+                //var_dump($data);exit;
+                $add_shop_collection = DB::table('mt_shop_collection')->insertGetId($data);
+                if($add_shop_collection){
+                    $response = [
+                        'error'=>'0',
+                        'msg'=>'店铺收藏成功'
+                    ];
+                    return json_encode($response,JSON_UNESCAPED_UNICODE);
+                }else{
+                    $response = [
+                        'error'=>'1',
+                        'msg'=>'店铺收藏失败'
+                    ];
+                    die(json_encode($response,JSON_UNESCAPED_UNICODE));
+                }
+            }
+        }else{
+            $response = [
+                'error'=>'2',
+                'msg'=>'请先去登录'
+            ];
+            die(json_encode($response,JSON_UNESCAPED_UNICODE));
+        }
+    }
+
+    //店铺收藏列表
+    public function shop_collection_list(Request $request){
+        $openid = Redis::get('openid');
+        if($openid){
+            $user_info = DB::table('mt_user')->where('openid',$openid)->first();
+            $uid = $user_info->uid;
+            $where = [
+                'mt_shop_collection.uid'=>$uid,
+            ];
+            $collectionInfo = DB::table('mt_shop_collection')
+                ->join('mt_shop','mt_shop_collection.shop_id','=','mt_shop.shop_id')
+                ->where($where)
+                ->get()->toArray();
+            //var_dump($collectionInfo);exit;
+            if($collectionInfo){
+                $response = [
+                    'error'=>'0',
+                    'cartInfo'=>$collectionInfo
+                ];
+                return json_encode($response,JSON_UNESCAPED_UNICODE);
+            }else{
+                $response = [
+                    'error'=>'1',
+                    'msg'=>'收藏夹暂无数据，快去添加商品吧'
+                ];
+                die(json_encode($response,JSON_UNESCAPED_UNICODE));
+            }
+        }else{
+            $response = [
+                'error'=>'2',
+                'msg'=>'请先登录'
+            ];
+            die(json_encode($response,JSON_UNESCAPED_UNICODE));
+        }
+    }
 
 
 

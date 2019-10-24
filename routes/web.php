@@ -32,6 +32,14 @@ Route::get('/add_cart', 'Goods\GoodsController@add_cart');      //点击商品�
 
 Route::get('/cartList', 'Goods\GoodsController@cartList');      //购物车列表
 
+Route::get('/add_collection', 'Goods\GoodsController@add_collection');     //商品加入收藏
+
+Route::get('/collection_list', 'Goods\GoodsController@collection_list');      //商品收藏列表
+
+Route::get('/shop_collection', 'Goods\GoodsController@shop_collection');      //店铺收藏
+
+Route::get('/shop_collection_list', 'Goods\GoodsController@shop_collection_list');       //店铺收藏列表
+
 Route::get('/add_order', 'Order\OrderController@add_order');      //生成订单
 
 Route::get('/order_list', 'Order\OrderController@order_list');     //订单列表
@@ -48,4 +56,4 @@ Route::get('update_address', 'User\UserController@update_address');     //地址
 
 Route::get('delete_address', 'User\UserController@delete_address');    //地址删除
 
-Route::get('user_center', 'User\UserController@user_center');
+Route::get('user_center', 'User\UserController@user_center');     //用户中心

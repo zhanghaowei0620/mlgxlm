@@ -264,14 +264,14 @@ class UserController extends Controller
                         'error'=>'3',
                         'msg'=>'暂无优惠券,快去领取吧'
                     ];
-                    return json_encode($response,JSON_UNESCAPED_UNICODE);
+                    die(json_encode($response,JSON_UNESCAPED_UNICODE));
                 }
             }else{
                 $response = [
                     'error'=>'2',
                     'msg'=>'信息出错'
                 ];
-                return json_encode($response,JSON_UNESCAPED_UNICODE);
+                die(json_encode($response,JSON_UNESCAPED_UNICODE));
             }
         }else{
             $response = [
@@ -281,6 +281,38 @@ class UserController extends Controller
             die(json_encode($response,JSON_UNESCAPED_UNICODE));
         }
 
+    }
+
+    //用户名修改
+    public function user_update(Request $request){
+        $uid = $request->input('uid');
+        $wx_name = $request->input('u_name');
+        $openid = Redis::get('openid');
+        if($openid){
+            $update = [
+                'wx_name'=>$wx_name
+            ];
+            $update_userInfo = DB::table('mt_user')->update($update);
+            if($update_userInfo==true){
+                $response = [
+                    'error'=>'0',
+                    'msg'=>'修改成功'
+                ];
+                return json_encode($response,JSON_UNESCAPED_UNICODE);
+            }else{
+                $response = [
+                    'error'=>'2',
+                    'msg'=>'系统出现问题,修改失败 请重试'
+                ];
+                die(json_encode($response,JSON_UNESCAPED_UNICODE));
+            }
+        }else{
+            $response = [
+                'error'=>'1',
+                'msg'=>'请先登录'
+            ];
+            die(json_encode($response,JSON_UNESCAPED_UNICODE));
+        }
     }
 
 
