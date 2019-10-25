@@ -57,3 +57,7 @@ Route::get('update_address', 'User\UserController@update_address');     //地址
 Route::get('delete_address', 'User\UserController@delete_address');    //地址删除
 
 Route::get('user_center', 'User\UserController@user_center');     //用户中心
+
+Route::get('user_update', 'User\UserController@user_update');      //修改用户信息
+
+Route::get('user_history', 'User\UserController@user_history');     //我的足迹

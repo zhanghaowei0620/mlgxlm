@@ -32,12 +32,15 @@ class UserController extends Controller
         $code = $request->input('code');
         $wx_name = $request->input('wx_name');
         $wx_headimg = $request->input('wx_headimg');
-//        $arr['openid'] = "adadad31313";
+
         //$code = 'dada4d6a54d6a';
         $url = "https://api.weixin.qq.com/sns/jscode2session?appid=".env('WX_APP_ID')."&secret=".env('WX_KEY')."&js_code=$code&grant_type=authorization_code";
         $info = file_get_contents($url);
         $arr = json_decode($info,true);
 
+//        $arr['openid'] = "adadad31313";
+//        $arr['session_key'] = "dada655656";
+//        $arr['unionid'] = "54d65a4d6a4";
         $insertInfo = [
             'wx_name'=>$wx_name,
             'wx_headimg'=>$wx_headimg,
@@ -50,8 +53,8 @@ class UserController extends Controller
         $insertUserInfo = DB::table('mt_user')->insertGetId($insertInfo);
         if($insertUserInfo){
             $data = [
-                'openid'=>arr['openid'],
-                'session_key'=>['session_key']
+                'openid'=>$arr['openid'],
+                'session_key'=>$arr['session_key']
             ];
             if($arr['openid'] && $arr['session_key']){
                 $key = "openid";
@@ -301,19 +304,53 @@ class UserController extends Controller
                 return json_encode($response,JSON_UNESCAPED_UNICODE);
             }else{
                 $response = [
-                    'error'=>'2',
+                    'error'=>'1',
                     'msg'=>'系统出现问题,修改失败 请重试'
                 ];
                 die(json_encode($response,JSON_UNESCAPED_UNICODE));
             }
         }else{
             $response = [
-                'error'=>'1',
+                'error'=>'2',
                 'msg'=>'请先登录'
             ];
             die(json_encode($response,JSON_UNESCAPED_UNICODE));
         }
     }
 
+    //我的足迹
+    public function user_history(Request $request){
+        $openid = Redis::get('openid');
+        //var_dump($openid);exit;
+        if($openid){
+            $userInfo = DB::table('mt_user')->where('openid',$openid)->first();
+            //var_dump($userInfo);exit;
+            $uid = $userInfo->uid;
+            $historyInfo = DB::table('mt_history')
+                ->join('mt_goods','mt_history.goods_id','=','mt_goods.goods_id')
+                ->where('uid',$uid)->get();
+            //var_dump($historyInfo);exit;
+            if($historyInfo){
+                $response = [
+                    'error'=>'0',
+                    'data'=>$historyInfo
+                ];
+                die(json_encode($response,JSON_UNESCAPED_UNICODE));
+            }else{
+                $response = [
+                    'error'=>'1',
+                    'msg'=>'你暂时未浏览过任何商品'
+                ];
+                die(json_encode($response,JSON_UNESCAPED_UNICODE));
+            }
+        }else{
+            $response = [
+                'error'=>'2',
+                'msg'=>'请先登录'
+            ];
+            die(json_encode($response,JSON_UNESCAPED_UNICODE));
+        }
+
+    }
 
 }

@@ -80,14 +80,14 @@ class GoodsController extends Controller
     }
 
     //点击商品获取商品详情+店铺详情信息
-    public function goodsinfo(Request $request){
+    public function goodsinfo(Request $request){      
         $goods_id = $request->input('goods_id');
-        $goods_id = 1;
+//        $goods_id = 3;
         $goodsInfo = DB::table('mt_shop')
             ->join('mt_goods','mt_shop.shop_id','=','mt_shop.shop_id')
             ->where('mt_goods.goods_id',$goods_id)
             ->first();
-        //($goodsInfo);exit;
+        //var_dump($goodsInfo);exit;
         $reconmend_shop = DB::table('mt_goods')->where(['shop_id'=>$goodsInfo->shop_id,'is_recommend'=>1])->limit(3)->get();
         //var_dump($reconmend_shop);exit;
 
@@ -98,12 +98,36 @@ class GoodsController extends Controller
             ];
             die(json_encode($response,JSON_UNESCAPED_UNICODE));
         }else{
+            $openid = Redis::get('openid');
+            //var_dump($openid);exit;
+            $userInfo = DB::table('mt_user')->where('openid',$openid)->first();
+           // var_dump($userInfo);exit;
+            $uid = $userInfo->uid;
+            $where = [
+                'uid'=>$uid,
+                'goods_id'=>$goods_id
+            ];
+            $historyInfo = DB::table('mt_history')->where($where)->get()->toArray();
+            //var_dump($historyInfo);exit;
+            if($historyInfo){
+                $update = [
+                    'create_time'=>time()
+                ];
+                $updateInfo = DB::table('mt_history')->update($update);
+            }else{
+                $data = [
+                    'uid'=>$uid,
+                    'goods_id'=>$goods_id,
+                    'create_time'=>time()
+                ];
+                DB::table('mt_history')->insertGetId($data);
+            }
             $response = [
                 'error'=>'0',
                 'goodsInfo'=>$goodsInfo,
                 'recommend_shop'=>$reconmend_shop
             ];
-            die(json_encode($response,JSON_UNESCAPED_UNICODE));
+            return json_encode($response,JSON_UNESCAPED_UNICODE);
         }
 
     }
