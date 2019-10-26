@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Str;
 
 class GoodsController extends Controller
 {
@@ -438,6 +439,69 @@ class GoodsController extends Controller
             die(json_encode($response,JSON_UNESCAPED_UNICODE));
         }
     }
+
+    //导航栏附近店铺-全部店铺
+    public function whole_shop(Request $request){
+        $shopInfo = DB::table('mt_shop')->paginate(7);
+        //var_dump($shopInfo);
+        if($shopInfo){
+            $response = [
+                'error'=>'0',
+                'data'=>$shopInfo
+            ];
+            return json_encode($response,JSON_UNESCAPED_UNICODE);
+        }else{
+            $response = [
+                'error'=>'1',
+                'msg'=>'暂无店铺'
+            ];
+            return json_encode($response,JSON_UNESCAPED_UNICODE);
+        }
+
+    }
+
+    //附近店铺-附近店铺
+    public function nearby_shop(Request $request){
+        $shopInfo = DB::table('mt_shop')->orderBy('shop_id')->limit(6)->get()->toArray();
+        //var_dump($shopInfo->latitude_longitude);exit;
+        foreach ($shopInfo as $k => $v){
+            //var_dump($v->latitude_longitude);
+            $latitude_longitude = explode(',',$v->latitude_longitude);
+            $user = array(
+                'lat'=>'112.558505',
+                'lng'=>'37.818498'
+            );
+            $shop = array(
+                'lat'=>$latitude_longitude[0],
+                'lng'=>$latitude_longitude[1]
+            );
+            $address = $this->GetDistance($user['lat'],$user['lng'],$shop['lat'],$shop['lng'],2);
+
+            //echo '距离'.$v->shop_name.$this->GetDistance($user['lat'],$user['lng'],$shop['lat'],$shop['lng'],2).'Km';
+            var_dump('距离'.$v.$address.'Km');
+        }
+
+        //echo '西安距成都'.GetDistance($Xian['lat'],$Xian['lng'],$Chengdu['lat'],$Chengdu['lng'],2).'km';
+    }
+
+    public function GetDistance($lat1, $lng1, $lat2, $lng2, $len_type = 1, $decimal = 2)
+    {
+        $radLat1 = $lat1 * PI ()/ 180.0;   //PI()圆周率
+        $radLat2 = $lat2 * PI() / 180.0;
+        $a = $radLat1 - $radLat2;
+        $b = ($lng1 * PI() / 180.0) - ($lng2 * PI() / 180.0);
+        $s = 2 * asin(sqrt(pow(sin($a/2),2) + cos($radLat1) * cos($radLat2) * pow(sin($b/2),2)));
+        $s = $s * 6378.137;
+        $s = round($s * 1000);
+        if ($len_type --> 1)
+        {
+            $s /= 1000;
+        }
+        return round($s, $decimal);
+    }
+
+
+
 
 
 

@@ -61,3 +61,7 @@ Route::get('user_center', 'User\UserController@user_center');     //用户中心
 Route::get('user_update', 'User\UserController@user_update');      //修改用户信息
 
 Route::get('user_history', 'User\UserController@user_history');     //我的足迹
+
+Route::get('/whole_shop', 'Goods\GoodsController@whole_shop');    //全部店铺
+
+Route::get('/nearby_shop', 'Goods\GoodsController@nearby_shop');   //附近店铺
