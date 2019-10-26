@@ -478,7 +478,7 @@ class GoodsController extends Controller
             $address = $this->GetDistance($user['lat'],$user['lng'],$shop['lat'],$shop['lng'],2);
 
             //echo '距离'.$v->shop_name.$this->GetDistance($user['lat'],$user['lng'],$shop['lat'],$shop['lng'],2).'Km';
-            var_dump('距离'.$v->shop.$address.'Km');
+            var_dump('距离'.$v->shop_name.$address.'Km');
         }
 
         //echo '西安距成都'.GetDistance($Xian['lat'],$Xian['lng'],$Chengdu['lat'],$Chengdu['lng'],2).'km';
