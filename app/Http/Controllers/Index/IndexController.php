@@ -39,11 +39,11 @@ class IndexController extends Controller
             '$s_type4'      =>  $s_type4,
             'goodsInfo'     =>  $goodsInfo,
             'week_newshop'  =>  $week_newshop,
-            'recommend'     =>  $recommend
+            'recommend'     =>  $recommend,
+            'error'         =>  0
         ];
 
         $response = [
-            'error' =>0,
             'data'=>$data
         ];
         //var_dump($response);exit;
