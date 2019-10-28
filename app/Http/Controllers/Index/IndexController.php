@@ -54,7 +54,7 @@ class IndexController extends Controller
             $goodsInfo = DB::table('mt_goods')
                 ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
                 ->where(['promotion_type'=>1])
-                ->get(['shop_name','shop_address_provice','shop_address_city','shop_address_area','shop_score','goods_id','goods_name','price','market_price','introduction','picture','promotion_price'])->toArray();   //店铺精选   默认为1
+                ->get(['shop_name','shop_address_provice','shop_address_city','shop_address_area','shop_score','goods_id','goods_name','price','market_price','introduction','picture','promotion_price','prople'])->toArray();   //店铺精选   默认为1
             //var_dump($goodsInfo);exit;
 
 
