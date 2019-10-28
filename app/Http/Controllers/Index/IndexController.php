@@ -40,7 +40,7 @@ class IndexController extends Controller
             'goodsInfo'     =>  $goodsInfo,
             'week_newshop'  =>  $week_newshop,
             'recommend'     =>  $recommend,
-            'error'         =>  0
+            'code'         =>  0
         ];
 
         $response = [
