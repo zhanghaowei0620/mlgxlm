@@ -12,7 +12,7 @@ class IndexController extends Controller
 {
     //获取首页数据
     public function index(Request $request){
-        $promotion_type = $request->input('promotion_type');
+        $promotion_type = $request->input('   ');
         $type = DB::table('mt_type')->where(['p_id'=>0])->get()->toArray();  //父级分类
         $s_type1 = DB::table('mt_type')->where(['p_id'=>1])->get()->toArray();          //子集分类 第一行
         $s_type2 = DB::table('mt_type')->where(['p_id'=>2])->get()->toArray();         //子集分类 第二行
@@ -24,7 +24,7 @@ class IndexController extends Controller
             $goodsInfo = DB::table('mt_goods')
                 ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
                 ->where(['promotion_type'=>$promotion_type])
-                ->get(['shop_name','shop_address_provice','shop_address_city','shop_address_area','shop_score','goods_id','goods_name','price','market_price','introduction','picture'])->toArray();   //店铺精选   默认为1
+                ->get(['shop_name','shop_address_provice','shop_address_city','shop_address_area','shop_score','goods_id','goods_name','price','market_price','introduction','picture','promotion_price','prople','shop_label'])->toArray();   //店铺精选   默认为1
             //var_dump($goodsInfo);exit;
 
 
