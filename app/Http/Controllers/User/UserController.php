@@ -30,56 +30,91 @@ class UserController extends Controller
     //登录
     public function weChat(Request $request){
         $code = $request->input('code');
-        $wx_name = $request->input('wx_name');
-        $wx_headimg = $request->input('wx_headimg');
+        $userinfo = $request->input('userinfo');
+        //var_dump(json_decode($userinfo));exit;
+        $userinfo = json_decode($userinfo);
+        $wx_name = $userinfo->userInfo->nickName;
+        $wx_headimg = $userinfo->userInfo->avatarUrl;
 
         //$code = 'dada4d6a54d6a';
         $url = "https://api.weixin.qq.com/sns/jscode2session?appid=".env('WX_APP_ID')."&secret=".env('WX_KEY')."&js_code=$code&grant_type=authorization_code";
         $info = file_get_contents($url);
         $arr = json_decode($info,true);
-
-//        $arr['openid'] = "adadad31313";
-//        $arr['session_key'] = "dada655656";
-//        $arr['unionid'] = "54d65a4d6a4";
-        $insertInfo = [
-            'wx_name'=>$wx_name,
-            'wx_headimg'=>$wx_headimg,
-            'openid'=>$arr['openid'],
-            'session_key'=>$arr['session_key'],
-            'wx_unionid'=>$arr['unionid'],
-            'wx_login_time'=>time()
-        ];
-        //var_dump($arr);exit;
-        $insertUserInfo = DB::table('mt_user')->insertGetId($insertInfo);
-        if($insertUserInfo){
-            $data = [
-                'openid'=>$arr['openid'],
-                'session_key'=>$arr['session_key']
+        //var_dump($arr['unionid']);exit;
+        $mt_userInfo = DB::table('mt_user')->where('openid',$arr['openid'])->get();
+        if($mt_userInfo){
+            $update = [
+                'wx_login_time'=>time()
             ];
-            if($arr['openid'] && $arr['session_key']){
-                $key = "openid";
-                Redis::set($key,$arr['openid']);
+            $updateInfo = DB::table('mt_user')->where('openid',$arr['openid'])->update($update);
+            if($updateInfo){
+                $data = [
+                    'openid'=>$arr['openid'],
+                    'session_key'=>$arr['session_key']
+                ];
+                if($arr['openid'] && $arr['session_key']){
+                    $key = "openid";
+                    Redis::set($key,$arr['openid']);
 //                $openid = Redis::get($key);
 //                var_dump($openid);exit;
-                $response = [
-                    'error'=>'0',
-                    'data'=>$data
+                    $response = [
+                        'code'=>'0',
+                        'msg'=>'登录成功',
+                        'data'=>$data
+                    ];
+                    return json_encode($response,JSON_UNESCAPED_UNICODE);
+                }else{
+                    $response = [
+                        'code'=>'2',
+                        'msg'=>'微信授权失败，请检查你的网络'
+                    ];
+                    die(json_encode($response,JSON_UNESCAPED_UNICODE));
+                }
+            }
+        }else{
+            $insertInfo = [
+                'wx_name'=>$wx_name,
+                'wx_headimg'=>$wx_headimg,
+                'openid'=>$arr['openid'],
+                'session_key'=>$arr['session_key'],
+                //'wx_unionid'=>$arr['unionid'],
+                'wx_login_time'=>time()
+            ];
+            //var_dump($arr);exit;
+            $insertUserInfo = DB::table('mt_user')->insertGetId($insertInfo);
+            if($insertUserInfo){
+                $data = [
+                    'openid'=>$arr['openid'],
+                    'session_key'=>$arr['session_key']
                 ];
-                return json_encode($response,JSON_UNESCAPED_UNICODE);
+                if($arr['openid'] && $arr['session_key']){
+                    $key = "openid";
+                    Redis::set($key,$arr['openid']);
+//                $openid = Redis::get($key);
+//                var_dump($openid);exit;
+                    $response = [
+                        'code'=>'0',
+                        'msg'=>'登录成功',
+                        'data'=>$data
+                    ];
+                    return json_encode($response,JSON_UNESCAPED_UNICODE);
+                }else{
+                    $response = [
+                        'code'=>'1',
+                        'msg'=>'无效的code'
+                    ];
+                    die(json_encode($response,JSON_UNESCAPED_UNICODE));
+                }
             }else{
                 $response = [
-                    'error'=>'1',
-                    'msg'=>'无效的code'
+                    'code'=>'2',
+                    'msg'=>'微信授权失败，请检查你的网络'
                 ];
                 die(json_encode($response,JSON_UNESCAPED_UNICODE));
             }
-        }else{
-            $response = [
-                'error'=>'2',
-                'msg'=>'微信授权失败，请检查你的网络'
-            ];
-            die(json_encode($response,JSON_UNESCAPED_UNICODE));
         }
+
+
     }
 
     //用户地址添加
