@@ -70,6 +70,12 @@ class UserController extends Controller
                     ];
                     die(json_encode($response,JSON_UNESCAPED_UNICODE));
                 }
+            }else{
+                $response = [
+                    'code'=>'1',
+                    'msg'=>'登陆失败'
+                ];
+                die(json_encode($response,JSON_UNESCAPED_UNICODE));
             }
         }else{
             $insertInfo = [
