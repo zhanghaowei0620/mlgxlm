@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Str;
+use App\Models\ShopModel;
 
 class GoodsController extends Controller
 {
@@ -85,7 +86,7 @@ class GoodsController extends Controller
         $goods_id = $request->input('goods_id');
 //        $goods_id = 3;
         $goodsInfo = DB::table('mt_shop')
-            ->join('mt_goods','mt_shop.shop_id','=','mt_shop.shop_id')
+            ->join('mt_goods','mt_shop.shop_id','=','mt_goods.shop_id')
             ->where('mt_goods.goods_id',$goods_id)
             ->first();
         //var_dump($goodsInfo);exit;
@@ -463,7 +464,12 @@ class GoodsController extends Controller
     //附近店铺-附近店铺
     public function nearby_shop(Request $request){
         $shopInfo = DB::table('mt_shop')->orderBy('shop_id')->limit(6)->get()->toArray();
-        //var_dump($shopInfo->latitude_longitude);exit;
+        $shopInfo = DB::table('mt_shop')
+            ->join('mt_goods','mt_shop.shop_id','=','mt_goods.shop_id')
+            ->orderBy('mt_shop.shop_id')
+            ->limit(6)
+            ->where('mt_goods.is_recommend',1)
+            ->get(['mt_shop.shop_id','shop_name','shop_address_provice','shop_address_city','shop_address_area','shop_score','shop_desc','shop_label','shop_logo','goods_id','goods_name','price','picture','latitude_longitude'])->toArray();
         foreach ($shopInfo as $k => $v){
             //var_dump($v->latitude_longitude);
             $latitude_longitude = explode(',',$v->latitude_longitude);
@@ -475,13 +481,35 @@ class GoodsController extends Controller
                 'lat'=>$latitude_longitude[0],
                 'lng'=>$latitude_longitude[1]
             );
-            $address = $this->GetDistance($user['lat'],$user['lng'],$shop['lat'],$shop['lng'],2);
+            $nearby = $this->GetDistance($user['lat'],$user['lng'],$shop['lat'],$shop['lng'],2);
+            //echo $nearby;
+
+            //var_dump($shopInfo);
+            $data = [
+                'shop_id'=>$v->shop_id,
+                'shop_name'=>$v->shop_name,
+                'shop_address_provice'=>$v->shop_address_provice,
+                'shop_address_city'=>$v->shop_address_city,
+                'shop_address_area'=>$v->shop_address_area,
+                'shop_score'=>$v->shop_score,
+                'shop_desc'=>$v->shop_desc,
+                'shop_label'=>$v->shop_label,
+                'shop_logo'=>$v->shop_logo,
+                'goods_name'=>$v->goods_name,
+                'price'=>$v->price,
+                'nearby'=>$nearby,
+            ];
+
+            $response = [
+                'error'=>'0',
+                'data'=>$data
+            ];
+            return json_encode($response,JSON_UNESCAPED_UNICODE);
+            //var_dump($response);
 
             //echo '距离'.$v->shop_name.$this->GetDistance($user['lat'],$user['lng'],$shop['lat'],$shop['lng'],2).'Km';
-            var_dump('距离'.$v->shop_name.$address.'Km');
+            //var_dump('距离'.$v->shop_name.$nearby.'Km');
         }
-
-        //echo '西安距成都'.GetDistance($Xian['lat'],$Xian['lng'],$Chengdu['lat'],$Chengdu['lng'],2).'km';
     }
 
     public function GetDistance($lat1, $lng1, $lat2, $lng2, $len_type = 1, $decimal = 2)

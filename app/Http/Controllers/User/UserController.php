@@ -353,4 +353,127 @@ class UserController extends Controller
 
     }
 
+    //点击获取主营项目
+    public function shop_type(Request $request){
+        $shop_type = DB::table('mt_type')->where(['p_id'=>0])->get();
+        var_dump($shop_type);exit;
+    }
+
+    //商家入驻
+    public function shop_settled(Request $request){
+        var_dump(time()+86400);exit;
+        $openid = Redis::get('openid');
+//        var_dump($openid);exit;
+        if($openid){
+            $userInfo = DB::table('mt_user')->where('openid',$openid)->first();
+            //var_dump($userInfo);exit;
+            $uid = $userInfo->uid;
+            $shop_name = $request->input('shop_name');
+            $shop_type = $request->input('shop_type');
+            $shop_desc = $request->input('shop_desc');
+            $contacts = $request->input('shop_contacts');
+            $shop_phone = $request->input('shop_phone');
+            $shop_area = $request->input('shop_area');
+            $shop_address_detail = $request->input('shop_address_detail');
+            $shop_add_time = time();
+            $data = [
+                'shop_name'=>$shop_name,
+                'shop_desc'=>$shop_desc,
+                't_id'=>$shop_type,
+                'shop_phone'=>$shop_phone,
+                'shop_area'=>$shop_area,
+                'shop_address_detail'=>$shop_address_detail,
+                'shop_add_time'=>$shop_add_time,
+                'shop_contacts'=>$contacts,
+                'uid'=>$uid
+            ];
+
+
+
+        }else{
+            $response = [
+                'error'=>'2',
+                'msg'=>'请先登录'
+            ];
+            die(json_encode($response,JSON_UNESCAPED_UNICODE));
+        }
+
+    }
+
+    //优惠券
+    public function user_coupon(Request $request){
+        $is_use = $request->input('is_use');
+        //$is_use=1;
+        $openid = Redis::get('openid');
+        if($openid){
+            $userInfo = DB::table('mt_user')->where('openid',$openid)->first();
+            //var_dump($userInfo);exit;
+            $uid = $userInfo->uid;
+            if($is_use){
+                $get = [
+                    'mt_coupon.coupon_id',
+                    'mt_coupon.shop_id',
+                    'mt_coupon.goods_id',
+                    'mt_coupon.coupon_price',
+                    'mt_coupon.coupon_redouction',
+                    'mt_coupon.is_use',
+                    'mt_coupon.create_time',
+                    'mt_coupon.expiration',
+                    'mt_goods.goods_name',
+                    'mt_shop.shop_name'
+                ];
+                $where = [
+                    'mt_coupon.uid'=>$uid,
+                    'is_use'=>$is_use
+                ];
+                $coupon = DB::table('mt_coupon')
+                    ->join('mt_goods','mt_coupon.goods_id','=','mt_goods.goods_id')
+                    ->join('mt_shop','mt_coupon.shop_id','=','mt_shop.shop_id')
+                    ->where($where)
+                    ->get($get)->toArray();
+                //var_dump($coupon);exit;
+                $response = [
+                    'error'=>'0',
+                    'data'=>$coupon
+                ];
+            }else{
+                $get = [
+                    'mt_coupon.coupon_id',
+                    'mt_coupon.shop_id',
+                    'mt_coupon.goods_id',
+                    'mt_coupon.coupon_price',
+                    'mt_coupon.coupon_redouction',
+                    'mt_coupon.is_use',
+                    'mt_coupon.create_time',
+                    'mt_coupon.expiration',
+                    'mt_goods.goods_name',
+                    'mt_shop.shop_name'
+                ];
+                $where = [
+                    'mt_coupon.uid'=>$uid,
+                    'is_use'=>0
+                ];
+                $coupon = DB::table('mt_coupon')
+                    ->join('mt_goods','mt_coupon.goods_id','=','mt_goods.goods_id')
+                    ->join('mt_shop','mt_coupon.shop_id','=','mt_shop.shop_id')
+                    ->where($where)
+                    ->get($get)->toArray();
+                //var_dump($coupon);exit;
+                $response = [
+                    'error'=>'0',
+                    'data'=>$coupon
+                ];
+                return json_encode($response,JSON_UNESCAPED_UNICODE);
+
+            }
+        }else{
+            $response = [
+                'error'=>'2',
+                'msg'=>'请先登录'
+            ];
+            die(json_encode($response,JSON_UNESCAPED_UNICODE));
+        }
+    }
+
+
 }

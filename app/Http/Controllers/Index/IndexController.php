@@ -31,8 +31,7 @@ class IndexController extends Controller
         $recommend = DB::table('mt_goods')->where(['is_recommend'=>1])->get(['goods_id','price','picture']);       //推荐
         //var_dump($recommend);exit;
 
-        $response = [
-            'error'         =>  0,
+        $data = [
             'type'          =>  $type,
             '$s_type1'      =>  $s_type1,
             '$s_type2'      =>  $s_type2,
@@ -42,9 +41,16 @@ class IndexController extends Controller
             'week_newshop'  =>  $week_newshop,
             'recommend'     =>  $recommend
         ];
+
+        $response = [
+            'error' =>0,
+            'data'=>$data
+        ];
         //var_dump($response);exit;
         return json_encode($response,JSON_UNESCAPED_UNICODE);
     }
+
+
 
 
 

@@ -22,6 +22,11 @@ Route::get('/shop_goods', 'Index\IndexController@shop_goods');   //根据店铺i
 
 Route::get('/weChat', 'User\UserController@weChat');   //微信登陆
 
+Route::get('/shop_settled', 'User\UserController@shop_settled');    //商家入驻
+Route::get('/shop_type', 'User\UserController@shop_type');     //点击获取主营项目
+
+Route::get('/user_coupon', 'User\UserController@user_coupon');    //优惠券
+
 Route::get('/goodsInfo', 'Goods\GoodsController@goodsInfo');    //获取商品详情信息
 
 Route::get('/type_shop', 'Goods\GoodsController@type_shop');     //根据导航栏子级分类获取店铺
