@@ -33,10 +33,10 @@ class IndexController extends Controller
 
         $data = [
             'type'          =>  $type,
-            '$s_type1'      =>  $s_type1,
-            '$s_type2'      =>  $s_type2,
-            '$s_type3'      =>  $s_type3,
-            '$s_type4'      =>  $s_type4,
+            's_type1'      =>  $s_type1,
+            's_type2'      =>  $s_type2,
+            's_type3'      =>  $s_type3,
+            's_type4'      =>  $s_type4,
             'goodsInfo'     =>  $goodsInfo,
             'week_newshop'  =>  $week_newshop,
             'recommend'     =>  $recommend,
