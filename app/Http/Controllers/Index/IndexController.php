@@ -30,9 +30,9 @@ class IndexController extends Controller
 
             $week_newshop = DB::table('mt_shop')
                 ->join('mt_goods','mt_goods.shop_id','=','mt_shop.shop_id')
-                ->orderBy('shop_add_time')
+                ->orderBy('mt_shop.shop_add_time')
                 ->limit(4)
-                ->get(['shop_id','shop_name','goods_id','goods_name','shop_Ename','shop_desc','shop_label','shop_address_provice','shop_address_city','shop_address_area','shop_score'])->toArray();    //本周新店
+                ->get(['mt_shop.shop_id','mt_shop.shop_name','mt_goods.goods_id','mt_goods.goods_name','mt_shop.shop_Ename','mt_shop.shop_desc','mt_shop.shop_label','mt_shop.shop_address_provice','mt_shop.shop_address_city','mt_shop.shop_address_area','mt_shop.shop_score'])->toArray();    //本周新店
             //var_dump($week_newshop);exit;
             $recommend = DB::table('mt_goods')->where(['is_recommend'=>1])->get(['goods_id','goods_name','price','picture']);      //推荐
             //var_dump($recommend);exit;
@@ -64,9 +64,9 @@ class IndexController extends Controller
 
             $week_newshop = DB::table('mt_shop')
                 ->join('mt_goods','mt_goods.shop_id','=','mt_shop.shop_id')
-                ->orderBy('shop_add_time')
+                ->orderBy('mt_shop.shop_add_time')
                 ->limit(4)
-                ->get(['shop_id','shop_name','goods_id','goods_name','shop_Ename','shop_desc','shop_label','shop_address_provice','shop_address_city','shop_address_area','shop_score'])->toArray();    //本周新店
+                ->get(['mt_shop.shop_id','mt_shop.shop_name','mt_goods.goods_id','mt_goods.goods_name','mt_shop.shop_Ename','mt_shop.shop_desc','mt_shop.shop_label','mt_shop.shop_address_provice','mt_shop.shop_address_city','mt_shop.shop_address_area','mt_shop.shop_score'])->toArray();    //本周新店
             //var_dump($week_newshop);exit;
             $recommend = DB::table('mt_goods')->where(['is_recommend'=>1])->get(['goods_id','goods_name','price','picture']);      //推荐
             //var_dump($recommend);exit;
