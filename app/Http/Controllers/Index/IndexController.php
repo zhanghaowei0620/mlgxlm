@@ -28,7 +28,7 @@ class IndexController extends Controller
             //var_dump($goodsInfo);exit;
 
 
-            $week_newshop = DB::table('mt_shop')->orderBy('shop_add_time')->limit(3)->get(['shop_id','shop_name','shop_Ename','shop_desc'])->toArray();    //本周新店
+            $week_newshop = DB::table('mt_shop')->orderBy('shop_add_time')->limit(3)->get(['shop_id','shop_name','shop_Ename','shop_desc','shop_label','shop_address_provice','shop_address_city','shop_address_area','shop_score'])->toArray();    //本周新店
             //var_dump($week_newshop);exit;
             $recommend = DB::table('mt_goods')->where(['is_recommend'=>1])->get(['goods_id','price','picture']);       //推荐
             //var_dump($recommend);exit;
@@ -58,7 +58,7 @@ class IndexController extends Controller
             //var_dump($goodsInfo);exit;
 
 
-            $week_newshop = DB::table('mt_shop')->orderBy('shop_add_time')->limit(3)->get(['shop_id','shop_name','shop_Ename','shop_desc'])->toArray();    //本周新店
+            $week_newshop = DB::table('mt_shop')->orderBy('shop_add_time')->limit(3)->get(['shop_id','shop_name','shop_Ename','shop_desc','shop_label','shop_address_provice','shop_address_city','shop_address_area','shop_score'])->toArray();    //本周新店
             //var_dump($week_newshop);exit;
             $recommend = DB::table('mt_goods')->where(['is_recommend'=>1])->get(['goods_id','price','picture']);       //推荐
             //var_dump($recommend);exit;
