@@ -323,7 +323,7 @@ class UserController extends Controller
             $coupon_num = DB::table('mt_user')
                 ->join('mt_coupon','mt_user.uid','=','mt_coupon.uid')
                 ->where('mt_user.openid',$openid)->get()->count();
-            var_dump($coupon_num);exit;
+            //var_dump($coupon_num);exit;
             if($userInfo){
                 if($coupon_num){
                     $data = [
