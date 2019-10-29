@@ -87,7 +87,7 @@ class IndexController extends Controller
                 'data'=>$data
             ];
             //var_dump($response);exit;
-            //return json_encode($response,JSON_UNESCAPED_UNICODE);
+            return json_encode($response,JSON_UNESCAPED_UNICODE);
         }
 
     }
