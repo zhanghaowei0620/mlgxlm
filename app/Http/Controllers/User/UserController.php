@@ -146,15 +146,21 @@ class UserController extends Controller
             ];
             $add_address = DB::table('mt_address')->insertGetId($data);
             if($address_detail){
-                $response = [
-                    'error'=>'0',
+                $data = [
+                    'code'=>0,
                     'msg'=>'地址添加成功'
+                ];
+                $response = [
+                    'data'=>$data
                 ];
                 return json_encode($response,JSON_UNESCAPED_UNICODE);
             }else{
-                $response = [
-                    'error'=>'1',
+                $data = [
+                    'code'=>1,
                     'msg'=>'地址添加失败'
+                ];
+                $response = [
+                    'data'=>$data
                 ];
                 die(json_encode($response,JSON_UNESCAPED_UNICODE));
             }
@@ -170,15 +176,21 @@ class UserController extends Controller
             ->where('mt_user.openid',$openid)
             ->get()->toArray();
         if($user_addressInfo){
+            $data = [
+                'code'=>0,
+                'user_addressInfo'=>$user_addressInfo
+            ];
             $response = [
-                'error'=>'0',
-                'data'=>$user_addressInfo
+                'data'=>$data
             ];
             return json_encode($response,JSON_UNESCAPED_UNICODE);
         }else{
-            $response = [
-                'error'=>'1',
+            $data = [
+                'code'=>1,
                 'msg'=>'暂未添加收货地址'
+            ];
+            $response = [
+                'data'=>$data
             ];
             die(json_encode($response,JSON_UNESCAPED_UNICODE));
         }
@@ -206,15 +218,21 @@ class UserController extends Controller
             $update_address = DB::table('mt_address')->where('id',$id)->update($update);
             //var_dump($update_address);exit;
             if($update_address==true){
-                $response = [
-                    'error'=>'0',
+                $data = [
+                    'code'=>0,
                     'msg'=>'修改成功'
+                ];
+                $response = [
+                    'data'=>$data
                 ];
                 return json_encode($response,JSON_UNESCAPED_UNICODE);
             }else{
-                $response = [
-                    'error'=>'1',
+                $data = [
+                    'code'=>1,
                     'msg'=>'修改失败'
+                ];
+                $response = [
+                    'data'=>$data
                 ];
                 die(json_encode($response,JSON_UNESCAPED_UNICODE));
             }
@@ -236,22 +254,31 @@ class UserController extends Controller
                 $update_address = DB::table('mt_address')->where('id',$id)->update($update);
                 //var_dump($update_address);exit;
                 if($update_address == true){
-                    $response = [
-                        'error'=>'0',
+                    $data = [
+                        'code'=>0,
                         'msg'=>'修改成功'
+                    ];
+                    $response = [
+                        'data'=>$data
                     ];
                     return json_encode($response,JSON_UNESCAPED_UNICODE);
                 }else{
-                    $response = [
-                        'error'=>'1',
+                    $data = [
+                        'code'=>1,
                         'msg'=>'修改失败,请重试'
+                    ];
+                    $response = [
+                        'data'=>$data
                     ];
                     die(json_encode($response,JSON_UNESCAPED_UNICODE));
                 }
             }else{
-                $response = [
-                    'error'=>'1',
+                $data = [
+                    'code'=>1,
                     'msg'=>'修改失败'
+                ];
+                $response = [
+                    'data'=>$data
                 ];
                 die(json_encode($response,JSON_UNESCAPED_UNICODE));
             }
@@ -266,15 +293,21 @@ class UserController extends Controller
         $delete_address = DB::table('mt_address')->where('id',$address_id)->delete();
         //var_dump($delete_address);exit;
         if($delete_address == true){
-            $response = [
-                'error'=>'0',
+            $data = [
+                'code'=>0,
                 'msg'=>'删除成功'
+            ];
+            $response = [
+                'data'=>$data
             ];
             return json_encode($response,JSON_UNESCAPED_UNICODE);
         }else{
-            $response = [
-                'error'=>'1',
+            $data = [
+                'code'=>1,
                 'msg'=>'修改失败'
+            ];
+            $response = [
+                'data'=>$data
             ];
             die(json_encode($response,JSON_UNESCAPED_UNICODE));
         }
@@ -296,31 +329,40 @@ class UserController extends Controller
                 if($coupon_num){
                     $data = [
                         'userInfo'=>$userInfo,
-                        'coupon_num'=>$coupon_num
+                        'coupon_num'=>$coupon_num,
+                        'code'=>0
                     ];
                     $response = [
-                        'error'=>'0',
                         'data'=>$data
                     ];
                     return json_encode($response,JSON_UNESCAPED_UNICODE);
                 }else{
-                    $response = [
-                        'error'=>'3',
+                    $data = [
+                        'code'=>3,
                         'msg'=>'暂无优惠券,快去领取吧'
+                    ];
+                    $response = [
+                        'data'=>$data
                     ];
                     die(json_encode($response,JSON_UNESCAPED_UNICODE));
                 }
             }else{
-                $response = [
-                    'error'=>'2',
+                $data = [
+                    'code'=>1,
                     'msg'=>'信息出错'
+                ];
+                $response = [
+                    'data'=>$data
                 ];
                 die(json_encode($response,JSON_UNESCAPED_UNICODE));
             }
         }else{
-            $response = [
-                'error'=>'1',
+            $data = [
+                'code'=>2,
                 'msg'=>'请先登录'
+            ];
+            $response = [
+                'data'=>$data
             ];
             die(json_encode($response,JSON_UNESCAPED_UNICODE));
         }
@@ -338,22 +380,31 @@ class UserController extends Controller
             ];
             $update_userInfo = DB::table('mt_user')->update($update);
             if($update_userInfo==true){
-                $response = [
-                    'error'=>'0',
+                $data = [
+                    'code'=>0,
                     'msg'=>'修改成功'
+                ];
+                $response = [
+                    'data'=>$data
                 ];
                 return json_encode($response,JSON_UNESCAPED_UNICODE);
             }else{
-                $response = [
-                    'error'=>'1',
+                $data = [
+                    'code'=>1,
                     'msg'=>'系统出现问题,修改失败 请重试'
+                ];
+                $response = [
+                    'data'=>$data
                 ];
                 die(json_encode($response,JSON_UNESCAPED_UNICODE));
             }
         }else{
+            $data = [
+                'code'=>2,
+                'msg'=>请先登录
+            ];
             $response = [
-                'error'=>'2',
-                'msg'=>'请先登录'
+                'data'=>$data
             ];
             die(json_encode($response,JSON_UNESCAPED_UNICODE));
         }
@@ -372,22 +423,31 @@ class UserController extends Controller
                 ->where('uid',$uid)->get();
             //var_dump($historyInfo);exit;
             if($historyInfo){
-                $response = [
-                    'error'=>'0',
-                    'data'=>$historyInfo
+                $data = [
+                    'code'=>0,
+                    'historyInfo'=>$historyInfo
                 ];
-                die(json_encode($response,JSON_UNESCAPED_UNICODE));
-            }else{
                 $response = [
-                    'error'=>'1',
-                    'msg'=>'你暂时未浏览过任何商品'
+                    'data'=>$data
+                ];
+                return json_encode($response,JSON_UNESCAPED_UNICODE);
+            }else{
+                $data = [
+                    'code'=>1,
+                    'msg'=>你暂时未浏览过任何商品
+                ];
+                $response = [
+                    'data'=>$data
                 ];
                 die(json_encode($response,JSON_UNESCAPED_UNICODE));
             }
         }else{
+            $data = [
+                'code'=>2,
+                'msg'=>请先登录
+            ];
             $response = [
-                'error'=>'2',
-                'msg'=>'请先登录'
+                'data'=>$data
             ];
             die(json_encode($response,JSON_UNESCAPED_UNICODE));
         }
@@ -396,13 +456,21 @@ class UserController extends Controller
 
     //点击获取主营项目
     public function shop_type(Request $request){
-        $shop_type = DB::table('mt_type')->where(['p_id'=>0])->get();
-        var_dump($shop_type);exit;
+        $shop_type = DB::table('mt_type')->where(['p_id'=>0])->get()->toArray();
+        //var_dump($shop_type);exit;
+        $data = [
+            'code'=>0,
+            'shop_type'=>$shop_type
+        ];
+        $response = [
+            'data'=>$data
+        ];
+        return json_encode($response,JSON_UNESCAPED_UNICODE);
     }
 
     //商家入驻
     public function shop_settled(Request $request){
-        var_dump(time()+86400);exit;
+        //var_dump(time()+86400);exit;
         $openid = Redis::get('openid');
 //        var_dump($openid);exit;
         if($openid){
@@ -417,6 +485,7 @@ class UserController extends Controller
             $shop_area = $request->input('shop_area');
             $shop_address_detail = $request->input('shop_address_detail');
             $shop_add_time = time();
+
             $data = [
                 'shop_name'=>$shop_name,
                 'shop_desc'=>$shop_desc,
@@ -428,12 +497,26 @@ class UserController extends Controller
                 'shop_contacts'=>$contacts,
                 'uid'=>$uid
             ];
-
-
-
+            $shopInfo = DB::table('mt_shop')->where($data)->get();
+            if($shopInfo){
+                $response = [
+                    'code'=>'1',
+                    'msg'=>'您已是本平台入驻商家'
+                ];
+                return json_encode($response,JSON_UNESCAPED_UNICODE);
+            }else{
+                $settled = DB::table('mt_shop')->insertGetId($data);
+                if($settled==true){
+                    $response = [
+                        'code'=>'0',
+                        'msg'=>'入驻成功'
+                    ];
+                    return json_encode($response,JSON_UNESCAPED_UNICODE);
+                }
+            }
         }else{
             $response = [
-                'error'=>'2',
+                'code'=>'2',
                 'msg'=>'请先登录'
             ];
             die(json_encode($response,JSON_UNESCAPED_UNICODE));
@@ -473,10 +556,14 @@ class UserController extends Controller
                     ->where($where)
                     ->get($get)->toArray();
                 //var_dump($coupon);exit;
-                $response = [
-                    'error'=>'0',
-                    'data'=>$coupon
+                $data = [
+                    'code'=>'0',
+                    'coupon'=>$coupon
                 ];
+                $response = [
+                    'data'=>$data
+                ];
+                return json_encode($response,JSON_UNESCAPED_UNICODE);
             }else{
                 $get = [
                     'mt_coupon.coupon_id',
@@ -500,21 +587,26 @@ class UserController extends Controller
                     ->where($where)
                     ->get($get)->toArray();
                 //var_dump($coupon);exit;
+                $data = [
+                    'code'=>0,
+                    'coupon'=>$coupon
+                ];
                 $response = [
-                    'error'=>'0',
-                    'data'=>$coupon
+                    'data'=>$data
                 ];
                 return json_encode($response,JSON_UNESCAPED_UNICODE);
 
             }
         }else{
-            $response = [
-                'error'=>'2',
+            $data = [
+                'code'=>2,
                 'msg'=>'请先登录'
+            ];
+            $response = [
+                'data'=>$data
             ];
             die(json_encode($response,JSON_UNESCAPED_UNICODE));
         }
     }
-
 
 }

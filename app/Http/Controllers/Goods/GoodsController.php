@@ -60,11 +60,13 @@ class GoodsController extends Controller
         }
     }
 
-    //点击店铺获取店铺下所有的商品
+    //点击店铺获取店铺详情信息及店铺下所有的商品
     public function shop_goods(Request $request){
         $shop_id = $request->input('shop_id');
-        $shop_id = 1;
-        $shop_goodsInfo = DB::table('mt_goods')->where('shop_id',$shop_id)->paginate(7);
+        $shop_id = 2;
+        $shop_goodsInfo = DB::table('mt_goods')
+            ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
+            ->where('mt_goods.shop_id',$shop_id)->paginate(7);
         //var_dump($shop_goodsInfo);exit;
         if($shop_goodsInfo){
             $response = [
@@ -512,6 +514,7 @@ class GoodsController extends Controller
         }
     }
 
+    //距离算法+
     public function GetDistance($lat1, $lng1, $lat2, $lng2, $len_type = 1, $decimal = 2)
     {
         $radLat1 = $lat1 * PI ()/ 180.0;   //PI()圆周率
@@ -527,7 +530,6 @@ class GoodsController extends Controller
         }
         return round($s, $decimal);
     }
-
 
 
 
