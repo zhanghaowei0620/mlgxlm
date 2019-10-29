@@ -58,7 +58,7 @@ class IndexController extends Controller
                 ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
                 ->where(['promotion_type'=>1])
                 ->get(['shop_name','shop_address_provice','shop_address_city','shop_address_area','shop_score','goods_id','goods_name','price','market_price','introduction','picture','promotion_price','prople','shop_label'])->toArray();   //店铺精选   默认为1
-            //var_dump($goodsInfo);exit;
+            var_dump($goodsInfo);exit;
 
 
             $shop_id = DB::table('mt_shop')->orderBy('shop_add_time')->limit(3)->get('shop_id');

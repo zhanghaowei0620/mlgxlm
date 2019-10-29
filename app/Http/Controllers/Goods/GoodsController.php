@@ -473,6 +473,7 @@ class GoodsController extends Controller
             ->where('mt_goods.is_recommend',1)
             ->get(['mt_shop.shop_id','shop_name','shop_address_provice','shop_address_city','shop_address_area','shop_score','shop_desc','shop_label','shop_logo','goods_id','goods_name','price','picture','latitude_longitude'])->toArray();
         foreach ($shopInfo as $k => $v){
+            //var_dump($j++);
             //var_dump($v->latitude_longitude);
             $latitude_longitude = explode(',',$v->latitude_longitude);
             $user = array(
