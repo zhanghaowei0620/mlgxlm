@@ -500,9 +500,16 @@ class UserController extends Controller
                 'shop_address_detail'=>$shop_address_detail,
                 'shop_add_time'=>$shop_add_time,
                 'shop_contacts'=>$contacts,
+                'goods_status'=>2,
                 'uid'=>$uid
             ];
-            $shopInfo = DB::table('mt_shop')->where($data)->get()->toArray();
+            $where = [
+                'shop_name'=>$shop_name,
+                'shop_contacts'=>$contacts,
+                'shop_phone'=>$shop_phone,
+                'uid'=>$uid
+            ];
+            $shopInfo = DB::table('mt_shop')->where($where)->get()->toArray();
 //            var_dump($shopInfo);exit;
             if($shopInfo){
                 $response = [
@@ -515,7 +522,7 @@ class UserController extends Controller
                 if($settled==true){
                     $response = [
                         'code'=>'0',
-                        'msg'=>'入驻成功'
+                        'msg'=>'申请成功，请耐心等待审核'
                     ];
                     return json_encode($response,JSON_UNESCAPED_UNICODE);
                 }
