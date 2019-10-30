@@ -512,25 +512,34 @@ class UserController extends Controller
             $shopInfo = DB::table('mt_shop')->where($where)->get()->toArray();
 //            var_dump($shopInfo);exit;
             if($shopInfo){
-                $response = [
+                $data = [
                     'code'=>'1',
                     'msg'=>'您已在本平台申请过商铺'
+                ];
+                $response = [
+                    'data'=>$data
                 ];
                 return json_encode($response,JSON_UNESCAPED_UNICODE);
             }else{
                 $settled = DB::table('mt_shop')->insertGetId($data);
                 if($settled==true){
-                    $response = [
+                    $data = [
                         'code'=>'0',
                         'msg'=>'申请成功，请耐心等待审核'
+                    ];
+                    $response = [
+                        'data'=>$data
                     ];
                     return json_encode($response,JSON_UNESCAPED_UNICODE);
                 }
             }
         }else{
-            $response = [
+            $data = [
                 'code'=>'2',
                 'msg'=>'请先登录'
+            ];
+            $response = [
+                'data'=>$data
             ];
             die(json_encode($response,JSON_UNESCAPED_UNICODE));
         }
