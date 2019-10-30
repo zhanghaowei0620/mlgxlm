@@ -501,7 +501,8 @@ class UserController extends Controller
                 'shop_contacts'=>$contacts,
                 'uid'=>$uid
             ];
-            $shopInfo = DB::table('mt_shop')->where($data)->get();
+            $shopInfo = DB::table('mt_shop')->where($data)->get()->toArray();
+//            var_dump($shopInfo);exit;
             if($shopInfo){
                 $response = [
                     'code'=>'1',
