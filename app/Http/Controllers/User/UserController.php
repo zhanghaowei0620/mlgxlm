@@ -482,6 +482,7 @@ class UserController extends Controller
             $contacts = $request->input('shop_contacts');
             $shop_phone = $request->input('shop_phone');
             $shop_area = $request->input('shop_area');
+            $shop_area = explode(',',$shop_area);
             $shop_provice = $shop_area[0];
             $shop_city = $shop_area[1];
             $shop_area1 = $shop_area[2];
