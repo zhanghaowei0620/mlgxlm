@@ -514,7 +514,7 @@ class UserController extends Controller
             if($shopInfo){
                 $response = [
                     'code'=>'1',
-                    'msg'=>'您已是本平台入驻商家'
+                    'msg'=>'您已在本平台申请过商铺'
                 ];
                 return json_encode($response,JSON_UNESCAPED_UNICODE);
             }else{
