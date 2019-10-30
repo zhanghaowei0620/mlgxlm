@@ -548,77 +548,65 @@ class UserController extends Controller
 
     //优惠券
     public function user_coupon(Request $request){
-        $is_use = $request->input('is_use');
         //$is_use=1;
         $openid = Redis::get('openid');
         if($openid){
             $userInfo = DB::table('mt_user')->where('openid',$openid)->first();
             //var_dump($userInfo);exit;
             $uid = $userInfo->uid;
-            if($is_use){
-                $get = [
-                    'mt_coupon.coupon_id',
-                    'mt_coupon.shop_id',
-                    'mt_coupon.goods_id',
-                    'mt_coupon.coupon_price',
-                    'mt_coupon.coupon_redouction',
-                    'mt_coupon.is_use',
-                    'mt_coupon.create_time',
-                    'mt_coupon.expiration',
-                    'mt_goods.goods_name',
-                    'mt_shop.shop_name'
-                ];
-                $where = [
-                    'mt_coupon.uid'=>$uid,
-                    'is_use'=>$is_use
-                ];
-                $coupon = DB::table('mt_coupon')
-                    ->join('mt_goods','mt_coupon.goods_id','=','mt_goods.goods_id')
-                    ->join('mt_shop','mt_coupon.shop_id','=','mt_shop.shop_id')
-                    ->where($where)
-                    ->get($get)->toArray();
-                //var_dump($coupon);exit;
-                $data = [
-                    'code'=>'0',
-                    'coupon'=>$coupon
-                ];
-                $response = [
-                    'data'=>$data
-                ];
-                return json_encode($response,JSON_UNESCAPED_UNICODE);
-            }else{
-                $get = [
-                    'mt_coupon.coupon_id',
-                    'mt_coupon.shop_id',
-                    'mt_coupon.goods_id',
-                    'mt_coupon.coupon_price',
-                    'mt_coupon.coupon_redouction',
-                    'mt_coupon.is_use',
-                    'mt_coupon.create_time',
-                    'mt_coupon.expiration',
-                    'mt_goods.goods_name',
-                    'mt_shop.shop_name'
-                ];
-                $where = [
-                    'mt_coupon.uid'=>$uid,
-                    'is_use'=>0
-                ];
-                $coupon = DB::table('mt_coupon')
-                    ->join('mt_goods','mt_coupon.goods_id','=','mt_goods.goods_id')
-                    ->join('mt_shop','mt_coupon.shop_id','=','mt_shop.shop_id')
-                    ->where($where)
-                    ->get($get)->toArray();
-                //var_dump($coupon);exit;
-                $data = [
-                    'code'=>0,
-                    'coupon'=>$coupon
-                ];
-                $response = [
-                    'data'=>$data
-                ];
-                return json_encode($response,JSON_UNESCAPED_UNICODE);
 
-            }
+            $get = [
+                'mt_coupon.coupon_id',
+                'mt_coupon.shop_id',
+                'mt_coupon.goods_id',
+                'mt_coupon.coupon_price',
+                'mt_coupon.coupon_redouction',
+                'mt_coupon.is_use',
+                'mt_coupon.create_time',
+                'mt_coupon.expiration',
+                'mt_goods.goods_name',
+                'mt_shop.shop_name'
+            ];
+            $where = [
+                'mt_coupon.uid'=>$uid,
+                'is_use'=>0
+            ];
+            $coupon = DB::table('mt_coupon')
+                ->join('mt_goods','mt_coupon.goods_id','=','mt_goods.goods_id')
+                ->join('mt_shop','mt_coupon.shop_id','=','mt_shop.shop_id')
+                ->where($where)
+                ->get($get)->toArray();
+            $where = [
+                'mt_coupon.uid'=>$uid,
+                'is_use'=>1
+            ];
+            $coupon1 = DB::table('mt_coupon')
+                ->join('mt_goods','mt_coupon.goods_id','=','mt_goods.goods_id')
+                ->join('mt_shop','mt_coupon.shop_id','=','mt_shop.shop_id')
+                ->where($where)
+                ->get($get)->toArray();
+
+            $where = [
+                'mt_coupon.uid'=>$uid,
+                'is_use'=>2
+            ];
+            $coupon2 = DB::table('mt_coupon')
+                ->join('mt_goods','mt_coupon.goods_id','=','mt_goods.goods_id')
+                ->join('mt_shop','mt_coupon.shop_id','=','mt_shop.shop_id')
+                ->where($where)
+                ->get($get)->toArray();
+            $data = [
+                'code'=>0,
+                'coupon'=>$coupon,
+                'coupon1'=>$coupon1,
+                'coupon2'=>$coupon2
+            ];
+            $response = [
+                'data'=>$data
+            ];
+            return json_encode($response,JSON_UNESCAPED_UNICODE);
+
+
         }else{
             $data = [
                 'code'=>2,
