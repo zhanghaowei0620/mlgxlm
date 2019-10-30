@@ -261,6 +261,11 @@ class GoodsController extends Controller
         }
     }
 
+    //购物车删除
+    public function cart_delete(Request $request){
+
+    }
+
     //点击加入收藏-商品
     public function  add_collection(Request $request){
         $goods_id = $request->input('goods_id');
@@ -465,7 +470,13 @@ class GoodsController extends Controller
 
     //附近店铺-附近店铺
     public function nearby_shop(Request $request){
-        $shopInfo = DB::table('mt_shop')->orderBy('shop_id')->limit(6)->get()->toArray();
+//        $slat = '112.558505';
+//        $slng = '37.818498';
+//        //$sql =  "";
+//        $shop =  DB::select("SELECT shop_id,shop_name,lat,lng,shop_status, ROUND(6378.138*2*ASIN(SQRT(POW(SIN(($slat*PI()/180-lat*PI()/180)/2),2)+COS($slat*PI()/180)*COS(lat*PI()/180)*POW(SIN(($slng*PI()/180-lng*PI()/180)/2),2)))) AS juli  FROM mt_shop where shop_status = 1 group by shop_id  ,shop_name,shop_status,lat,lng,juli HAVING AVG(juli) <= 10");
+//        var_dump($shop);exit;
+
+        //$shopInfo = DB::table('mt_shop')->orderBy('shop_id')->limit(6)->get()->toArray();
         $shopInfo = DB::table('mt_shop')
             ->join('mt_goods','mt_shop.shop_id','=','mt_goods.shop_id')
             ->orderBy('mt_shop.shop_id')
@@ -473,8 +484,8 @@ class GoodsController extends Controller
             ->where('mt_goods.is_recommend',1)
             ->get(['mt_shop.shop_id','shop_name','shop_address_provice','shop_address_city','shop_address_area','shop_score','shop_desc','shop_label','shop_logo','goods_id','goods_name','price','picture','latitude_longitude'])->toArray();
         foreach ($shopInfo as $k => $v){
+
             //var_dump($j++);
-            //var_dump($v->latitude_longitude);
             $latitude_longitude = explode(',',$v->latitude_longitude);
             $user = array(
                 'lat'=>'112.558505',
@@ -485,9 +496,6 @@ class GoodsController extends Controller
                 'lng'=>$latitude_longitude[1]
             );
             $nearby = $this->GetDistance($user['lat'],$user['lng'],$shop['lat'],$shop['lng'],2);
-            //echo $nearby;
-
-            //var_dump($shopInfo);
             $data = [
                 'shop_id'=>$v->shop_id,
                 'shop_name'=>$v->shop_name,

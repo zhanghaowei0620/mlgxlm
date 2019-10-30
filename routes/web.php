@@ -37,6 +37,8 @@ Route::get('/add_cart', 'Goods\GoodsController@add_cart');      //点击商品�
 
 Route::get('/cartList', 'Goods\GoodsController@cartList');      //购物车列表
 
+Route::get('/cart_delete', 'Goods\GoodsController@cart_delete');    //购物车删除
+
 Route::get('/add_collection', 'Goods\GoodsController@add_collection');     //商品加入收藏
 
 Route::get('/collection_list', 'Goods\GoodsController@collection_list');      //商品收藏列表

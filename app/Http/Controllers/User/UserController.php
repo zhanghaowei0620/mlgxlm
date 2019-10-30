@@ -482,6 +482,9 @@ class UserController extends Controller
             $contacts = $request->input('shop_contacts');
             $shop_phone = $request->input('shop_phone');
             $shop_area = $request->input('shop_area');
+            $shop_provice = $shop_area[0];
+            $shop_city = $shop_area[1];
+            $shop_area1 = $shop_area[2];
             $shop_address_detail = $request->input('shop_address_detail');
             $shop_add_time = time();
 
@@ -490,7 +493,9 @@ class UserController extends Controller
                 'shop_desc'=>$shop_desc,
                 't_id'=>$shop_type,
                 'shop_phone'=>$shop_phone,
-                'shop_area'=>$shop_area,
+                'shop_provice'=>$shop_provice,
+                'shop_city'=>$shop_city,
+                'shop_area'=>$shop_area1,
                 'shop_address_detail'=>$shop_address_detail,
                 'shop_add_time'=>$shop_add_time,
                 'shop_contacts'=>$contacts,
