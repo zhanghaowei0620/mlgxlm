@@ -500,7 +500,7 @@ class UserController extends Controller
                 'shop_address_detail'=>$shop_address_detail,
                 'shop_add_time'=>$shop_add_time,
                 'shop_contacts'=>$contacts,
-                'goods_status'=>2,
+                'shop_status'=>2,
                 'uid'=>$uid
             ];
             $where = [
