@@ -125,7 +125,11 @@ class UserController extends Controller
 
     //用户地址添加
     public function user_Address(Request $request){
-        $address = $request->input('address');
+        $address_area = $request->input('address_area');
+        $address_area = explode(',',$address_area);
+        $address_provice = $address_area[0];
+        $address_city = $address_area[1];
+        $address_area1 = $address_area[2];
         $address_detail = $request->input('address_detail');
         $tel = $request->input('tel');
         $postal = $request->input('postal');
@@ -138,14 +142,16 @@ class UserController extends Controller
             //var_dump($uid);
             $data = [
                 'uid'=>$uid,
-                'address'=>$address,
+                'address_provice'=>$address_provice,
+                'address_city'=>$address_city,
+                'address_area'=>$address_area1,
                 'address_detail'=>$address_detail,
                 'tel'=>$tel,
                 'postal'=>$postal,
                 'is_default'=>$is_default
             ];
             $add_address = DB::table('mt_address')->insertGetId($data);
-            if($address_detail){
+            if($add_address){
                 $data = [
                     'code'=>0,
                     'msg'=>'地址添加成功'
@@ -201,7 +207,11 @@ class UserController extends Controller
     public function update_address(Request $request){
         $id = $request->input('address_id');
         //$id = 1;
-        $address = $request->input('address');
+        $address_area = $request->input('address_area');
+        $address_area = explode(',',$address_area);
+        $address_provice = $address_area[0];
+        $address_city = $address_area[1];
+        $address_area1 = $address_area[2];
         $address_detail = $request->input('address_detail');
         $tel = $request->input('tel');
         $postal = $request->input('postal');
@@ -209,7 +219,9 @@ class UserController extends Controller
         //$is_default = '1';
         if($is_default == 2){
             $update = [
-                'address'=>$address,
+                'address_provice'=>$address_provice,
+                'address_city'=>$address_city,
+                'address_area'=>$address_area1,
                 'address_detail'=>$address_detail,
                 'tel'=>$tel,
                 'postal'=>$postal,
@@ -245,7 +257,9 @@ class UserController extends Controller
             if($update_address_default == true){
                 //echo 1111;exit;
                 $update = [
-                    'address'=>$address,
+                    'address_provice'=>$address_provice,
+                    'address_city'=>$address_city,
+                    'address_area'=>$address_area1,
                     'address_detail'=>$address_detail,
                     'tel'=>$tel,
                     'postal'=>$postal,
