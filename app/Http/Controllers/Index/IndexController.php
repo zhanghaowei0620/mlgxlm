@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 Use Illuminate\Support\Facades\DB;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\tagged;
 use yii\console\widgets\Table;
+use Illuminate\Support\Facades\Redis;
 
 class IndexController extends Controller
 {
@@ -89,6 +90,88 @@ class IndexController extends Controller
             //var_dump($response);exit;
             return json_encode($response,JSON_UNESCAPED_UNICODE);
         }
+
+    }
+
+    //首页优惠券
+    public function index_coupon(Request $request){
+        $couponInfo = DB::table('mt_goods')
+            ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
+            ->where('is_coupon',1)
+            ->get(['mt_goods.goods_id','mt_shop.shop_id','mt_shop.shop_name','mt_shop.shop_id','mt_goods.coupon_price','mt_goods.coupon_redouction','coupon_start_time','expiration','mt_goods.picture']);
+//        var_dump($couponInfo);
+        if($couponInfo){
+            $data = [
+                'code'=>0,
+                'couponInfo'=>$couponInfo
+            ];
+            $response = [
+                'data'=>$data
+            ];
+            return json_encode($response,JSON_UNESCAPED_UNICODE);
+        }else{
+            $data = [
+                'code'=>1,
+                'msg'=>'暂时没有商品优惠券'
+            ];
+            $response = [
+                'data'=>$data
+            ];
+            die(json_encode($response,JSON_UNESCAPED_UNICODE));
+        }
+
+    }
+
+    //点击优惠券 领取
+    public function coupon_receive(Request $request){
+        echo date('Y-m-d H:i:s',1572316571);exit;
+        $openid =  Redis::get('openid');
+        if($openid){
+            $userInfo = DB::table('mt_user')->where('openid',$openid)->first('uid');
+            //var_dump($userInfo);
+            $uid = $userInfo->uid;
+            $goods_id = $request->input('goods_id');
+            $shop_id = $request->input('shop_id');
+            $coupon_redouction = $request->input('coupon_redouction');
+            $coupon_price = $request->input('coupou_price');
+            $coupon_start_time = $request->input('coupon_start_time');
+            $expiration = $request->input('expiration');
+
+            $where = [
+                'uid'=>$userInfo,
+                'goods_id'=>$goods_id,
+                'shop_id'=>$shop_id
+            ];
+            $coupon = DB::table('mt_coupon')->where($where)->get()->toArray();
+
+            if($coupon){
+
+            }else{
+                $data = [
+                    'code'=>1,
+                    'msg'=>'您已领取过此优惠券，请尽快使用'
+                ];
+                $response = [
+                    'data'=>$data
+                ];
+                die(json_encode($response,JSON_UNESCAPED_UNICODE));
+            }
+
+        }else{
+            $data = [
+                'code'=>2,
+                'msg'=>'请先登录'
+            ];
+            $response = [
+                'data'=>$data
+            ];
+            die(json_encode($response,JSON_UNESCAPED_UNICODE));
+        }
+
+    }
+
+    //限时抢
+    public function limited_time(Request $request){
 
     }
 

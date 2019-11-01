@@ -470,75 +470,46 @@ class GoodsController extends Controller
 
     //附近店铺-附近店铺
     public function nearby_shop(Request $request){
-//        $slat = '112.558505';
-//        $slng = '37.818498';
-//        //$sql =  "";
-//        $shop =  DB::select("SELECT shop_id,shop_name,lat,lng,shop_status, ROUND(6378.138*2*ASIN(SQRT(POW(SIN(($slat*PI()/180-lat*PI()/180)/2),2)+COS($slat*PI()/180)*COS(lat*PI()/180)*POW(SIN(($slng*PI()/180-lng*PI()/180)/2),2)))) AS juli  FROM mt_shop where shop_status = 1 group by shop_id  ,shop_name,shop_status,lat,lng,juli HAVING AVG(juli) <= 10");
-//        var_dump($shop);exit;
+        $lat1 = '112.558505';
+        $lng1 = '37.818498';
 
-        //$shopInfo = DB::table('mt_shop')->orderBy('shop_id')->limit(6)->get()->toArray();
-        $shopInfo = DB::table('mt_shop')
-            ->join('mt_goods','mt_shop.shop_id','=','mt_goods.shop_id')
-            ->orderBy('mt_shop.shop_id')
-            ->limit(6)
-            ->where('mt_goods.is_recommend',1)
-            ->get(['mt_shop.shop_id','shop_name','shop_address_provice','shop_address_city','shop_address_area','shop_score','shop_desc','shop_label','shop_logo','goods_id','goods_name','price','picture','latitude_longitude'])->toArray();
-        foreach ($shopInfo as $k => $v){
 
-            //var_dump($j++);
-            $latitude_longitude = explode(',',$v->latitude_longitude);
-            $user = array(
-                'lat'=>'112.558505',
-                'lng'=>'37.818498'
-            );
-            $shop = array(
-                'lat'=>$latitude_longitude[0],
-                'lng'=>$latitude_longitude[1]
-            );
-            $nearby = $this->GetDistance($user['lat'],$user['lng'],$shop['lat'],$shop['lng'],2);
-            $data = [
-                'shop_id'=>$v->shop_id,
-                'shop_name'=>$v->shop_name,
-                'shop_address_provice'=>$v->shop_address_provice,
-                'shop_address_city'=>$v->shop_address_city,
-                'shop_address_area'=>$v->shop_address_area,
-                'shop_score'=>$v->shop_score,
-                'shop_desc'=>$v->shop_desc,
-                'shop_label'=>$v->shop_label,
-                'shop_logo'=>$v->shop_logo,
-                'goods_name'=>$v->goods_name,
-                'price'=>$v->price,
-                'nearby'=>$nearby,
-            ];
 
-            $response = [
-                'error'=>'0',
-                'data'=>$data
-            ];
-            return json_encode($response,JSON_UNESCAPED_UNICODE);
-            //var_dump($response);
+        $shopInfo =  DB::select("SELECT s.shop_id,shop_name,shop_address_provice,shop_address_city,shop_address_area,shop_score,goods_id,goods_name,price,market_price,introduction,picture,promotion_price,prople,shop_label,shop_status, 6378.138*2*ASIN(SQRT(POW(SIN(($lat1*PI()/180-lat*PI()/180)/2),2)+COS($lat1*PI()/180)*COS(lat*PI()/180)*POW(SIN(($lng1*PI()/180-lng*PI()/180)/2),2))) AS juli  FROM mt_shop s inner join mt_goods g on s.shop_id = g.shop_id  where shop_status = 1 group by juli");
+        //var_dump($shopInfo);exit;
+        $data = [
+            'code'=>0,
+            'shopInfo'=>$shopInfo
+        ];
+        $response = [
+            'data'=>$data,
+        ];
+        return json_encode($response,JSON_UNESCAPED_UNICODE);
 
-            //echo '距离'.$v->shop_name.$this->GetDistance($user['lat'],$user['lng'],$shop['lat'],$shop['lng'],2).'Km';
-            //var_dump('距离'.$v->shop_name.$nearby.'Km');
-        }
+//        $shopInfo = DB::table('mt_shop')
+//            ->join('mt_goods','mt_shop.shop_id','=','mt_goods.shop_id')
+//            ->orderBy('mt_shop.shop_id')
+//            ->limit(6)
+//            ->where('mt_goods.is_recommend',1)
+//            ->get(['mt_shop.shop_id','shop_name','shop_address_provice','shop_address_city','shop_address_area','shop_score','shop_desc','shop_label','shop_logo','goods_id','goods_name','price','picture','latitude_longitude'])->toArray();
     }
 
-    //距离算法+
-    public function GetDistance($lat1, $lng1, $lat2, $lng2, $len_type = 1, $decimal = 2)
-    {
-        $radLat1 = $lat1 * PI ()/ 180.0;   //PI()圆周率
-        $radLat2 = $lat2 * PI() / 180.0;
-        $a = $radLat1 - $radLat2;
-        $b = ($lng1 * PI() / 180.0) - ($lng2 * PI() / 180.0);
-        $s = 2 * asin(sqrt(pow(sin($a/2),2) + cos($radLat1) * cos($radLat2) * pow(sin($b/2),2)));
-        $s = $s * 6378.137;
-        $s = round($s * 1000);
-        if ($len_type --> 1)
-        {
-            $s /= 1000;
-        }
-        return round($s, $decimal);
+    //距离算法
+    public function getDistance($lat1, $lng1, $lat2, $lng2){
+        $earthRadius = 6367000; //approximate radius of earth in meters
+        $lat1 = ($lat1 * pi() ) / 180;
+        $lng1 = ($lng1 * pi() ) / 180;
+        $lat2 = ($lat2 * pi() ) / 180;
+        $lng2 = ($lng2 * pi() ) / 180;
+        $calcLongitude = $lng2 - $lng1;
+        $calcLatitude = $lat2 - $lat1;
+        $stepOne = pow(sin($calcLatitude / 2), 2) + cos($lat1) * cos($lat2) * pow(sin($calcLongitude / 2), 2);
+        $stepTwo = 2 * asin(min(1, sqrt($stepOne)));
+        $calculatedDistance = $earthRadius * $stepTwo;
+        return round($calculatedDistance);
     }
+
+
 
 
 

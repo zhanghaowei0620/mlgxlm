@@ -18,6 +18,12 @@ Route::get('/', function () {
 //Route::get('/访问方式', '文件夹名\控制器名@方法名');
 Route::get('/index', 'Index\IndexController@index');   //首页
 
+Route::get('/index_coupon', 'Index\IndexController@index_coupon');   //首页-优惠券
+
+Route::get('/coupon_receive', 'Index\IndexController@coupon_receive');
+
+Route::get('/limited_time', 'Index\IndexController@limited_time');    //首页-限时抢
+
 Route::get('/shop_goods', 'Goods\GoodsController@shop_goods');   //根据店铺id 获取店铺下所有商品
 
 Route::get('/weChat', 'User\UserController@weChat');   //微信登陆

@@ -546,8 +546,10 @@ class UserController extends Controller
 
     }
 
-    //优惠券
+    //个人中心优惠券
     public function user_coupon(Request $request){
+        echo date('Y-m-d H:i:s',time());exit;
+        var_dump(time());exit;
         //$is_use=1;
         $openid = Redis::get('openid');
         if($openid){
