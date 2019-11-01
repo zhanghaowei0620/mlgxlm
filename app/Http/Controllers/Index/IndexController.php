@@ -124,7 +124,6 @@ class IndexController extends Controller
 
     //点击优惠券 领取
     public function coupon_receive(Request $request){
-        echo date('Y-m-d H:i:s',1572316571);exit;
         $openid =  Redis::get('openid');
         if($openid){
             $userInfo = DB::table('mt_user')->where('openid',$openid)->first('uid');
