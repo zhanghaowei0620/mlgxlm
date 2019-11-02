@@ -641,11 +641,11 @@ class UserController extends Controller
         $token = $this->accessToken();
         $destination = './images/';
         $file= $_FILES['file']; // 获取上传的图片
-        var_dump($file);exit;
+        //var_dump($file);exit;
         $filename    = $file['name'];
 
         $test   = move_uploaded_file($file['tmp_name'], $destination . iconv("UTF-8", "gb2312", $filename));
-        var_dump($file);exit;
+        var_dump($test);exit;
         $url = "https://api.weixin.qq.com/cv/ocr/bankcard?type=MODE&img_url=ENCODE_URL&access_token=$token";
 
         $objurl = new Client();
