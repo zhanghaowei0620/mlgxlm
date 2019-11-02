@@ -31,6 +31,10 @@ Route::get('/weChat', 'User\UserController@weChat');   //微信登陆
 Route::get('/shop_settled', 'User\UserController@shop_settled');    //商家入驻
 Route::get('/shop_type', 'User\UserController@shop_type');     //点击获取主营项目
 
+Route::get('/accessToken', 'User\UserController@accessToken');   //accessToken
+
+Route::get('/bankcard', 'User\UserController@bankcard');   //银行卡接口
+
 Route::get('/user_coupon', 'User\UserController@user_coupon');    //优惠券
 
 Route::get('/goodsInfo', 'Goods\GoodsController@goodsInfo');    //获取商品详情信息

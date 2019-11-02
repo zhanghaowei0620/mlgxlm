@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redis;
+use GuzzleHttp\Client;
 
 class UserController extends Controller
 {
@@ -633,6 +634,30 @@ class UserController extends Controller
             ];
             die(json_encode($response,JSON_UNESCAPED_UNICODE));
         }
+    }
+
+    //银行卡类型接口
+    public function bankcard(Request $request){
+        $token = $this->accessToken();
+        $file = $request->file('bankcard_img');
+        var_dump($file);exit;
+        $url = "https://api.weixin.qq.com/cv/ocr/bankcard?type=MODE&img_url=ENCODE_URL&access_token=$token";
+
+
+
+        $bodys = array(
+            'image' => $img
+        );
+        $objurl = new Client();
+        $response = $objurl->request('POST',$url,[
+            'body' => $bodys
+        ]);
+        $res_str = $response->getBody();
+        //var_dump($res_str);
+        return $res_str;
+
+        //var_dump($res);
+
     }
 
 }

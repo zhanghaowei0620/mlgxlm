@@ -144,8 +144,6 @@ class IndexController extends Controller
             $coupon = DB::table('mt_coupon')->where($where)->get()->toArray();
 
             if($coupon){
-
-            }else{
                 $data = [
                     'code'=>1,
                     'msg'=>'您已领取过此优惠券，请尽快使用'
@@ -154,8 +152,37 @@ class IndexController extends Controller
                     'data'=>$data
                 ];
                 die(json_encode($response,JSON_UNESCAPED_UNICODE));
+            }else{
+                $insert = [
+                    'goods_id' => $goods_id,
+                    'shop_id' => $shop_id,
+                    'uid' => $uid,
+                    'coupon_price' => $coupon_price,
+                    'coupon_redouction' => $coupon_redouction,
+                    'coupon_start_time' => $coupon_start_time,
+                    'expiration' => $expiration
+                ];
+                $insertCoupon = DB::table('mt_coupon')->insertGetId($insert);
+                if($insertCoupon == true){
+                    $data = [
+                        'code'=>0,
+                        'msg'=>'领取成功'
+                    ];
+                    $response = [
+                        'data'=>$data
+                    ];
+                    return json_encode($response,JSON_UNESCAPED_UNICODE);
+                }else{
+                    $data = [
+                        'code'=>3,
+                        'msg'=>'领取失败'
+                    ];
+                    $response = [
+                        'data'=>$data
+                    ];
+                    die(json_encode($response,JSON_UNESCAPED_UNICODE));
+                }
             }
-
         }else{
             $data = [
                 'code'=>2,
