@@ -33,7 +33,7 @@ Route::get('/shop_type', 'User\UserController@shop_type');     //点击获取主
 
 Route::get('/accessToken', 'User\UserController@accessToken');   //accessToken
 
-Route::get('/bankcard', 'User\UserController@bankcard');   //银行卡接口
+Route::post('/bankcard', 'User\UserController@bankcard');   //银行卡接口
 
 Route::get('/user_coupon', 'User\UserController@user_coupon');    //优惠券
 

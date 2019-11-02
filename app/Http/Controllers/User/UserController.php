@@ -643,15 +643,8 @@ class UserController extends Controller
         var_dump($file);exit;
         $url = "https://api.weixin.qq.com/cv/ocr/bankcard?type=MODE&img_url=ENCODE_URL&access_token=$token";
 
-
-
-        $bodys = array(
-            'image' => $img
-        );
         $objurl = new Client();
-        $response = $objurl->request('POST',$url,[
-            'body' => $bodys
-        ]);
+        $response = $objurl->request('POST',$url);
         $res_str = $response->getBody();
         //var_dump($res_str);
         return $res_str;
