@@ -650,26 +650,22 @@ class UserController extends Controller
     }
 
     //银行卡类型接口
-    public function bankcard(Request $request)
-    {
+    public function bankcard(Request $request){
         $token = $this->accessToken();
         $destination = './images/';
         $file = $_FILES['file']; // 获取上传的图片
         $filename = $file['name'];
-        $test = move_uploaded_file($file['tmp_name'], $destination . iconv("UTF-8", "gb2312", $filename));
-        if ($test == true) {
-            $img_url = 'http://mt_mlgxlm.com/images/' . $filename;
-
-
-            $url = "https://api.weixin.qq.com/cv/ocr/bankcard?type=MODE&$img_url=ENCODE_URL&access_token=$token";
-
+        $filesize = $file['size'];
+        $filetype = $file['type'];
+        $test   = move_uploaded_file($file['tmp_name'], $destination . iconv("UTF-8", "gb2312", $filename));
+        if($test == true){
+            $img_url = 'http://mt.mlgxlm.com/images/'.$filename;
+            $url = "https://api.weixin.qq.com/cv/ocr/bankcard?type=MODE&img_url=$img_url&access_token=$token";
             $objurl = new Client();
-            $response = $objurl->request('POST', $url);
+            $response = $objurl->request('POST',$url);
             $res_str = $response->getBody();
             //var_dump($res_str);
             return $res_str;
-        } else {
-            echo 111;
         }
     }
 }
