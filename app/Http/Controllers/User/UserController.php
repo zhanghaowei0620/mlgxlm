@@ -639,7 +639,7 @@ class UserController extends Controller
     //银行卡类型接口
     public function bankcard(Request $request){
         $token = $this->accessToken();
-        $file = $request->file('bankcard_img');
+        $file = $request->file();
         var_dump($file);exit;
         $url = "https://api.weixin.qq.com/cv/ocr/bankcard?type=MODE&img_url=ENCODE_URL&access_token=$token";
 
