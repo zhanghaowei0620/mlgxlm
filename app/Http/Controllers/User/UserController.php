@@ -574,11 +574,6 @@ class UserController extends Controller
     //个人中心优惠券
     public function user_coupon(Request $request)
     {
-        echo date('Y-m-d H:i:s', time());
-        exit;
-        var_dump(time());
-        exit;
-        //$is_use=1;
         $openid = Redis::get('openid');
         if ($openid) {
             $userInfo = DB::table('mt_user')->where('openid', $openid)->first();
@@ -649,7 +644,7 @@ class UserController extends Controller
         }
     }
 
-    //银行卡类型接口
+    //根据图片获取银行卡
     public function bankcard(Request $request){
         $token = $this->accessToken();
         $destination = './images/';
@@ -666,6 +661,245 @@ class UserController extends Controller
             $res_str = $response->getBody();
             //var_dump($res_str);
             return $res_str;
+        }
+    }
+
+    //添加到银行卡包
+    public function add_bankcard(Request $request){
+        $bankcard_name = $request->input('bankcard_name');
+        $bankcard_num = $request->input('bankcard_num');
+        $bankcard_type = $request->input('bankcard_type');
+        $bank = $request->input('bank');
+        $openid = Redis::get('openid');
+        if($openid){
+            $userInfo = DB::table('mt_user')->where('openid', $openid)->first();
+            //var_dump($userInfo);exit;
+            $uid = $userInfo->uid;
+            $insert = [
+                'bankcard_name'=>$bankcard_name,
+                'bankcard_num'=>$bankcard_num,
+                'bankcard_type'=>$bankcard_type,
+                'bank'=>$bank,
+                'uid'=>$uid
+            ];
+            $where = [
+                'bankcard_num' => $bankcard_num
+            ];
+            $bankInfo = DB::table('mt_bankcard')->where($where)->get();
+            if($bankInfo){
+                $data = [
+                    'code' => '1',
+                    'msg' => '此卡已存在你的卡包中'
+                ];
+                $response = [
+                    'data' => $data
+                ];
+                die(json_encode($response, JSON_UNESCAPED_UNICODE));
+            }else{
+                $bankInsert = DB::table('mt_bankcard')->insertGetId($insert);
+                if($bankInsert == true){
+                    $data = [
+                        'code' => '0',
+                        'msg' => '添加成功'
+                    ];
+                    $response = [
+                        'data' => $data
+                    ];
+                    return json_encode($response, JSON_UNESCAPED_UNICODE);
+                }else{
+                    $data = [
+                        'code' => '3',
+                        'msg' => '添加失败'
+                    ];
+                    $response = [
+                        'data' => $data
+                    ];
+                    die(json_encode($response, JSON_UNESCAPED_UNICODE));
+                }
+            }
+
+        }else{
+            $data = [
+                'code' => 2,
+                'msg' => '请先登录'
+            ];
+            $response = [
+                'data' => $data
+            ];
+            die(json_encode($response, JSON_UNESCAPED_UNICODE));
+        }
+
+
+
+    }
+
+    //签到
+    public function user_sign(Request $request){
+        $timestr = time();
+        $now_day = date('w',$timestr);
+        //获取一周的第一天，注意第一天应该是星期一
+        $sunday_str = $timestr;
+        $sunday = date('Y-m-d', $sunday_str);
+        //获取一周的最后一天，注意最后一天是星期六
+        $strday_str = $timestr + (7-$now_day)*60*60*24;
+        $strday = date('Y-m-d', $strday_str);
+//        echo "星期一： $sunday\n";echo "</br>";
+//        echo "星期天： $strday\n";echo "</br>";
+        //die;
+
+        $weekarray=["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+         //var_dump($weekarray[date("w",strtotime("2019-11-4"))]);
+        //echo $weekarray[date("w",time())];echo "</br>";
+        if($weekarray[date("w",time())] == '星期六' || $weekarray[date("w",time())] == '星期天'){
+            $integral = 2;
+        }else{
+            $integral = 1;
+        }
+        $openid = Redis::get('openid');
+        //var_dump($openid);
+        if($openid){
+            $userInfo = DB::table('mt_user')->where('openid', $openid)->first();
+            //var_dump($userInfo);exit;
+            $uid = $userInfo->uid;
+            $user_signInfo = DB::table('mt_user_sign')->where('uid',$uid)->first();
+            //var_dump($user_signInfo);exit;
+            if($user_signInfo == NULL){
+                $insert = [
+                    'uid'=>$uid,
+                    'first_sign_time'=>time(),
+                    'sign_time'=>time(),
+                    'integral'=>$integral,
+                    'sign_num'=>$user_signInfo->sign_num+1
+                ];
+                $sign = DB::table('mt_user_sign')->insertGetId($insert);
+                if($sign == true){
+                    $data = [
+                        'code'=>0,
+                        'msg'=>'签到成功'
+                    ];
+                    $response = [
+                        'data' => $data
+                    ];
+                    return json_encode($response, JSON_UNESCAPED_UNICODE);
+                }else{
+                    $data = [
+                        'code'=>0,
+                        'msg'=>'签到成功'
+                    ];
+                    $response = [
+                        'data' => $data
+                    ];
+                    die(json_encode($response, JSON_UNESCAPED_UNICODE));
+                }
+            }else{
+                //php获取今日开始时间戳和结束时间戳
+                $today_start = mktime(0, 0, 0, date('m'), date('d'), date('Y'));
+                $today_end = mktime(0, 0, 0, date('m'), date('d') + 1, date('Y')) - 1;
+                //php获取昨日起始时间戳和结束时间戳
+                $yesterday_start = mktime(0, 0, 0, date('m'), date('d') - 1, date('Y'));
+                $yesterday_end = mktime(0, 0, 0, date('m'), date('d'), date('Y')) - 1;
+
+                $id_select = Db::table('mt_user_sign')
+                    ->where('uid', '=', $uid)
+                    ->where('sign_time', '>=', $yesterday_start)
+                    ->where('sign_time', '<=', $yesterday_end)
+                    ->first();//判断昨天是否已签到过
+                if($id_select == NULL){
+                    $issign = Db::table('mt_user_sign')
+                        ->where('uid', '=', $uid)
+                        ->where('sign_time', '>=', $today_start)
+                        ->where('sign_time', '<=', $today_end)
+                        ->first();
+                    if($issign != NULL){
+                        $data = [
+                            'code'=>1,
+                            'msg'=>'你今天已经签到过了'
+                        ];
+                        $response = [
+                            'data' => $data
+                        ];
+                        die(json_encode($response, JSON_UNESCAPED_UNICODE));
+                    }else{
+                        $update = [
+                            'first_sign_time'=>time(),
+                            'sign_time'=>time(),
+                            'integral'=>$issign->integral+1,
+                            'sign_num'=>1
+                        ];
+                        $updateInfo = DB::table('mt_user_sign')->where('uid',$uid)->update($update);
+                        if($updateInfo==true){
+                            $data = [
+                                'code'=>0,
+                                'msg'=>'签到成功'
+                            ];
+                            $response = [
+                                'data' => $data
+                            ];
+                            return json_encode($response, JSON_UNESCAPED_UNICODE);
+                        }else{
+                            $data = [
+                                'code'=>2,
+                                'msg'=>'签到失败，请重试1'
+                            ];
+                            $response = [
+                                'data' => $data
+                            ];
+                            die(json_encode($response, JSON_UNESCAPED_UNICODE));
+                        }
+                    }
+                }else{
+                    $issign = Db::table('mt_user_sign')
+                        ->where('uid', '=', $uid)
+                        ->where('sign_time', '>=', $today_start)
+                        ->where('sign_time', '<=', $today_end)
+                        ->first();
+                    if($issign != NULL){
+                        $data = [
+                            'code'=>1,
+                            'msg'=>'你今天已经签到过了'
+                        ];
+                        $response = [
+                            'data' => $data
+                        ];
+                        die(json_encode($response, JSON_UNESCAPED_UNICODE));
+                    }else{
+                        $update = [
+                            'sign_time'=>time(),
+                            'integral'=>$issign->integral+1,
+                            'sign_num'=>$issign->sign_num+1
+                        ];
+                        $updateInfo = DB::table('mt_user_sign')->where('uid',$uid)->update($update);
+                        if($updateInfo==true){
+                            $data = [
+                                'code'=>0,
+                                'msg'=>'签到成功'
+                            ];
+                            $response = [
+                                'data' => $data
+                            ];
+                            return json_encode($response, JSON_UNESCAPED_UNICODE);
+                        }else{
+                            $data = [
+                                'code'=>2,
+                                'msg'=>'签到失败，请重试2'
+                            ];
+                            $response = [
+                                'data' => $data
+                            ];
+                            die(json_encode($response, JSON_UNESCAPED_UNICODE));
+                        }
+                    }
+                }
+            }
+        }else{
+            $data = [
+                'code'=>2,
+                'msg'=>'请先登录'
+            ];
+            $response = [
+                'data' => $data
+            ];
+            die(json_encode($response, JSON_UNESCAPED_UNICODE));
         }
     }
 }

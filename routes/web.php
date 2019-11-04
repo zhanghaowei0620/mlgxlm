@@ -79,6 +79,8 @@ Route::get('user_update', 'User\UserController@user_update');      //修改用�
 
 Route::get('user_history', 'User\UserController@user_history');     //我的足迹
 
+Route::get('user_sign', 'User\UserController@user_sign');    //签到
+
 Route::get('/whole_shop', 'Goods\GoodsController@whole_shop');    //全部店铺
 
 Route::get('/nearby_shop', 'Goods\GoodsController@nearby_shop');   //附近店铺
