@@ -356,15 +356,6 @@ class UserController extends Controller
                         'data' => $data
                     ];
                     return json_encode($response, JSON_UNESCAPED_UNICODE);
-                } else {
-                    $data = [
-                        'code' => 3,
-                        'msg' => '暂无优惠券,快去领取吧'
-                    ];
-                    $response = [
-                        'data' => $data
-                    ];
-                    die(json_encode($response, JSON_UNESCAPED_UNICODE));
                 }
             } else {
                 $data = [
