@@ -43,7 +43,7 @@ class UserController extends Controller
         $info = file_get_contents($url);
         $arr = json_decode($info, true);
         //var_dump($arr['unionid']);exit;
-        $mt_userInfo = DB::table('mt_user')->where('openid', $arr['openid'])->get();
+        $mt_userInfo = DB::table('mt_user')->where('openid', $arr['openid'])->get()->toArray();
         if ($mt_userInfo) {
             $update = [
                 'wx_login_time' => time()
