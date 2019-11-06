@@ -467,20 +467,39 @@ class UserController extends Controller
 
     }
 
-    //点击获取主营项目
-    public function shop_type(Request $request)
-    {
-        $shop_type = DB::table('mt_type')->where(['p_id' => 0])->get()->toArray();
-        //var_dump($shop_type);exit;
+    //主营项目
+    public function shop_type(){
+        $info = DB::table('mt_type')->get();
+        $result = $this->list_level($info,$pid=0,$level=0);
+        //var_dump($result);
         $data = [
             'code' => 0,
-            'shop_type' => $shop_type
+            'shop_type' => $result
         ];
         $response = [
             'data' => $data
         ];
         return json_encode($response, JSON_UNESCAPED_UNICODE);
+
     }
+    public function list_level($data,$pid,$level){
+
+        static $array = array();
+
+        foreach ($data as $k => $v) {
+
+            if($pid == $v->p_id){
+
+                $v->level = $level;
+
+                $array[] = $v;
+
+                self::list_level($data,$v->t_id,$level+1);
+            }
+        }
+        return $array;
+    }
+
 
     //商家入驻
     public function shop_settled(Request $request)
@@ -893,4 +912,5 @@ class UserController extends Controller
             die(json_encode($response, JSON_UNESCAPED_UNICODE));
         }
     }
+    
 }
