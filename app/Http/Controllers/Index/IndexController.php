@@ -280,6 +280,12 @@ class IndexController extends Controller
         }
     }
 
+    //拼团
+    public function assemble(Request $request){
+        $assembleInfo = DB::table('mt_goods')->where('promotion_type',1)->orderBy('promotion_price')->get(['goods_id','promotion_price']);
+        var_dump($assembleInfo);exit;
+    }
+
 
 
 

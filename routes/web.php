@@ -22,6 +22,8 @@ Route::get('/index_coupon', 'Index\IndexController@index_coupon');   //首页-�
 
 Route::get('/coupon_receive', 'Index\IndexController@coupon_receive');
 
+Route::get('/assemble', 'Index\IndexController@assemble');   //拼团
+
 Route::get('/limited_time', 'Index\IndexController@limited_time');    //首页-限时抢
 
 Route::get('/shop_goods', 'Goods\GoodsController@shop_goods');   //根据店铺id 获取店铺下所有商品
