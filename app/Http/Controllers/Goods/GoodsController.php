@@ -304,7 +304,6 @@ class GoodsController extends Controller
             $user_info = DB::table('mt_user')->where('openid',$openid)->first();
             $uid = $user_info->uid;
             //        $buy_num = 1;
-            $goods_id = 8;
             $where = [
                 'goods_id'=>$goods_id,
                 'collection'=>1
