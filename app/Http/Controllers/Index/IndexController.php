@@ -282,8 +282,37 @@ class IndexController extends Controller
 
     //拼团
     public function assemble(Request $request){
-        $assembleInfo = DB::table('mt_goods')->where('promotion_type',1)->orderBy('promotion_price')->get(['goods_id','promotion_price']);
-        var_dump($assembleInfo);exit;
+        $seller = DB::table('mt_goods')       //销量榜
+            ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
+            ->where(['promotion_type'=>1])
+            ->orderBy('goods_gd_num','desc')
+            ->limit(3)
+            ->get(['shop_name','goods_id','goods_name','market_price','picture','promotion_price'])->toArray();
+
+        $lat1 = '112.558505';
+        $lng1 = '37.818498';    //距离最近
+        $distance = DB::select("SELECT s.shop_id,shop_name,goods_id,goods_name,market_price,picture,prople,promotion_price, 6378.138*2*ASIN(SQRT(POW(SIN(($lat1*PI()/180-lat*PI()/180)/2),2)+COS($lat1*PI()/180)*COS(lat*PI()/180)*POW(SIN(($lng1*PI()/180-lng*PI()/180)/2),2))) AS juli  FROM mt_shop s inner join mt_goods g on s.shop_id = g.shop_id  where promotion_type = 1  group by juli order by juli");
+        //var_dump($distance);exit;
+
+        $assembleInfo = DB::table('mt_goods')       //价格最优
+        ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
+            ->where(['promotion_type'=>1])
+            ->orderBy('promotion_price')
+            ->get(['shop_name','shop_address_provice','shop_address_city','shop_address_area','shop_score','goods_id','goods_name','market_price','introduction','picture','promotion_price','prople','shop_label'])->toArray();
+        //var_dump($assembleInfo);exit;
+
+        $data = [
+            'seller' => $seller,        //销量榜
+            'distance' => $distance,          //距离最近
+            'assembleInfo' => $assembleInfo,    //价格最优
+            'code' => 0
+        ];
+
+        $response = [
+            'data'=>$data
+        ];
+        //var_dump($response);exit;
+        return json_encode($response,JSON_UNESCAPED_UNICODE);
     }
 
 
