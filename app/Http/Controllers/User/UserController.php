@@ -147,7 +147,7 @@ class UserController extends Controller
         $userInfo = DB::table('mt_user')->where('openid', $openid)->first();
         //var_dump($userInfo);die;
         if ($userInfo) {
-            if(is_default =1){
+            if(is_default ==1){
                 $update=[
                     'is_default'=>2
                 ];
