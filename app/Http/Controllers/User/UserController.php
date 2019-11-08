@@ -193,7 +193,7 @@ class UserController extends Controller
             ->join('mt_address', 'mt_user.uid', '=', 'mt_address.uid')
             ->where('mt_user.openid', $openid)
             ->get()->toArray();
-        var_dump($user_addressInfo);die;
+//        var_dump($user_addressInfo);die;
         if ($user_addressInfo) {
             $data = [
                 'code' => 0,
