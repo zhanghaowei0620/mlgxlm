@@ -129,8 +129,11 @@ class UserController extends Controller
     public function user_Address(Request $request)
     {
         $address_area = $request->input('address_area');
+        // $address_area = '山西省,太原市,小店区';
         $address_area = explode(',', $address_area);
+        //var_dump($address_area);die;
         $address_provice = $address_area[0];
+        // var_dump($address_provice);die;
         $address_city = $address_area[1];
         $address_area1 = $address_area[2];
         $address_detail = $request->input('address_detail');
@@ -138,8 +141,10 @@ class UserController extends Controller
         $postal = $request->input('postal');
         $is_default = $request->input('is_default');
 
+        // $openid = Redis::set('openid','o9VUc5HEPNrYq5d5iQFygPVbX7EM');
         $openid = Redis::get('openid');
         $userInfo = DB::table('mt_user')->where('openid', $openid)->first();
+        //var_dump($userInfo);die;
         if ($userInfo) {
             $uid = $userInfo->uid;
             //var_dump($uid);
@@ -180,11 +185,13 @@ class UserController extends Controller
     //用户地址列表
     public function user_Address_list(Request $request)
     {
+        // $openid = Redis::set('openid','o9VUc5HEPNrYq5d5iQFygPVbX7EM');
         $openid = Redis::get('openid');
         $user_addressInfo = DB::table('mt_user')
             ->join('mt_address', 'mt_user.uid', '=', 'mt_address.uid')
             ->where('mt_user.openid', $openid)
             ->get()->toArray();
+        var_dump($user_addressInfo);die;
         if ($user_addressInfo) {
             $data = [
                 'code' => 0,

@@ -91,7 +91,11 @@ class GoodsController extends Controller
             ->join('mt_goods','mt_shop.shop_id','=','mt_goods.shop_id')
             ->where('mt_goods.goods_id',$goods_id)
             ->first();
-        //var_dump($goodsInfo);exit;
+        // var_dump($goodsInfo);exit;
+        // $where=[
+        //     'shop_id'=>$goodsInfo->shop_id
+        // ];
+        // var_dump($where);die;
         $reconmend_shop = DB::table('mt_goods')->where(['shop_id'=>$goodsInfo->shop_id,'is_recommend'=>1])->limit(3)->get();
         //var_dump($reconmend_shop);exit;
 
