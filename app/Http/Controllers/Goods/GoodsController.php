@@ -16,7 +16,7 @@ class GoodsController extends Controller
         $f_type_id = $request->input('f_type_id');
         $s_type_id = $request->input('s_type_id');
         $g_s_type_id = $request->input('g_s_type_id');
-        $f_type_id = 1;
+        $f_type_id = 7;
 //        $g_s_type_id = 8;
         if($f_type_id){
             $type = DB::table('mt_type')->where('t_id',$f_type_id)->first();        //获取分类数据
@@ -32,18 +32,13 @@ class GoodsController extends Controller
                 $recommend_picture = DB::table('mt_goods')->where('is_recommend',1)->limit('4')->get(['goods_id','picture']);    //推荐位图片
                 if($s_type_id == NULL){
                     if($g_s_type_id == NULL){
-                        $where = [
-                            'mt_goods.t_id'=>$s_type[0]->t_id,
-                            'mt_goods.is_recommend'=>1
-                        ];
                         $jingxuan = DB::table('mt_goods')      //精选商品
-                        ->join('mt_shop','mt_shop.shop_id','=','mt_goods.shop_id')
-                            ->where($where)->get(['mt_shop.shop_id','shop_name','shop_address_provice','shop_address_city','shop_address_area','shop_score','shop_desc','shop_label','shop_logo','goods_id','goods_name','price','picture']);
+                            ->join('mt_shop','mt_shop.shop_id','=','mt_goods.shop_id')
+                            ->get(['mt_shop.shop_id','shop_name','shop_address_provice','shop_address_city','shop_address_area','shop_score','shop_desc','shop_label','shop_logo','goods_id','goods_name','price','picture']);
                         //var_dump($jingxuan);exit;
                     }else{
                         $where = [
                             'mt_goods.t_id'=>$g_s_type_id,
-                            //'mt_goods.is_recommend'=>1
                         ];
                         $jingxuan = DB::table('mt_goods')      //精选商品
                             ->join('mt_shop','mt_shop.shop_id','=','mt_goods.shop_id')
@@ -54,7 +49,6 @@ class GoodsController extends Controller
                     if($g_s_type_id == NULL){
                         $where = [
                             'mt_goods.t_id'=>$s_type_id,
-                            'mt_goods.is_recommend'=>1
                         ];
                         $jingxuan = DB::table('mt_goods')      //精选商品
                         ->join('mt_shop','mt_shop.shop_id','=','mt_goods.shop_id')
@@ -62,27 +56,89 @@ class GoodsController extends Controller
                     }else{
                         $where = [
                             'mt_goods.t_id'=>$g_s_type_id,
-                            //'mt_goods.is_recommend'=>1
                         ];
                         $jingxuan = DB::table('mt_goods')      //精选商品
                         ->join('mt_shop','mt_shop.shop_id','=','mt_goods.shop_id')
                             ->where($where)->get(['mt_shop.shop_id','shop_name','shop_address_provice','shop_address_city','shop_address_area','shop_score','shop_desc','shop_label','shop_logo','goods_id','goods_name','price','picture']);
                     }
                 }
-                $response = [
+                $data = [
                     'error'             =>       '0',
                     's_type'            =>      $s_type,
                     'hot'               =>      $is_hot,
                     'recommend_picture' =>      $recommend_picture,
                     'select'            =>      $jingxuan
                 ];
+                $response = [
+                   'data'=>$data
+                ];
                 //var_dump($response);exit;
                 return json_encode($response,JSON_UNESCAPED_UNICODE);
+            }else{
+                $data = DB::table('mt_goods')->where('t_id',$f_type_id)->get(['goods_id','goods_name'])->toArray();    //二级分类页面 导航栏
+//                var_dump($data);
+                $goods_id = $request->input('goods_id');
+                $goods_id = 5;
+                if($goods_id == NULL){
+                    $recommend_picture = DB::table('mt_goods')->where('t_id',$f_type_id)->limit('4')->get(['goods_id','picture']);    //商品轮播图
+//                    var_dump($recommend_picture);exit;
+                    $beauty = DB::table('mt_shop')          //美容院
+                        ->join('mt_goods','mt_shop.shop_id','=','mt_goods.shop_id')
+                        ->where('mt_goods.t_id',$f_type_id)->get(['goods_id','goods_name','goods_gd_num','mt_shop.shop_name','mt_shop.shop_id','mt_shop.shop_address_provice','mt_shop.shop_address_city','mt_shop.shop_address_area','mt_shop.shop_score','shop_label']);
+                    //var_dump($beauty);exit;
+                    $caseInfo = DB::table('mt_case')      //案例
+                        ->join('mt_goods','mt_case.goods_id','=','mt_goods.goods_id')
+                        ->join('mt_shop','mt_shop.shop_id','=','mt_goods.shop_id')
+                        ->where('mt_goods.t_id',$f_type_id)->get(['case_id','case_front','case_after','case_trouble','goods_name','shop_name']);
+                    //var_dump($caseInfo);exit;
+                    $data = [
+                        'error' => '0',
+                        'type' => $data,
+                        'recommend_picture' => $recommend_picture,
+                        'beauty' => $beauty,
+                        'caseInfo' => $caseInfo
+                    ];
+                    $response = [
+                        'data'=>$data
+                    ];
+                    //var_dump($response);exit;
+                    return json_encode($response,JSON_UNESCAPED_UNICODE);
+                }else{
+                    $recommend_picture = DB::table('mt_goods')->where('goods_id',$goods_id)->first(['goods_id','picture']);    //商品轮播图
+//                    var_dump($recommend_picture);exit;
+                    $beauty = DB::table('mt_shop')          //美容院
+                    ->join('mt_goods','mt_shop.shop_id','=','mt_goods.shop_id')
+                        ->where('mt_goods.goods_id',$goods_id)->get(['goods_id','goods_name','goods_gd_num','mt_shop.shop_name','mt_shop.shop_id','mt_shop.shop_address_provice','mt_shop.shop_address_city','mt_shop.shop_address_area','mt_shop.shop_score','shop_label']);
+                    //var_dump($beauty);exit;
+                    $caseInfo = DB::table('mt_case')      //案例
+                    ->join('mt_goods','mt_case.goods_id','=','mt_goods.goods_id')
+                        ->join('mt_shop','mt_shop.shop_id','=','mt_goods.shop_id')
+                        ->where('mt_goods.goods_id',$goods_id)->get(['case_id','case_front','case_after','case_trouble','goods_name','shop_name']);
+//                    var_dump($caseInfo);exit;
+                    $data = [
+                        'error' => '0',
+                        'type' => $data,
+                        'recommend_picture' => $recommend_picture,
+                        'beauty' => $beauty,
+                        'caseInfo' => $caseInfo
+                    ];
+                    $response = [
+                        'data'=>$data
+                    ];
+                    //var_dump($response);exit;
+                    return json_encode($response,JSON_UNESCAPED_UNICODE);
+                }
             }
         }else{
-            if($s_type_id){
-                
-            }
+            $data = [
+                'error'=>'1',
+                'msg'=>'接口出现错误,正在维护中'
+            ];
+            $response = [
+                'data'=>$data
+            ];
+            //var_dump($response);exit;
+            die(json_encode($response,JSON_UNESCAPED_UNICODE));
         }
     }
 
