@@ -11,7 +11,7 @@ class Headquarters extends Controller
     /*
      * 商品展示
      */
-    public function goodsexhibition(Request $request)
+    public function goodsList(Request $request)
     {
         $data=DB::table('mt_goods')
             ->join('mt_shop','mt_shop.shop_id','=','mt_goods.shop_id')
@@ -32,21 +32,24 @@ class Headquarters extends Controller
             return (json_encode($response, JSON_UNESCAPED_UNICODE));
         }
     }
+
 /*
  * 商品添加
  */
-    public function goodsinsert(Request $request)
+    public function goodsAdd(Request $request)
     {
-        $goods_name=$request->input('goods_name');
-        $market_price=$request->input('market_price');
-        $price=$request->input('price');
+        $type_id = $request->input('type_id');          //类型id
+        $goods_name=$request->input('goods_name');      //商品名称
+        $price=$request->input('price');    //价格
+        $goods_effect = $request->input('goods_effect');   //功效
+        $goods_duration = $request->input('goods_duration');     //时长
+        $goods_process = $request->input('goods_process');    //流程
 //        $picture=$request->input('picture');
         $stock=$request->input('stock');
         $promotion_type=$request->input('promotion_type');
         $goods_gd_num=$request->input('goods_gd_num');
         $dainser=[
             'goods_name'=>$goods_name,
-            'market_price'=>$market_price,
             'price'=>$price,
 //            'picture'=>$picture,
             'stock'=>$stock,
@@ -75,7 +78,7 @@ class Headquarters extends Controller
     /*
      * 商品删除
      */
-    public function goodstele(Request $request)
+    public function goodsdelete(Request $request)
     {
         $goods_id=$request->input('goods_id');
         $where=[
@@ -96,5 +99,11 @@ class Headquarters extends Controller
             ];
             return (json_encode($response, JSON_UNESCAPED_UNICODE));
         }
+    }
+
+    //商品修改
+    public function goodsUpdate(Request $request){
+        $goods_id = $request->input('goods_id');
+
     }
 }

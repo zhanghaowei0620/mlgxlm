@@ -162,8 +162,10 @@ Route::any('couponsearch','Admin\Admin_loginController@couponsearch');
 Route::any('couponinsert','Admin\Admin_loginController@couponinsert');
 
 //商品展示
-Route::any('goodsexhibition','Amindbackstage\Headquarters@goodsexhibition');
+Route::any('goodsList','Amindbackstage\Headquarters@goodsList');
 //商品添加
-Route::any('goodsinsert','Amindbackstage\Headquarters@goodsinsert');
+Route::any('goodsAdd','Amindbackstage\Headquarters@goodsAdd');
 //商品删除
-Route::any('goodstele','Amindbackstage\Headquarters@goodstele');
+Route::any('goodsdelete','Amindbackstage\Headquarters@goodsdelete');
+
+
