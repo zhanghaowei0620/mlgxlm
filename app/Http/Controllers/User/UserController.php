@@ -155,7 +155,7 @@ class UserController extends Controller
                 'address_area' => $address_area1,
                 'address_detail' => $address_detail,
                 'tel' => $tel,
-                'postal' => $postal,
+//                'postal' => $postal,
                 'is_default' => $is_default
             ];
             $add_address = DB::table('mt_address')->insertGetId($data);
@@ -226,7 +226,7 @@ class UserController extends Controller
         $address_area1 = $address_area[2];
         $address_detail = $request->input('address_detail');
         $tel = $request->input('tel');
-        $postal = $request->input('postal');
+//        $postal = $request->input('postal');
         $is_default = $request->input('is_default');
         //$is_default = '1';
         if ($is_default == 2) {
@@ -236,7 +236,7 @@ class UserController extends Controller
                 'address_area' => $address_area1,
                 'address_detail' => $address_detail,
                 'tel' => $tel,
-                'postal' => $postal,
+//                'postal' => $postal,
                 'is_default' => $is_default
             ];
             $update_address = DB::table('mt_address')->where('id', $id)->update($update);

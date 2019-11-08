@@ -16,7 +16,6 @@ class GoodsController extends Controller
         $f_type_id = $request->input('f_type_id');
         $s_type_id = $request->input('s_type_id');
         $g_s_type_id = $request->input('g_s_type_id');
-        $f_type_id = 7;
 //        $g_s_type_id = 8;
         if($f_type_id){
             $type = DB::table('mt_type')->where('t_id',$f_type_id)->first();        //获取分类数据
