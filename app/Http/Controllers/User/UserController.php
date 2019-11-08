@@ -140,6 +140,7 @@ class UserController extends Controller
         $tel = $request->input('tel');
         $postal = $request->input('postal');
         $is_default = $request->input('is_default');
+        $name=$request->input('name');
 
         // $openid = Redis::set('openid','o9VUc5HEPNrYq5d5iQFygPVbX7EM');
         $openid = Redis::get('openid');
@@ -155,6 +156,7 @@ class UserController extends Controller
                 'address_area' => $address_area1,
                 'address_detail' => $address_detail,
                 'tel' => $tel,
+                'name'=> $name,
 //                'postal' => $postal,
                 'is_default' => $is_default
             ];
