@@ -783,22 +783,23 @@ class UserController extends Controller
     }
 
     //添加到银行卡包
-    public function add_bankcard(Request $request){
+    public function add_bankcard(Request $request)
+    {
         $bankcard_name = $request->input('bankcard_name');
         $bankcard_num = $request->input('bankcard_num');
         $bankcard_type = $request->input('bankcard_type');
         $bank = $request->input('bank');
         $openid = Redis::get('openid');
-        if($openid){
+        if ($openid) {
             $userInfo = DB::table('mt_user')->where('openid', $openid)->first();
             //var_dump($userInfo);exit;
             $uid = $userInfo->uid;
             $insert = [
-                'bankcard_name'=>$bankcard_name,
-                'bankcard_num'=>$bankcard_num,
-                'bankcard_type'=>$bankcard_type,
-                'bank'=>$bank,
-                'uid'=>$uid
+                'bankcard_name' => $bankcard_name,
+                'bankcard_num' => $bankcard_num,
+                'bankcard_type' => $bankcard_type,
+                'bank' => $bank,
+                'uid' => $uid
             ];
             $where = [
                 'bankcard_num' => $bankcard_num
@@ -815,29 +816,29 @@ class UserController extends Controller
 //                ];
 //                die(json_encode($response, JSON_UNESCAPED_UNICODE));
 //            }else{
-                $bankInsert = DB::table('mt_bankcard')->insertGetId($insert);
-                if($bankInsert == true){
-                    $data = [
-                        'code' => '0',
-                        'msg' => '添加成功'
-                    ];
-                    $response = [
-                        'data' => $data
-                    ];
-                    return json_encode($response, JSON_UNESCAPED_UNICODE);
-                }else{
-                    $data = [
-                        'code' => '3',
-                        'msg' => '添加失败'
-                    ];
-                    $response = [
-                        'data' => $data
-                    ];
-                    die(json_encode($response, JSON_UNESCAPED_UNICODE));
-                }
+            $bankInsert = DB::table('mt_bankcard')->insertGetId($insert);
+            if ($bankInsert == true) {
+                $data = [
+                    'code' => '0',
+                    'msg' => '添加成功'
+                ];
+                $response = [
+                    'data' => $data
+                ];
+                return json_encode($response, JSON_UNESCAPED_UNICODE);
+            } else {
+                $data = [
+                    'code' => '3',
+                    'msg' => '添加失败'
+                ];
+                $response = [
+                    'data' => $data
+                ];
+                die(json_encode($response, JSON_UNESCAPED_UNICODE));
+            }
 //            }
 
-        }else{
+        } else {
             $data = [
                 'code' => 2,
                 'msg' => '请先登录'
@@ -847,10 +848,64 @@ class UserController extends Controller
             ];
             die(json_encode($response, JSON_UNESCAPED_UNICODE));
         }
-
-
-
     }
+    //银行卡列表
+       public function  bankcard_list(Request $request)
+        {
+            $data=DB::table('mt_bankcard')
+                ->select()
+                ->get(['bankcard_type','bankcard_num','bank','bankcard_name']);
+            if($data){
+                $data1=[
+                    'code'=>0,
+                    'respo'=>$data,
+                    'msg'=>'展示成功',
+                ];
+                $response=[
+                    'data'=>$data1,
+                ];
+                die(json_encode($response,JSON_UNESCAPED_UNICODE));
+            }else{
+                $data1=[
+                    'code'=>1,
+                    'msg'=>'展示失败',
+                ];
+                $response=[
+                    'data'=>$data1,
+                ];
+                die(json_encode($response,JSON_UNESCAPED_UNICODE));
+            }
+        }
+
+      //银行卡解绑（删除）
+        public function  add_bankcard_delete(Request $request)
+        {
+            $bankcard_id=$request->input('bankcard_id');
+            $where=[
+                'bankcard_id'=>$bankcard_id
+            ];
+            $data=DB::table('mt_bankcard')->where($where)->delete();
+            if($data){
+                $data1=[
+                    'code'=>0,
+                    'msg'=>'解绑成功',
+                ];
+                $response=[
+                    'data'=>$data1,
+                ];
+                return (json_encode($response, JSON_UNESCAPED_UNICODE));
+            }else{
+                $data1=[
+                    'code'=>0,
+                    'msg'=>'解绑失败',
+                ];
+                $response=[
+                    'data'=>$data1,
+                ];
+                return (json_encode($response, JSON_UNESCAPED_UNICODE));
+            }
+        }
+
 
     //签到
     public function user_sign(Request $request){

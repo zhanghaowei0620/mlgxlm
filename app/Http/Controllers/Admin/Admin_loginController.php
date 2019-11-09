@@ -62,7 +62,6 @@ class Admin_loginController extends Controller
         $data=DB::table('admin_user')
             ->select(['admin_id','admin_names','admin_tel','admin_consumption','admin_user_integral','admin_user_money'])
             ->paginate(7);
-
         if($data){
             $response=[
                 'code'=>0,

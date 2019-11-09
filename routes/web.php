@@ -40,6 +40,9 @@ Route::post('/bankcard', 'User\UserController@bankcard');   //银行卡接口
 
 Route::get('/add_bankcard', 'User\UserController@add_bankcard');   //银行卡接口
 
+Route::get('/bankcard_list', 'User\UserController@bankcard_list');   //银行卡列表
+
+Route::get('/add_bankcard_delete', 'User\UserController@add_bankcard_delete');   //银行卡解绑（删除）
 
 Route::get('/user_coupon', 'User\UserController@user_coupon');    //优惠券
 
