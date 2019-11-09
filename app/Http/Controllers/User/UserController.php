@@ -261,7 +261,7 @@ class UserController extends Controller
     //修改地址信息
     public function update_address(Request $request)
     {
-        $id = $request->input('address_id');
+        $id = $request->input('id');
         //$id = 1;
         $address_area = $request->input('address_area');
         $address_area = explode(',', $address_area);
@@ -321,7 +321,8 @@ class UserController extends Controller
                     'address_detail' => $address_detail,
                     'tel' => $tel,
 //                    'postal' => $postal,
-                    'is_default' => $is_default
+                    'is_default' => $is_default,
+                    'name'=>$name
                 ];
                 $update_address = DB::table('mt_address')->where('id', $id)->update($update);
                 //var_dump($update_address);exit;
