@@ -353,7 +353,7 @@ class UserController extends Controller
             } else {
                 $data = [
                     'code' => 1,
-                    'msg' => '修改bb失败'
+                    'msg' => '修改失败'
                 ];
                 $response = [
                     'data' => $data
