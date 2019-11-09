@@ -291,7 +291,7 @@ class UserController extends Controller
             ];
             $update_address = DB::table('mt_address')->where($aa)->update($update);
 //            var_dump($update_address);exit;
-            if ($update_address == 1) {
+            if ($update_address >= 0) {
                 $data = [
                     'code' => 0,
                     'msg' => '修改成功'
@@ -316,8 +316,8 @@ class UserController extends Controller
                 'is_default' => 2
             ];
             $update_address_default = DB::table('mt_address')->update($update);
-            //var_dump($update_address_default);exit;
-            if ($update_address_default == 1) {
+//            var_dump($update_address_default);exit;
+            if ($update_address_default >= 0) {
                 //echo 1111;exit;
                 $update = [
                     'address_provice' => $address_provice,
@@ -331,7 +331,7 @@ class UserController extends Controller
                 ];
                 $update_address = DB::table('mt_address')->where('id', $id)->update($update);
 //                var_dump($update_address);exit;
-                if ($update_address == 1) {
+                if ($update_address >= 0) {
                     $data = [
                         'code' => 0,
                         'msg' => '修改成功'
@@ -341,7 +341,6 @@ class UserController extends Controller
                     ];
                     return json_encode($response, JSON_UNESCAPED_UNICODE);
                 } else {
-                    echo 333;exit;
                     $data = [
                         'code' => 1,
                         'msg' => '修改失败,请重试'
