@@ -38,6 +38,9 @@ Route::get('/accessToken', 'User\UserController@accessToken');   //accessToken
 
 Route::post('/bankcard', 'User\UserController@bankcard');   //银行卡接口
 
+Route::get('/add_bankcard', 'User\UserController@add_bankcard');   //银行卡接口
+
+
 Route::get('/user_coupon', 'User\UserController@user_coupon');    //优惠券
 
 Route::get('/goodsInfo', 'Goods\GoodsController@goodsInfo');    //获取商品详情信息
