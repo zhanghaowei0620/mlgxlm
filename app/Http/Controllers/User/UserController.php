@@ -153,7 +153,7 @@ class UserController extends Controller
                 ];
                 $update_address_new = DB::table('mt_address')->update($update);
 
-                if($update_address_new == true){
+                if($update_address_new >= 0){
                     $uid = $userInfo->uid;
                     $data = [
                         'uid' => $uid,
