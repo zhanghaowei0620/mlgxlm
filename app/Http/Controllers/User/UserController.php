@@ -290,8 +290,8 @@ class UserController extends Controller
               'id'=>$id
             ];
             $update_address = DB::table('mt_address')->where($aa)->update($update);
-            //var_dump($update_address);exit;
-            if ($update_address == true) {
+//            var_dump($update_address);exit;
+            if ($update_address == 0) {
                 $data = [
                     'code' => 0,
                     'msg' => '修改成功'
@@ -301,7 +301,6 @@ class UserController extends Controller
                 ];
                 return json_encode($response, JSON_UNESCAPED_UNICODE);
             } else {
-                echo 111;exit;
                 $data = [
                     'code' => 1,
                     'msg' => '修改失败'
@@ -332,7 +331,7 @@ class UserController extends Controller
                 ];
                 $update_address = DB::table('mt_address')->where('id', $id)->update($update);
                 //var_dump($update_address);exit;
-                if ($update_address == true) {
+                if ($update_address == 0) {
                     $data = [
                         'code' => 0,
                         'msg' => '修改成功'
@@ -342,7 +341,7 @@ class UserController extends Controller
                     ];
                     return json_encode($response, JSON_UNESCAPED_UNICODE);
                 } else {
-                    echo 333;exit;
+//                    echo 333;exit;
                     $data = [
                         'code' => 1,
                         'msg' => '修改失败,请重试'
@@ -353,7 +352,7 @@ class UserController extends Controller
                     die(json_encode($response, JSON_UNESCAPED_UNICODE));
                 }
             } else {
-                echo 222;exit;
+//                echo 222;exit;
                 $data = [
                     'code' => 1,
                     'msg' => '修改失败'
