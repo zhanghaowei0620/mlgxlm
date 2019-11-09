@@ -233,6 +233,7 @@ class UserController extends Controller
         $user_addressInfo = DB::table('mt_user')
             ->join('mt_address', 'mt_user.uid', '=', 'mt_address.uid')
             ->where('mt_user.openid', $openid)
+//            ->orderBy(['is_default'=>1],'desc')
             ->get()->toArray();
 //        var_dump($user_addressInfo);die;
         if ($user_addressInfo) {
@@ -317,7 +318,7 @@ class UserController extends Controller
                     'address_area' => $address_area1,
                     'address_detail' => $address_detail,
                     'tel' => $tel,
-                    'postal' => $postal,
+//                    'postal' => $postal,
                     'is_default' => $is_default
                 ];
                 $update_address = DB::table('mt_address')->where('id', $id)->update($update);
