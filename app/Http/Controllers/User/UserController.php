@@ -804,16 +804,17 @@ class UserController extends Controller
                 'bankcard_num' => $bankcard_num
             ];
             $bankInfo = DB::table('mt_bankcard')->where($where)->get();
-            if($bankInfo){
-                $data = [
-                    'code' => '1',
-                    'msg' => '此卡已存在你的卡包中'
-                ];
-                $response = [
-                    'data' => $data
-                ];
-                die(json_encode($response, JSON_UNESCAPED_UNICODE));
-            }else{
+//            var_dump($bankInfo);die;
+//            if($bankInfo){
+//                $data = [
+//                    'code' => '1',
+//                    'msg' => '此卡已存在你的卡包中'
+//                ];
+//                $response = [
+//                    'data' => $data
+//                ];
+//                die(json_encode($response, JSON_UNESCAPED_UNICODE));
+//            }else{
                 $bankInsert = DB::table('mt_bankcard')->insertGetId($insert);
                 if($bankInsert == true){
                     $data = [
@@ -834,7 +835,7 @@ class UserController extends Controller
                     ];
                     die(json_encode($response, JSON_UNESCAPED_UNICODE));
                 }
-            }
+//            }
 
         }else{
             $data = [
