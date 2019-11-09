@@ -272,6 +272,7 @@ class UserController extends Controller
         $tel = $request->input('tel');
 //        $postal = $request->input('postal');
         $is_default = $request->input('is_default');
+        $name=$request->input('name');
         //$is_default = '1';
         if ($is_default == 2) {
             $update = [
@@ -281,7 +282,8 @@ class UserController extends Controller
                 'address_detail' => $address_detail,
                 'tel' => $tel,
 //                'postal' => $postal,
-                'is_default' => $is_default
+                'is_default' => $is_default,
+                'name'=>$name
             ];
             $update_address = DB::table('mt_address')->where('id', $id)->update($update);
             //var_dump($update_address);exit;
