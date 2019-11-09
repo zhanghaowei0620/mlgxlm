@@ -301,6 +301,7 @@ class UserController extends Controller
                 ];
                 return json_encode($response, JSON_UNESCAPED_UNICODE);
             } else {
+                echo 111;exit;
                 $data = [
                     'code' => 1,
                     'msg' => '修改失败'
@@ -341,6 +342,7 @@ class UserController extends Controller
                     ];
                     return json_encode($response, JSON_UNESCAPED_UNICODE);
                 } else {
+                    echo 333;exit;
                     $data = [
                         'code' => 1,
                         'msg' => '修改失败,请重试'
@@ -351,6 +353,7 @@ class UserController extends Controller
                     die(json_encode($response, JSON_UNESCAPED_UNICODE));
                 }
             } else {
+                echo 222;exit;
                 $data = [
                     'code' => 1,
                     'msg' => '修改失败'
