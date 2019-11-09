@@ -147,7 +147,7 @@ class UserController extends Controller
         $userInfo = DB::table('mt_user')->where('openid', $openid)->first();
         //var_dump($userInfo);die;
         if ($userInfo) {
-            if($is_default ==1){
+            if($is_default >=0){
                 $update=[
                     'is_default'=>2
                 ];
@@ -167,6 +167,7 @@ class UserController extends Controller
                         'is_default' => $is_default
                     ];
                     $add_address = DB::table('mt_address')->insertGetId($data);
+//                    var_dump($add_address);die;
                     if ($add_address) {
                         $data = [
                             'code' => 0,
