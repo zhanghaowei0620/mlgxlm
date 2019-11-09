@@ -341,7 +341,7 @@ class UserController extends Controller
                     ];
                     return json_encode($response, JSON_UNESCAPED_UNICODE);
                 } else {
-//                    echo 333;exit;
+                    echo 333;exit;
                     $data = [
                         'code' => 1,
                         'msg' => '修改失败,请重试'
