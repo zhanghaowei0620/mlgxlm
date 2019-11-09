@@ -233,6 +233,7 @@ class UserController extends Controller
         $user_addressInfo = DB::table('mt_user')
             ->join('mt_address', 'mt_user.uid', '=', 'mt_address.uid')
             ->where('mt_user.openid', $openid)
+//            ->orderBy(['is_default'=>1],'desc')
             ->get()->toArray();
 //        var_dump($user_addressInfo);die;
         if ($user_addressInfo) {
@@ -260,7 +261,7 @@ class UserController extends Controller
     //修改地址信息
     public function update_address(Request $request)
     {
-        $id = $request->input('address_id');
+        $id = $request->input('id');
         //$id = 1;
         $address_area = $request->input('address_area');
         $address_area = explode(',', $address_area);
@@ -271,6 +272,7 @@ class UserController extends Controller
         $tel = $request->input('tel');
 //        $postal = $request->input('postal');
         $is_default = $request->input('is_default');
+        $name=$request->input('name');
         //$is_default = '1';
         if ($is_default == 2) {
             $update = [
@@ -280,7 +282,8 @@ class UserController extends Controller
                 'address_detail' => $address_detail,
                 'tel' => $tel,
 //                'postal' => $postal,
-                'is_default' => $is_default
+                'is_default' => $is_default,
+                'name'=>$name
             ];
             $update_address = DB::table('mt_address')->where('id', $id)->update($update);
             //var_dump($update_address);exit;
@@ -317,8 +320,9 @@ class UserController extends Controller
                     'address_area' => $address_area1,
                     'address_detail' => $address_detail,
                     'tel' => $tel,
-                    'postal' => $postal,
-                    'is_default' => $is_default
+//                    'postal' => $postal,
+                    'is_default' => $is_default,
+                    'name'=>$name
                 ];
                 $update_address = DB::table('mt_address')->where('id', $id)->update($update);
                 //var_dump($update_address);exit;
