@@ -248,8 +248,9 @@ class UserController extends Controller
             return json_encode($response, JSON_UNESCAPED_UNICODE);
         } else {
             $data = [
-                'code' => 1,
-                'msg' => '暂未添加收货地址'
+                'code' => 0,
+                'msg' => '暂未添加收货地址',
+                'data'=>$data
             ];
             $response = [
                 'data' => $data
