@@ -142,27 +142,27 @@ class GoodsController extends Controller
         }
     }
 
-    //根据导航栏子级分类获取店铺  根据热门项目分类id获取店铺
-    public function type_shop(Request $request){
-        $type_id = $request->input('type_id');
-        //$page_num = $request->input('page_num');  //当前展示页数
-        $type_id = 7;
-        if($type_id){
-            $shop_type = DB::table('mt_shop')->where('t_id',$type_id)->paginate(7);
-            //var_dump($shop_type);exit;
-            $response = [
-                'error'=>'0',
-                'shop_goodsInfo'=>$shop_type
-            ];
-            return json_encode($response,JSON_UNESCAPED_UNICODE);
-        }else{
-            $response = [
-                'error'=>'1',
-                'msg'=>'暂未开通该类型店铺'
-            ];
-            die(json_encode($response,JSON_UNESCAPED_UNICODE));
-        }
-    }
+    //根据导航栏子级分类获取店铺 根据热门项目分类id获取店铺
+//    public function type_shop(Request $request){
+//        $type_id = $request->input('type_id');
+//        //$page_num = $request->input('page_num');  //当前展示页数
+//        $type_id = 7;
+//        if($type_id){
+//            $shop_type = DB::table('mt_shop')->where('t_id',$type_id)->paginate(7);
+//            //var_dump($shop_type);exit;
+//            $response = [
+//                'error'=>'0',
+//                'shop_goodsInfo'=>$shop_type
+//            ];
+//            return json_encode($response,JSON_UNESCAPED_UNICODE);
+//        }else{
+//            $response = [
+//                'error'=>'1',
+//                'msg'=>'暂未开通该类型店铺'
+//            ];
+//            die(json_encode($response,JSON_UNESCAPED_UNICODE));
+//        }
+//    }
 
     //点击店铺获取店铺详情信息及店铺下所有的商品
     public function shop_goods(Request $request){
