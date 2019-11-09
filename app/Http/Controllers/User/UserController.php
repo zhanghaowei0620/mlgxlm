@@ -263,6 +263,7 @@ class UserController extends Controller
     {
         $id = $request->input('id');
         //$id = 1;
+//        var_dump($id);die;
         $address_area = $request->input('address_area');
         $address_area = explode(',', $address_area);
         $address_provice = $address_area[0];
@@ -285,7 +286,10 @@ class UserController extends Controller
                 'is_default' => $is_default,
                 'name'=>$name
             ];
-            $update_address = DB::table('mt_address')->where('id', $id)->update($update);
+            $aa=[
+              'id'=>$id
+            ];
+            $update_address = DB::table('mt_address')->where($aa)->update($update);
             //var_dump($update_address);exit;
             if ($update_address == true) {
                 $data = [
@@ -307,12 +311,13 @@ class UserController extends Controller
                 die(json_encode($response, JSON_UNESCAPED_UNICODE));
             }
         } else {
+            //.echo 111;exit;
             $update = [
                 'is_default' => 2
             ];
             $update_address_default = DB::table('mt_address')->update($update);
-            //print_r($update_address_default);exit;
-            if ($update_address_default == true) {
+            //var_dump($update_address_default);exit;
+            if ($update_address_default == 0) {
                 //echo 1111;exit;
                 $update = [
                     'address_provice' => $address_provice,
@@ -348,7 +353,7 @@ class UserController extends Controller
             } else {
                 $data = [
                     'code' => 1,
-                    'msg' => '修改失败'
+                    'msg' => '修改bb失败'
                 ];
                 $response = [
                     'data' => $data
