@@ -296,10 +296,10 @@ class UserController extends Controller
             ];
             $data = [
                 'code' => 0,
-                'msg' => '暂未添加收货地址',
+                'user_addressInfo' => $data1,
             ];
             $response = [
-                'data' => $data1
+                'data' => $data
             ];
             die(json_encode($response, JSON_UNESCAPED_UNICODE));
         }
