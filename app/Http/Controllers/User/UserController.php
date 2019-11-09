@@ -148,12 +148,12 @@ class UserController extends Controller
         //var_dump($userInfo);die;
         if ($userInfo) {
             if($is_default >=0){
-                $update=[
-                    'is_default'=>2
-                ];
-                $update_address_new = DB::table('mt_address')->update($update);
-
-                if($update_address_new >= 0){
+                if($is_default ==1){
+                    $update=[
+                        'is_default'=>2
+                    ];
+                    $update_address_new = DB::table('mt_address')->update($update);
+                }else{
                     $uid = $userInfo->uid;
                     $data = [
                         'uid' => $uid,
@@ -188,6 +188,51 @@ class UserController extends Controller
                         die(json_encode($response, JSON_UNESCAPED_UNICODE));
                     }
                 }
+                if($is_default ==2){
+                    $update=[
+                        'is_default'=>2
+                    ];
+                    $update_address_new = DB::table('mt_address')->update($update);
+                }else{
+                    $uid = $userInfo->uid;
+                    $data = [
+                        'uid' => $uid,
+                        'address_provice' => $address_provice,
+                        'address_city' => $address_city,
+                        'address_area' => $address_area1,
+                        'address_detail' => $address_detail,
+                        'tel' => $tel,
+                        'name'=> $name,
+//                'postal' => $postal,
+                        'is_default' => $is_default
+                    ];
+                    $add_address = DB::table('mt_address')->insertGetId($data);
+//                    var_dump($add_address);die;
+                    if ($add_address) {
+                        $data = [
+                            'code' => 0,
+                            'msg' => '地址添加成功'
+                        ];
+                        $response = [
+                            'data' => $data
+                        ];
+                        return json_encode($response, JSON_UNESCAPED_UNICODE);
+                    } else {
+                        $data = [
+                            'code' => 1,
+                            'msg' => '地址添加失败'
+                        ];
+                        $response = [
+                            'data' => $data
+                        ];
+                        die(json_encode($response, JSON_UNESCAPED_UNICODE));
+                    }
+                }
+
+//                print_r($update_address_new);die;
+//                if($update_address_new >= 0){
+//
+//                }
             }else{
                 $uid = $userInfo->uid;
                 $data = [
