@@ -129,49 +129,97 @@ class UserController extends Controller
     public function user_Address(Request $request)
     {
         $address_area = $request->input('address_area');
+        // $address_area = '山西省,太原市,小店区';
         $address_area = explode(',', $address_area);
+        //var_dump($address_area);die;
         $address_provice = $address_area[0];
+        // var_dump($address_provice);die;
         $address_city = $address_area[1];
         $address_area1 = $address_area[2];
         $address_detail = $request->input('address_detail');
         $tel = $request->input('tel');
         $postal = $request->input('postal');
         $is_default = $request->input('is_default');
+        $name=$request->input('name');
 
+        // $openid = Redis::set('openid','o9VUc5HEPNrYq5d5iQFygPVbX7EM');
         $openid = Redis::get('openid');
         $userInfo = DB::table('mt_user')->where('openid', $openid)->first();
+        //var_dump($userInfo);die;
         if ($userInfo) {
-            $uid = $userInfo->uid;
-            //var_dump($uid);
-            $data = [
-                'uid' => $uid,
-                'address_provice' => $address_provice,
-                'address_city' => $address_city,
-                'address_area' => $address_area1,
-                'address_detail' => $address_detail,
-                'tel' => $tel,
-                'postal' => $postal,
-                'is_default' => $is_default
-            ];
-            $add_address = DB::table('mt_address')->insertGetId($data);
-            if ($add_address) {
+            if($is_default ==1){
+                $update=[
+                    'is_default'=>2
+                ];
+                $update_address_new = DB::table('mt_address')->update($update);
+
+                if($update_address_new == true){
+                    $uid = $userInfo->uid;
+                    $data = [
+                        'uid' => $uid,
+                        'address_provice' => $address_provice,
+                        'address_city' => $address_city,
+                        'address_area' => $address_area1,
+                        'address_detail' => $address_detail,
+                        'tel' => $tel,
+                        'name'=> $name,
+//                'postal' => $postal,
+                        'is_default' => $is_default
+                    ];
+                    $add_address = DB::table('mt_address')->insertGetId($data);
+                    if ($add_address) {
+                        $data = [
+                            'code' => 0,
+                            'msg' => '地址添加成功'
+                        ];
+                        $response = [
+                            'data' => $data
+                        ];
+                        return json_encode($response, JSON_UNESCAPED_UNICODE);
+                    } else {
+                        $data = [
+                            'code' => 1,
+                            'msg' => '地址添加失败'
+                        ];
+                        $response = [
+                            'data' => $data
+                        ];
+                        die(json_encode($response, JSON_UNESCAPED_UNICODE));
+                    }
+                }
+            }else{
+                $uid = $userInfo->uid;
                 $data = [
-                    'code' => 0,
-                    'msg' => '地址添加成功'
+                    'uid' => $uid,
+                    'address_provice' => $address_provice,
+                    'address_city' => $address_city,
+                    'address_area' => $address_area1,
+                    'address_detail' => $address_detail,
+                    'tel' => $tel,
+                    'name'=> $name,
+//                'postal' => $postal,
+                    'is_default' => $is_default
                 ];
-                $response = [
-                    'data' => $data
-                ];
-                return json_encode($response, JSON_UNESCAPED_UNICODE);
-            } else {
-                $data = [
-                    'code' => 1,
-                    'msg' => '地址添加失败'
-                ];
-                $response = [
-                    'data' => $data
-                ];
-                die(json_encode($response, JSON_UNESCAPED_UNICODE));
+                $add_address = DB::table('mt_address')->insertGetId($data);
+                if ($add_address) {
+                    $data = [
+                        'code' => 0,
+                        'msg' => '地址添加成功'
+                    ];
+                    $response = [
+                        'data' => $data
+                    ];
+                    return json_encode($response, JSON_UNESCAPED_UNICODE);
+                } else {
+                    $data = [
+                        'code' => 1,
+                        'msg' => '地址添加失败'
+                    ];
+                    $response = [
+                        'data' => $data
+                    ];
+                    die(json_encode($response, JSON_UNESCAPED_UNICODE));
+                }
             }
         }
 
@@ -180,11 +228,13 @@ class UserController extends Controller
     //用户地址列表
     public function user_Address_list(Request $request)
     {
+        // $openid = Redis::set('openid','o9VUc5HEPNrYq5d5iQFygPVbX7EM');
         $openid = Redis::get('openid');
         $user_addressInfo = DB::table('mt_user')
             ->join('mt_address', 'mt_user.uid', '=', 'mt_address.uid')
             ->where('mt_user.openid', $openid)
             ->get()->toArray();
+//        var_dump($user_addressInfo);die;
         if ($user_addressInfo) {
             $data = [
                 'code' => 0,
@@ -219,7 +269,7 @@ class UserController extends Controller
         $address_area1 = $address_area[2];
         $address_detail = $request->input('address_detail');
         $tel = $request->input('tel');
-        $postal = $request->input('postal');
+//        $postal = $request->input('postal');
         $is_default = $request->input('is_default');
         //$is_default = '1';
         if ($is_default == 2) {
@@ -229,7 +279,7 @@ class UserController extends Controller
                 'address_area' => $address_area1,
                 'address_detail' => $address_detail,
                 'tel' => $tel,
-                'postal' => $postal,
+//                'postal' => $postal,
                 'is_default' => $is_default
             ];
             $update_address = DB::table('mt_address')->where('id', $id)->update($update);

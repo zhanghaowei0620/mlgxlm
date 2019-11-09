@@ -16,7 +16,6 @@ class GoodsController extends Controller
         $f_type_id = $request->input('f_type_id');
         $s_type_id = $request->input('s_type_id');
         $g_s_type_id = $request->input('g_s_type_id');
-        $f_type_id = 7;
 //        $g_s_type_id = 8;
         if($f_type_id){
             $type = DB::table('mt_type')->where('t_id',$f_type_id)->first();        //获取分类数据
@@ -195,7 +194,11 @@ class GoodsController extends Controller
             ->join('mt_goods','mt_shop.shop_id','=','mt_goods.shop_id')
             ->where('mt_goods.goods_id',$goods_id)
             ->first();
-        //var_dump($goodsInfo);exit;
+        // var_dump($goodsInfo);exit;
+        // $where=[
+        //     'shop_id'=>$goodsInfo->shop_id
+        // ];
+        // var_dump($where);die;
         $reconmend_shop = DB::table('mt_goods')->where(['shop_id'=>$goodsInfo->shop_id,'is_recommend'=>1])->limit(3)->get();
         //var_dump($reconmend_shop);exit;
 
@@ -356,7 +359,6 @@ class GoodsController extends Controller
             $user_info = DB::table('mt_user')->where('openid',$openid)->first();
             $uid = $user_info->uid;
             //        $buy_num = 1;
-            $goods_id = 8;
             $where = [
                 'goods_id'=>$goods_id,
                 'collection'=>1
