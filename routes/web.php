@@ -38,6 +38,8 @@ Route::get('/accessToken', 'User\UserController@accessToken');   //accessToken
 
 Route::post('/bankcard', 'User\UserController@bankcard');   //银行卡接口
 
+Route::post('/upload', 'User\UserController@upload');   //银行卡接口
+
 Route::get('/add_bankcard', 'User\UserController@add_bankcard');   //银行卡接口
 
 Route::get('/bankcard_list', 'User\UserController@bankcard_list');   //银行卡列表

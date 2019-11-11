@@ -781,6 +781,31 @@ class UserController extends Controller
             return $res_str;
         }
     }
+    //测试
+    public function upload(Request $request)
+    {
+        $imgs = [];
+        if (request()->hasFile('file')){
+            foreach (request()->file('file') as $file){
+                //将图片存储到了 ../storage/app/public/product/ 路径下
+                $path = $file('public/images');
+                $path = str_replace('public','',$path);
+                $imgs[]= asset('public/'.$path);
+            }
+            return response()->json([
+                'errno'=>0,
+                'data'=>$imgs
+            ]);
+        }else{
+            return response()->json([
+                'info'=>'没有图片'
+            ]);
+        }
+        //处理多图上传并返回数组
+    }
+————————————————
+版权声明：本文为CSDN博主「知己子」的原创文章，遵循 CC 4.0 BY-SA 版权协议，转载请附上原文出处链接及本声明。
+原文链接：https://blog.csdn.net/qq_20933903/article/details/83023736
 
     //添加到银行卡包
     public function add_bankcard(Request $request)
@@ -852,7 +877,12 @@ class UserController extends Controller
     //银行卡列表
        public function  bankcard_list(Request $request)
         {
+            $openid = Redis::get('openid');
+            $userInfo = DB::table('mt_user')->where('openid', $openid)->first();
+            //var_dump($userInfo);exit;
+            $uid = $userInfo->uid;
             $data=DB::table('mt_bankcard')
+                ->where('uid',$uid)
                 ->select()
                 ->get(['bankcard_type','bankcard_num','bank','bankcard_name']);
             if($data){
@@ -914,6 +944,7 @@ class UserController extends Controller
         //获取一周的第一天，注意第一天应该是星期一
         $sunday_str = $timestr;
         $sunday = date('Y-m-d', $sunday_str);
+//        var_dump($sunday);die;
         //获取一周的最后一天，注意最后一天是星期六
         $strday_str = $timestr + (7-$now_day)*60*60*24;
         $strday = date('Y-m-d', $strday_str);
@@ -933,10 +964,10 @@ class UserController extends Controller
         //var_dump($openid);
         if($openid){
             $userInfo = DB::table('mt_user')->where('openid', $openid)->first();
-            //var_dump($userInfo);exit;
+//            var_dump($userInfo);exit;
             $uid = $userInfo->uid;
             $user_signInfo = DB::table('mt_user_sign')->where('uid',$uid)->first();
-            //var_dump($user_signInfo);exit;
+//            var_dump($user_signInfo);exit;
             if($user_signInfo == NULL){
                 $insert = [
                     'uid'=>$uid,
@@ -958,7 +989,7 @@ class UserController extends Controller
                 }else{
                     $data = [
                         'code'=>0,
-                        'msg'=>'签到成功'
+                        'msg'=>'签到失败'
                     ];
                     $response = [
                         'data' => $data
@@ -978,6 +1009,7 @@ class UserController extends Controller
                     ->where('sign_time', '>=', $yesterday_start)
                     ->where('sign_time', '<=', $yesterday_end)
                     ->first();//判断昨天是否已签到过
+//                var_dump($id_select);die;
                 if($id_select == NULL){
                     $issign = Db::table('mt_user_sign')
                         ->where('uid', '=', $uid)
@@ -1000,6 +1032,7 @@ class UserController extends Controller
                             'integral'=>$issign->integral+1,
                             'sign_num'=>1
                         ];
+                        var_dump($update);die;
                         $updateInfo = DB::table('mt_user_sign')->where('uid',$uid)->update($update);
                         if($updateInfo==true){
                             $data = [
