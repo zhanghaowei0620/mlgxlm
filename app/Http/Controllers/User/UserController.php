@@ -784,25 +784,33 @@ class UserController extends Controller
     //测试
     public function upload(Request $request)
     {
-        $imgs = [];
-        if (request()->hasFile('file')){
-            foreach (request()->file('file') as $file){
-                //将图片存储到了 ../storage/app/public/product/ 路径下
-                $path = $file('public/images');
-                $path = str_replace('public','',$path);
-                $imgs[]= asset('public/'.$path);
-                var_dump($imgs);exit;
+        if (!empty($_FILES)) {
+            //获取扩展名
+            $file = json_encode($_FILES);
+            $fileName = [];
+            for ($i = 0; $i < count($_FILES); $i++) {
+                $fileName[$i] = 'images' . $i;
             }
-            return response()->json([
-                'code'=>0,
-                'data'=>$imgs
-            ]);
-        }else{
-            return response()->json([
-                'info'=>'没有图片'
-            ]);
+            $exename = $_FILES['file']['type'];
+            if ($exename != 'image/png' && $exename != 'image/jpg' && $exename != 'image/gif' && $exename != 'image/jpeg') {
+                exit('不允许的扩展名');
+            }
+            //此处地址根据项目而定，唯一注意的就是图片命名，这里难得去获取后缀，随便写了个png
+            $http_type = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')) ? 'https://' : 'http://';
+            $website = $http_type . $_SERVER['HTTP_HOST'];
+            if (!is_dir(public_path() . '/images')) mkdir(public_path() . '/images', 0777, true);
+            $imageSavePath = '/images' . '/' . uniqid() . rand(1, 100) . '.jpg';
+            $uploaded = move_uploaded_file($_FILES['file']['tmp_name'], public_path() . $imageSavePath);
+            $path = $website . $imageSavePath;
+            if ($uploaded) {
+                echo json_encode($path);
+            } else {
+                echo json_encode('失败');
+            }
+        } else {
+            echo 2;
         }
-        //处理多图上传并返回数组
+
     }
 
     //添加到银行卡包
