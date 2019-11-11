@@ -62,7 +62,7 @@ class GoodsController extends Controller
                     }
                 }
                 $data = [
-                    'error'             =>       '0',
+                    'code'             =>       '0',
                     's_type'            =>      $s_type,
                     'hot'               =>      $is_hot,
                     'recommend_picture' =>      $recommend_picture,
@@ -91,7 +91,7 @@ class GoodsController extends Controller
                         ->where('mt_goods.t_id',$f_type_id)->get(['case_id','case_front','case_after','case_trouble','goods_name','shop_name']);
                     //var_dump($caseInfo);exit;
                     $data = [
-                        'error' => '0',
+                        'code' => '0',
                         'type' => $data,
                         'recommend_picture' => $recommend_picture,
                         'beauty' => $beauty,
@@ -115,7 +115,7 @@ class GoodsController extends Controller
                         ->where('mt_goods.goods_id',$goods_id)->get(['case_id','case_front','case_after','case_trouble','goods_name','shop_name']);
 //                    var_dump($caseInfo);exit;
                     $data = [
-                        'error' => '0',
+                        'code' => '0',
                         'type' => $data,
                         'recommend_picture' => $recommend_picture,
                         'beauty' => $beauty,
@@ -130,7 +130,7 @@ class GoodsController extends Controller
             }
         }else{
             $data = [
-                'error'=>'1',
+                'code'=>'1',
                 'msg'=>'接口出现错误,正在维护中'
             ];
             $response = [
@@ -173,13 +173,13 @@ class GoodsController extends Controller
         //var_dump($shop_goodsInfo);exit;
         if($shop_goodsInfo){
             $response = [
-                'error'=>'0',
+                'code'=>'0',
                 'shop_goodsInfo'=>$shop_goodsInfo
             ];
             return json_encode($response,JSON_UNESCAPED_UNICODE);
         }else{
             $response = [
-                'error'=>'1',
+                'code'=>'1',
                 'msg'=>'该店铺下暂未任何商品'
             ];
             die(json_encode($response,JSON_UNESCAPED_UNICODE));
@@ -204,7 +204,7 @@ class GoodsController extends Controller
 
         if($goodsInfo==NULL){
             $response = [
-                'error'=>'1',
+                'code'=>'1',
                 'msg'=>'商品不存在'
             ];
             die(json_encode($response,JSON_UNESCAPED_UNICODE));
@@ -234,7 +234,7 @@ class GoodsController extends Controller
                 DB::table('mt_history')->insertGetId($data);
             }
             $response = [
-                'error'=>'0',
+                'code'=>'0',
                 'goodsInfo'=>$goodsInfo,
                 'recommend_shop'=>$reconmend_shop
             ];
@@ -267,13 +267,13 @@ class GoodsController extends Controller
                 //var_dump($update_buynum);exit;
                 if($update_buynum==true){
                     $response = [
-                        'error'=>'0',
+                        'code'=>'0',
                         'msg'=>'加入购物车成功'
                     ];
                     return json_encode($response,JSON_UNESCAPED_UNICODE);
                 } else{
                     $response = [
-                        'error'=>'1',
+                        'code'=>'1',
                         'msg'=>'加入购物车失败13131'
                     ];
                     die(json_encode($response,JSON_UNESCAPED_UNICODE));
@@ -300,13 +300,13 @@ class GoodsController extends Controller
                 $add_cart = DB::table('mt_cart')->insertGetId($data);
                 if($add_cart){
                     $response = [
-                        'error'=>'0',
+                        'code'=>'0',
                         'msg'=>'加入购物车成功'
                     ];
                     return json_encode($response,JSON_UNESCAPED_UNICODE);
                 }else{
                     $response = [
-                        'error'=>'1',
+                        'code'=>'1',
                         'msg'=>'加入购物车失败'
                     ];
                     die(json_encode($response,JSON_UNESCAPED_UNICODE));
@@ -314,7 +314,7 @@ class GoodsController extends Controller
             }
         }else{
             $response = [
-                'error'=>'2',
+                'code'=>'2',
                 'msg'=>'请先登录'
             ];
             die(json_encode($response,JSON_UNESCAPED_UNICODE));
@@ -333,13 +333,13 @@ class GoodsController extends Controller
         //var_dump($cartInfo);exit;
         if($cartInfo){
             $response = [
-                'error'=>'0',
+                'code'=>'0',
                 'cartInfo'=>$cartInfo
             ];
             return json_encode($response,JSON_UNESCAPED_UNICODE);
         }else{
             $response = [
-                'error'=>'1',
+                'code'=>'1',
                 'msg'=>'购物车暂无数据，快去添加商品吧'
             ];
             die(json_encode($response,JSON_UNESCAPED_UNICODE));
@@ -348,7 +348,30 @@ class GoodsController extends Controller
 
     //购物车删除
     public function cart_delete(Request $request){
-
+        $openid = Redis::get('openid');
+        $cart_id=$request->input('cart_id');
+        $where=[
+            'cart_id'=>$cart_id,
+            'openid'=>$openid
+        ];
+        $data=DB::table('mt_cart')->where($where)->delete();
+        if($data){
+            $data1=[
+              'data'=>$data
+            ];
+            $response=[
+                'code'=>0,
+                'data'=>$data1,
+                'msg'=>'删除成功'
+            ];
+            return (json_encode($response, JSON_UNESCAPED_UNICODE));
+        }else{
+            $response=[
+                'code'=>1,
+                'msg'=>'删除失败'
+            ];
+            return (json_encode($response, JSON_UNESCAPED_UNICODE));
+        }
     }
 
     //点击加入收藏-商品
@@ -367,7 +390,7 @@ class GoodsController extends Controller
             //var_dump($goods_cart);exit;
             if($goods_cart){
                 $response = [
-                    'error'=>'0',
+                    'code'=>'0',
                     'msg'=>'该商品已在您的收藏夹中'
                 ];
                 return json_encode($response,JSON_UNESCAPED_UNICODE);
@@ -392,13 +415,13 @@ class GoodsController extends Controller
                 $add_cart = DB::table('mt_cart')->insertGetId($data);
                 if($add_cart){
                     $response = [
-                        'error'=>'0',
+                        'code'=>'0',
                         'msg'=>'加入收藏成功'
                     ];
                     return json_encode($response,JSON_UNESCAPED_UNICODE);
                 }else{
                     $response = [
-                        'error'=>'1',
+                        'code'=>'1',
                         'msg'=>'加入收藏失败'
                     ];
                     die(json_encode($response,JSON_UNESCAPED_UNICODE));
@@ -406,7 +429,7 @@ class GoodsController extends Controller
             }
         }else{
             $response = [
-                'error'=>'2',
+                'code'=>'2',
                 'msg'=>'请先去登录'
             ];
             die(json_encode($response,JSON_UNESCAPED_UNICODE));
@@ -426,20 +449,20 @@ class GoodsController extends Controller
             //var_dump($cartInfo);exit;
             if($cartInfo){
                 $response = [
-                    'error'=>'0',
+                    'code'=>'0',
                     'cartInfo'=>$cartInfo
                 ];
                 return json_encode($response,JSON_UNESCAPED_UNICODE);
             }else{
                 $response = [
-                    'error'=>'1',
+                    'code'=>'1',
                     'msg'=>'收藏夹暂无数据，快去添加商品吧'
                 ];
                 die(json_encode($response,JSON_UNESCAPED_UNICODE));
             }
         }else{
             $response = [
-                'error'=>'2',
+                'code'=>'2',
                 'msg'=>'请先登录'
             ];
             die(json_encode($response,JSON_UNESCAPED_UNICODE));
@@ -462,7 +485,7 @@ class GoodsController extends Controller
             //var_dump($shop_collection);exit;
             if($shop_collection){
                 $response = [
-                    'error'=>'0',
+                    'code'=>'0',
                     'msg'=>'该商品已在您的收藏夹中'
                 ];
                 return json_encode($response,JSON_UNESCAPED_UNICODE);
@@ -475,13 +498,13 @@ class GoodsController extends Controller
                 $add_shop_collection = DB::table('mt_shop_collection')->insertGetId($data);
                 if($add_shop_collection){
                     $response = [
-                        'error'=>'0',
+                        'code'=>'0',
                         'msg'=>'店铺收藏成功'
                     ];
                     return json_encode($response,JSON_UNESCAPED_UNICODE);
                 }else{
                     $response = [
-                        'error'=>'1',
+                        'code'=>'1',
                         'msg'=>'店铺收藏失败'
                     ];
                     die(json_encode($response,JSON_UNESCAPED_UNICODE));
@@ -489,7 +512,7 @@ class GoodsController extends Controller
             }
         }else{
             $response = [
-                'error'=>'2',
+                'code'=>'2',
                 'msg'=>'请先去登录'
             ];
             die(json_encode($response,JSON_UNESCAPED_UNICODE));
@@ -512,20 +535,20 @@ class GoodsController extends Controller
             //var_dump($collectionInfo);exit;
             if($collectionInfo){
                 $response = [
-                    'error'=>'0',
+                    'code'=>'0',
                     'cartInfo'=>$collectionInfo
                 ];
                 return json_encode($response,JSON_UNESCAPED_UNICODE);
             }else{
                 $response = [
-                    'error'=>'1',
+                    'code'=>'1',
                     'msg'=>'收藏夹暂无数据，快去添加商品吧'
                 ];
                 die(json_encode($response,JSON_UNESCAPED_UNICODE));
             }
         }else{
             $response = [
-                'error'=>'2',
+                'code'=>'2',
                 'msg'=>'请先登录'
             ];
             die(json_encode($response,JSON_UNESCAPED_UNICODE));
@@ -538,13 +561,13 @@ class GoodsController extends Controller
         //var_dump($shopInfo);
         if($shopInfo){
             $response = [
-                'error'=>'0',
+                'code'=>'0',
                 'data'=>$shopInfo
             ];
             return json_encode($response,JSON_UNESCAPED_UNICODE);
         }else{
             $response = [
-                'error'=>'1',
+                'code'=>'1',
                 'msg'=>'暂无店铺'
             ];
             return json_encode($response,JSON_UNESCAPED_UNICODE);
@@ -591,6 +614,21 @@ class GoodsController extends Controller
         $stepTwo = 2 * asin(min(1, sqrt($stepOne)));
         $calculatedDistance = $earthRadius * $stepTwo;
         return round($calculatedDistance);
+    }
+
+    //置换商城
+    public function displace(Request $request)
+    {
+        $openid = Redis::set('openid','o9VUc5HEPNrYq5d5iQFygPVbX7EM');
+//        $openid = Redis::get('openid');
+        $data=DB::table('mt_displace')
+//            ->where('openid',$openid)
+            ->join('mt_shop','mt_shop.shop_id','=','mt_displace.shop_id')
+            ->join('mt_goods','mt_goods.goods_id','=','mt_displace.goods_id')
+            ->join('mt_address','mt_address.id','=','mt_displace.id')
+            ->select(['mt_shop.shop_name','mt_goods.goods_name','mt_goods.stock','mt_goods.market_price','mt_address.address_provice','mt_address.address_city','mt_address.address_area','mt_address.address_detail','mt_displace.displace_time'])
+            ->paginate(4);
+        var_dump($data);die;
     }
 
 

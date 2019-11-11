@@ -781,7 +781,7 @@ class UserController extends Controller
             return $res_str;
         }
     }
-    //测试
+    //多图上传及图片上传
     public function upload(Request $request)
     {
         if (!empty($_FILES)) {
