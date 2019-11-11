@@ -791,7 +791,7 @@ class UserController extends Controller
                 $path = $file('public/images');
                 $path = str_replace('public','',$path);
                 $imgs[]= asset('public/'.$path);
-                var_dump($imgs);die;
+                var_dump($imgs);exit;
             }
             return response()->json([
                 'code'=>0,
