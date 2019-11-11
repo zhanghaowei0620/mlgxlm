@@ -803,9 +803,6 @@ class UserController extends Controller
         }
         //处理多图上传并返回数组
     }
-————————————————
-版权声明：本文为CSDN博主「知己子」的原创文章，遵循 CC 4.0 BY-SA 版权协议，转载请附上原文出处链接及本声明。
-原文链接：https://blog.csdn.net/qq_20933903/article/details/83023736
 
     //添加到银行卡包
     public function add_bankcard(Request $request)
