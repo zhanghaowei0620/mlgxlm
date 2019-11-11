@@ -803,9 +803,21 @@ class UserController extends Controller
             $uploaded = move_uploaded_file($_FILES['file']['tmp_name'], public_path() . $imageSavePath);
             $path = $website . $imageSavePath;
             if ($uploaded) {
-                echo json_encode($path);
+                $path1=[
+                  'path'=>$path
+                ];
+                $response=[
+                    'code'=>0,
+                    'data'=>$path1,
+                    'msg'=>'上传成功'
+                ];
+                return (json_encode($response,JSON_UNESCAPED_UNICODE));
             } else {
-                echo json_encode('失败');
+                $response=[
+                    'code'=>1,
+                    'msg'=>'上传失败'
+                ];
+                return (json_encode($response,JSON_UNESCAPED_UNICODE));
             }
         } else {
             echo 2;
