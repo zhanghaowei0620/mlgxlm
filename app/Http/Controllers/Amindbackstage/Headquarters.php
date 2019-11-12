@@ -53,6 +53,7 @@ class Headquarters extends Controller
             $response = [
                 'code' => 0,
                 'path' => $path,
+                'url_name' => $url_name,
                 'msg' => '上传成功'
             ];
             return (json_encode($response, JSON_UNESCAPED_UNICODE));
