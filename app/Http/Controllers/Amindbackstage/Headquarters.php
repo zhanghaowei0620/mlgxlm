@@ -50,11 +50,12 @@ class Headquarters extends Controller
 
         $path = $destination . $filename;
         if($upload){
-            $data = [
+            $response = [
                 'error' => 0,
                 'path' => $path,
                 'msg' => '上传成功'
             ];
+            return (json_encode($response, JSON_UNESCAPED_UNICODE));
         }
 
 
