@@ -68,7 +68,8 @@ class Headquarters extends Controller
         if($typeInfo){
             $response = [
                 'code'=>0,
-                'typeInfo'=>$typeInfo
+                'data'=>$typeInfo,
+                'msg'=>'成功'
             ];
             return json_encode($response, JSON_UNESCAPED_UNICODE);
         }else{
