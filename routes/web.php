@@ -175,8 +175,11 @@ Route::any('couponinsert','Admin\Admin_loginController@couponinsert');
 //商品展示
 Route::any('goodsList','Amindbackstage\Headquarters@goodsList');
 //商品添加
-Route::post('goodsAdd','Amindbackstage\Headquarters@goodsAdd');
+Route::post('upload','Amindbackstage\Headquarters@upload');
+Route::get('goodsAdd','Amindbackstage\Headquarters@goodsAdd');
+Route::get('goods_type','Amindbackstage\Headquarters@goods_type');   //分类
 //商品删除
 Route::any('goodsdelete','Amindbackstage\Headquarters@goodsdelete');
+
 
 
