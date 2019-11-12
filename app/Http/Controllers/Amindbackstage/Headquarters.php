@@ -40,7 +40,7 @@ class Headquarters extends Controller
     {
         $url_name = $request->input('url_name');
 //        var_dump($url_name);exit;
-        $destination = '/imgadvertis/';
+        $destination = './imgadvertis/';
         $file = $_FILES['file']; // 获取上传的图片
         //var_dump($file);exit;
         $filename = $file['name'];
@@ -48,7 +48,7 @@ class Headquarters extends Controller
         $filetype = $file['type'];
         $upload   = move_uploaded_file($file['tmp_name'], $destination . iconv("UTF-8", "gb2312", $filename));
 
-        $path = $destination . $filename;
+        $path = '/imgadvertis/' . $filename;
         if($upload){
             $response = [
                 'code' => 0,
