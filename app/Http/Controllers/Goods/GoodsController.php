@@ -166,7 +166,7 @@ class GoodsController extends Controller
     //点击店铺获取店铺详情信息及店铺下所有的商品
     public function shop_goods(Request $request){
         $shop_id = $request->input('shop_id');
-        $shop_id = 2;
+//        $shop_id = 2;
         $shop_goodsInfo = DB::table('mt_goods')
             ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
             ->where('mt_goods.shop_id',$shop_id)->paginate(7);
@@ -189,20 +189,13 @@ class GoodsController extends Controller
     //点击商品获取商品详情+店铺详情信息
     public function goodsinfo(Request $request){      
         $goods_id = $request->input('goods_id');
-//        $goods_id = 3;
-        $goodsInfo = DB::table('mt_shop')
-            ->join('mt_goods','mt_shop.shop_id','=','mt_goods.shop_id')
-            ->where('mt_goods.goods_id',$goods_id)
+        $data1=DB::table('mt_goods')
+            ->join('mt_shop','mt_shop.shop_id','=','mt_goods.shop_id')
             ->first();
-        // var_dump($goodsInfo);exit;
-        // $where=[
-        //     'shop_id'=>$goodsInfo->shop_id
-        // ];
-        // var_dump($where);die;
-        $reconmend_shop = DB::table('mt_goods')->where(['shop_id'=>$goodsInfo->shop_id,'is_recommend'=>1])->limit(3)->get();
+//        var_dump($data1);die;
+        $reconmend_shop = DB::table('mt_goods')->where(['shop_id'=>$data1->shop_id,'is_recommend'=>1])->limit(3)->get();
         //var_dump($reconmend_shop);exit;
-
-        if($goodsInfo==NULL){
+        if($data1==NULL){
             $response = [
                 'code'=>'1',
                 'msg'=>'商品不存在'
@@ -235,7 +228,7 @@ class GoodsController extends Controller
             }
             $response = [
                 'code'=>'0',
-                'goodsInfo'=>$goodsInfo,
+                'goodsInfo'=>$data1,
                 'recommend_shop'=>$reconmend_shop
             ];
             return json_encode($response,JSON_UNESCAPED_UNICODE);
