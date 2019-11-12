@@ -39,14 +39,23 @@ class Headquarters extends Controller
     public function goodsAdd(Request $request)
     {
         $url_name = $request->input('url_name');
-        var_dump($url_name);exit;
+//        var_dump($url_name);exit;
         $destination = './imgadvertis/';
         $file = $_FILES['file']; // 获取上传的图片
         //var_dump($file);exit;
         $filename = $file['name'];
         $filesize = $file['size'];
         $filetype = $file['type'];
-        $test   = move_uploaded_file($file['tmp_name'], $destination . iconv("UTF-8", "gb2312", $filename));
+        $upload   = move_uploaded_file($file['tmp_name'], $destination . iconv("UTF-8", "gb2312", $filename));
+
+        $path = $destination . $filename;
+        if($upload){
+            $data = [
+                'error' => 0,
+                'path' => $path,
+                'msg' => '上传成功'
+            ];
+        }
 
 
 
