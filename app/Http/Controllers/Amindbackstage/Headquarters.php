@@ -38,7 +38,7 @@ class Headquarters extends Controller
  */
     public function goodsAdd(Request $request)
     {
-        $url_name = $request->input('usl_name');
+        $url_name = $request->input('url_name');
         var_dump($url_name);exit;
         $destination = './imgadvertis/';
         $file = $_FILES['file']; // 获取上传的图片
