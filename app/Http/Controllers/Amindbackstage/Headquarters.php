@@ -26,7 +26,7 @@ class Headquarters extends Controller
             return (json_encode($response, JSON_UNESCAPED_UNICODE));
         }else{
             $response=[
-                'error'=>1,
+                'code'=>1,
                 'msg'=>'商品展示失败'
             ];
             return (json_encode($response, JSON_UNESCAPED_UNICODE));
