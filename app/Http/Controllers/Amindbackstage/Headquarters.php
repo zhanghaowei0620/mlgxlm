@@ -38,13 +38,18 @@ class Headquarters extends Controller
  */
     public function goodsAdd(Request $request)
     {
-        $destination = './images/';
+        $url_name = $request->input('usl_name');
+        var_dump($url_name);exit;
+        $destination = './imgadvertis/';
         $file = $_FILES['file']; // 获取上传的图片
-        var_dump($file);exit;
+        //var_dump($file);exit;
         $filename = $file['name'];
         $filesize = $file['size'];
         $filetype = $file['type'];
         $test   = move_uploaded_file($file['tmp_name'], $destination . iconv("UTF-8", "gb2312", $filename));
+
+
+
 
 //        $type_id = $request->input('type_id');          //类型id
 //        $goods_name=$request->input('goods_name');      //商品名称
@@ -54,6 +59,9 @@ class Headquarters extends Controller
 //        $goods_process = $request->input('goods_process');    //流程
 //        $goods_frequency = $request->input('goods_frequency');     //次数
 //        $goods_overdue_time = $request->input('goods_overdue_time');        //有效期
+//        $goods_appointment = $request->input('goods_appointment');          //预约提醒
+//        $goods_use_rule = $request->input('goods_use_rule');
+//
 ////        $picture=$request->input('picture');
 //        $stock=$request->input('stock');
 //        $promotion_type=$request->input('promotion_type');
