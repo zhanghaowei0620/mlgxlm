@@ -147,13 +147,13 @@ class UserController extends Controller
         $userInfo = DB::table('mt_user')->where('openid', $openid)->first();
         //var_dump($userInfo);die;
         if ($userInfo) {
-            if($is_default ==1){
-                $update=[
-                    'is_default'=>2
-                ];
-                $update_address_new = DB::table('mt_address')->update($update);
-
-                if($update_address_new == true){
+            if($is_default >=0){
+                if($is_default ==1){
+                    $update=[
+                        'is_default'=>2
+                    ];
+                    $update_address_new = DB::table('mt_address')->update($update);
+                }else{
                     $uid = $userInfo->uid;
                     $data = [
                         'uid' => $uid,
@@ -167,6 +167,7 @@ class UserController extends Controller
                         'is_default' => $is_default
                     ];
                     $add_address = DB::table('mt_address')->insertGetId($data);
+//                    var_dump($add_address);die;
                     if ($add_address) {
                         $data = [
                             'code' => 0,
@@ -187,6 +188,51 @@ class UserController extends Controller
                         die(json_encode($response, JSON_UNESCAPED_UNICODE));
                     }
                 }
+                if($is_default ==2){
+                    $update=[
+                        'is_default'=>2
+                    ];
+                    $update_address_new = DB::table('mt_address')->update($update);
+                }else{
+                    $uid = $userInfo->uid;
+                    $data = [
+                        'uid' => $uid,
+                        'address_provice' => $address_provice,
+                        'address_city' => $address_city,
+                        'address_area' => $address_area1,
+                        'address_detail' => $address_detail,
+                        'tel' => $tel,
+                        'name'=> $name,
+//                'postal' => $postal,
+                        'is_default' => $is_default
+                    ];
+                    $add_address = DB::table('mt_address')->insertGetId($data);
+//                    var_dump($add_address);die;
+                    if ($add_address) {
+                        $data = [
+                            'code' => 0,
+                            'msg' => '地址添加成功'
+                        ];
+                        $response = [
+                            'data' => $data
+                        ];
+                        return json_encode($response, JSON_UNESCAPED_UNICODE);
+                    } else {
+                        $data = [
+                            'code' => 1,
+                            'msg' => '地址添加失败'
+                        ];
+                        $response = [
+                            'data' => $data
+                        ];
+                        die(json_encode($response, JSON_UNESCAPED_UNICODE));
+                    }
+                }
+
+//                print_r($update_address_new);die;
+//                if($update_address_new >= 0){
+//
+//                }
             }else{
                 $uid = $userInfo->uid;
                 $data = [
@@ -246,9 +292,11 @@ class UserController extends Controller
             ];
             return json_encode($response, JSON_UNESCAPED_UNICODE);
         } else {
+            $data1=[
+            ];
             $data = [
-                'code' => 1,
-                'msg' => '暂未添加收货地址'
+                'code' => 0,
+                'user_addressInfo' => $data1,
             ];
             $response = [
                 'data' => $data
@@ -263,6 +311,7 @@ class UserController extends Controller
     {
         $id = $request->input('id');
         //$id = 1;
+//        var_dump($id);die;
         $address_area = $request->input('address_area');
         $address_area = explode(',', $address_area);
         $address_provice = $address_area[0];
@@ -285,9 +334,12 @@ class UserController extends Controller
                 'is_default' => $is_default,
                 'name'=>$name
             ];
-            $update_address = DB::table('mt_address')->where('id', $id)->update($update);
-            //var_dump($update_address);exit;
-            if ($update_address == true) {
+            $aa=[
+              'id'=>$id
+            ];
+            $update_address = DB::table('mt_address')->where($aa)->update($update);
+//            var_dump($update_address);exit;
+            if ($update_address >= 0) {
                 $data = [
                     'code' => 0,
                     'msg' => '修改成功'
@@ -307,12 +359,13 @@ class UserController extends Controller
                 die(json_encode($response, JSON_UNESCAPED_UNICODE));
             }
         } else {
+            //.echo 111;exit;
             $update = [
                 'is_default' => 2
             ];
             $update_address_default = DB::table('mt_address')->update($update);
-            //print_r($update_address_default);exit;
-            if ($update_address_default == true) {
+//            var_dump($update_address_default);exit;
+            if ($update_address_default >= 0) {
                 //echo 1111;exit;
                 $update = [
                     'address_provice' => $address_provice,
@@ -325,8 +378,8 @@ class UserController extends Controller
                     'name'=>$name
                 ];
                 $update_address = DB::table('mt_address')->where('id', $id)->update($update);
-                //var_dump($update_address);exit;
-                if ($update_address == true) {
+//                var_dump($update_address);exit;
+                if ($update_address >= 0) {
                     $data = [
                         'code' => 0,
                         'msg' => '修改成功'
@@ -346,6 +399,7 @@ class UserController extends Controller
                     die(json_encode($response, JSON_UNESCAPED_UNICODE));
                 }
             } else {
+//                echo 222;exit;
                 $data = [
                     'code' => 1,
                     'msg' => '修改失败'
@@ -727,62 +781,107 @@ class UserController extends Controller
             return $res_str;
         }
     }
+    //多图上传及图片上传
+    public function upload(Request $request)
+    {
+        if (!empty($_FILES)) {
+            //获取扩展名
+            $file = json_encode($_FILES);
+            $fileName = [];
+            for ($i = 0; $i < count($_FILES); $i++) {
+                $fileName[$i] = 'images' . $i;
+            }
+            $exename = $_FILES['file']['type'];
+            if ($exename != 'image/png' && $exename != 'image/jpg' && $exename != 'image/gif' && $exename != 'image/jpeg') {
+                exit('不允许的扩展名');
+            }
+            //此处地址根据项目而定，唯一注意的就是图片命名，这里难得去获取后缀，随便写了个png
+            $http_type = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')) ? 'https://' : 'http://';
+            $website = $http_type . $_SERVER['HTTP_HOST'];
+            if (!is_dir(public_path() . '/images')) mkdir(public_path() . '/images', 0777, true);
+            $imageSavePath = '/images' . '/' . uniqid() . rand(1, 100) . '.jpg';
+            $uploaded = move_uploaded_file($_FILES['file']['tmp_name'], public_path() . $imageSavePath);
+            $path = $website . $imageSavePath;
+            if ($uploaded) {
+                $path1=[
+                  'path'=>$path
+                ];
+                $response=[
+                    'code'=>0,
+                    'data'=>$path1,
+                    'msg'=>'上传成功'
+                ];
+                return (json_encode($response,JSON_UNESCAPED_UNICODE));
+            } else {
+                $response=[
+                    'code'=>1,
+                    'msg'=>'上传失败'
+                ];
+                return (json_encode($response,JSON_UNESCAPED_UNICODE));
+            }
+        } else {
+            echo 2;
+        }
+
+    }
 
     //添加到银行卡包
-    public function add_bankcard(Request $request){
+    public function add_bankcard(Request $request)
+    {
         $bankcard_name = $request->input('bankcard_name');
         $bankcard_num = $request->input('bankcard_num');
         $bankcard_type = $request->input('bankcard_type');
         $bank = $request->input('bank');
         $openid = Redis::get('openid');
-        if($openid){
+        if ($openid) {
             $userInfo = DB::table('mt_user')->where('openid', $openid)->first();
             //var_dump($userInfo);exit;
             $uid = $userInfo->uid;
             $insert = [
-                'bankcard_name'=>$bankcard_name,
-                'bankcard_num'=>$bankcard_num,
-                'bankcard_type'=>$bankcard_type,
-                'bank'=>$bank,
-                'uid'=>$uid
+                'bankcard_name' => $bankcard_name,
+                'bankcard_num' => $bankcard_num,
+                'bankcard_type' => $bankcard_type,
+                'bank' => $bank,
+                'uid' => $uid
             ];
             $where = [
                 'bankcard_num' => $bankcard_num
             ];
             $bankInfo = DB::table('mt_bankcard')->where($where)->get();
-            if($bankInfo){
+//            var_dump($bankInfo);die;
+//            if($bankInfo){
+//                $data = [
+//                    'code' => '1',
+//                    'msg' => '此卡已存在你的卡包中'
+//                ];
+//                $response = [
+//                    'data' => $data
+//                ];
+//                die(json_encode($response, JSON_UNESCAPED_UNICODE));
+//            }else{
+            $bankInsert = DB::table('mt_bankcard')->insertGetId($insert);
+            if ($bankInsert == true) {
                 $data = [
-                    'code' => '1',
-                    'msg' => '此卡已存在你的卡包中'
+                    'code' => '0',
+                    'msg' => '添加成功'
+                ];
+                $response = [
+                    'data' => $data
+                ];
+                return json_encode($response, JSON_UNESCAPED_UNICODE);
+            } else {
+                $data = [
+                    'code' => '3',
+                    'msg' => '添加失败'
                 ];
                 $response = [
                     'data' => $data
                 ];
                 die(json_encode($response, JSON_UNESCAPED_UNICODE));
-            }else{
-                $bankInsert = DB::table('mt_bankcard')->insertGetId($insert);
-                if($bankInsert == true){
-                    $data = [
-                        'code' => '0',
-                        'msg' => '添加成功'
-                    ];
-                    $response = [
-                        'data' => $data
-                    ];
-                    return json_encode($response, JSON_UNESCAPED_UNICODE);
-                }else{
-                    $data = [
-                        'code' => '3',
-                        'msg' => '添加失败'
-                    ];
-                    $response = [
-                        'data' => $data
-                    ];
-                    die(json_encode($response, JSON_UNESCAPED_UNICODE));
-                }
             }
+//            }
 
-        }else{
+        } else {
             $data = [
                 'code' => 2,
                 'msg' => '请先登录'
@@ -792,10 +891,69 @@ class UserController extends Controller
             ];
             die(json_encode($response, JSON_UNESCAPED_UNICODE));
         }
-
-
-
     }
+    //银行卡列表
+       public function  bankcard_list(Request $request)
+        {
+            $openid = Redis::get('openid');
+            $userInfo = DB::table('mt_user')->where('openid', $openid)->first();
+            //var_dump($userInfo);exit;
+            $uid = $userInfo->uid;
+            $data=DB::table('mt_bankcard')
+                ->where('uid',$uid)
+                ->select()
+                ->get(['bankcard_type','bankcard_num','bank','bankcard_name']);
+            if($data){
+                $data1=[
+                    'code'=>0,
+                    'respo'=>$data,
+                    'msg'=>'展示成功',
+                ];
+                $response=[
+                    'data'=>$data1,
+                ];
+                die(json_encode($response,JSON_UNESCAPED_UNICODE));
+            }else{
+                $data1=[
+                    'code'=>1,
+                    'msg'=>'展示失败',
+                ];
+                $response=[
+                    'data'=>$data1,
+                ];
+                die(json_encode($response,JSON_UNESCAPED_UNICODE));
+            }
+        }
+
+      //银行卡解绑（删除）
+        public function  add_bankcard_delete(Request $request)
+        {
+            $bankcard_id=$request->input('bankcard_id');
+            $where=[
+                'bankcard_id'=>$bankcard_id
+            ];
+            $data=DB::table('mt_bankcard')->where($where)->delete();
+            if($data){
+                $data1=[
+                    'code'=>0,
+                    'msg'=>'解绑成功',
+                ];
+                $response=[
+                    'data'=>$data1,
+                ];
+                return (json_encode($response, JSON_UNESCAPED_UNICODE));
+            }else{
+                $data1=[
+                    'code'=>0,
+                    'msg'=>'解绑失败',
+                ];
+                $response=[
+                    'data'=>$data1,
+                ];
+                return (json_encode($response, JSON_UNESCAPED_UNICODE));
+            }
+        }
+
 
     //签到
     public function user_sign(Request $request){
@@ -804,6 +962,7 @@ class UserController extends Controller
         //获取一周的第一天，注意第一天应该是星期一
         $sunday_str = $timestr;
         $sunday = date('Y-m-d', $sunday_str);
+//        var_dump($sunday);die;
         //获取一周的最后一天，注意最后一天是星期六
         $strday_str = $timestr + (7-$now_day)*60*60*24;
         $strday = date('Y-m-d', $strday_str);
@@ -823,10 +982,10 @@ class UserController extends Controller
         //var_dump($openid);
         if($openid){
             $userInfo = DB::table('mt_user')->where('openid', $openid)->first();
-            //var_dump($userInfo);exit;
+//            var_dump($userInfo);exit;
             $uid = $userInfo->uid;
             $user_signInfo = DB::table('mt_user_sign')->where('uid',$uid)->first();
-            //var_dump($user_signInfo);exit;
+//            var_dump($user_signInfo);exit;
             if($user_signInfo == NULL){
                 $insert = [
                     'uid'=>$uid,
@@ -848,7 +1007,7 @@ class UserController extends Controller
                 }else{
                     $data = [
                         'code'=>0,
-                        'msg'=>'签到成功'
+                        'msg'=>'签到失败'
                     ];
                     $response = [
                         'data' => $data
@@ -868,6 +1027,7 @@ class UserController extends Controller
                     ->where('sign_time', '>=', $yesterday_start)
                     ->where('sign_time', '<=', $yesterday_end)
                     ->first();//判断昨天是否已签到过
+//                var_dump($id_select);die;
                 if($id_select == NULL){
                     $issign = Db::table('mt_user_sign')
                         ->where('uid', '=', $uid)
@@ -890,6 +1050,7 @@ class UserController extends Controller
                             'integral'=>$issign->integral+1,
                             'sign_num'=>1
                         ];
+                        var_dump($update);die;
                         $updateInfo = DB::table('mt_user_sign')->where('uid',$uid)->update($update);
                         if($updateInfo==true){
                             $data = [

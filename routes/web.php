@@ -18,7 +18,7 @@ Route::get('/', function () {
 //Route::get('/访问方式', '文件夹名\控制器名@方法名');
 Route::get('/index', 'Index\IndexController@index');   //首页
 
-Route::get('/index_coupon', 'Index\IndexController@index_coupon');   //首页-优惠券
+Route::get('/index_coupon', 'Index\IndexController@index_coupon');    //首页-优惠券
 
 Route::get('/coupon_receive', 'Index\IndexController@coupon_receive');
 
@@ -37,6 +37,14 @@ Route::get('/shop_type', 'User\UserController@shop_type');     //点击获取主
 Route::get('/accessToken', 'User\UserController@accessToken');   //accessToken
 
 Route::post('/bankcard', 'User\UserController@bankcard');   //银行卡接口
+
+Route::post('/upload', 'User\UserController@upload');   //图片上传（多图）
+
+Route::get('/add_bankcard', 'User\UserController@add_bankcard');   //银行卡接口
+
+Route::get('/bankcard_list', 'User\UserController@bankcard_list');   //银行卡列表
+
+Route::get('/add_bankcard_delete', 'User\UserController@add_bankcard_delete');   //银行卡解绑（删除）
 
 Route::get('/user_coupon', 'User\UserController@user_coupon');    //优惠券
 
@@ -87,6 +95,9 @@ Route::get('user_sign', 'User\UserController@user_sign');    //签到
 Route::get('/whole_shop', 'Goods\GoodsController@whole_shop');    //全部店铺
 
 Route::get('/nearby_shop', 'Goods\GoodsController@nearby_shop');   //附近店铺
+
+Route::get('/displace', 'Goods\GoodsController@displace');   //置换商城
+
 
 
 /*
