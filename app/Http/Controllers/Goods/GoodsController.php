@@ -572,8 +572,8 @@ class GoodsController extends Controller
     public function nearby_shop(Request $request){
 //        $lat1 = '112.558505';
 //        $lng1 = '37.818498';
-        $lat1 = $request->input('lat');
-        $lng1 = $request->input('lng');
+        $lat1 = $request->input('lat');//经度
+        $lng1 = $request->input('lng');//纬度
 
         $shopInfo =  DB::select("SELECT s.shop_id,shop_name,shop_address_provice,shop_address_city,shop_address_area,shop_score,goods_id,goods_name,price,market_price,introduction,picture,promotion_price,prople,shop_label,shop_status, 6378.138*2*ASIN(SQRT(POW(SIN(($lat1*PI()/180-lat*PI()/180)/2),2)+COS($lat1*PI()/180)*COS(lat*PI()/180)*POW(SIN(($lng1*PI()/180-lng*PI()/180)/2),2))) AS juli  FROM mt_shop s inner join mt_goods g on s.shop_id = g.shop_id  where shop_status = 1 group by juli order by juli");
         //var_dump($shopInfo);exit;
@@ -593,6 +593,9 @@ class GoodsController extends Controller
 //            ->where('mt_goods.is_recommend',1)
 //            ->get(['mt_shop.shop_id','shop_name','shop_address_provice','shop_address_city','shop_address_area','shop_score','shop_desc','shop_label','shop_logo','goods_id','goods_name','price','picture','latitude_longitude'])->toArray();
     }
+
+
+
 
     //距离算法
     public function getDistance($lat1, $lng1, $lat2, $lng2){
