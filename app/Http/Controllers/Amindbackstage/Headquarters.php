@@ -51,7 +51,7 @@ class Headquarters extends Controller
         $path = $destination . $filename;
         if($upload){
             $response = [
-                'error' => 0,
+                'code' => 0,
                 'path' => $path,
                 'msg' => '上传成功'
             ];
