@@ -699,11 +699,23 @@ class Admin_loginController extends Controller
 //        var_dump($where);die;
         //shop_examine默认为0待审核，1审核通过
         $data1=[
-            'shop_status'=>0
+            'shop_status'=>2
         ];
         $data=DB::table('mt_shop')->where($where)->update($data1);
 //        var_dump($data);die;
         if($data){
+            $shopUserInfo = DB::table('mt_shop_user')->where('shop_id',$shop_id)->get()->toArray();
+            if(!$shopUserInfo){
+                $shopPhone = DB::table('mt_shop')->where('shop_id',$shop_id)->first('shop_phone');
+//                var_dump($shopPhone);exit;
+                $shop_phone = $shopPhone->shop_phone;
+                $insert = [
+                    'user_name'=>$shop_phone,
+                    'user_pwd'=>password_hash($shop_phone,PASSWORD_DEFAULT),
+                    'shop_id'=>$shop_id
+                ];
+                DB::table('mt_shop_user')->insertGetId($insert);
+            }
             $response=[
                 'code'=>0,
                 'data'=>$data,
