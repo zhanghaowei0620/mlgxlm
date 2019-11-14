@@ -84,40 +84,23 @@ class Headquarters extends Controller
 
     //商品添加
     public function goodsAdd(Request $request){
-        $t_id = $request->input('t_id');          //类型id
-        $shop_id = $request->input('shop_id');   //店铺id
-        $goods_name=$request->input('goods_name');      //商品名称
-        $price=$request->input('price');    //价格
-        $goods_effect = $request->input('goods_effect');   //功效
-        $goods_duration = $request->input('goods_duration');     //时长
-        $goods_process = $request->input('goods_process');    //流程
-        $goods_frequency = $request->input('goods_frequency');     //次数
-        $goods_overdue_time = $request->input('goods_overdue_time');        //有效期
-        $goods_appointment = $request->input('goods_appointment');          //预约提醒
-        $goods_use_rule = $request->input('goods_use_rule');    //使用规则
-        $goods_planting_picture = $request->input('goods_planting_picture');   //轮播图
-        $goods_picture = $request->input('picture');     //主图(最大)
-        $goods_picture2 = $request->input('picture2');     //主图(第二大)
-        $goods_picture3 = $request->input('picture3');     //主图(最小)
-        $goods_picture_detail = $request->input('goods_picture_detail');     //图文详情
-
         $insert = [
-            't_id'=>$t_id,
-            'goods_name'=>$goods_name,
-            'price'=>$price,
-            'goods_effect'=>$goods_effect,
-            'goods_duration'=>$goods_duration,
-            'goods_process'=>$goods_process,
-            'goods_frequency'=>$goods_frequency,
-            'goods_overdue_time'=>$goods_overdue_time,
-            'goods_appointment'=>$goods_appointment,
-            'goods_use_rule'=>$goods_use_rule,
-            'goods_planting_picture'=>$goods_planting_picture,
-            'picture'=>$goods_picture,
-            'picture2'=>$goods_picture2,
-            'picture3'=>$goods_picture3,
-            'goods_picture_detail'=>$goods_picture_detail,
-            'shop_id'=>$shop_id
+            't_id'=>$request->input('t_id'),
+            'goods_name'=>$request->input('goods_name'),
+            'price'=>$request->input('price'),
+            'goods_effect'=>$request->input('goods_effect'),
+            'goods_duration'=>$request->input('goods_duration'),
+            'goods_process'=>$request->input('goods_process'),
+            'goods_frequency'=>$request->input('goods_frequency'),
+            'goods_overdue_time'=> $request->input('goods_overdue_time'),
+            'goods_appointment'=>$request->input('goods_appointment'),
+            'goods_use_rule'=>$request->input('goods_use_rule'),
+            'goods_planting_picture'=>$request->input('goods_planting_picture'),
+            'picture'=>$request->input('picture'),
+            'picture2'=>$request->input('picture2'),
+            'picture3'=>$request->input('picture3'),
+            'goods_picture_detail'=>$request->input('goods_picture_detail'),
+            'shop_id'=>$request->input('shop_id')
         ];
 
         $goodsInsert = DB::table('mt_goods')->insertGetId($insert);
