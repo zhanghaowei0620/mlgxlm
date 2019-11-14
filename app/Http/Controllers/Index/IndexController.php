@@ -89,6 +89,11 @@ class IndexController extends Controller
                 ->join('mt_type','mt_goods.t_id','=','mt_type.t_id')
                 ->where(['promotion_type'=>3],['mt_shop.shop_address_city'=>$shop_address_city])
                 ->get(['mt_goods.goods_id','goods_name','goods_type','market_price','price','picture','mt_type.t_name','introduction','star','mt_shop.shop_name','goods_gd_num'])->toArray();
+            $limitedInfo= DB ::table('mt_goods')
+                ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
+                ->join('mt_type','mt_goods.t_id','=','mt_type.t_id')
+                ->where(['promotion_type'=>4],['mt_shop.shop_address_city'=>$shop_address_city])
+                ->get(['mt_goods.goods_id','goods_name','goods_type','limited_price','price','picture','mt_type.t_name','star','mt_shop.shop_name','limited_prople'])->toArray();
             $shop_id = DB::table('mt_shop')
                 ->join('mt_goods','mt_goods.shop_id','=','mt_shop.shop_id')
 //                ->where(['mt_shop.shop_address_city'=>$shop_address_city])
