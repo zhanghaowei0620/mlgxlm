@@ -226,10 +226,13 @@ class GoodsController extends Controller
                 ];
                 DB::table('mt_history')->insertGetId($data);
             }
-            $response = [
+            $data2=[
                 'code'=>'0',
                 'goodsInfo'=>$data1,
                 'recommend_shop'=>$reconmend_shop
+            ];
+            $response = [
+                'data'=>$data2
             ];
             return json_encode($response,JSON_UNESCAPED_UNICODE);
         }
