@@ -191,6 +191,7 @@ class GoodsController extends Controller
         $goods_id = $request->input('goods_id');
         $data1=DB::table('mt_goods')
             ->join('mt_shop','mt_shop.shop_id','=','mt_goods.shop_id')
+            ->where(['goods_id'=>$goods_id])
             ->first();
 //        var_dump($data1);die;
         $reconmend_shop = DB::table('mt_goods')->where(['shop_id'=>$data1->shop_id,'is_recommend'=>1])->limit(3)->get();
