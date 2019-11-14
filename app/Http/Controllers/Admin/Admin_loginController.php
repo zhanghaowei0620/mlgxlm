@@ -640,21 +640,6 @@ class Admin_loginController extends Controller
      */
     public function settled(Request $request)
     {
-        $shop_name=$request->input('shop_name');
-        $shop_phone=$request->input('shop_phone');
-        $shop_address_provice=$request->input('shop_address_provice');
-        $shop_address_city=$request->input('shop_address_city');
-        $shop_address_area=$request->input('shop_address_area');
-        $shop_address_detail=$request->input('shop_address_detail');
-        $lat=$request->input('lat');
-        $lng=$request->input('lng');
-        $shop_contacts=$request->input('shop_contacts');
-        $shop_certificate=$request->input('shop_certificate');
-        $shop_project=$request->input('shop_project');
-//        $data=DB::table('mt_shop')
-//            ->select(['shop_name','shop_phone','shop_address_provice','shop_address_city','shop_address_area','shop_address_detail','latitude_longitude','shop_contacts','shop_certificate','shop_project'])
-//            ->paginate(7);
-
         $data=DB::table('mt_type')
             ->join('mt_shop','mt_shop.t_id','=','mt_type.t_id')
             ->select(['mt_shop.shop_id','mt_shop.shop_name','mt_shop.shop_phone','mt_shop.shop_address_provice','mt_shop.shop_address_city','mt_shop.shop_address_area','mt_shop.shop_address_detail','mt_shop.lat','mt_shop.lng','mt_shop.shop_contacts','mt_shop.shop_certificate','mt_type.t_name'])
@@ -685,8 +670,6 @@ class Admin_loginController extends Controller
         $where=[
           'shop_id'=>$shop_id
         ];
-//        var_dump($where);die;
-        //shop_examine默认为0待审核，1审核通过
         $data1=[
             'shop_status'=>2
         ];
@@ -705,7 +688,7 @@ class Admin_loginController extends Controller
                     'admin_judge'=>2,
                     'shop_id'=>$shop_id
                 ];
-                DB::table('mt_shop_user')->insertGetId($insert);
+                DB::table('admin_user')->insertGetId($insert);
             }
             $response=[
                 'code'=>0,
