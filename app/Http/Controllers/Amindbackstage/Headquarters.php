@@ -38,7 +38,7 @@ class Headquarters extends Controller
         }elseif($admin_judge == 2){
             $data=DB::table('mt_goods')
                 ->where('shop_id',$shop_id)
-                ->select(['goods_id','goods_name','price','picture','stock','promotion_type','goods_gd_num','goods_effect','goods_duration','goods_process','goods_frequency','goods_overdue_time','goods_appointment'])
+                ->select(['goods_id','goods_name','price','picture','stock','goods_gd_num','goods_effect','goods_duration','goods_process','goods_frequency','goods_overdue_time','goods_appointment','is_promotion','limited_buy'])
                 ->paginate(6);
 //        var_dump($data);exit;
             if($data){
