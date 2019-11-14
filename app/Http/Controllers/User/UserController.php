@@ -444,6 +444,7 @@ class UserController extends Controller
     //用户中心
     public function user_center(Request $request)
     {
+        //$openid = Redis::set('openid','o9VUc5HEPNrYq5d5iQFygPVbX7EM');
         $openid = Redis::get('openid');
         //var_dump($openid);exit;
         if ($openid) {
@@ -463,7 +464,11 @@ class UserController extends Controller
                 $response = [
                     'data' => $data
                 ];
+<<<<<<< HEAD
+                return (json_encode($response, JSON_UNESCAPED_UNICODE));
+=======
                 return json_encode($response, JSON_UNESCAPED_UNICODE);
+>>>>>>> 85ec9dd8cd4272c709e579f533065310ad8c250f
             }
         } else {
             $data = [

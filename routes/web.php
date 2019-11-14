@@ -96,7 +96,10 @@ Route::get('/whole_shop', 'Goods\GoodsController@whole_shop');    //全部店铺
 
 Route::get('/nearby_shop', 'Goods\GoodsController@nearby_shop');   //附近店铺
 
-Route::get('/displace', 'Goods\GoodsController@displace');   //置换商城
+//Route::get('/displace', 'Goods\GoodsController@displace');   //置换商城
+
+Route::get('/subscribe', 'Goods\GoodsController@subscribe');   //预约
+
 
 
 
