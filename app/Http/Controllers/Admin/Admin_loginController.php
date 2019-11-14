@@ -704,14 +704,16 @@ class Admin_loginController extends Controller
         $data=DB::table('mt_shop')->where($where)->update($data1);
 //        var_dump($data);die;
         if($data){
-            $shopUserInfo = DB::table('mt_shop_user')->where('shop_id',$shop_id)->get()->toArray();
+            $shopUserInfo = DB::table('admin_user')->where('shop_id',$shop_id)->get()->toArray();
             if(!$shopUserInfo){
                 $shopPhone = DB::table('mt_shop')->where('shop_id',$shop_id)->first('shop_phone');
 //                var_dump($shopPhone);exit;
                 $shop_phone = $shopPhone->shop_phone;
                 $insert = [
-                    'user_name'=>$shop_phone,
-                    'user_pwd'=>password_hash($shop_phone,PASSWORD_DEFAULT),
+                    'admin_user'=>$shop_phone,
+                    'admin_pwd'=>password_hash($shop_phone,PASSWORD_DEFAULT),
+                    'admin_tel'=>$shop_phone,
+                    'admin_judge'=>2,
                     'shop_id'=>$shop_id
                 ];
                 DB::table('mt_shop_user')->insertGetId($insert);
