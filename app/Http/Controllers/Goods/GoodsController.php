@@ -612,20 +612,66 @@ class GoodsController extends Controller
         return round($calculatedDistance);
     }
 
-    //置换商城
-    public function displace(Request $request)
+    //预约
+    public function subscribe(Request $request)
     {
-        $openid = Redis::set('openid','o9VUc5HEPNrYq5d5iQFygPVbX7EM');
-//        $openid = Redis::get('openid');
-        $data=DB::table('mt_displace')
-//            ->where('openid',$openid)
-            ->join('mt_shop','mt_shop.shop_id','=','mt_displace.shop_id')
-            ->join('mt_goods','mt_goods.goods_id','=','mt_displace.goods_id')
-            ->join('mt_address','mt_address.id','=','mt_displace.id')
-            ->select(['mt_shop.shop_name','mt_goods.goods_name','mt_goods.stock','mt_goods.market_price','mt_address.address_provice','mt_address.address_city','mt_address.address_area','mt_address.address_detail','mt_displace.displace_time'])
-            ->paginate(4);
-        var_dump($data);die;
+        $goods_id=$request->input('goods_id');
+        $subscribe_time=$request->input('subscribe_time');
+        $subscrib_sum=$request->input('subscrib_sum');
+        $subscribe_tel=$request->input('subscribe_tel');
+        $subscribe_text=$request->input('subscribe_text');
+        $data=DB::table('mt_goods')
+            ->where(['goods_id'=>$goods_id])
+            ->first(['goods_name','market_price']);
+//        var_dump($data);die;
+        $subscribeAdd=$data->market_price;
+        $aa=$subscribeAdd * $subscrib_sum;
+//        var_dump($aa);die;
+        $subscribeInfo=$data->goods_name;
+        $info1=[
+            'subscribe_time'=>$subscribe_time,
+            'subscrib_sum'=>$subscrib_sum,
+            'subscribe_tel'=>$subscribe_tel,
+            'subscribe_text'=>$subscribe_text,
+            'subscribe_money'=>$aa
+        ];
+        $info=DB::table('mt_subscribe')
+            ->insert($info1);
+        $datainfo=[
+          'data'=>$info
+        ];
+        if($info == true){
+            $response = [
+                'code'=>0,
+                'msg'=>"预约成功",
+                'data'=>$datainfo,
+            ];
+            return (json_encode($response, JSON_UNESCAPED_UNICODE));
+        }else{
+            $response = [
+                'code'=>1,
+                'msg'=>"预约失败",
+            ];
+            return (json_encode($response, JSON_UNESCAPED_UNICODE));
+        }
+
+
     }
+
+//    //置换商城
+//    public function displace(Request $request)
+//    {
+//        $openid = Redis::set('openid','o9VUc5HEPNrYq5d5iQFygPVbX7EM');
+////        $openid = Redis::get('openid');
+//        $data=DB::table('mt_displace')
+////            ->where('openid',$openid)
+//            ->join('mt_shop','mt_shop.shop_id','=','mt_displace.shop_id')
+//            ->join('mt_goods','mt_goods.goods_id','=','mt_displace.goods_id')
+//            ->join('mt_address','mt_address.id','=','mt_displace.id')
+//            ->select(['mt_shop.shop_name','mt_goods.goods_name','mt_goods.stock','mt_goods.market_price','mt_address.address_provice','mt_address.address_city','mt_address.address_area','mt_address.address_detail','mt_displace.displace_time'])
+//            ->paginate(4);
+//        var_dump($data);die;
+//    }
 
 
 

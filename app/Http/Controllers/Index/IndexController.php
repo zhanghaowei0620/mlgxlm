@@ -41,7 +41,7 @@ class IndexController extends Controller
                 ->join('mt_shop','mt_shop.shop_id','=','mt_goods.shop_id')
                 ->where(['is_recommend'=>1,'mt_shop.shop_address_city'=>$shop_address_city])
                 ->get(['goods_id','goods_name','price','picture']);       //推荐
-            var_dump($recommend);exit;
+//            var_dump($recommend);exit;
 
             $data = [
                 'type'          =>  $type,
@@ -61,32 +61,41 @@ class IndexController extends Controller
             //var_dump($response);exit;
             return json_encode($response,JSON_UNESCAPED_UNICODE);
         }else{
+//            $goodsInfo = DB::table('mt_goods')
+//                ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
+//                ->where(['promotion_type'=>1,'mt_shop.shop_address_city'=>$shop_address_city])
+//                ->get(['shop_name','shop_address_provice','shop_address_city','shop_address_area','shop_score','goods_id','goods_name','price','market_price','introduction','picture','promotion_price','prople','shop_label'])->toArray();   //店铺精选   默认为1
+            //var_dump($goodsInfo);exit;
+            //服务精选的店铺
+//            $goodsInfo = DB::table('mt_goods')
+//                ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
+//                ->where(['promotion_type'=>1],['mt_shop.shop_address_city'=>$shop_address_city])
+//                ->get(['shop_name','shop_address_provice','shop_address_city','shop_address_area','shop_score','goods_id','goods_name','price','market_price','introduction','picture','promotion_price','prople','shop_label'])->toArray();
+//            var_dump($goodsInfo);exit;
             $goodsInfo = DB::table('mt_goods')
                 ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
-                ->where(['promotion_type'=>1,'mt_shop.shop_address_city'=>$shop_address_city])
-                ->get(['shop_name','shop_address_provice','shop_address_city','shop_address_area','shop_score','goods_id','goods_name','price','market_price','introduction','picture','promotion_price','prople','shop_label'])->toArray();   //店铺精选   默认为1
-            //var_dump($goodsInfo);exit;
-
-
+                ->where(['promotion_type'=>1],['mt_shop.shop_address_city'=>$shop_address_city])
+                ->get(['mt_goods.goods_id','goods_name','goods_type','limited_price','promotion_price','stock','picture','description'])->toArray();
+//            var_dump($goodsInfo);exit;
             $shop_id = DB::table('mt_shop')
                 ->join('mt_goods','mt_goods.shop_id','=','mt_shop.shop_id')
-                ->where(['mt_shop.shop_address_city'=>$shop_address_city])
+//                ->where(['mt_shop.shop_address_city'=>$shop_address_city])
                 ->orderBy('shop_add_time')
                 ->limit(3)
                 ->get('mt_shop.shop_id');
-            //var_dump($shop_id);exit;
+//            var_dump($shop_id);exit;
             $week_newshop = DB::table('mt_shop')
                 ->join('mt_goods','mt_goods.shop_id','=','mt_shop.shop_id')
-                ->where(['mt_shop.shop_address_city'=>$shop_address_city])
+//                ->where(['mt_shop.shop_address_city'=>$shop_address_city])
                 ->orderBy('shop_add_time')
                 ->limit(3)
                 ->get(['mt_shop.shop_id','shop_name','shop_Ename','shop_desc','shop_label','shop_address_provice','shop_address_city','shop_address_area','shop_score'])->toArray();    //本周新店
-            //var_dump($week_newshop);exit;
+//            var_dump($week_newshop);exit;
             $recommend = DB::table('mt_goods')
                 ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
-                ->where(['is_recommend'=>1,'shop_address_city'=>$shop_address_city])
+                ->where(['is_recommend'=>1],['shop_address_city'=>$shop_address_city])
                 ->get(['goods_id','goods_name','price','picture']);       //推荐
-            //var_dump($recommend);exit;
+//            var_dump($recommend);exit;
 
             $data = [
                 'type'          =>  $type,
