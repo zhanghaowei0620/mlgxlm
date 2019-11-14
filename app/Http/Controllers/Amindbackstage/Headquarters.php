@@ -15,8 +15,9 @@ class Headquarters extends Controller
     {
         $data=DB::table('mt_goods')
             ->join('mt_shop','mt_shop.shop_id','=','mt_goods.shop_id')
-            ->select(['goods_id','goods_name','market_price','price','picture','stock','promotion_type','goods_gd_num','mt_shop.shop_name'])
+            ->select(['goods_id','goods_name','market_price','price','picture','stock','promotion_type','goods_gd_num','mt_shop.shop_name','mt_goods.goods_effect','mt_goods.goods_duration','mt_goods.goods_process','mt_goods.goods_frequency','mt_goods.goods_overdue_time','mt_goods.goods_appointment'])
             ->paginate(6);
+//        var_dump($data);exit;
         if($data){
             $response=[
                 'code'=>0,
@@ -34,7 +35,7 @@ class Headquarters extends Controller
     }
 
 /*
- * 商品添加
+ * 上传文件
  */
     public function upload(Request $request)
     {
@@ -147,23 +148,28 @@ class Headquarters extends Controller
         $data=DB::table('mt_goods')->where($where)->delete();
         if($data){
             $response=[
-                'code'=>1,
-                'data'=>$data,
+                'code'=>0,
                 'msg'=>'商品删除成功'
             ];
-            return (json_encode($response, JSON_UNESCAPED_UNICODE));
+            return json_encode($response, JSON_UNESCAPED_UNICODE);
         }else{
             $response=[
                 'code'=>1,
                 'msg'=>'商品删除失败'
             ];
-            return (json_encode($response, JSON_UNESCAPED_UNICODE));
+            die(json_encode($response, JSON_UNESCAPED_UNICODE));
         }
     }
 
     //商品修改
     public function goodsUpdate(Request $request){
         $goods_id = $request->input('goods_id');
+
+    }
+
+
+    //拼团
+    public function admin_Assemble(Request $request){
 
     }
 }

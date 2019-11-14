@@ -16,23 +16,35 @@ class Admin_loginController extends Controller
     {
         $admin_user=$request->input('admin_user');
         $admin_pwd=$request->input('admin_pwd');
-        $admin_judge=$request->input('admin_judge');
-        $arr=password_hash($admin_pwd,PASSWORD_DEFAULT);
         $where=[
           'admin_user'=>$admin_user
         ];
         $data=DB::table('admin_user')->where($where)->first();
-        $judge=[
-          'admin_judge'=>1
-        ];
         if($data){
             if(password_verify($admin_pwd,$data->admin_pwd)){
+                if($data->admin_judge == 2){
+                    $judge=[
+                        'admin_judge'=>$data->admin_judge,
+                        'shop_id'=>$data->shop_id
+                    ];
                     $response=[
                         'code'=>0,
                         'data'=>$judge,
                         'msg'=>'登录成功'
                     ];
                     return (json_encode($response,JSON_UNESCAPED_UNICODE));
+                }else{
+                    $judge=[
+                        'admin_judge'=>$data->admin_judge,
+                    ];
+                    $response=[
+                        'code'=>0,
+                        'data'=>$judge,
+                        'msg'=>'登录成功'
+                    ];
+                    return (json_encode($response,JSON_UNESCAPED_UNICODE));
+                }
+
             }else{
                         $response=[
                         'code'=>1,
@@ -53,12 +65,6 @@ class Admin_loginController extends Controller
      */
     public function userlist(Request $request)
     {
-        $admin_id=$request->input('admin_id');
-        $admin_names=$request->input('admin_names');
-        $admin_tel=$request->input('admin_tel');
-        $admin_consumption=$request->input('admin_consumption');
-        $admin_user_integral=$request->input('admin_user_integral');
-        $admin_user_money=$request->input('admin_user_money');
         $data=DB::table('admin_user')
             ->select(['admin_id','admin_names','admin_tel','admin_consumption','admin_user_integral','admin_user_money'])
             ->paginate(7);
@@ -137,17 +143,8 @@ class Admin_loginController extends Controller
      */
     public function search(Request $request)
     {
-        $admin_id=$request->input('admin_id');
         $admin_names=$request->input('admin_names');
         $admin_tel=$request->input('admin_tel');
-        $admin_consumption=$request->input('admin_consumption');
-        $admin_user_integral=$request->input('admin_user_integral');
-        $admin_user_money=$request->input('admin_user_money');
-//        $data=DB::table('admin_user')
-//        ->where('admin_tel' , '=' , "$admin_tel")
-//        ->orwhere('admin_names' , '=' , "$admin_names")
-//        ->get(['admin_user_id','admin_names','admin_tel','admin_consumption','admin_user_integral','admin_user_money'])
-//        ->toArray();
         if($admin_tel){
             $data=DB::table('admin_user')
                 ->where('admin_tel' , '=' , "$admin_tel")
@@ -226,12 +223,13 @@ class Admin_loginController extends Controller
             $response=[
                 'code'=>0,
                 'data'=>$data,
-                'msg'=>'',
+                'msg'=>'成功',
             ];
             die(json_encode($response,JSON_UNESCAPED_UNICODE));
         }else{
             $response=[
                 'code'=>1,
+                'msg'=>'失败'
             ];
             die(json_encode($response,JSON_UNESCAPED_UNICODE));
         }
@@ -320,19 +318,8 @@ class Admin_loginController extends Controller
     public function business(Request $request)
     {
         $data1=[
-          'shop_status'=>0
+          'shop_status'=>2
         ];
-        $shop_id=$request->input('shop_id');
-        $shop_name=$request->input('shop_name');
-        $shop_phone=$request->input('shop_phone');
-        $shop_account=$request->input('shop_account');
-        $shop_cash=$request->input('shop_cash');
-        $shop_address_provice=$request->input('shop_address_provice');
-        $shop_address_city=$request->input('shop_address_city');
-        $shop_address_area=$request->input('shop_address_area');
-        $shop_address_detail=$request->input('shop_address_detail');
-        $shop_sales=$request->input('shop_sales');
-        $shop_contacts=$request->input('shop_contacts');
         $data=DB::table('mt_shop')
             ->where($data1)
             ->select(['shop_id','shop_name','shop_phone','shop_account','shop_cash','shop_address_detail','shop_sales','shop_contacts','shop_address_provice','shop_address_city','shop_address_area'])
@@ -462,15 +449,12 @@ class Admin_loginController extends Controller
     public function businessblack(Request $request)
     {
         $shop_id=$request->input('shop_id');
-//        var_dump($shop_id);die;
-//        $shop_id=10;
-        $shop_status=$request->input('shop_status');
         $where=[
             'shop_id'=>$shop_id
         ];
 //        var_dump($where);die;
         $data1=[
-            'shop_status'=>3
+            'shop_status'=>1
         ];
         $data=DB::table('mt_shop')->where($where)->update($data1);
 //        var_dump($data);die;
@@ -496,12 +480,6 @@ class Admin_loginController extends Controller
      */
     public function businessblacktype(Request $request)
     {
-        $shop_id=$request->input('shop_id');
-        $shop_phone=$request->input('shop_phone');
-        $shop_account=$request->input('shop_account');
-        $shop_sales=$request->input('shop_sales');
-        $shop_name=$request->input('shop_name');
-        $shop_contacts=$request->input('shop_contacts');
         $data2=[
             'shop_status'=>1
         ];
@@ -537,7 +515,7 @@ class Admin_loginController extends Controller
             'shop_id'=>$shop_id
         ];
         $data1=[
-            'shop_status'=>0
+            'shop_status'=>2
         ];
         $data=DB::table('mt_shop')->where($where)->update($data1);
         if($data){
@@ -611,16 +589,8 @@ class Admin_loginController extends Controller
 */
     public function  businesssettled(Request $request)
     {
-        $shop_id=$request->input('shop_id');
-        $shop_name=$request->input('shop_name');
-        $shop_phone=$request->input('shop_phone');
-        $shop_address_provice=$request->input('shop_address_provice');
-        $shop_address_city=$request->input('shop_address_city');
-        $shop_address_area=$request->input('shop_address_area');
-        $shop_address_detail=$request->input('shop_address_detail');
-        $shop_contacts=$request->input('shop_contacts');
         $shop_status=[
-            'shop_status'=>2
+            'shop_status'=>0
         ];
         $data=DB::table('mt_type')
             ->where($shop_status)
@@ -631,7 +601,6 @@ class Admin_loginController extends Controller
             $response=[
                 'code'=>0,
                 'data'=>$data,
-//                'black'=>$shop_status,
                 'msg'=>'商家待审核列表展示成功'
             ];
             return (json_encode($response, JSON_UNESCAPED_UNICODE));
@@ -651,21 +620,6 @@ class Admin_loginController extends Controller
      */
     public function settled(Request $request)
     {
-        $shop_name=$request->input('shop_name');
-        $shop_phone=$request->input('shop_phone');
-        $shop_address_provice=$request->input('shop_address_provice');
-        $shop_address_city=$request->input('shop_address_city');
-        $shop_address_area=$request->input('shop_address_area');
-        $shop_address_detail=$request->input('shop_address_detail');
-        $lat=$request->input('lat');
-        $lng=$request->input('lng');
-        $shop_contacts=$request->input('shop_contacts');
-        $shop_certificate=$request->input('shop_certificate');
-        $shop_project=$request->input('shop_project');
-//        $data=DB::table('mt_shop')
-//            ->select(['shop_name','shop_phone','shop_address_provice','shop_address_city','shop_address_area','shop_address_detail','latitude_longitude','shop_contacts','shop_certificate','shop_project'])
-//            ->paginate(7);
-
         $data=DB::table('mt_type')
             ->join('mt_shop','mt_shop.t_id','=','mt_type.t_id')
             ->select(['mt_shop.shop_id','mt_shop.shop_name','mt_shop.shop_phone','mt_shop.shop_address_provice','mt_shop.shop_address_city','mt_shop.shop_address_area','mt_shop.shop_address_detail','mt_shop.lat','mt_shop.lng','mt_shop.shop_contacts','mt_shop.shop_certificate','mt_type.t_name'])
@@ -692,18 +646,29 @@ class Admin_loginController extends Controller
     public function examine(Request $request)
     {
         $shop_id=$request->input('shop_id');
-        $shop_status=$request->input('shop_status');
         $where=[
           'shop_id'=>$shop_id
         ];
-//        var_dump($where);die;
-        //shop_examine默认为0待审核，1审核通过
         $data1=[
-            'shop_status'=>0
+            'shop_status'=>2
         ];
         $data=DB::table('mt_shop')->where($where)->update($data1);
 //        var_dump($data);die;
         if($data){
+            $shopUserInfo = DB::table('admin_user')->where('shop_id',$shop_id)->get()->toArray();
+            if(!$shopUserInfo){
+                $shopPhone = DB::table('mt_shop')->where('shop_id',$shop_id)->first('shop_phone');
+//                var_dump($shopPhone);exit;
+                $shop_phone = $shopPhone->shop_phone;
+                $insert = [
+                    'admin_user'=>$shop_phone,
+                    'admin_pwd'=>password_hash($shop_phone,PASSWORD_DEFAULT),
+                    'admin_tel'=>$shop_phone,
+                    'admin_judge'=>2,
+                    'shop_id'=>$shop_id
+                ];
+                DB::table('admin_user')->insertGetId($insert);
+            }
             $response=[
                 'code'=>0,
                 'data'=>$data,
@@ -794,7 +759,7 @@ class Admin_loginController extends Controller
                 'code'=>1,
                 'data'=>$data,
                 'msg'=>'图片修改成功'
-            ]);
+            ],);
         } else {
             return json_encode([
                 'code'=>2,

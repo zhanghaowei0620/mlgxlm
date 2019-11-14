@@ -446,35 +446,29 @@ class UserController extends Controller
     {
         //$openid = Redis::set('openid','o9VUc5HEPNrYq5d5iQFygPVbX7EM');
         $openid = Redis::get('openid');
+        //var_dump($openid);exit;
         if ($openid) {
             $userInfo = DB::table('mt_user')
                 ->where('mt_user.openid', $openid)->get()->toArray();
-            //var_dump($userInfo);
+//            var_dump($userInfo);exit;
             if($userInfo) {
                 $coupon_num = DB::table('mt_user')
                     ->join('mt_coupon', 'mt_user.uid', '=', 'mt_coupon.uid')
                     ->where('mt_user.openid', $openid)->get()->count();
-                //var_dump($coupon_num);exit;
-                if ($coupon_num) {
-                    $data = [
-                        'userInfo' => $userInfo,
-                        'coupon_num' => $coupon_num,
-                        'code' => 0
-                    ];
-                    $response = [
-                        'data' => $data
-                    ];
-                    return json_encode($response, JSON_UNESCAPED_UNICODE);
-                }
-            } else {
+//                var_dump($coupon_num);exit;
                 $data = [
-                    'code' => 1,
-                    'msg' => '信息出错'
+                    'userInfo' => $userInfo,
+                    'coupon_num' => $coupon_num,
+                    'code' => 0
                 ];
                 $response = [
                     'data' => $data
                 ];
+<<<<<<< HEAD
                 return (json_encode($response, JSON_UNESCAPED_UNICODE));
+=======
+                return json_encode($response, JSON_UNESCAPED_UNICODE);
+>>>>>>> 85ec9dd8cd4272c709e579f533065310ad8c250f
             }
         } else {
             $data = [
