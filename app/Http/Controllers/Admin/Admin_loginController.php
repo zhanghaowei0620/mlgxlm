@@ -23,14 +23,26 @@ class Admin_loginController extends Controller
         $judge=[
           'admin_judge'=>$data->admin_judge
         ];
+
         if($data){
             if(password_verify($admin_pwd,$data->admin_pwd)){
+                if($data->admin_judge == 2){
+                    $response=[
+                        'code'=>0,
+                        'data'=>$judge,
+                        'shop_id'=>$data->shop_id,
+                        'msg'=>'登录成功'
+                    ];
+                    return (json_encode($response,JSON_UNESCAPED_UNICODE));
+                }else{
                     $response=[
                         'code'=>0,
                         'data'=>$judge,
                         'msg'=>'登录成功'
                     ];
                     return (json_encode($response,JSON_UNESCAPED_UNICODE));
+                }
+
             }else{
                         $response=[
                         'code'=>1,
