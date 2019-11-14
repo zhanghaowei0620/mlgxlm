@@ -173,10 +173,10 @@ class GoodsController extends Controller
         //var_dump($shop_goodsInfo);exit;
         if($shop_goodsInfo){
             $data=[
-                'shop_goodsInfo'=>$shop_goodsInfo
+                'shop_goodsInfo'=>$shop_goodsInfo,
+                'code'=>'0'
             ];
             $response = [
-                'code'=>'0',
                 'shop_goodsInfo'=>$data
             ];
             return json_encode($response,JSON_UNESCAPED_UNICODE);
