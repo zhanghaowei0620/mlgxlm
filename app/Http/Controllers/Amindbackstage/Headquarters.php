@@ -168,8 +168,12 @@ class Headquarters extends Controller
     }
 
 
-    //拼团
+    //是否开启拼团
     public function admin_Assemble(Request $request){
+        $is_promotion = $request->input('is_promotion');
+        $goods_id = $request->input('goods_id');
+        $promotion_price = $request->input('promotion_price');
+        $promotion_prople = $request->input('promotion_prople');
 
     }
 }

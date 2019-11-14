@@ -25,7 +25,7 @@ class IndexController extends Controller
         if($promotion_type){
             $goodsInfo = DB::table('mt_goods')
                 ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
-                ->where(['promotion_type'=>$promotion_type,'mt_shop.shop_address_city'=>$shop_address_city])
+                ->where(['promotion_type'=>$promotion_type])
                 ->get(['shop_name','shop_address_provice','shop_address_city','shop_address_area','shop_score','goods_id','goods_name','price','market_price','introduction','picture','promotion_price','prople','shop_label'])->toArray();   //店铺精选   默认为1
             //var_dump($goodsInfo);exit;
 
@@ -39,7 +39,7 @@ class IndexController extends Controller
             //var_dump($week_newshop);exit;
             $recommend = DB::table('mt_goods')
                 ->join('mt_shop','mt_shop.shop_id','=','mt_goods.shop_id')
-                ->where(['is_recommend'=>1,'mt_shop.shop_address_city'=>$shop_address_city])
+                ->where(['is_recommend'=>1])
                 ->get(['goods_id','goods_name','price','picture']);       //推荐
             var_dump($recommend);exit;
 
