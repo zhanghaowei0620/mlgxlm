@@ -20,21 +20,23 @@ class Admin_loginController extends Controller
           'admin_user'=>$admin_user
         ];
         $data=DB::table('admin_user')->where($where)->first();
-        $judge=[
-          'admin_judge'=>$data->admin_judge
-        ];
-
         if($data){
             if(password_verify($admin_pwd,$data->admin_pwd)){
                 if($data->admin_judge == 2){
+                    $judge=[
+                        'admin_judge'=>$data->admin_judge,
+                        'shop_id'=>$data->shop_id
+                    ];
                     $response=[
                         'code'=>0,
                         'data'=>$judge,
-                        'shop_id'=>$data->shop_id,
                         'msg'=>'登录成功'
                     ];
                     return (json_encode($response,JSON_UNESCAPED_UNICODE));
                 }else{
+                    $judge=[
+                        'admin_judge'=>$data->admin_judge,
+                    ];
                     $response=[
                         'code'=>0,
                         'data'=>$judge,
@@ -610,14 +612,6 @@ class Admin_loginController extends Controller
 */
     public function  businesssettled(Request $request)
     {
-//        $shop_id=$request->input('shop_id');
-//        $shop_name=$request->input('shop_name');
-//        $shop_phone=$request->input('shop_phone');
-//        $shop_address_provice=$request->input('shop_address_provice');
-//        $shop_address_city=$request->input('shop_address_city');
-//        $shop_address_area=$request->input('shop_address_area');
-//        $shop_address_detail=$request->input('shop_address_detail');
-//        $shop_contacts=$request->input('shop_contacts');
         $shop_status=[
             'shop_status'=>0
         ];
@@ -630,7 +624,6 @@ class Admin_loginController extends Controller
             $response=[
                 'code'=>0,
                 'data'=>$data,
-//                'black'=>$shop_status,
                 'msg'=>'商家待审核列表展示成功'
             ];
             return (json_encode($response, JSON_UNESCAPED_UNICODE));
@@ -676,7 +669,6 @@ class Admin_loginController extends Controller
     public function examine(Request $request)
     {
         $shop_id=$request->input('shop_id');
-        $shop_status=$request->input('shop_status');
         $where=[
           'shop_id'=>$shop_id
         ];
