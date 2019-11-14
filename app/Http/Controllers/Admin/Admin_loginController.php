@@ -320,19 +320,8 @@ class Admin_loginController extends Controller
     public function business(Request $request)
     {
         $data1=[
-          'shop_status'=>0
+          'shop_status'=>2
         ];
-        $shop_id=$request->input('shop_id');
-        $shop_name=$request->input('shop_name');
-        $shop_phone=$request->input('shop_phone');
-        $shop_account=$request->input('shop_account');
-        $shop_cash=$request->input('shop_cash');
-        $shop_address_provice=$request->input('shop_address_provice');
-        $shop_address_city=$request->input('shop_address_city');
-        $shop_address_area=$request->input('shop_address_area');
-        $shop_address_detail=$request->input('shop_address_detail');
-        $shop_sales=$request->input('shop_sales');
-        $shop_contacts=$request->input('shop_contacts');
         $data=DB::table('mt_shop')
             ->where($data1)
             ->select(['shop_id','shop_name','shop_phone','shop_account','shop_cash','shop_address_detail','shop_sales','shop_contacts','shop_address_provice','shop_address_city','shop_address_area'])
