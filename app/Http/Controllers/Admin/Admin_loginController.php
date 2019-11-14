@@ -611,16 +611,16 @@ class Admin_loginController extends Controller
 */
     public function  businesssettled(Request $request)
     {
-        $shop_id=$request->input('shop_id');
-        $shop_name=$request->input('shop_name');
-        $shop_phone=$request->input('shop_phone');
-        $shop_address_provice=$request->input('shop_address_provice');
-        $shop_address_city=$request->input('shop_address_city');
-        $shop_address_area=$request->input('shop_address_area');
-        $shop_address_detail=$request->input('shop_address_detail');
-        $shop_contacts=$request->input('shop_contacts');
+//        $shop_id=$request->input('shop_id');
+//        $shop_name=$request->input('shop_name');
+//        $shop_phone=$request->input('shop_phone');
+//        $shop_address_provice=$request->input('shop_address_provice');
+//        $shop_address_city=$request->input('shop_address_city');
+//        $shop_address_area=$request->input('shop_address_area');
+//        $shop_address_detail=$request->input('shop_address_detail');
+//        $shop_contacts=$request->input('shop_contacts');
         $shop_status=[
-            'shop_status'=>2
+            'shop_status'=>0
         ];
         $data=DB::table('mt_type')
             ->where($shop_status)

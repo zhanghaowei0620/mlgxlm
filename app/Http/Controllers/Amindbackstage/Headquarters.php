@@ -166,4 +166,10 @@ class Headquarters extends Controller
         $goods_id = $request->input('goods_id');
 
     }
+
+
+    //拼团
+    public function admin_Assemble(Request $request){
+
+    }
 }
