@@ -65,12 +65,6 @@ class Admin_loginController extends Controller
      */
     public function userlist(Request $request)
     {
-//        $admin_id=$request->input('admin_id');
-//        $admin_names=$request->input('admin_names');
-//        $admin_tel=$request->input('admin_tel');
-//        $admin_consumption=$request->input('admin_consumption');
-//        $admin_user_integral=$request->input('admin_user_integral');
-//        $admin_user_money=$request->input('admin_user_money');
         $data=DB::table('admin_user')
             ->select(['admin_id','admin_names','admin_tel','admin_consumption','admin_user_integral','admin_user_money'])
             ->paginate(7);
@@ -149,17 +143,8 @@ class Admin_loginController extends Controller
      */
     public function search(Request $request)
     {
-        $admin_id=$request->input('admin_id');
         $admin_names=$request->input('admin_names');
         $admin_tel=$request->input('admin_tel');
-        $admin_consumption=$request->input('admin_consumption');
-        $admin_user_integral=$request->input('admin_user_integral');
-        $admin_user_money=$request->input('admin_user_money');
-//        $data=DB::table('admin_user')
-//        ->where('admin_tel' , '=' , "$admin_tel")
-//        ->orwhere('admin_names' , '=' , "$admin_names")
-//        ->get(['admin_user_id','admin_names','admin_tel','admin_consumption','admin_user_integral','admin_user_money'])
-//        ->toArray();
         if($admin_tel){
             $data=DB::table('admin_user')
                 ->where('admin_tel' , '=' , "$admin_tel")
@@ -238,12 +223,13 @@ class Admin_loginController extends Controller
             $response=[
                 'code'=>0,
                 'data'=>$data,
-                'msg'=>'',
+                'msg'=>'成功',
             ];
             die(json_encode($response,JSON_UNESCAPED_UNICODE));
         }else{
             $response=[
                 'code'=>1,
+                'msg'=>'失败'
             ];
             die(json_encode($response,JSON_UNESCAPED_UNICODE));
         }
@@ -463,15 +449,12 @@ class Admin_loginController extends Controller
     public function businessblack(Request $request)
     {
         $shop_id=$request->input('shop_id');
-//        var_dump($shop_id);die;
-//        $shop_id=10;
-        $shop_status=$request->input('shop_status');
         $where=[
             'shop_id'=>$shop_id
         ];
 //        var_dump($where);die;
         $data1=[
-            'shop_status'=>3
+            'shop_status'=>1
         ];
         $data=DB::table('mt_shop')->where($where)->update($data1);
 //        var_dump($data);die;
@@ -497,12 +480,6 @@ class Admin_loginController extends Controller
      */
     public function businessblacktype(Request $request)
     {
-        $shop_id=$request->input('shop_id');
-        $shop_phone=$request->input('shop_phone');
-        $shop_account=$request->input('shop_account');
-        $shop_sales=$request->input('shop_sales');
-        $shop_name=$request->input('shop_name');
-        $shop_contacts=$request->input('shop_contacts');
         $data2=[
             'shop_status'=>1
         ];
@@ -538,7 +515,7 @@ class Admin_loginController extends Controller
             'shop_id'=>$shop_id
         ];
         $data1=[
-            'shop_status'=>0
+            'shop_status'=>2
         ];
         $data=DB::table('mt_shop')->where($where)->update($data1);
         if($data){
@@ -782,7 +759,7 @@ class Admin_loginController extends Controller
                 'code'=>1,
                 'data'=>$data,
                 'msg'=>'图片修改成功'
-            ]);
+            ],);
         } else {
             return json_encode([
                 'code'=>2,
