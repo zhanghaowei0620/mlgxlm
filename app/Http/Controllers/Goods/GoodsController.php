@@ -172,9 +172,12 @@ class GoodsController extends Controller
             ->where('mt_goods.shop_id',$shop_id)->paginate(7);
         //var_dump($shop_goodsInfo);exit;
         if($shop_goodsInfo){
+            $data=[
+                'shop_goodsInfo'=>$shop_goodsInfo
+            ];
             $response = [
                 'code'=>'0',
-                'shop_goodsInfo'=>$shop_goodsInfo
+                'shop_goodsInfo'=>$data
             ];
             return json_encode($response,JSON_UNESCAPED_UNICODE);
         }else{
