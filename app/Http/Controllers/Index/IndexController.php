@@ -125,6 +125,7 @@ class IndexController extends Controller
                 'recommend'     =>  $recommend,
                 'discountInfo' => $discountInfo,
                 'salesInfo'   => $salesInfo,
+                'limitedInfo'=>$limitedInfo,
                 'code'         =>  0
             ];
             $response = [
