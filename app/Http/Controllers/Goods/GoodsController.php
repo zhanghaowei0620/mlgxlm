@@ -177,7 +177,7 @@ class GoodsController extends Controller
                 'code'=>'0'
             ];
             $response = [
-                'shop_goodsInfo'=>$data
+                'data'=>$data
             ];
             return json_encode($response,JSON_UNESCAPED_UNICODE);
         }else{
