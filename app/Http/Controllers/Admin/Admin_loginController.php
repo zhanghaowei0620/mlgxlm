@@ -16,14 +16,12 @@ class Admin_loginController extends Controller
     {
         $admin_user=$request->input('admin_user');
         $admin_pwd=$request->input('admin_pwd');
-        $admin_judge=$request->input('admin_judge');
-        $arr=password_hash($admin_pwd,PASSWORD_DEFAULT);
         $where=[
           'admin_user'=>$admin_user
         ];
         $data=DB::table('admin_user')->where($where)->first();
         $judge=[
-          'admin_judge'=>1
+          'admin_judge'=>$data->admin_judge
         ];
         if($data){
             if(password_verify($admin_pwd,$data->admin_pwd)){
@@ -53,12 +51,12 @@ class Admin_loginController extends Controller
      */
     public function userlist(Request $request)
     {
-        $admin_id=$request->input('admin_id');
-        $admin_names=$request->input('admin_names');
-        $admin_tel=$request->input('admin_tel');
-        $admin_consumption=$request->input('admin_consumption');
-        $admin_user_integral=$request->input('admin_user_integral');
-        $admin_user_money=$request->input('admin_user_money');
+//        $admin_id=$request->input('admin_id');
+//        $admin_names=$request->input('admin_names');
+//        $admin_tel=$request->input('admin_tel');
+//        $admin_consumption=$request->input('admin_consumption');
+//        $admin_user_integral=$request->input('admin_user_integral');
+//        $admin_user_money=$request->input('admin_user_money');
         $data=DB::table('admin_user')
             ->select(['admin_id','admin_names','admin_tel','admin_consumption','admin_user_integral','admin_user_money'])
             ->paginate(7);
