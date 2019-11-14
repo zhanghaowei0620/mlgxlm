@@ -83,7 +83,7 @@ class IndexController extends Controller
                 ->join('mt_type','mt_goods.t_id','=','mt_type.t_id')
                 ->where(['promotion_type'=>2],['mt_shop.shop_address_city'=>$shop_address_city])
                 ->get(['mt_goods.goods_id','goods_name','goods_type','market_price','price','picture','mt_type.t_name','introduction','star'])->toArray();
-            var_dump($discountInfo);die;
+//            var_dump($discountInfo);die;
             $shop_id = DB::table('mt_shop')
                 ->join('mt_goods','mt_goods.shop_id','=','mt_shop.shop_id')
 //                ->where(['mt_shop.shop_address_city'=>$shop_address_city])
@@ -113,6 +113,7 @@ class IndexController extends Controller
                 'goodsInfo'     =>  $goodsInfo,
                 'week_newshop'  =>  $week_newshop,
                 'recommend'     =>  $recommend,
+                'discountInfo' => $discountInfo,
                 'code'         =>  0
             ];
             $response = [
