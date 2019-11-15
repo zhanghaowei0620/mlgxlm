@@ -167,13 +167,31 @@ class GoodsController extends Controller
     public function shop_goods(Request $request){
         $shop_id = $request->input('shop_id');
 //        $shop_id = 2;
-        $shop_goodsInfo = DB::table('mt_goods')
-            ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
-            ->where('mt_goods.shop_id',$shop_id)->paginate(7);
+//        $shop_goodsInfo = DB::table('mt_goods')
+//            ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
+//            ->where('mt_goods.shop_id',$shop_id)->paginate(7);
+        $shopInfo=DB ::table('mt_shop')
+            ->where(['shop_id'=>$shop_id])
+            ->join('mt_type','mt_type.t_id','=','mt_shop.t_id')
+            ->first(['shop_id','shop_name','shop_phone','shop_desc','shop_address_detail','shop_score','shop_img','mt_type.t_name','shop_logo','shop_bus','shop_service']);
+//        var_dump($shopInfo);die;
+        $shop_coupon=DB::table('mt_coupon')
+            ->limit(2)
+            ->get(['coupon_redouction','discount']);
+//                var_dump($shop_coupon);die;
+        $goods_shop=DB::table('mt_goods')
+            ->join('mt_shop','mt_shop.shop_id','=','mt_goods.shop_id')
+            ->where(['mt_shop.shop_id'=>$shop_id])
+            ->select(['mt_goods.goods_name','mt_goods.goods_id','mt_goods.market_price','mt_goods.picture','mt_goods.goods_gd_num'])
+            ->paginate(4);
+//        var_dump($goods_shop);die;
         //var_dump($shop_goodsInfo);exit;
-        if($shop_goodsInfo){
+        if($shopInfo){
             $data=[
-                'shop_goodsInfo'=>$shop_goodsInfo,
+//                'shop_goodsInfo'=>$shop_goodsInfo,
+                'shopInfo'=>$shopInfo,
+                'shop_coupon'=>$shop_coupon,
+                'goods_shop'=>$goods_shop,
                 'code'=>'0'
             ];
             $response = [
