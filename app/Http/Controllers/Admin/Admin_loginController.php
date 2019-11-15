@@ -38,6 +38,9 @@ class Admin_loginController extends Controller
                     ];
                     return (json_encode($response,JSON_UNESCAPED_UNICODE));
                 }else{
+                    $token = sha1(Str::random(10).md5(time()));
+                    $key = "H:userlogin_id";
+                    Redis::set($key,$token);
                     $judge=[
                         'admin_judge'=>$data->admin_judge,
                     ];
