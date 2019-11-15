@@ -110,7 +110,7 @@ Route::get('/subscribe', 'Goods\GoodsController@subscribe');   //预约
 Route::any('user','Admin\Admin_loginController@user');
 //用户列表
 Route::any('userlist','Admin\Admin_loginController@userlist')->middleware('checkLogin');
-Route::any('admin_pwdUpdate','Admin\Admin_loginController@admin_pwdUpdate')->middleware('checkLogin');
+Route::post('admin_pwdUpdate','Admin\Admin_loginController@admin_pwdUpdate')->middleware('checkLogin');
 //用户总人数
 Route::any('userman','Admin\Admin_loginController@userman')->middleware('checkLogin');
 //总分享币
@@ -184,8 +184,8 @@ Route::post('goodsAdd','Amindbackstage\Headquarters@goodsAdd')->middleware('chec
 Route::post('goods_type','Amindbackstage\Headquarters@goods_type')->middleware('checkLogin');   //分类
 //商品删除
 Route::post('goodsdelete','Amindbackstage\Headquarters@goodsdelete')->middleware('checkLogin');
-Route::get('admin_goodsUpdate','Amindbackstage\Headquarters@admin_goodsUpdate')->middleware('checkLogin');
-Route::get('admin_goodsInfo','Amindbackstage\Headquarters@admin_goodsInfo')->middleware('checkLogin');
+Route::post('admin_goodsUpdate','Amindbackstage\Headquarters@admin_goodsUpdate')->middleware('checkLogin');
+Route::post('admin_goodsInfo','Amindbackstage\Headquarters@admin_goodsInfo')->middleware('checkLogin');
 
 Route::post('admin_Assemble','Amindbackstage\Headquarters@admin_Assemble')->middleware('checkLogin');
 
