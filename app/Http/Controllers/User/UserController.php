@@ -464,11 +464,7 @@ class UserController extends Controller
                 $response = [
                     'data' => $data
                 ];
-<<<<<<< HEAD
-                return (json_encode($response, JSON_UNESCAPED_UNICODE));
-=======
                 return json_encode($response, JSON_UNESCAPED_UNICODE);
->>>>>>> 85ec9dd8cd4272c709e579f533065310ad8c250f
             }
         } else {
             $data = [
