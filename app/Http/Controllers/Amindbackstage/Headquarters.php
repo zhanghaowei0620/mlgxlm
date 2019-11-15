@@ -205,7 +205,7 @@ class Headquarters extends Controller
         if($gooodsInfoUpdate>=0){
             $response=[
                 'code'=>0,
-                'msg'=>'修改成功'
+                'msg'=>'修改成功 '
             ];
             return json_encode($response, JSON_UNESCAPED_UNICODE);
         }
