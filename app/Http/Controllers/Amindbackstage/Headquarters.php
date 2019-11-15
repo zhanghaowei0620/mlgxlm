@@ -177,7 +177,7 @@ class Headquarters extends Controller
         $response=[
             'code'=>0,
             'data'=>$goodsInfo,
-            'msg'=>'开启成功'
+            'msg'=>''
         ];
         return json_encode($response, JSON_UNESCAPED_UNICODE);
     }
