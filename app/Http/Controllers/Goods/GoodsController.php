@@ -172,9 +172,12 @@ class GoodsController extends Controller
             ->where('mt_goods.shop_id',$shop_id)->paginate(7);
         //var_dump($shop_goodsInfo);exit;
         if($shop_goodsInfo){
+            $data=[
+                'shop_goodsInfo'=>$shop_goodsInfo,
+                'code'=>'0'
+            ];
             $response = [
-                'code'=>'0',
-                'shop_goodsInfo'=>$shop_goodsInfo
+                'data'=>$data
             ];
             return json_encode($response,JSON_UNESCAPED_UNICODE);
         }else{
@@ -191,6 +194,7 @@ class GoodsController extends Controller
         $goods_id = $request->input('goods_id');
         $data1=DB::table('mt_goods')
             ->join('mt_shop','mt_shop.shop_id','=','mt_goods.shop_id')
+            ->where(['goods_id'=>$goods_id])
             ->first();
 //        var_dump($data1);die;
         $reconmend_shop = DB::table('mt_goods')->where(['shop_id'=>$data1->shop_id,'is_recommend'=>1])->limit(3)->get();
@@ -226,10 +230,13 @@ class GoodsController extends Controller
                 ];
                 DB::table('mt_history')->insertGetId($data);
             }
-            $response = [
+            $data2=[
                 'code'=>'0',
                 'goodsInfo'=>$data1,
                 'recommend_shop'=>$reconmend_shop
+            ];
+            $response = [
+                'data'=>$data2
             ];
             return json_encode($response,JSON_UNESCAPED_UNICODE);
         }
