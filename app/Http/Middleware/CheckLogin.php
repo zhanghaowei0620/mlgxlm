@@ -21,7 +21,7 @@ class CheckLogin
         //var_dump($token);exit;
         if(empty($token)){
             $response = [
-                'error'=>1,
+                'code'=>1,
                 'msg'=>'亲,请先登录'
             ];
             die(json_encode($response,JSON_UNESCAPED_UNICODE));
