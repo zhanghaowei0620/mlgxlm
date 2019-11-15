@@ -30,7 +30,8 @@ class Admin_loginController extends Controller
                         'shop_id'=>$data->shop_id
                     ];
                     $token = sha1(Str::random(10).md5(time()));
-                    $key = "H:userlogin_id";
+                    $ip = $_SERVER['SERVER_ADDR'];
+                    $key = 'H:userlogin_id'.$ip;
                     Redis::set($key,$token);
                     $response=[
                         'code'=>0,
@@ -40,7 +41,8 @@ class Admin_loginController extends Controller
                     return (json_encode($response,JSON_UNESCAPED_UNICODE));
                 }else{
                     $token = sha1(Str::random(10).md5(time()));
-                    $key = "H:userlogin_id";
+                    $ip = $_SERVER['SERVER_ADDR'];
+                    $key = 'H:userlogin_id'.$ip;
                     Redis::set($key,$token);
                     $judge=[
                         'admin_judge'=>$data->admin_judge,
