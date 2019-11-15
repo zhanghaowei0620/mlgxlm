@@ -170,19 +170,54 @@ class Headquarters extends Controller
     }
 
     //商品修改
-    public function goodsUpdate(Request $request){
+    public function admin_goodsInfo(Request $request){
         $goods_id = $request->input('goods_id');
+        $goodsInfo = DB::table('mt_goods')->where('goods_id',$goods_id)->get(['t_id','goods_name','price','goods_effect','goods_duration','goods_process','goods_frequency','goods_overdue_time','goods_appointment','goods_use_rule','goods_planting_picture','picture','picture2','picture3','goods_picture_detail'])->toArray();
 
+        $response=[
+            'code'=>0,
+            'data'=>$goodsInfo,
+            'msg'=>''
+        ];
+        return json_encode($response, JSON_UNESCAPED_UNICODE);
+    }
+    public function admin_goodsUpdate(Request $request){
+        $goods_id = $request->input('goods_id');
+        $update = [
+            't_id'=>$request->input('t_id'),
+            'goods_name'=>$request->input('goods_name'),
+            'price'=>$request->input('price'),
+            'goods_effect'=>$request->input('goods_effect'),
+            'goods_duration'=>$request->input('goods_duration'),
+            'goods_process'=>$request->input('goods_process'),
+            'goods_frequency'=>$request->input('goods_frequency'),
+            'goods_overdue_time'=> $request->input('goods_overdue_time'),
+            'goods_appointment'=>$request->input('goods_appointment'),
+            'goods_use_rule'=>$request->input('goods_use_rule'),
+            'goods_planting_picture'=>$request->input('goods_planting_picture'),
+            'picture'=>$request->input('picture'),
+            'picture2'=>$request->input('picture2'),
+            'picture3'=>$request->input('picture3'),
+            'goods_picture_detail'=>$request->input('goods_picture_detail'),
+            'shop_id'=>$request->input('shop_id')
+        ];
+        $gooodsInfoUpdate = DB::table('mt_goods')->where('goods_id',$goods_id)->update($update);
+        if($gooodsInfoUpdate>=0){
+            $response=[
+                'code'=>0,
+                'msg'=>'修改成功 '
+            ];
+            return json_encode($response, JSON_UNESCAPED_UNICODE);
+        }
     }
 
 
     //是否开启拼团
     public function admin_Assemble(Request $request){
-        $is_promotion = $request->input('is_promotion');
-        $goods_id = $request->input('goods_id');
-        $promotion_price = $request->input('promotion_price');
-        $promotion_prople = $request->input('promotion_prople');
-
+        $is_promotion = $request->input('is_promotion');   //是否开启  0为关闭  1为开启
+        $goods_id = $request->input('goods_id');   //商品id
+        $promotion_price = $request->input('promotion_price');    //拼团价格
+        $promotion_prople = $request->input('promotion_prople');       //人数
         if($is_promotion == 1){
             $update = [
                 'promotion_price'=>$promotion_price,
