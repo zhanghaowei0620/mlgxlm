@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redis;
 use Storage;
+use Illuminate\Support\Str;
 
 class Admin_loginController extends Controller
 {

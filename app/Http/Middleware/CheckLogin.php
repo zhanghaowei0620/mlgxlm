@@ -18,7 +18,7 @@ class CheckLogin
     {
         $key = "H:userlogin_id";
         $token = Redis::get($key);
-        var_dump($token);exit;
+//        var_dump($token);exit;
         if(empty($token)){
             $response = [
                 'code'=>1,
