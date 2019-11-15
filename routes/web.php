@@ -182,7 +182,9 @@ Route::post('upload','Amindbackstage\Headquarters@upload');
 Route::post('goodsAdd','Amindbackstage\Headquarters@goodsAdd');
 Route::post('goods_type','Amindbackstage\Headquarters@goods_type');   //分类
 //商品删除
-Route::any('goodsdelete','Amindbackstage\Headquarters@goodsdelete');
+Route::post('goodsdelete','Amindbackstage\Headquarters@goodsdelete');
+Route::get('admin_goodsUpdate','Amindbackstage\Headquarters@admin_goodsUpdate');
+Route::get('admin_goodsInfo','Amindbackstage\Headquarters@admin_goodsInfo');
 
 Route::post('admin_Assemble','Amindbackstage\Headquarters@admin_Assemble');
 
