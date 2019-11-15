@@ -27,6 +27,10 @@ class Admin_loginController extends Controller
                         'admin_judge'=>$data->admin_judge,
                         'shop_id'=>$data->shop_id
                     ];
+                    $token = sha1(Str::random(10).md5(time()));
+                    $key = "H:userlogin_id";
+                    Redis::set($key,$token);
+                    Redis::expire($key,86400*3);
                     $response=[
                         'code'=>0,
                         'data'=>$judge,
