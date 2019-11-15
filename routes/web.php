@@ -110,6 +110,7 @@ Route::get('/subscribe', 'Goods\GoodsController@subscribe');   //预约
 Route::any('user','Admin\Admin_loginController@user');
 //用户列表
 Route::any('userlist','Admin\Admin_loginController@userlist')->middleware('checkLogin');
+Route::any('admin_pwdUpdate','Admin\Admin_loginController@admin_pwdUpdate')->middleware('checkLogin');
 //用户总人数
 Route::any('userman','Admin\Admin_loginController@userman')->middleware('checkLogin');
 //总分享币

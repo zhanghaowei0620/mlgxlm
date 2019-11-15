@@ -84,11 +84,39 @@ class Admin_loginController extends Controller
                 'data'=>$data,
                 'msg'=>'您的数据类表请求成功',
             ];
-            die(json_encode($response,JSON_UNESCAPED_UNICODE));
+            return json_encode($response,JSON_UNESCAPED_UNICODE);
         }else{
             $response=[
                 'code'=>1,
                 'msg'=>'您的数据类表请求失败',
+            ];
+            die(json_encode($response,JSON_UNESCAPED_UNICODE));
+        }
+    }
+
+    //修改密码-验证上一个密码
+    public function admin_pwdUpdate(Request $request){
+        $admin_id = $request->input('admin_id');
+        $last_admin_pwd = $request->input('last_admin_pwd');
+        $update_admin_pwd = $request->input('update_admin_pwd');
+        $update_admin_pwd = password_hash($update_admin_pwd, PASSWORD_BCRYPT);
+        $adminInfo = DB::table('admin_user')->where('admin_id',$admin_id)->first();
+        if(password_verify($last_admin_pwd,$adminInfo->admin_pwd)){
+            $u_admin_pwd = DB::table('admin_user')->where('admin_id',$admin_id)->update(['admin_pwd'=>$update_admin_pwd]);
+            if($u_admin_pwd>=0){
+                $ip = $_SERVER['SERVER_ADDR'];
+                $key = 'H:userlogin_id'.$ip;
+                redis::del($key);
+                $response=[
+                    'code'=>0,
+                    'msg'=>'修改成功,请重新登录'
+                ];
+                return json_encode($response,JSON_UNESCAPED_UNICODE);
+            }
+        }else{
+            $response=[
+                'code'=>1,
+                'msg'=>'上个密码出现错误,请重试'
             ];
             die(json_encode($response,JSON_UNESCAPED_UNICODE));
         }
