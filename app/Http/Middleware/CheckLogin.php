@@ -16,7 +16,8 @@ class CheckLogin
      */
     public function handle($request, Closure $next)
     {
-        $key = "H:userlogin_id";
+        $ip = $_SERVER['SERVER_ADDR'];
+        $key = 'H:userlogin_id'.$ip;
         $token = Redis::get($key);
 //        var_dump($token);exit;
         if(empty($token)){
