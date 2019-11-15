@@ -31,7 +31,6 @@ class Admin_loginController extends Controller
                     $token = sha1(Str::random(10).md5(time()));
                     $key = "H:userlogin_id";
                     Redis::set($key,$token);
-                    Redis::expire($key,86400*3);
                     $response=[
                         'code'=>0,
                         'data'=>$judge,
