@@ -59,10 +59,13 @@ class UserController extends Controller
                     Redis::set($key, $arr['openid']);
 //                $openid = Redis::get($key);
 //                var_dump($openid);exit;
-                    $response = [
+                    $data1=[
                         'code' => '0',
                         'msg' => '登录成功',
                         'data' => $data
+                    ];
+                    $response = [
+                        'data' => $data1
                     ];
                     return json_encode($response, JSON_UNESCAPED_UNICODE);
                 } else {
