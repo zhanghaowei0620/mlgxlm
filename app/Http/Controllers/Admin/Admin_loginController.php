@@ -1132,31 +1132,55 @@ class Admin_loginController extends Controller
             'coupon_type'=>$coupon_type,
             'create_time'=>$create_time,
             'expiration'=>$expiration,
-                'discount'=>$discount,
+            'discount'=>$discount,
             'shop_id'=>$shop_id,
             'goods_id'=>$goods_id
         ];
         $where=[
             'goods_id'=>$goods_id
         ];
-        $data=DB::table('mt_coupon')->where($where)->insert($det);
-        $aa=[
-          'data'=>$data
-        ];
-        if($data == true){
-            $response=[
-                'code'=>0,
-                'data'=>$aa,
-                'msg'=>'优惠卷添加成功'
-            ];
-            return (json_encode($response, JSON_UNESCAPED_UNICODE));
+        $is_promotion = DB::table('mt_goods')->where($where)->first(['is_promotion']);     //是否开启拼团   0关闭  1开启
+        $limited_buy = DB::table('mt_goods')->where($where)->first(['limited_buy']);    //是否开启抢购 1开启  0关闭
+        if($is_promotion->is_promotion == 0 && $limited_buy->limited_buy == 0){
+            $couponInfo = DB::table('mt_coupon')->where($where)->get()->toArray();
+            if($couponInfo){
+                $response=[
+                    'code'=>2,
+                    'msg'=>'该商品已存在一张优惠券'
+                ];
+                die(json_encode($response, JSON_UNESCAPED_UNICODE));
+            }else{
+                $data=DB::table('mt_coupon')->where($where)->insert($det);
+                $aa=[
+                    'data'=>$data
+                ];
+                if($data == true){
+                    $updateGoodsInfo = DB::table('mt_goods')->where('goods_id',$goods_id)->update(['is_coupon'=>1]);
+//                    var_dump($updateGoodsInfo);exit;
+                    if($updateGoodsInfo >=0){
+                        $response=[
+                            'code'=>0,
+                            'data'=>$aa,
+                            'msg'=>'优惠卷添加成功'
+                        ];
+                        return (json_encode($response, JSON_UNESCAPED_UNICODE));
+                    }
+                }else{
+                    $response=[
+                        'code'=>1,
+                        'msg'=>'优惠卷添加失败'
+                    ];
+                    die(json_encode($response, JSON_UNESCAPED_UNICODE));
+                }
+            }
         }else{
             $response=[
                 'code'=>1,
-                'msg'=>'优惠卷添加失败'
+                'msg'=>'同一商品只能同时开启一种活动'
             ];
-            return (json_encode($response, JSON_UNESCAPED_UNICODE));
+            die(json_encode($response, JSON_UNESCAPED_UNICODE));
         }
+
     }
 
     /*

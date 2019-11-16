@@ -217,19 +217,31 @@ class Headquarters extends Controller
         $promotion_price = $request->input('promotion_price');    //拼团价格
         $promotion_prople = $request->input('promotion_prople');       //人数
         if($is_promotion == 1){
-            $update = [
-                'promotion_price'=>$promotion_price,
-                'promotion_prople'=>$promotion_prople,
-                'is_promotion'=>$is_promotion
-            ];
-            $update_promotion = DB::table('mt_goods')->where('goods_id',$goods_id)->update($update);
-            if($update_promotion >= 0){
-                $response=[
-                    'code'=>0,
-                    'msg'=>'开启成功'
+            $limited_buy = DB::table('mt_goods')->where('goods_id',$goods_id)->first(['limited_buy']);     //是否开启抢购   0关闭  1开启
+            $is_coupon = DB::table('mt_goods')->where('goods_id',$goods_id)->first(['is_coupon']);    //是否开启优惠 1开启  2关闭
+            if($limited_buy->limited_buy == 0 && $is_coupon->is_coupon == 2){
+                $update = [
+                    'promotion_price'=>$promotion_price,
+                    'promotion_prople'=>$promotion_prople,
+                    'is_promotion'=>$is_promotion,
+                    'promotion_type'=>1
                 ];
-                return json_encode($response, JSON_UNESCAPED_UNICODE);
+                $update_promotion = DB::table('mt_goods')->where('goods_id',$goods_id)->update($update);
+                if($update_promotion >= 0){
+                    $response=[
+                        'code'=>0,
+                        'msg'=>'开启成功'
+                    ];
+                    return json_encode($response, JSON_UNESCAPED_UNICODE);
+                }
+            }else{
+                $response=[
+                    'code'=>1,
+                    'msg'=>'同一商品只能同时开启一种活动'
+                ];
+                die(json_encode($response, JSON_UNESCAPED_UNICODE));
             }
+
         }else{
             $update = [
                 'is_promotion'=>$is_promotion
@@ -256,20 +268,31 @@ class Headquarters extends Controller
         //$limited_ready_prople = $request->input('limited_ready_prople');
 
         if($limited_buy == 1){
-            $update = [
-                'limited_price'=>$limited_price,
-                'limited_prople'=>$limited_prople,
-                'limited_start_time'=>$limited_start_time,
-                'limited_stop_time'=>$limited_stop_time,
-                'limited_buy'=>$limited_buy
-            ];
-            $update_promotion = DB::table('mt_goods')->where('goods_id',$goods_id)->update($update);
-            if($update_promotion >= 0){
-                $response=[
-                    'code'=>0,
-                    'msg'=>'已开启抢购'
+            $is_promotion = DB::table('mt_goods')->where('goods_id',$goods_id)->first(['is_promotion']);     //是否开启拼团   0关闭  1开启
+            $is_coupon = DB::table('mt_goods')->where('goods_id',$goods_id)->first(['is_coupon']);    //是否开启优惠 1开启  2关闭
+            if($is_promotion->is_promotion == 0 && $is_coupon->is_coupon == 2){
+                $update = [
+                    'limited_price'=>$limited_price,
+                    'limited_prople'=>$limited_prople,
+                    'limited_start_time'=>$limited_start_time,
+                    'limited_stop_time'=>$limited_stop_time,
+                    'limited_buy'=>$limited_buy,
+                    'promotion_type'=>4
                 ];
-                return json_encode($response, JSON_UNESCAPED_UNICODE);
+                $update_promotion = DB::table('mt_goods')->where('goods_id',$goods_id)->update($update);
+                if($update_promotion >= 0){
+                    $response=[
+                        'code'=>0,
+                        'msg'=>'已开启抢购'
+                    ];
+                    return json_encode($response, JSON_UNESCAPED_UNICODE);
+                }
+            }else{
+                $response=[
+                    'code'=>1,
+                    'msg'=>'同一商品只能同时开启一种活动'
+                ];
+                die(json_encode($response, JSON_UNESCAPED_UNICODE));
             }
         }else{
             $update = [
@@ -283,6 +306,66 @@ class Headquarters extends Controller
                 ];
                 return json_encode($response, JSON_UNESCAPED_UNICODE);
             }
+        }
+    }
+
+    //拼团列表
+    public function admin_Assemble_list(Request $request){
+        $admin_judge = $request->input('admin_judge');
+        $shop_id = $request->input('shop_id');
+        if($admin_judge == 1){
+            $data=DB::table('mt_goods')
+                ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
+                ->where(['is_promotion'=>1])
+                ->select(['mt_goods.goods_id','mt_goods.goods_name','mt_goods.promotion_price','mt_goods.promotion_prople','mt_goods.prople','mt_shop.shop_name','mt_shop.shop_id'])
+                ->paginate(6);
+            $response=[
+                'code'=>0,
+                'data'=>$data,
+                'msg'=>'成功'
+            ];
+            return (json_encode($response, JSON_UNESCAPED_UNICODE));
+        }else{
+            $data=DB::table('mt_goods')
+                ->where(['is_promotion'=>1,'shop_id'=>$shop_id])
+                ->select(['goods_id','goods_name','promotion_price','promotion_prople','prople','picture'])
+                ->paginate(6);
+            $response=[
+                'code'=>0,
+                'data'=>$data,
+                'msg'=>'成功'
+            ];
+            return (json_encode($response, JSON_UNESCAPED_UNICODE));
+        }
+    }
+
+    //限时抢列表
+    public function admin_Limited_list(Request $request){
+        $admin_judge = $request->input('admin_judge');
+        $shop_id = $request->input('shop_id');
+        if($admin_judge == 1){
+            $data=DB::table('mt_goods')
+                ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
+                ->where(['limited_buy'=>1])
+                ->select(['mt_goods.goods_id','mt_goods.goods_name','mt_goods.limited_price','mt_goods.limited_prople','mt_goods.limited_ready_prople','mt_shop.shop_name','mt_shop.shop_id'])
+                ->paginate(6);
+            $response=[
+                'code'=>0,
+                'data'=>$data,
+                'msg'=>'成功'
+            ];
+            return (json_encode($response, JSON_UNESCAPED_UNICODE));
+        }else{
+            $data=DB::table('mt_goods')
+                ->where(['limited_buy'=>1,'shop_id'=>$shop_id])
+                ->select(['goods_id','goods_name','limited_price','limited_prople','limited_ready_prople','picture'])
+                ->paginate(6);
+            $response=[
+                'code'=>0,
+                'data'=>$data,
+                'msg'=>'成功'
+            ];
+            return (json_encode($response, JSON_UNESCAPED_UNICODE));
         }
     }
 }
