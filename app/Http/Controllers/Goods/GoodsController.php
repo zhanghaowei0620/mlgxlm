@@ -42,7 +42,7 @@ class GoodsController extends Controller
                         $jingxuan = DB::table('mt_goods')      //精选商品
                             ->join('mt_shop','mt_shop.shop_id','=','mt_goods.shop_id')
                             ->where($where)->get(['mt_shop.shop_id','shop_name','shop_address_provice','shop_address_city','shop_address_area','shop_score','shop_desc','shop_label','shop_logo','goods_id','goods_name','price','picture']);
-                        var_dump($jingxuan);exit;
+//                        var_dump($jingxuan);exit;
                     }
                 }else{
                     if($g_s_type_id == NULL){
@@ -214,7 +214,12 @@ class GoodsController extends Controller
             ->join('mt_shop','mt_shop.shop_id','=','mt_goods.shop_id')
             ->where(['goods_id'=>$goods_id])
             ->first();
-//        var_dump($data1);die;
+        $shop_set=DB::table('mt_shop')
+            ->join('mt_goods','mt_goods.shop_id','=','mt_shop.shop_id')
+            ->join('admin_user','admin_user.shop_id','=','mt_shop.shop_id')
+            ->where(['goods_id'=>$goods_id])
+            ->get(['shop_name','admin_tel','shop_address_detail','goods_name','goods_effect','goods_duration','goods_process','goods_overdue_time','shop_bus','goods_appointment','goods_use_rule']);
+//        var_dump($shop_set);die;
         $reconmend_shop = DB::table('mt_goods')->where(['shop_id'=>$data1->shop_id,'is_recommend'=>1])->limit(3)->get();
         //var_dump($reconmend_shop);exit;
         if($data1==NULL){
@@ -251,6 +256,7 @@ class GoodsController extends Controller
             $data2=[
                 'code'=>'0',
                 'goodsInfo'=>$data1,
+                'shop_set'=>$shop_set,
                 'recommend_shop'=>$reconmend_shop
             ];
             $response = [
