@@ -1167,7 +1167,7 @@ class Admin_loginController extends Controller
                     }
                 }else{
                     $response=[
-                        'code'=>1,
+                        'code'=>3,
                         'msg'=>'优惠卷添加失败'
                     ];
                     die(json_encode($response, JSON_UNESCAPED_UNICODE));
