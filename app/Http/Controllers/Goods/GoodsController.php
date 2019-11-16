@@ -214,14 +214,15 @@ class GoodsController extends Controller
             ->join('mt_shop','mt_shop.shop_id','=','mt_goods.shop_id')
             ->where(['goods_id'=>$goods_id])
             ->first();
+
         $shop_set=DB::table('mt_shop')
             ->join('mt_goods','mt_goods.shop_id','=','mt_shop.shop_id')
             ->join('admin_user','admin_user.shop_id','=','mt_shop.shop_id')
             ->where(['goods_id'=>$goods_id])
-            ->get(['shop_name','admin_tel','shop_address_detail','goods_name','goods_effect','goods_duration','goods_process','goods_overdue_time','shop_bus','goods_appointment','goods_use_rule']);
+            ->get(['shop_name','admin_tel','shop_address_detail','goods_name','goods_effect','goods_duration','goods_process','goods_overdue_time','shop_bus','goods_appointment','goods_use_rule','shop_img']);
 //        var_dump($shop_set);die;
         $reconmend_shop = DB::table('mt_goods')->where(['shop_id'=>$data1->shop_id,'is_recommend'=>1])->limit(3)->get();
-        //var_dump($reconmend_shop);exit;
+//        var_dump($reconmend_shop);exit;
         if($data1==NULL){
             $response = [
                 'code'=>'1',
