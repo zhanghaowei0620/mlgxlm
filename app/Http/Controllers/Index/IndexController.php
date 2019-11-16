@@ -88,7 +88,7 @@ class IndexController extends Controller
                 ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
                 ->join('mt_type','mt_goods.t_id','=','mt_type.t_id')
                 ->orderBy('goods_gd_num','desc')
-                ->get(['promotion_type','mt_goods.goods_id','goods_name','goods_type','market_price','price','picture','mt_type.t_name','introduction','star','mt_shop.shop_name','goods_gd_num'])->toArray();
+                ->get(['promotion_type','mt_goods.goods_id','goods_name','goods_type','coupon_redouction','coupon_price','market_price','price','picture','mt_type.t_name','introduction','star','mt_shop.shop_name','goods_gd_num','promotion_price','promotion_prople','limited_ready_prople','limited_prople'])->toArray();
 //            var_dump($salesInfo);die;
             $limitedInfo= DB ::table('mt_goods')
                 ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
