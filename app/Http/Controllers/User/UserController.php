@@ -59,10 +59,13 @@ class UserController extends Controller
                     Redis::set($key, $arr['openid']);
 //                $openid = Redis::get($key);
 //                var_dump($openid);exit;
-                    $response = [
+                    $data1=[
                         'code' => '0',
                         'msg' => '登录成功',
                         'data' => $data
+                    ];
+                    $response = [
+                        'data' => $data1
                     ];
                     return json_encode($response, JSON_UNESCAPED_UNICODE);
                 } else {
@@ -634,7 +637,7 @@ class UserController extends Controller
                 'shop_address_detail' => $shop_address_detail,
                 'shop_add_time' => $shop_add_time,
                 'shop_contacts' => $contacts,
-                'shop_status' => 2,
+                'shop_status' => 0,
                 'uid' => $uid
             ];
             $where = [
