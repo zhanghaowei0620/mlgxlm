@@ -68,10 +68,8 @@ class Headquarters extends Controller
 //        var_dump($url_name);exit;
         $destination = './imgadvertis/';
         $file = $_FILES['file']; // 获取上传的图片
-        //var_dump($file);exit;
-        $filename = $file['name'];
-        $filesize = $file['size'];
-        $filetype = $file['type'];
+        $ext=$request->file('file')->getClientOriginalExtension();
+        $filename=time().rand().".".$ext;
         $upload   = move_uploaded_file($file['tmp_name'], $destination . iconv("UTF-8", "gb2312", $filename));
 
         $path = '/imgadvertis/' . $filename;
@@ -173,7 +171,7 @@ class Headquarters extends Controller
     public function admin_goodsInfo(Request $request){
         $goods_id = $request->input('goods_id');
         $goodsInfo = DB::table('mt_goods')->where('goods_id',$goods_id)->get(['t_id','goods_name','price','goods_effect','goods_duration','goods_process','goods_frequency','goods_overdue_time','goods_appointment','goods_use_rule','goods_planting_picture','picture','picture2','picture3','goods_picture_detail'])->toArray();
-
+//        var_dump($goodsInfo);exit;
         $response=[
             'code'=>0,
             'data'=>$goodsInfo,
