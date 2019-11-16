@@ -214,13 +214,17 @@ class GoodsController extends Controller
             ->join('mt_shop','mt_shop.shop_id','=','mt_goods.shop_id')
             ->where(['goods_id'=>$goods_id])
             ->first();
-
-        $shop_set=DB::table('mt_shop')
+//        var_dump($data1);exit;
+        $shopsetInfo=DB::table('mt_shop')
             ->join('mt_goods','mt_goods.shop_id','=','mt_shop.shop_id')
             ->join('admin_user','admin_user.shop_id','=','mt_shop.shop_id')
             ->where(['goods_id'=>$goods_id])
             ->get(['shop_name','admin_tel','shop_address_detail','goods_name','goods_effect','goods_duration','goods_process','goods_overdue_time','shop_bus','goods_appointment','goods_use_rule','shop_img']);
 //        var_dump($shop_set);die;
+//        $aaa=[
+//            'shop_id'=>$data1->shop_id
+//        ];
+//        var_dump($aaa);die;
         $reconmend_shop = DB::table('mt_goods')->where(['shop_id'=>$data1->shop_id,'is_recommend'=>1])->limit(3)->get();
 //        var_dump($reconmend_shop);exit;
         if($data1==NULL){
@@ -257,7 +261,7 @@ class GoodsController extends Controller
             $data2=[
                 'code'=>'0',
                 'goodsInfo'=>$data1,
-                'shop_set'=>$shop_set,
+                'shop_set'=>$shopsetInfo,
                 'recommend_shop'=>$reconmend_shop
             ];
             $response = [
