@@ -189,6 +189,10 @@ Route::post('admin_goodsInfo','Amindbackstage\Headquarters@admin_goodsInfo')->mi
 
 Route::post('admin_Assemble','Amindbackstage\Headquarters@admin_Assemble')->middleware('checkLogin');
 
+Route::post('admin_Assemble_list','Amindbackstage\Headquarters@admin_Assemble_list')->middleware('checkLogin');   //
+
+Route::post('admin_Limited_list','Amindbackstage\Headquarters@admin_Limited_list')->middleware('checkLogin');
+
 Route::post('admin_Limited','Amindbackstage\Headquarters@admin_Limited')->middleware('checkLogin');
 
 
