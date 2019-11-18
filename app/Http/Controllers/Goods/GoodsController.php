@@ -226,12 +226,13 @@ class GoodsController extends Controller
             ->join('mt_shop','mt_shop.shop_id','=','mt_goods.goods_id')
             ->limit(4)
             ->get();
-        $seller = DB::table('mt_goods')       //销量榜
+        $seller = DB::table('mt_goods')
             ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
+            ->join('mt_user','mt_goods.uid','=','mt_user.uid')
             ->where(['mt_shop.shop_id'=>$data1->shop_id])
 //            ->limit(2)
-            ->get(['goods_id','goods_name','picture','promotion_price','prople','promotion_prople'])->toArray();
-//        var_dump($seller);die;
+            ->get(['goods_id','goods_name','picture','promotion_price','prople','promotion_prople','wx_name','wx_headimg'])->toArray();
+        var_dump($seller);die;
         $assesslist=DB::table('mt_assess')
             ->join('mt_user','mt_assess.uid','=','mt_user.uid')
             ->where(['goods_id'=>$goods_id])
