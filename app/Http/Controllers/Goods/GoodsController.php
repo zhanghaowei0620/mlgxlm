@@ -216,15 +216,32 @@ class GoodsController extends Controller
             ->first();
 //        var_dump($data1);exit;
         $shopsetInfo=DB::table('mt_shop')
+            ->join('admin_user','mt_shop.shop_id','=','admin_user.shop_id')
             ->join('mt_goods','mt_goods.shop_id','=','mt_shop.shop_id')
-            ->join('admin_user','admin_user.shop_id','=','mt_shop.shop_id')
+            ->where(['mt_goods.goods_id'=>$goods_id])
+            ->get(['shop_name','admin_tel','shop_address_detail','goods_name','goods_effect','goods_duration','goods_process','goods_overdue_time','shop_bus','goods_appointment','goods_use_rule','shop_img','shop_logo']);
+//        var_dump($shopsetInfo);die;
+        $goods_list=DB::table('mt_goods')
+            ->where(['mt_shop.shop_id'=>$data1->shop_id])
+            ->join('mt_shop','mt_shop.shop_id','=','mt_goods.goods_id')
+            ->limit(4)
+            ->get();
+        $seller = DB::table('mt_goods')       //销量榜
+        ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
+            ->where(['mt_shop.shop_id'=>$data1->shop_id,'promotion_type'=>1])
+//            ->limit(2)
+            ->get(['goods_id','goods_name','picture','promotion_price','prople','promotion_prople'])->toArray();
+//        var_dump($seller);die;
+        $assesslist=DB::table('mt_assess')
             ->where(['goods_id'=>$goods_id])
-            ->get(['shop_name','admin_tel','shop_address_detail','goods_name','goods_effect','goods_duration','goods_process','goods_overdue_time','shop_bus','goods_appointment','goods_use_rule','shop_img']);
-//        var_dump($shop_set);die;
+            ->limit(3)
+            ->get('assess_text');
+//        var_dump($assesslist);die;
 //        $aaa=[
 //            'shop_id'=>$data1->shop_id
 //        ];
 //        var_dump($aaa);die;
+//        var_dump($data1->shop_id);exit;
         $reconmend_shop = DB::table('mt_goods')->where(['shop_id'=>$data1->shop_id,'is_recommend'=>1])->limit(3)->get();
 //        var_dump($reconmend_shop);exit;
         if($data1==NULL){
@@ -235,7 +252,7 @@ class GoodsController extends Controller
             die(json_encode($response,JSON_UNESCAPED_UNICODE));
         }else{
             $openid = Redis::get('openid');
-            //var_dump($openid);exit;
+//            var_dump($openid);exit;
             $userInfo = DB::table('mt_user')->where('openid',$openid)->first();
            // var_dump($userInfo);exit;
             $uid = $userInfo->uid;
@@ -262,6 +279,9 @@ class GoodsController extends Controller
                 'code'=>'0',
                 'goodsInfo'=>$data1,
                 'shop_set'=>$shopsetInfo,
+                'goods_list'=>$goods_list,
+                'seller'=>$seller,
+                'assesslist'=>$assesslist,
                 'recommend_shop'=>$reconmend_shop
             ];
             $response = [
