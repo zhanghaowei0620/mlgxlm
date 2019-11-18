@@ -244,9 +244,10 @@ class GoodsController extends Controller
 //        var_dump($aaa);die;
 //        var_dump($data1->shop_id);exit;
         $reconmend_shop = DB::table('mt_goods')
-            ->where(['shop_id'=>$data1->shop_id,'is_recommend'=>1,'p_id'=>2])
+            ->where(['mt_shop.shop_id'=>$data1->shop_id,'is_recommend'=>1,'p_id'=>2])
             ->join('mt_type','mt_goods.t_id','=','mt_type.t_id')
-            ->limit(4)->get(['t_name','goods_name','picture','goods_gd_num','price']);
+            ->join('mt_shop','mt_shop.shop_id','=','mt_goods.shop_id')
+            ->limit(4)->get(['t_name','goods_name','picture','goods_gd_num','price','shop_address_provice','shop_address_city','shop_address_area']);
 //        var_dump($reconmend_shop);exit;
         if($data1==NULL){
             $response = [
