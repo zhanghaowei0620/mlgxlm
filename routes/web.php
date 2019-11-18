@@ -175,6 +175,8 @@ Route::any('coupontele','Admin\Admin_loginController@coupontele')->middleware('c
 Route::any('couponsearch','Admin\Admin_loginController@couponsearch')->middleware('checkLogin');
 //优惠卷添加
 Route::any('couponinsert','Admin\Admin_loginController@couponinsert')->middleware('checkLogin');
+//店铺管理
+Route::get('admin_shop','Admin\Admin_loginController@admin_shop')->middleware('checkLogin');
 
 //商品展示
 Route::any('goodsList','Amindbackstage\Headquarters@goodsList')->middleware('checkLogin');

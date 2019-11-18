@@ -1205,7 +1205,7 @@ class Admin_loginController extends Controller
                 'code'=>1,
                 'msg'=>'优惠卷删除失败'
             ];
-            return (json_encode($response, JSON_UNESCAPED_UNICODE));
+            die(json_encode($response, JSON_UNESCAPED_UNICODE));
         }
     }
 
@@ -1216,11 +1216,54 @@ class Admin_loginController extends Controller
         if($admin_judge == 2){
             $shopInfo = DB::table('mt_shop')
                 ->join('admin_user','admin_user.shop_id','=','mt_shop.shop_id')
-                ->where('shop_id',$shop_id)
-                ->first(['shop_name','shop_img','shop_project','shop_desc','shop_bus','shop_service','shop_address_provice','shop_address_city','shop_address_area','shop_phone','admin_tel']);
-
-            var_dump($shopInfo);exit;
+                ->where('mt_shop.shop_id',$shop_id)
+                ->first(['shop_name','shop_img','shop_project','shop_desc','shop_bus','shop_service','shop_address_provice','shop_address_city','shop_address_area','admin_tel']);
+            $response=[
+                'code'=>0,
+                'data'=>$shopInfo,
+                'msg'=>'ok'
+            ];
+            return json_encode($response, JSON_UNESCAPED_UNICODE);
+        }else{
+            $shopInfo = DB::table('mt_shop')
+                ->join('admin_user','mt_shop.shop_id','=','admin_user.shop_id')
+                ->where('mt_shop.shop_status',2)
+                ->get(['shop_name','shop_img','shop_project','shop_desc','shop_bus','shop_service','shop_address_provice','shop_address_city','shop_address_area'])->toArray();
+            $response=[
+                'code'=>0,
+                'data'=>$shopInfo,
+                'msg'=>'ok'
+            ];
+            return json_encode($response, JSON_UNESCAPED_UNICODE);
         }
     }
+
+    //店铺信息修改
+    public function admin_shop_update(Request $request){
+        $shop_id = $request->input('shop_id');
+        $update = [
+            'shop_img'=>$request->input('shop_img'),     //主图
+            'shop_project'=>$request->input('shop_project'),    //项目
+            'shop_desc'=>$request->input('shop_desc'),          //简介
+            'shop_bus'=>$request->input('shop_bus'),            //营业时间
+            'shop_service'=>$request->input('shop_service')     //服务
+        ];
+        $updateShopInfo = DB::table('mt_shop')->where('shop_id',$shop_id)->update($update);
+        if($updateShopInfo >0){
+            $response=[
+                'code'=>0,
+                'msg'=>'修改成功'
+            ];
+            return json_encode($response, JSON_UNESCAPED_UNICODE);
+        }else{
+            $response=[
+                'code'=>1,
+                'msg'=>'亲,您并未修改任何信息'
+            ];
+            return json_encode($response, JSON_UNESCAPED_UNICODE);
+        }
+    }
+
+
 
 }
