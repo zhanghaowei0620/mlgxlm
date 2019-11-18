@@ -392,15 +392,21 @@ class GoodsController extends Controller
         $cartInfo = DB::table('mt_cart')->where($where)->get()->toArray();
         //var_dump($cartInfo);exit;
         if($cartInfo){
-            $response = [
+            $data=[
                 'code'=>'0',
                 'cartInfo'=>$cartInfo
             ];
+            $response = [
+                'data'=>$data
+            ];
             return json_encode($response,JSON_UNESCAPED_UNICODE);
         }else{
-            $response = [
+            $data=[
                 'code'=>'1',
                 'msg'=>'购物车暂无数据，快去添加商品吧'
+            ];
+            $response = [
+                'data'=>$data
             ];
             die(json_encode($response,JSON_UNESCAPED_UNICODE));
         }
