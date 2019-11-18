@@ -208,7 +208,7 @@ class GoodsController extends Controller
     }
 
     //点击商品获取商品详情+店铺详情信息
-    public function goodsinfo(Request $request){      
+    public function goodsinfo(Request $request){
         $goods_id = $request->input('goods_id');
         $data1=DB::table('mt_goods')
             ->join('mt_shop','mt_shop.shop_id','=','mt_goods.shop_id')
@@ -221,6 +221,10 @@ class GoodsController extends Controller
             ->where(['mt_goods.goods_id'=>$goods_id])
             ->get(['shop_name','admin_tel','shop_address_detail','goods_name','goods_effect','goods_duration','goods_process','goods_overdue_time','shop_bus','goods_appointment','goods_use_rule','shop_img','shop_logo']);
 //        var_dump($shopsetInfo);die;
+        $aaa=DB::table('mt_goods')
+            ->where(['shop_id'=>$data1->shop_id])
+            ->get(['promotion_prople']);
+//        var_dump($aaa);die;
         $goods_list=DB::table('mt_goods')
             ->where(['mt_shop.shop_id'=>$data1->shop_id])
             ->join('mt_shop','mt_shop.shop_id','=','mt_goods.goods_id')
@@ -239,11 +243,6 @@ class GoodsController extends Controller
             ->limit(2)
             ->get(['assess_text','mt_user.wx_name','mt_user.wx_headimg']);
 //        var_dump($assesslist);die;
-//        $aaa=[
-//            'shop_id'=>$data1->shop_id
-//        ];
-//        var_dump($aaa);die;
-//        var_dump($data1->shop_id);exit;
         $reconmend_shop = DB::table('mt_goods')
             ->where(['mt_shop.shop_id'=>$data1->shop_id,'is_recommend'=>1,'p_id'=>2])
             ->join('mt_type','mt_goods.t_id','=','mt_type.t_id')
@@ -321,9 +320,12 @@ class GoodsController extends Controller
                 $update_buynum = DB::table('mt_cart')->where('goods_id',$goods_id)->update($update);
                 //var_dump($update_buynum);exit;
                 if($update_buynum==true){
-                    $response = [
+                    $aa=[
                         'code'=>'0',
                         'msg'=>'加入购物车成功'
+                    ];
+                    $response = [
+                        'data'=>$aa
                     ];
                     return json_encode($response,JSON_UNESCAPED_UNICODE);
                 } else{
@@ -354,9 +356,12 @@ class GoodsController extends Controller
                 //var_dump($data);exit;
                 $add_cart = DB::table('mt_cart')->insertGetId($data);
                 if($add_cart){
-                    $response = [
+                    $aa=[
                         'code'=>'0',
                         'msg'=>'加入购物车成功'
+                    ];
+                    $response = [
+                        'data'=>$aa
                     ];
                     return json_encode($response,JSON_UNESCAPED_UNICODE);
                 }else{
@@ -428,7 +433,6 @@ class GoodsController extends Controller
             return (json_encode($response, JSON_UNESCAPED_UNICODE));
         }
     }
-
     //点击加入收藏-商品
     public function  add_collection(Request $request){
         $goods_id = $request->input('goods_id');
@@ -523,7 +527,30 @@ class GoodsController extends Controller
             die(json_encode($response,JSON_UNESCAPED_UNICODE));
         }
     }
-
+    //查询店铺是否收藏
+    public function collectionaddd(Request $request)
+    {
+        $shop_id = $request->input('shop_id');
+        $data=DB::table('mt_shop_collection')
+            ->where(['shop_id'=>$shop_id])
+            ->get();
+        if($data){
+            $data1=[
+              'code'=>0,
+              'msg'=>'店铺已收藏'
+            ];
+            $response=[
+                'data'=>$data1
+            ];
+            return json_encode($response,JSON_UNESCAPED_UNICODE);
+        }else{
+            $response = [
+                'code'=>'1',
+                'msg'=>'此店铺没有被收藏，快去收藏吧'
+            ];
+            die(json_encode($response,JSON_UNESCAPED_UNICODE));
+        }
+    }
     //店铺收藏
     public function shop_collection(Request $request){
         $shop_id = $request->input('shop_id');
@@ -541,7 +568,7 @@ class GoodsController extends Controller
             if($shop_collection){
                 $response = [
                     'code'=>'0',
-                    'msg'=>'该商品已在您的收藏夹中'
+                    'msg'=>'该店铺已在您的收藏夹中'
                 ];
                 return json_encode($response,JSON_UNESCAPED_UNICODE);
             }else{
