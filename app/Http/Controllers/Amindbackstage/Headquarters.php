@@ -347,7 +347,7 @@ class Headquarters extends Controller
             $data=DB::table('mt_goods')
                 ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
                 ->where(['limited_buy'=>1])
-                ->select(['mt_goods.goods_id','mt_goods.goods_name','mt_goods.limited_price','mt_goods.limited_prople','mt_goods.limited_ready_prople','mt_shop.shop_name','mt_shop.shop_id'])
+                ->select(['mt_goods.goods_id','mt_goods.goods_name','mt_goods.limited_price','mt_goods.limited_prople','mt_goods.limited_ready_prople','mt_shop.shop_name','mt_shop.shop_id','limited_start_time','limited_stop_time'])
                 ->paginate(6);
             $response=[
                 'code'=>0,
@@ -358,7 +358,7 @@ class Headquarters extends Controller
         }else{
             $data=DB::table('mt_goods')
                 ->where(['limited_buy'=>1,'shop_id'=>$shop_id])
-                ->select(['goods_id','goods_name','limited_price','limited_prople','limited_ready_prople','picture'])
+                ->select(['goods_id','goods_name','limited_price','limited_prople','limited_ready_prople','picture','limited_start_time','limited_stop_time'])
                 ->paginate(6);
             $response=[
                 'code'=>0,
@@ -368,4 +368,6 @@ class Headquarters extends Controller
             return (json_encode($response, JSON_UNESCAPED_UNICODE));
         }
     }
+
+
 }

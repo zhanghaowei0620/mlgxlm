@@ -1209,4 +1209,18 @@ class Admin_loginController extends Controller
         }
     }
 
+    //店铺管理
+    public function admin_shop(Request $request){
+        $shop_id = $request->input('shop_id');
+        $admin_judge = $request->input('admin_judge');
+        if($admin_judge == 2){
+            $shopInfo = DB::table('mt_shop')
+                ->join('admin_user','admin_user.shop_id','=','mt_shop.shop_id')
+                ->where('shop_id',$shop_id)
+                ->first(['shop_name','shop_img','shop_project','shop_desc','shop_bus','shop_service','shop_address_provice','shop_address_city','shop_address_area','shop_phone','admin_tel']);
+
+            var_dump($shopInfo);exit;
+        }
+    }
+
 }
