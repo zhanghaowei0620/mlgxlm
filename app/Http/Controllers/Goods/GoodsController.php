@@ -237,7 +237,7 @@ class GoodsController extends Controller
             ->where(['goods_id'=>$goods_id])
             ->limit(2)
             ->get(['assess_text','mt_user.wx_name','mt_user.wx_headimg']);
-        var_dump($assesslist);die;
+//        var_dump($assesslist);die;
 //        $aaa=[
 //            'shop_id'=>$data1->shop_id
 //        ];
