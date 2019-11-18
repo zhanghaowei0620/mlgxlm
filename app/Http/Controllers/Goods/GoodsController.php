@@ -227,14 +227,15 @@ class GoodsController extends Controller
             ->limit(4)
             ->get();
         $seller = DB::table('mt_goods')       //销量榜
-        ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
-            ->where(['mt_shop.shop_id'=>$data1->shop_id,'promotion_type'=>1])
+            ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
+            ->join('mt_user','mt_goods.uid','=','mt_user.uid')
+            ->where(['goods_id'=>$goods_id])
 //            ->limit(2)
-            ->get(['goods_id','goods_name','picture','promotion_price','prople','promotion_prople'])->toArray();
+            ->get(['goods_id','goods_name','picture','promotion_price','prople','promotion_prople','wx_name','wx_headimg'])->toArray();
 //        var_dump($seller);die;
         $assesslist=DB::table('mt_assess')
             ->where(['goods_id'=>$goods_id])
-            ->limit(3)
+            ->limit(2)
             ->get('assess_text');
 //        var_dump($assesslist);die;
 //        $aaa=[
@@ -242,7 +243,7 @@ class GoodsController extends Controller
 //        ];
 //        var_dump($aaa);die;
 //        var_dump($data1->shop_id);exit;
-        $reconmend_shop = DB::table('mt_goods')->where(['shop_id'=>$data1->shop_id,'is_recommend'=>1])->limit(3)->get();
+        $reconmend_shop = DB::table('mt_goods')->where(['shop_id'=>$data1->shop_id,'is_recommend'=>1])->limit(4)->get();
 //        var_dump($reconmend_shop);exit;
         if($data1==NULL){
             $response = [
