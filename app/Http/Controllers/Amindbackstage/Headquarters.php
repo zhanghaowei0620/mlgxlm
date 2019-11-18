@@ -341,14 +341,18 @@ class Headquarters extends Controller
 
     //限时抢列表
     public function admin_Limited_list(Request $request){
+        //echo date('Y-m-d H:i:s',1572843823);exit;
         $admin_judge = $request->input('admin_judge');
         $shop_id = $request->input('shop_id');
+        $time = time();
         if($admin_judge == 1){
             $data=DB::table('mt_goods')
                 ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
-                ->where(['limited_buy'=>1])
+                ->where('limited_buy',1)
+                ->where('limited_stop_time','>',$time)
                 ->select(['mt_goods.goods_id','mt_goods.goods_name','mt_goods.limited_price','mt_goods.limited_prople','mt_goods.limited_ready_prople','mt_shop.shop_name','mt_shop.shop_id','limited_start_time','limited_stop_time'])
                 ->paginate(6);
+//            var_dump($data);exit;
             $response=[
                 'code'=>0,
                 'data'=>$data,
@@ -358,6 +362,7 @@ class Headquarters extends Controller
         }else{
             $data=DB::table('mt_goods')
                 ->where(['limited_buy'=>1,'shop_id'=>$shop_id])
+                ->where('limited_stop_time','>',$time)
                 ->select(['goods_id','goods_name','limited_price','limited_prople','limited_ready_prople','picture','limited_start_time','limited_stop_time'])
                 ->paginate(6);
             $response=[
