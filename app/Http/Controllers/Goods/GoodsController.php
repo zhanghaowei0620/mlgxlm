@@ -533,6 +533,39 @@ class GoodsController extends Controller
             die(json_encode($response,JSON_UNESCAPED_UNICODE));
         }
     }
+
+    //收藏商品删除（取消收藏）
+    public function collectiondele(Request $request)
+    {
+        $goods_id=$request->input('goods_id');
+//        $cart_id=$request->input('cart_id');
+        $aa=[
+          'goods_id'=>$goods_id,
+            'collection'=>1
+        ];
+//        var_dump($aa);die;
+
+        $data=DB::table('mt_cart')
+            ->where($aa)
+            ->delete();
+//        var_dump($data);die;
+        if($data){
+            $data1=[
+              'code'=>0,
+              'msg'=>'删除成功'
+            ];
+            $response=[
+                'data'=>$data1
+            ];
+            return json_encode($response,JSON_UNESCAPED_UNICODE);
+        }else{
+            $response = [
+                'code'=>'1',
+                'msg'=>'此件商品没有被收藏，无法删除'
+            ];
+            die(json_encode($response,JSON_UNESCAPED_UNICODE));
+        }
+    }
     //查询店铺是否收藏
     public function collectionaddd(Request $request)
     {
