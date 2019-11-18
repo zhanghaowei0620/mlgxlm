@@ -73,7 +73,7 @@ class Headquarters extends Controller
         $upload   = move_uploaded_file($file['tmp_name'], $destination . iconv("UTF-8", "gb2312", $filename));
         $da = 111;
 
-        $path = '/imgadvertis/' . $filename;
+        $path = '/images/' . $filename;
         if($upload){
             $response = [
                 'code' => 0,
