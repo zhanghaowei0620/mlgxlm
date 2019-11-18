@@ -96,9 +96,9 @@ class Admin_loginController extends Controller
 
     //修改密码-验证上一个密码
     public function admin_pwdUpdate(Request $request){
-        $admin_id = $request->input('admin_id');
-        $last_admin_pwd = $request->input('last_admin_pwd');
-        $update_admin_pwd = $request->input('update_admin_pwd');
+        $admin_id = $request->input('admin_id');   //用户id
+        $last_admin_pwd = $request->input('last_admin_pwd');   //上一次使用的密码
+        $update_admin_pwd = $request->input('update_admin_pwd');    //要修改的密码
         $update_admin_pwd = password_hash($update_admin_pwd, PASSWORD_BCRYPT);
         $adminInfo = DB::table('admin_user')->where('admin_id',$admin_id)->first();
         if(password_verify($last_admin_pwd,$adminInfo->admin_pwd)){
