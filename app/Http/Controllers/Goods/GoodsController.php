@@ -560,6 +560,34 @@ class GoodsController extends Controller
             die(json_encode($response,JSON_UNESCAPED_UNICODE));
         }
     }
+
+    //查询商品是否收藏
+    public function collectionshop(Request $request)
+    {
+        $goods_id = $request->input('goods_id');
+        $where=[
+            'goods_id'=>$goods_id
+        ];
+        $data=DB::table('mt_cart')
+            ->where($where)
+            ->first();
+        if($data){
+            $data1=[
+                'code'=>0,
+                'msg'=>'商品已收藏'
+            ];
+            $response=[
+                'data'=>$data1
+            ];
+            return json_encode($response,JSON_UNESCAPED_UNICODE);
+        }else{
+            $response = [
+                'code'=>'1',
+                'msg'=>'此商品没有被收藏，快去收藏吧'
+            ];
+            die(json_encode($response,JSON_UNESCAPED_UNICODE));
+        }
+    }
     //店铺收藏
     public function shop_collection(Request $request){
         $shop_id = $request->input('shop_id');
