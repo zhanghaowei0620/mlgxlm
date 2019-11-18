@@ -312,13 +312,13 @@ class GoodsController extends Controller
                 'collection'=>0
             ];
             $goods_cart = DB::table('mt_cart')->where($where)->get()->toArray();
-            //var_dump($goods_cart);exit;
+//            var_dump($goods_cart);exit;
             if($goods_cart){
                 $update = [
                     'buy_num'=>$goods_cart[0]->buy_num+$buy_num
                 ];
                 $update_buynum = DB::table('mt_cart')->where('goods_id',$goods_id)->update($update);
-                //var_dump($update_buynum);exit;
+//                var_dump($update_buynum);exit;
                 if($update_buynum==true){
                     $aa=[
                         'code'=>'0',
@@ -340,7 +340,7 @@ class GoodsController extends Controller
                     ->join('mt_goods','mt_shop.shop_id','=','mt_shop.shop_id')
                     ->where('mt_goods.goods_id',$goods_id)
                     ->first();
-                //var_dump($goodsInfo);exit;
+//                var_dump($goodsInfo);exit;
                 $data = [
                     'goods_id'=>$goodsInfo->goods_id,
                     'shop_id'=>$goodsInfo->shop_id,
@@ -353,7 +353,7 @@ class GoodsController extends Controller
                     'collection'=>0,
                     'uid'=>$uid
                 ];
-                //var_dump($data);exit;
+//                var_dump($data);exit;
                 $add_cart = DB::table('mt_cart')->insertGetId($data);
                 if($add_cart){
                     $aa=[
@@ -537,9 +537,12 @@ class GoodsController extends Controller
     public function collectionaddd(Request $request)
     {
         $shop_id = $request->input('shop_id');
+        $where=[
+          'shop_id'=>$shop_id
+        ];
         $data=DB::table('mt_shop_collection')
-            ->where(['shop_id'=>$shop_id])
-            ->get();
+            ->where($where)
+            ->first();
         if($data){
             $data1=[
               'code'=>0,
