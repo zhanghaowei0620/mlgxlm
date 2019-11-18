@@ -99,6 +99,7 @@ class IndexController extends Controller
                 ->where(['promotion_type'=>4],['mt_shop.shop_address_city'=>$shop_address_city])
                 ->limit(6)
                 ->get(['promotion_type','mt_goods.goods_id','goods_name','goods_type','limited_price','price','picture','mt_type.t_name','star','mt_shop.shop_name','limited_prople','limited_ready_prople'])->toArray();
+//            var_dump($salesInfo);die;
             $shop_id = DB::table('mt_shop')
                 ->join('mt_goods','mt_goods.shop_id','=','mt_shop.shop_id')
 //                ->where(['mt_shop.shop_address_city'=>$shop_address_city])
@@ -118,7 +119,7 @@ class IndexController extends Controller
                 ->where(['is_recommend'=>1],['shop_address_city'=>$shop_address_city])
                 ->limit(6)
                 ->get(['goods_id','goods_name','price','picture']);       //推荐
-//            var_dump($recommend);exit;
+//            var_dump($shop_set);exit;
 
             $data = [
                 'type'          =>  $type,

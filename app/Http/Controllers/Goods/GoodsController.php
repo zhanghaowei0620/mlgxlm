@@ -42,7 +42,7 @@ class GoodsController extends Controller
                         $jingxuan = DB::table('mt_goods')      //精选商品
                             ->join('mt_shop','mt_shop.shop_id','=','mt_goods.shop_id')
                             ->where($where)->get(['mt_shop.shop_id','shop_name','shop_address_provice','shop_address_city','shop_address_area','shop_score','shop_desc','shop_label','shop_logo','goods_id','goods_name','price','picture']);
-                        var_dump($jingxuan);exit;
+//                        var_dump($jingxuan);exit;
                     }
                 }else{
                     if($g_s_type_id == NULL){
@@ -214,9 +214,42 @@ class GoodsController extends Controller
             ->join('mt_shop','mt_shop.shop_id','=','mt_goods.shop_id')
             ->where(['goods_id'=>$goods_id])
             ->first();
-//        var_dump($data1);die;
-        $reconmend_shop = DB::table('mt_goods')->where(['shop_id'=>$data1->shop_id,'is_recommend'=>1])->limit(3)->get();
-        //var_dump($reconmend_shop);exit;
+//        var_dump($data1);exit;
+        $shopsetInfo=DB::table('mt_shop')
+            ->join('admin_user','mt_shop.shop_id','=','admin_user.shop_id')
+            ->join('mt_goods','mt_goods.shop_id','=','mt_shop.shop_id')
+            ->where(['mt_goods.goods_id'=>$goods_id])
+            ->get(['shop_name','admin_tel','shop_address_detail','goods_name','goods_effect','goods_duration','goods_process','goods_overdue_time','shop_bus','goods_appointment','goods_use_rule','shop_img','shop_logo']);
+//        var_dump($shopsetInfo);die;
+        $goods_list=DB::table('mt_goods')
+            ->where(['mt_shop.shop_id'=>$data1->shop_id])
+            ->join('mt_shop','mt_shop.shop_id','=','mt_goods.goods_id')
+            ->limit(4)
+            ->get();
+        $seller = DB::table('mt_goods')
+            ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
+            ->join('mt_user','mt_goods.uid','=','mt_user.uid')
+            ->where(['mt_shop.shop_id'=>$data1->shop_id])
+//            ->limit(2)
+            ->get(['goods_id','goods_name','picture','promotion_price','prople','promotion_prople','wx_name','wx_headimg'])->toArray();
+//        var_dump($seller);die;
+        $assesslist=DB::table('mt_assess')
+            ->join('mt_user','mt_assess.uid','=','mt_user.uid')
+            ->where(['goods_id'=>$goods_id])
+            ->limit(2)
+            ->get(['assess_text','mt_user.wx_name','mt_user.wx_headimg']);
+//        var_dump($assesslist);die;
+//        $aaa=[
+//            'shop_id'=>$data1->shop_id
+//        ];
+//        var_dump($aaa);die;
+//        var_dump($data1->shop_id);exit;
+        $reconmend_shop = DB::table('mt_goods')
+            ->where(['mt_shop.shop_id'=>$data1->shop_id,'is_recommend'=>1,'p_id'=>2])
+            ->join('mt_type','mt_goods.t_id','=','mt_type.t_id')
+            ->join('mt_shop','mt_shop.shop_id','=','mt_goods.shop_id')
+            ->limit(4)->get(['t_name','goods_name','picture','goods_gd_num','price','shop_address_provice','shop_address_city','shop_address_area','goods_id','shop_name','limited_price','promotion_price','promotion_type']);
+//        var_dump($reconmend_shop);exit;
         if($data1==NULL){
             $response = [
                 'code'=>'1',
@@ -225,7 +258,7 @@ class GoodsController extends Controller
             die(json_encode($response,JSON_UNESCAPED_UNICODE));
         }else{
             $openid = Redis::get('openid');
-            //var_dump($openid);exit;
+//            var_dump($openid);exit;
             $userInfo = DB::table('mt_user')->where('openid',$openid)->first();
            // var_dump($userInfo);exit;
             $uid = $userInfo->uid;
@@ -251,6 +284,10 @@ class GoodsController extends Controller
             $data2=[
                 'code'=>'0',
                 'goodsInfo'=>$data1,
+                'shop_set'=>$shopsetInfo,
+                'goods_list'=>$goods_list,
+                'seller'=>$seller,
+                'assesslist'=>$assesslist,
                 'recommend_shop'=>$reconmend_shop
             ];
             $response = [
