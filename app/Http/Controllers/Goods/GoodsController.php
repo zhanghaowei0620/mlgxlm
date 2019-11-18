@@ -232,7 +232,7 @@ class GoodsController extends Controller
             ->where(['mt_shop.shop_id'=>$data1->shop_id])
 //            ->limit(2)
             ->get(['goods_id','goods_name','picture','promotion_price','prople','promotion_prople','wx_name','wx_headimg'])->toArray();
-        var_dump($seller);die;
+//        var_dump($seller);die;
         $assesslist=DB::table('mt_assess')
             ->join('mt_user','mt_assess.uid','=','mt_user.uid')
             ->where(['goods_id'=>$goods_id])
