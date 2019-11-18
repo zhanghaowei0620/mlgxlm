@@ -66,6 +66,8 @@ Route::get('/collectionshop', 'Goods\GoodsController@collectionshop');     //查
 
 Route::get('/collectiondele', 'Goods\GoodsController@collectiondele');     //收藏商品删除
 
+Route::get('/shop_collection_dele', 'Goods\GoodsController@shop_collection_dele');     //收藏店铺删除
+
 Route::get('/add_collection', 'Goods\GoodsController@add_collection');     //商品加入收藏
 
 Route::get('/collection_list', 'Goods\GoodsController@collection_list');      //商品收藏列表
