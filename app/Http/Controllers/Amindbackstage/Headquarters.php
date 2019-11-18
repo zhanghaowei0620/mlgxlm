@@ -66,7 +66,7 @@ class Headquarters extends Controller
     {
         $url_name = $request->input('url_name');
 //        var_dump($url_name);exit;
-        $destination = './imgadvertis/';
+        $destination = './images/';
         $file = $_FILES['file']; // 获取上传的图片
         $ext=$request->file('file')->getClientOriginalExtension();
         $filename=time().rand().".".$ext;
