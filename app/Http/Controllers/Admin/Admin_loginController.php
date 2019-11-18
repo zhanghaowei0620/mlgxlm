@@ -1221,7 +1221,7 @@ class Admin_loginController extends Controller
             $response=[
                 'code'=>0,
                 'data'=>$shopInfo,
-                'msg'=>'ok'
+                'msg'=>'数据请求成功'
             ];
             return json_encode($response, JSON_UNESCAPED_UNICODE);
         }else{
@@ -1232,7 +1232,7 @@ class Admin_loginController extends Controller
             $response=[
                 'code'=>0,
                 'data'=>$shopInfo,
-                'msg'=>'ok'
+                'msg'=>'数据请求成功'
             ];
             return json_encode($response, JSON_UNESCAPED_UNICODE);
         }
