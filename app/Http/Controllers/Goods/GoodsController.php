@@ -277,6 +277,15 @@ class GoodsController extends Controller
             die(json_encode($response,JSON_UNESCAPED_UNICODE));
         }
     }
+    //点击领取优惠卷
+    public function couponadd(Request $request)
+    {
+        $coupon_draw=$request->input('coupon_draw');
+        $data=DB::table('mt_coupon')
+            ->where(['coupon_draw'=>$coupon_draw])
+            ->first();
+        var_dump($data);die;
+    }
 
     //点击商品获取商品详情+店铺详情信息
     public function goodsinfo(Request $request){
@@ -479,7 +488,7 @@ class GoodsController extends Controller
             return json_encode($response,JSON_UNESCAPED_UNICODE);
         }else{
             $data=[
-                'code'=>'1',
+                'code'=>0,
                 'msg'=>'购物车暂无数据，快去添加商品吧'
             ];
             $response = [
