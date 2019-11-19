@@ -329,9 +329,12 @@ class GoodsController extends Controller
                     ];
                     return json_encode($response,JSON_UNESCAPED_UNICODE);
                 } else{
-                    $response = [
+                    $data1=[
                         'code'=>'1',
-                        'msg'=>'加入购物车失败13131'
+                        'msg'=>'加入购物车失败'
+                    ];
+                    $response = [
+                        'data'=>$data1
                     ];
                     die(json_encode($response,JSON_UNESCAPED_UNICODE));
                 }
@@ -365,9 +368,12 @@ class GoodsController extends Controller
                     ];
                     return json_encode($response,JSON_UNESCAPED_UNICODE);
                 }else{
-                    $response = [
+                    $data1=[
                         'code'=>'1',
                         'msg'=>'加入购物车失败'
+                    ];
+                    $response = [
+                        'data'=>$data1
                     ];
                     die(json_encode($response,JSON_UNESCAPED_UNICODE));
                 }
@@ -432,9 +438,12 @@ class GoodsController extends Controller
             ];
             return (json_encode($response, JSON_UNESCAPED_UNICODE));
         }else{
-            $response=[
+            $data1=[
                 'code'=>1,
                 'msg'=>'删除失败'
+            ];
+            $response=[
+                'data'=>$data1
             ];
             return (json_encode($response, JSON_UNESCAPED_UNICODE));
         }
@@ -489,9 +498,12 @@ class GoodsController extends Controller
                     ];
                     return json_encode($response,JSON_UNESCAPED_UNICODE);
                 }else{
-                    $response = [
+                    $data1=[
                         'code'=>'1',
                         'msg'=>'加入收藏失败'
+                    ];
+                    $response = [
+                        'data'=>$data1
                     ];
                     die(json_encode($response,JSON_UNESCAPED_UNICODE));
                 }
@@ -539,9 +551,12 @@ class GoodsController extends Controller
                 die(json_encode($response,JSON_UNESCAPED_UNICODE));
             }
         }else{
-            $response = [
+            $data1=[
                 'code'=>'2',
                 'msg'=>'请先登录'
+            ];
+            $response = [
+                'data'=>$data1
             ];
             die(json_encode($response,JSON_UNESCAPED_UNICODE));
         }
@@ -572,9 +587,12 @@ class GoodsController extends Controller
             ];
             return json_encode($response,JSON_UNESCAPED_UNICODE);
         }else{
-            $response = [
+            $data1=[
                 'code'=>'1',
                 'msg'=>'此件商品没有被收藏，无法删除'
+            ];
+            $response = [
+                'data'=>$data1
             ];
             die(json_encode($response,JSON_UNESCAPED_UNICODE));
         }
@@ -599,9 +617,12 @@ class GoodsController extends Controller
             ];
             return json_encode($response,JSON_UNESCAPED_UNICODE);
         }else{
-            $response = [
+            $data1=[
                 'code'=>'1',
                 'msg'=>'此店铺没有被收藏，快去收藏吧'
+            ];
+            $response = [
+                'data'=>$data1
             ];
             die(json_encode($response,JSON_UNESCAPED_UNICODE));
         }
@@ -627,9 +648,12 @@ class GoodsController extends Controller
             ];
             return json_encode($response,JSON_UNESCAPED_UNICODE);
         }else{
-            $response = [
+            $data1=[
                 'code'=>'1',
                 'msg'=>'此商品没有被收藏，快去收藏吧'
+            ];
+            $response = [
+                'data'=>$data1
             ];
             die(json_encode($response,JSON_UNESCAPED_UNICODE));
         }
@@ -671,9 +695,12 @@ class GoodsController extends Controller
                     ];
                     return json_encode($response,JSON_UNESCAPED_UNICODE);
                 }else{
-                    $response = [
+                    $data1=[
                         'code'=>'1',
                         'msg'=>'店铺收藏失败'
+                    ];
+                    $response = [
+                        'data'=>$data1
                     ];
                     die(json_encode($response,JSON_UNESCAPED_UNICODE));
                 }
@@ -711,16 +738,22 @@ class GoodsController extends Controller
                 ];
                 return json_encode($response,JSON_UNESCAPED_UNICODE);
             }else{
-                $response = [
+                $data1=[
                     'code'=>'1',
                     'msg'=>'收藏夹暂无数据，快去添加商品吧'
+                ];
+                $response = [
+                    'data'=>$data1
                 ];
                 die(json_encode($response,JSON_UNESCAPED_UNICODE));
             }
         }else{
-            $response = [
+            $data1=[
                 'code'=>'2',
                 'msg'=>'请先登录'
+            ];
+            $response = [
+                'data'=>$data1
             ];
             die(json_encode($response,JSON_UNESCAPED_UNICODE));
         }
@@ -748,9 +781,12 @@ class GoodsController extends Controller
             ];
             return json_encode($response,JSON_UNESCAPED_UNICODE);
         }else{
-            $response = [
+            $data1=[
                 'code'=>'1',
                 'msg'=>'此件店铺没有被收藏，无法删除'
+            ];
+            $response = [
+                'data'=>$data1
             ];
             die(json_encode($response,JSON_UNESCAPED_UNICODE));
         }
