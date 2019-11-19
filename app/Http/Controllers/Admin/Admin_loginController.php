@@ -76,8 +76,10 @@ class Admin_loginController extends Controller
     public function userlist(Request $request)
     {
         $data=DB::table('admin_user')
-            ->select(['admin_id','admin_names','admin_tel','admin_consumption','admin_user_integral','admin_user_money'])
+            ->join('mt_shop','admin_user.shop_id','=','mt_shop.shop_id')
+            ->select(['admin_user.admin_id','admin_user.admin_judge','admin_user.admin_user','admin_user.shop_status','mt_shop.shop_name','admin_user.shop_id'])      //shop_status 2启用  1拉黑
             ->paginate(7);
+//        var_dump($data);exit;
         if($data){
             $response=[
                 'code'=>0,
@@ -91,6 +93,54 @@ class Admin_loginController extends Controller
                 'msg'=>'您的数据类表请求失败',
             ];
             die(json_encode($response,JSON_UNESCAPED_UNICODE));
+        }
+    }
+
+    //用户拉黑
+    public function admin_black(Request $request){
+         $admin_id = $request->input('admin_id');
+         $shop_status = $request->input('shop_status');
+         $shop_id = $request->input('shop_id');
+         $update = [
+             'shop_status'=>$shop_status
+         ];
+         $updateInfo = DB::table('admin_user')->where('admin_id',$admin_id)->update($update);
+         if($updateInfo > 0){
+             DB::table('mt_shop')->where('shop_id',$shop_id)->update($update);
+             $response=[
+                 'code'=>0,
+                 'msg'=>'请求成功'
+             ];
+             return json_encode($response,JSON_UNESCAPED_UNICODE);
+         }else{
+             $response=[
+                 'code'=>1,
+                 'msg'=>'请求失败,请重试'
+             ];
+             die(json_encode($response,JSON_UNESCAPED_UNICODE));
+         }
+    }
+
+    //用户删除
+    public function admin_delete(Request $request){
+        $admin_id = $request->input('admin_id');
+        $shop_id = $request->input('shop_id');
+        $deleteInfo = DB::table('admin_user')->where('admin_id',$admin_id)->delete();
+        //var_dump($deleteInfo);exit;
+        if($deleteInfo == 1){
+            DB::table('mt_shop')->where('shop_id',$shop_id)->delete();
+            DB::table('mt_goods')->where('shop_id',$shop_id)->delete();
+            $response=[
+                'code'=>0,
+                'msg'=>'删除成功'
+            ];
+            return json_encode($response,JSON_UNESCAPED_UNICODE);
+        }else{
+            $response=[
+                'code'=>1,
+                'msg'=>'请求失败,请重试'
+            ];
+            return json_encode($response,JSON_UNESCAPED_UNICODE);
         }
     }
 
