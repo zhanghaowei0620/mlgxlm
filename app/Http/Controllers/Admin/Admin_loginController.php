@@ -1070,7 +1070,7 @@ class Admin_loginController extends Controller
             $data=DB::table('mt_coupon')
                 ->join('mt_shop','mt_coupon.shop_id','=','mt_shop.shop_id')
                 ->join('mt_goods','mt_coupon.goods_id','=','mt_goods.goods_id')
-                ->select(['mt_goods.goods_name','mt_shop.shop_name','mt_coupon.coupon_id','mt_coupon.coupon_names','mt_coupon.coupon_num','mt_coupon.coupon_type','mt_coupon.coupon_create','mt_coupon.create_time'])
+                ->select(['mt_goods.goods_name','mt_shop.shop_name','mt_coupon.coupon_id','mt_coupon.coupon_names','mt_coupon.coupon_num','mt_coupon.coupon_type','mt_coupon.coupon_create','mt_coupon.create_time','mt_coupon.coupon_redouction','mt_coupon.discount'])
                 ->paginate(6);
 //        var_dump($data);die;
             if($data){
@@ -1092,7 +1092,7 @@ class Admin_loginController extends Controller
                 ->join('mt_shop','mt_coupon.shop_id','=','mt_shop.shop_id')
                 ->join('mt_goods','mt_coupon.goods_id','=','mt_goods.goods_id')
                 ->where('mt_coupon.shop_id',$shop_id)
-                ->select(['mt_goods.goods_name','mt_shop.shop_name','mt_coupon.coupon_id','mt_coupon.coupon_names','mt_coupon.coupon_num','mt_coupon.coupon_type','mt_coupon.coupon_create','mt_coupon.create_time'])
+                ->select(['mt_goods.goods_name','mt_shop.shop_name','mt_coupon.coupon_id','mt_coupon.coupon_names','mt_coupon.coupon_num','mt_coupon.coupon_type','mt_coupon.coupon_create','mt_coupon.create_time','mt_coupon.coupon_redouction','mt_coupon.discount'])
                 ->paginate(6);
 //        var_dump($data);die;
             if($data){
