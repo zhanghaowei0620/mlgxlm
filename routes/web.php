@@ -52,6 +52,8 @@ Route::get('/user_coupon', 'User\UserController@user_coupon');    //优惠券
 
 Route::get('/couponlist', 'Goods\GoodsController@couponlist');     //优惠卷列表
 
+Route::get('/couponadd', 'Goods\GoodsController@couponadd');        //点击领取优惠卷
+
 Route::get('/goodsInfo', 'Goods\GoodsController@goodsInfo');    //获取商品详情信息
 
 Route::get('/type_shop', 'Goods\GoodsController@type_shop');     //根据导航栏子级分类获取店铺
