@@ -280,11 +280,34 @@ class GoodsController extends Controller
     //点击领取优惠卷
     public function couponadd(Request $request)
     {
-        $coupon_draw=$request->input('coupon_draw');
+        $coupon_id=$request->input('coupon_id');
         $data=DB::table('mt_coupon')
-            ->where(['coupon_draw'=>$coupon_draw])
+            ->where(['coupon_id'=>$coupon_id])
             ->first();
-        var_dump($data);die;
+//        var_dump($data);die;
+        $info=DB::table('mt_coupon')
+            ->where(['coupon_id'=>$coupon_id])
+            ->update(['coupon_draw'=>3]);
+//        var_dump($info);die;
+        if($info){
+            $data = [
+                'code'=>0,
+                'msg'=>'领取优惠卷成功，快去使用吧!'
+            ];
+            $response = [
+                'data'=>$data
+            ];
+            return json_encode($response,JSON_UNESCAPED_UNICODE);
+        }else{
+            $data = [
+                'code'=>1,
+                'msg'=>'您没有领取上优惠卷'
+            ];
+            $response = [
+                'data'=>$data
+            ];
+            die(json_encode($response,JSON_UNESCAPED_UNICODE));
+        }
     }
 
     //点击商品获取商品详情+店铺详情信息
