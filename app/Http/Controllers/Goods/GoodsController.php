@@ -487,9 +487,13 @@ class GoodsController extends Controller
             ];
             return json_encode($response,JSON_UNESCAPED_UNICODE);
         }else{
+            $datainfo=[
+
+            ];
             $data=[
                 'code'=>0,
-                'msg'=>''
+                'msg'=>'购物车暂无数据，快去添加商品吧',
+                'cartInfo'=>$datainfo
             ];
             $response = [
                 'data'=>$data
@@ -715,7 +719,7 @@ class GoodsController extends Controller
         $where=[
             'goods_id'=>$goods_id
         ];
-        $data=DB::table('mt_cart')
+        $data=DB::table('mt_collection_goods')
             ->where($where)
             ->first();
         if($data){
