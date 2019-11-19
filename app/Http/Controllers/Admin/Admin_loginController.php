@@ -303,7 +303,7 @@ class Admin_loginController extends Controller
     public function userman(Request $request)
     {
         $shop_status=[
-            'shop_status'=>0
+            'shop_status'=>2
         ];
         $data=DB::table('admin_user')->where($shop_status)->count();
 //        var_dump($data);die;
@@ -327,7 +327,7 @@ class Admin_loginController extends Controller
     public function usermoney(Request $request)
     {
         $shop_status=[
-            'shop_status'=>0
+            'shop_status'=>2
         ];
         $data=DB::table('admin_user')->where($shop_status)->sum('admin_user_money');
         if($data){
@@ -352,7 +352,7 @@ class Admin_loginController extends Controller
     public function userintegral(Request $request)
     {
         $shop_status=[
-            'shop_status'=>0
+            'shop_status'=>2
         ];
         $data=DB::table('admin_user')->where($shop_status)->sum('admin_user_integral');
         if($data){
