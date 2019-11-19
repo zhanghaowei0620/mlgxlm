@@ -315,7 +315,8 @@ class GoodsController extends Controller
         $goods_id = $request->input('goods_id');
         $data1=DB::table('mt_goods')
             ->join('mt_shop','mt_shop.shop_id','=','mt_goods.shop_id')
-            ->where(['goods_id'=>$goods_id])
+            ->join('mt_coupon','mt_coupon.goods_id','=','mt_goods.goods_id')
+            ->where(['mt_goods.goods_id'=>$goods_id])
             ->first();
 //        var_dump($data1);exit;
         $shopsetInfo=DB::table('mt_shop')
