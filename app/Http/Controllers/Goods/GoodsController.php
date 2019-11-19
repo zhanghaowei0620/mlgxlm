@@ -224,7 +224,7 @@ class GoodsController extends Controller
             ->join('mt_shop','mt_shop.shop_id','=','mt_goods.shop_id')
             ->where(['mt_case.shop_id'=>$shop_id])
             ->get(['case_id','case_front','case_after','case_trouble','goods_name','shop_name']);
-        var_dump($caseInfo);die;
+//        var_dump($caseInfo);die;
         if($caseInfo){
             $data=[
                 'code'=>0,
