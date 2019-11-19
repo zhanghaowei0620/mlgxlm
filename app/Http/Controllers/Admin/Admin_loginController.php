@@ -1320,7 +1320,7 @@ class Admin_loginController extends Controller
             'shop_desc'=>$request->input('shop_desc'),          //简介
             'shop_bus'=>$request->input('shop_bus'),            //营业时间
             'shop_service'=>$request->input('shop_service'),   //服务
-            'shop_logo'=>$request->input('shop_logo') 
+            'shop_logo'=>$request->input('shop_logo')
         ];
         $updateShopInfo = DB::table('mt_shop')->where('shop_id',$shop_id)->update($update);
         if($updateShopInfo >0){
@@ -1338,8 +1338,12 @@ class Admin_loginController extends Controller
         }
     }
 
-//    //账号管理
-//    public function
+    //忘记密码
+    public function admin_forgetPwd(Request $request){
+
+    }
+
+
 
 
 

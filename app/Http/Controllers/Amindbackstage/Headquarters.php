@@ -404,15 +404,30 @@ class Headquarters extends Controller
             'data'=>$result,
             'msg'=>'数据请求成功'
         ];
-        return (json_encode($response, JSON_UNESCAPED_UNICODE));
+        return json_encode($response, JSON_UNESCAPED_UNICODE);
     }
 
     //分类添加
     public function admin_typeAdd(Request $request){
         $pid = $request->input('t_id');
         $t_name = $request->input('t_name');
-        if($pid == null){
-
+        $insert = [
+            't_name'=>$t_name,
+            'p_id'=>$pid
+        ];
+        $oneInsert = DB::table('mt_type')->insertGetId($insert);
+        if($oneInsert){
+            $response=[
+                'code'=>0,
+                'msg'=>'分类添加成功'
+            ];
+            return json_encode($response, JSON_UNESCAPED_UNICODE);
+        }else{
+            $response=[
+                'code'=>1,
+                'msg'=>'请求失败,请重试'
+            ];
+            die(json_encode($response, JSON_UNESCAPED_UNICODE));
         }
     }
 
