@@ -1064,26 +1064,53 @@ class Admin_loginController extends Controller
      */
     public function couponexhibition(Request $request)
     {
-        $data=DB::table('mt_coupon')
-            ->join('mt_shop','mt_coupon.shop_id','=','mt_shop.shop_id')
-            ->join('mt_goods','mt_coupon.goods_id','=','mt_goods.goods_id')
-            ->select(['mt_goods.goods_name','mt_shop.shop_name','mt_coupon.coupon_id','mt_coupon.coupon_names','mt_coupon.coupon_num','mt_coupon.coupon_type','mt_coupon.coupon_create','mt_coupon.create_time'])
-            ->paginate(6);
+        $shop_id = $request->input('shop_id');
+        $admin_judge = $request->input('admin_judge');
+        if($admin_judge == 1){
+            $data=DB::table('mt_coupon')
+                ->join('mt_shop','mt_coupon.shop_id','=','mt_shop.shop_id')
+                ->join('mt_goods','mt_coupon.goods_id','=','mt_goods.goods_id')
+                ->select(['mt_goods.goods_name','mt_shop.shop_name','mt_coupon.coupon_id','mt_coupon.coupon_names','mt_coupon.coupon_num','mt_coupon.coupon_type','mt_coupon.coupon_create','mt_coupon.create_time'])
+                ->paginate(6);
 //        var_dump($data);die;
-        if($data){
-            $response=[
-                'code'=>0,
-                'data'=>$data,
-                'msg'=>'展示成功',
-            ];
-            return (json_encode($response,JSON_UNESCAPED_UNICODE));
+            if($data){
+                $response=[
+                    'code'=>0,
+                    'data'=>$data,
+                    'msg'=>'展示成功',
+                ];
+                return (json_encode($response,JSON_UNESCAPED_UNICODE));
+            }else{
+                $response=[
+                    'code'=>1,
+                    'msg'=>'展示失败',
+                ];
+                return (json_encode($response,JSON_UNESCAPED_UNICODE));
+            }
         }else{
-            $response=[
-                'code'=>1,
-                'msg'=>'展示失败',
-            ];
-            return (json_encode($response,JSON_UNESCAPED_UNICODE));
+            $data=DB::table('mt_coupon')
+                ->join('mt_shop','mt_coupon.shop_id','=','mt_shop.shop_id')
+                ->join('mt_goods','mt_coupon.goods_id','=','mt_goods.goods_id')
+                ->where('shop_id',$shop_id)
+                ->select(['mt_goods.goods_name','mt_shop.shop_name','mt_coupon.coupon_id','mt_coupon.coupon_names','mt_coupon.coupon_num','mt_coupon.coupon_type','mt_coupon.coupon_create','mt_coupon.create_time'])
+                ->paginate(6);
+//        var_dump($data);die;
+            if($data){
+                $response=[
+                    'code'=>0,
+                    'data'=>$data,
+                    'msg'=>'展示成功',
+                ];
+                return (json_encode($response,JSON_UNESCAPED_UNICODE));
+            }else{
+                $response=[
+                    'code'=>1,
+                    'msg'=>'展示失败',
+                ];
+                return (json_encode($response,JSON_UNESCAPED_UNICODE));
+            }
         }
+
     }
 
     /*
@@ -1094,56 +1121,115 @@ class Admin_loginController extends Controller
     {
         $goods_name=$request->input('goods_name');
         $shop_name=$request->input('shop_name');
-        if($goods_name){
-            $data=DB::table('mt_coupon')
-                ->where('goods_name' , '=' , "$goods_name")
-                ->join('mt_shop','mt_coupon.shop_id','=','mt_shop.shop_id')
-                ->join('mt_goods','mt_coupon.goods_id','=','mt_goods.goods_id')
-                ->get(['mt_goods.goods_name','mt_shop.shop_name','mt_coupon.coupon_id','mt_coupon.coupon_names','mt_coupon.coupon_num','mt_coupon.coupon_type','mt_coupon.coupon_create','mt_coupon.create_time']);
-//            var_dump($data);die;
-            $data1=[
-                'data'=>$data
-            ];
+        $shop_id = $request->input('shop_id');
+        $admin_judge = $request->input('admin_judge');
+        if($admin_judge == 1){
             if($goods_name){
-                $response=[
-                    'code'=>0,
-                    'data'=>$data1,
-                    'msg'=>'查询成功',
-                ];
-                die(json_encode($response,JSON_UNESCAPED_UNICODE));
-            }else{
-                $response=[
-                    'code'=>1,
-                    'msg'=>'查询失败',
-                ];
-                die(json_encode($response,JSON_UNESCAPED_UNICODE));
-            }
-        }
-        if($shop_name){
-            $data=DB::table('mt_coupon')
-                ->where('shop_name' , '=' , "$shop_name")
-                ->join('mt_shop','mt_coupon.shop_id','=','mt_shop.shop_id')
-                ->join('mt_goods','mt_coupon.goods_id','=','mt_goods.goods_id')
-                ->get(['mt_goods.goods_name','mt_shop.shop_name','mt_coupon.coupon_id','mt_coupon.coupon_names','mt_coupon.coupon_num','mt_coupon.coupon_type','mt_coupon.coupon_create','mt_coupon.create_time']);
+                $data=DB::table('mt_coupon')
+                    ->where('goods_name' , '=' , "$goods_name")
+                    ->join('mt_shop','mt_coupon.shop_id','=','mt_shop.shop_id')
+                    ->join('mt_goods','mt_coupon.goods_id','=','mt_goods.goods_id')
+                    ->get(['mt_goods.goods_name','mt_shop.shop_name','mt_coupon.coupon_id','mt_coupon.coupon_names','mt_coupon.coupon_num','mt_coupon.coupon_type','mt_coupon.coupon_create','mt_coupon.create_time']);
 //            var_dump($data);die;
-            $data1=[
-              'data'=>$data
-            ];
+                $data1=[
+                    'data'=>$data
+                ];
+                if($goods_name){
+                    $response=[
+                        'code'=>0,
+                        'data'=>$data1,
+                        'msg'=>'查询成功',
+                    ];
+                    die(json_encode($response,JSON_UNESCAPED_UNICODE));
+                }else{
+                    $response=[
+                        'code'=>1,
+                        'msg'=>'查询失败',
+                    ];
+                    die(json_encode($response,JSON_UNESCAPED_UNICODE));
+                }
+            }
             if($shop_name){
-                $response=[
-                    'code'=>0,
-                    'data'=>$data1,
-                    'msg'=>'查询成功',
+                $data=DB::table('mt_coupon')
+                    ->where('shop_name' , '=' , "$shop_name")
+                    ->join('mt_shop','mt_coupon.shop_id','=','mt_shop.shop_id')
+                    ->join('mt_goods','mt_coupon.goods_id','=','mt_goods.goods_id')
+                    ->get(['mt_goods.goods_name','mt_shop.shop_name','mt_coupon.coupon_id','mt_coupon.coupon_names','mt_coupon.coupon_num','mt_coupon.coupon_type','mt_coupon.coupon_create','mt_coupon.create_time']);
+//            var_dump($data);die;
+                $data1=[
+                    'data'=>$data
                 ];
-                die(json_encode($response,JSON_UNESCAPED_UNICODE));
-            }else{
-                $response=[
-                    'code'=>1,
-                    'msg'=>'查询失败',
+                if($shop_name){
+                    $response=[
+                        'code'=>0,
+                        'data'=>$data1,
+                        'msg'=>'查询成功',
+                    ];
+                    die(json_encode($response,JSON_UNESCAPED_UNICODE));
+                }else{
+                    $response=[
+                        'code'=>1,
+                        'msg'=>'查询失败',
+                    ];
+                    die(json_encode($response,JSON_UNESCAPED_UNICODE));
+                }
+            }
+        }else{
+            if($goods_name){
+                $data=DB::table('mt_coupon')
+                    ->where('shop_id',$shop_id)
+                    ->where('goods_name' , '=' , "$goods_name")
+                    ->join('mt_shop','mt_coupon.shop_id','=','mt_shop.shop_id')
+                    ->join('mt_goods','mt_coupon.goods_id','=','mt_goods.goods_id')
+                    ->get(['mt_goods.goods_name','mt_shop.shop_name','mt_coupon.coupon_id','mt_coupon.coupon_names','mt_coupon.coupon_num','mt_coupon.coupon_type','mt_coupon.coupon_create','mt_coupon.create_time']);
+//            var_dump($data);die;
+                $data1=[
+                    'data'=>$data
                 ];
-                die(json_encode($response,JSON_UNESCAPED_UNICODE));
+                if($goods_name){
+                    $response=[
+                        'code'=>0,
+                        'data'=>$data1,
+                        'msg'=>'查询成功',
+                    ];
+                    die(json_encode($response,JSON_UNESCAPED_UNICODE));
+                }else{
+                    $response=[
+                        'code'=>1,
+                        'msg'=>'查询失败',
+                    ];
+                    die(json_encode($response,JSON_UNESCAPED_UNICODE));
+                }
+            }
+            if($shop_name){
+                $data=DB::table('mt_coupon')
+                    ->where('shop_id',$shop_id)
+                    ->where('shop_name' , '=' , "$shop_name")
+                    ->join('mt_shop','mt_coupon.shop_id','=','mt_shop.shop_id')
+                    ->join('mt_goods','mt_coupon.goods_id','=','mt_goods.goods_id')
+                    ->get(['mt_goods.goods_name','mt_shop.shop_name','mt_coupon.coupon_id','mt_coupon.coupon_names','mt_coupon.coupon_num','mt_coupon.coupon_type','mt_coupon.coupon_create','mt_coupon.create_time']);
+//            var_dump($data);die;
+                $data1=[
+                    'data'=>$data
+                ];
+                if($shop_name){
+                    $response=[
+                        'code'=>0,
+                        'data'=>$data1,
+                        'msg'=>'查询成功',
+                    ];
+                    die(json_encode($response,JSON_UNESCAPED_UNICODE));
+                }else{
+                    $response=[
+                        'code'=>1,
+                        'msg'=>'查询失败',
+                    ];
+                    die(json_encode($response,JSON_UNESCAPED_UNICODE));
+                }
             }
         }
+
+
     }
 
     /*
