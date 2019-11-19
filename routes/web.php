@@ -215,6 +215,13 @@ Route::post('admin_Limited','Amindbackstage\Headquarters@admin_Limited')->middle
 
 Route::post('admin_typeInfo','Amindbackstage\Headquarters@admin_typeInfo')->middleware('checkLogin');
 
+Route::post('admin_typeAdd','Amindbackstage\Headquarters@admin_typeAdd')->middleware('checkLogin');
+
+Route::post('admin_typeUpdate','Amindbackstage\Headquarters@admin_typeUpdate')->middleware('checkLogin');
+
+Route::get('admin_typeDelete','Amindbackstage\Headquarters@admin_typeDelete')->middleware('checkLogin');
+
+
 
 
 
