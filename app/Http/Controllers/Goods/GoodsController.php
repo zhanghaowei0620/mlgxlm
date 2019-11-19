@@ -476,8 +476,9 @@ class GoodsController extends Controller
                     'collection'=>1,
                     'uid'=>$uid
                 ];
-                //var_dump($data);exit;
+//                var_dump($data);exit;
                 $add_cart = DB::table('mt_cart')->insertGetId($data);
+//                var_dump($add_cart);die;
                 if($add_cart){
                     $response = [
                         'code'=>'0',
@@ -702,6 +703,36 @@ class GoodsController extends Controller
             $response = [
                 'code'=>'2',
                 'msg'=>'请先登录'
+            ];
+            die(json_encode($response,JSON_UNESCAPED_UNICODE));
+        }
+    }
+    //店铺收藏删除
+    public function shop_collection_dele(Request $request)
+    {
+        $shop_id=$request->input('shop_id');
+//        $cart_id=$request->input('cart_id');
+        $aa=[
+            'shop_id'=>$shop_id,
+        ];
+//        var_dump($aa);die;
+        $data=DB::table('mt_shop_collection')
+            ->where($aa)
+            ->delete();
+//        var_dump($data);die;
+        if($data){
+            $data1=[
+                'code'=>0,
+                'msg'=>'删除成功'
+            ];
+            $response=[
+                'data'=>$data1
+            ];
+            return json_encode($response,JSON_UNESCAPED_UNICODE);
+        }else{
+            $response = [
+                'code'=>'1',
+                'msg'=>'此件店铺没有被收藏，无法删除'
             ];
             die(json_encode($response,JSON_UNESCAPED_UNICODE));
         }
