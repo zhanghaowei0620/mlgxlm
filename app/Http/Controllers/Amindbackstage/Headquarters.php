@@ -441,9 +441,55 @@ class Headquarters extends Controller
 
     }
 
-    //分类删除
-    public function admin_typeDelete(Request $request){
+    //分类修改
+    public function admin_typeUpdate(Request $request){
+        $t_id = $request->input('t_id');
+        $t_name = $request->input('t_name');
+        $typeInfo = DB::table('mt_type')->where('t_id',$t_id)->first();
+        $pid = $typeInfo->p_id;
+//        var_dump($pid);exit;
+        if($pid == 0){
+            $response=[
+                'code'=>0,
+                'msg'=>'您无权修改最大级分类信息'
+            ];
+            die(json_encode($response, JSON_UNESCAPED_UNICODE));
+        }else{
+            $update = DB::table('mt_type')->where('t_id',$t_id)->update(['t_name',$t_name]);
+            if($update >0){
+                $response=[
+                    'code'=>0,
+                    'msg'=>'分类修改成功'
+                ];
+                return json_encode($response, JSON_UNESCAPED_UNICODE);
+            }else{
+                $response=[
+                    'code'=>0,
+                    'msg'=>'您并未修改任何信息'
+                ];
+                die(json_encode($response, JSON_UNESCAPED_UNICODE));
+            }
+        }
 
     }
+
+    //分类删除
+//    public function admin_typeDelete(Request $request){
+//        $t_id = $request->input('t_id');
+//        $typeInfo = DB::table('mt_type')->where('t_id',$t_id)->first();
+//        $pid = $typeInfo->p_id;
+////        var_dump($pid);exit;
+//        if($pid == 0){
+//
+//        }
+//        $typeDelete = DB::table('mt_user')->where('t_id',$t_id)->delete();
+//        if($typeDelete){
+//            $response=[
+//                'code'=>0,
+//                'msg'=>'分类删除成功'
+//            ];
+//            return json_encode($response, JSON_UNESCAPED_UNICODE);
+//        }
+//    }
 
 }
