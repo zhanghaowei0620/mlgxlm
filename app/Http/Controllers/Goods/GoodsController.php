@@ -218,13 +218,13 @@ class GoodsController extends Controller
     //案列
     public function caselist(Request $request)
     {
-        $goods_id=$request->input('goods_id');
+        $shop_id=$request->input('shop_id');
         $caseInfo = DB::table('mt_case')      //案例
             ->join('mt_goods','mt_case.goods_id','=','mt_goods.goods_id')
             ->join('mt_shop','mt_shop.shop_id','=','mt_goods.shop_id')
-            ->where(['mt_case.goods_id'=>$goods_id])
+            ->where(['mt_case.shop_id'=>$shop_id])
             ->get(['case_id','case_front','case_after','case_trouble','goods_name','shop_name']);
-        var_dump($caseInfo);die;
+//        var_dump($caseInfo);die;
         if($caseInfo){
             $data=[
                 'code'=>0,
