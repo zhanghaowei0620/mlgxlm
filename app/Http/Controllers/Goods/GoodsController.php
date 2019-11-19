@@ -177,7 +177,7 @@ class GoodsController extends Controller
 //        var_dump($shopInfo);die;
         $shop_coupon=DB::table('mt_coupon')
             ->limit(2)
-            ->get(['coupon_redouction','discount']);
+            ->get(['coupon_redouction','discount','coupon_id','coupon_type','discount','coupon_redouction','coupon_price']);
 //                var_dump($shop_coupon);die;
         $goods_shop=DB::table('mt_goods')
             ->join('mt_shop','mt_shop.shop_id','=','mt_goods.shop_id')
@@ -219,7 +219,7 @@ class GoodsController extends Controller
             ->join('admin_user','mt_shop.shop_id','=','admin_user.shop_id')
             ->join('mt_goods','mt_goods.shop_id','=','mt_shop.shop_id')
             ->where(['mt_goods.goods_id'=>$goods_id])
-            ->get(['shop_name','admin_tel','shop_address_detail','goods_name','goods_effect','goods_duration','goods_process','goods_overdue_time','shop_bus','goods_appointment','goods_use_rule','shop_img','shop_logo']);
+            ->get(['shop_name','admin_tel','shop_address_detail','goods_name','goods_effect','goods_duration','goods_process','goods_overdue_time','shop_bus','goods_appointment','goods_use_rule','shop_img','shop_logo','shop_star']);
 //        var_dump($shopsetInfo);die;
         $aaa=DB::table('mt_goods')
             ->where(['shop_id'=>$data1->shop_id])
