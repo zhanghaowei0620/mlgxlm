@@ -1177,7 +1177,7 @@ class Admin_loginController extends Controller
         }else{
             if($goods_name){
                 $data=DB::table('mt_coupon')
-                    ->where('shop_id',$shop_id)
+                    ->where('mt_coupon.shop_id',$shop_id)
                     ->where('goods_name' , '=' , "$goods_name")
                     ->join('mt_shop','mt_coupon.shop_id','=','mt_shop.shop_id')
                     ->join('mt_goods','mt_coupon.goods_id','=','mt_goods.goods_id')
@@ -1203,7 +1203,7 @@ class Admin_loginController extends Controller
             }
             if($shop_name){
                 $data=DB::table('mt_coupon')
-                    ->where('shop_id',$shop_id)
+                    ->where('mt_coupon.shop_id',$shop_id)
                     ->where('shop_name' , '=' , "$shop_name")
                     ->join('mt_shop','mt_coupon.shop_id','=','mt_shop.shop_id')
                     ->join('mt_goods','mt_coupon.goods_id','=','mt_goods.goods_id')
