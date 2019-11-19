@@ -1354,7 +1354,7 @@ class Admin_loginController extends Controller
         $data=DB::table('mt_coupon')->where($where)->delete();
         if($data){
             $response=[
-                'code'=>1,
+                'code'=>0,
                 'data'=>$data,
                 'msg'=>'优惠卷删除成功'
             ];
