@@ -190,9 +190,7 @@ class GoodsController extends Controller
             ->join('mt_shop','mt_shop.shop_id','=','mt_goods.goods_id')
             ->limit(4)
             ->get();
-//        var_dump($goods_list);die;
-//        var_dump($goods_shop);die;
-        //var_dump($shop_goodsInfo);exit;
+//       var_dump($caseInfo);die;
         if($shopInfo){
             $data=[
 //                'shop_goodsInfo'=>$shop_goodsInfo,
@@ -216,6 +214,38 @@ class GoodsController extends Controller
             ];
             die(json_encode($response,JSON_UNESCAPED_UNICODE));
         }
+    }
+    //案列
+    public function caselist(Request $request)
+    {
+        $goods_id=$request->input('goods_id');
+        $caseInfo = DB::table('mt_case')      //案例
+            ->join('mt_goods','mt_case.goods_id','=','mt_goods.goods_id')
+            ->join('mt_shop','mt_shop.shop_id','=','mt_goods.shop_id')
+            ->where(['mt_case.goods_id'=>$goods_id])
+            ->get(['case_id','case_front','case_after','case_trouble','goods_name','shop_name']);
+        var_dump($caseInfo);die;
+        if($caseInfo){
+            $data=[
+                'code'=>0,
+                'caseInfo'=>$caseInfo,
+                'msg'=>'案例展示成功'
+            ];
+            $response = [
+                'data'=>$data
+            ];
+            return json_encode($response,JSON_UNESCAPED_UNICODE);
+        }else{
+            $data1=[
+                'code'=>'1',
+                'msg'=>'案例展示失败'
+            ];
+            $response = [
+                'data'=>$data1
+            ];
+            die(json_encode($response,JSON_UNESCAPED_UNICODE));
+        }
+
     }
     //优惠卷列表
     public function couponlist(Request $request)
