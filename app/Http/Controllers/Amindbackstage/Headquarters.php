@@ -418,7 +418,7 @@ class Headquarters extends Controller
         if(!$tInfo){
             $insert = [
                 't_name'=>$t_name,
-                'p_id'=>$pid，
+                'p_id'=>$pid,
                 't_img'=>$t_img
             ];
             $oneInsert = DB::table('mt_type')->insertGetId($insert);
