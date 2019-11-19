@@ -441,4 +441,9 @@ class Headquarters extends Controller
 
     }
 
+    //分类删除
+    public function admin_typeDelete(Request $request){
+
+    }
+
 }
