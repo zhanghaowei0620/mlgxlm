@@ -411,24 +411,34 @@ class Headquarters extends Controller
     public function admin_typeAdd(Request $request){
         $pid = $request->input('t_id');
         $t_name = $request->input('t_name');
-        $insert = [
-            't_name'=>$t_name,
-            'p_id'=>$pid
-        ];
-        $oneInsert = DB::table('mt_type')->insertGetId($insert);
-        if($oneInsert){
-            $response=[
-                'code'=>0,
-                'msg'=>'分类添加成功'
+        $tInfo = DB::table('mt_type')->where('t_name',$t_name)->first();
+        if(!$tInfo){
+            $insert = [
+                't_name'=>$t_name,
+                'p_id'=>$pid
             ];
-            return json_encode($response, JSON_UNESCAPED_UNICODE);
+            $oneInsert = DB::table('mt_type')->insertGetId($insert);
+            if($oneInsert){
+                $response=[
+                    'code'=>0,
+                    'msg'=>'分类添加成功'
+                ];
+                return json_encode($response, JSON_UNESCAPED_UNICODE);
+            }else{
+                $response=[
+                    'code'=>1,
+                    'msg'=>'请求失败,请重试'
+                ];
+                die(json_encode($response, JSON_UNESCAPED_UNICODE));
+            }
         }else{
             $response=[
-                'code'=>1,
-                'msg'=>'请求失败,请重试'
+                'code'=>2,
+                'msg'=>'该分类已存在,请重试'
             ];
             die(json_encode($response, JSON_UNESCAPED_UNICODE));
         }
+
     }
 
 }
