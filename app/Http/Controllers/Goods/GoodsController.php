@@ -176,6 +176,7 @@ class GoodsController extends Controller
             ->first(['shop_id','shop_name','shop_phone','shop_desc','shop_address_detail','shop_score','shop_img','mt_type.t_name','shop_logo','shop_bus','shop_service']);
 //        var_dump($shopInfo);die;
         $shop_coupon=DB::table('mt_coupon')
+            ->where(['shop_id'=>$shop_id])
             ->limit(2)
             ->get(['coupon_redouction','discount','coupon_id','coupon_type','discount','coupon_redouction','coupon_price','coupon_num']);
 //                var_dump($shop_coupon);die;
