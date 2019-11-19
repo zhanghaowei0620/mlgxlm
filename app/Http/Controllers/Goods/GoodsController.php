@@ -219,11 +219,12 @@ class GoodsController extends Controller
             ->get();
         if($data){
             $data1=[
-              'code'=>0,
+//              'code'=>0,
               'data'=>$data,
               'msg'=>'查询成功'
             ];
             $response = [
+                'code'=>0,
                 'data'=>$data1
             ];
             return json_encode($response,JSON_UNESCAPED_UNICODE);
