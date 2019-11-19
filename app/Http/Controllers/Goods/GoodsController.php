@@ -214,27 +214,28 @@ class GoodsController extends Controller
     public function couponlist(Request $request)
     {
         $shop_id=$request ->input('shop_id');
-        $data=DB::table('mt_coupon')
-            ->where(['shop_id'=>$shop_id])
-            ->get();
-        if($data){
-            $data1=[
-              'code'=>0,
-              'data'=>$data,
-              'msg'=>'查询成功'
+        $couponInfo = DB::table('mt_goods')
+            ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
+            ->join('mt_coupon','mt_coupon.goods_id','=','mt_goods.goods_id')
+            ->where(['mt_shop.shop_id'=>$shop_id])
+            ->get(['mt_goods.goods_id','mt_shop.shop_id','mt_coupon.coupon_draw','mt_shop.shop_name','mt_shop.shop_id','mt_goods.coupon_price','mt_goods.coupon_redouction','coupon_start_time','mt_goods.picture','mt_coupon.coupon_type','mt_goods.goods_name','mt_coupon.discount','mt_goods.picture']);
+//        var_dump($couponInfo);
+        if($couponInfo){
+            $data = [
+                'code'=>0,
+                'couponInfo'=>$couponInfo
             ];
             $response = [
-//                'code'=>0,
-                'data'=>$data1
+                'data'=>$data
             ];
             return json_encode($response,JSON_UNESCAPED_UNICODE);
         }else{
-            $data1=[
-                'code'=>'1',
-                'msg'=>'查询失败'
+            $data = [
+                'code'=>1,
+                'msg'=>'暂时没有商品优惠券'
             ];
             $response = [
-                'data'=>$data1
+                'data'=>$data
             ];
             die(json_encode($response,JSON_UNESCAPED_UNICODE));
         }
