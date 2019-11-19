@@ -200,9 +200,41 @@ class GoodsController extends Controller
             ];
             return json_encode($response,JSON_UNESCAPED_UNICODE);
         }else{
-            $response = [
+            $data1=[
                 'code'=>'1',
                 'msg'=>'该店铺下暂未任何商品'
+            ];
+            $response = [
+                'data'=>$data1
+            ];
+            die(json_encode($response,JSON_UNESCAPED_UNICODE));
+        }
+    }
+    //优惠卷列表
+    public function couponlist(Request $request)
+    {
+        $shop_id=$request ->input('shop_id');
+        $data=DB::table('mt_coupon')
+            ->where(['shop_id'=>$shop_id])
+            ->get();
+        if($data){
+            $data1=[
+              'code'=>0,
+              'data'=>$data,
+              'msg'=>'查询成功'
+            ];
+            $response = [
+//                'code'=>0,
+                'data'=>$data1
+            ];
+            return json_encode($response,JSON_UNESCAPED_UNICODE);
+        }else{
+            $data1=[
+                'code'=>'1',
+                'msg'=>'查询失败'
+            ];
+            $response = [
+                'data'=>$data1
             ];
             die(json_encode($response,JSON_UNESCAPED_UNICODE));
         }
