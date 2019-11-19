@@ -348,11 +348,11 @@ class GoodsController extends Controller
             ->get(['assess_text','mt_user.wx_name','mt_user.wx_headimg']);
 //        var_dump($assesslist);die;
         $reconmend_shop = DB::table('mt_goods')
-            ->where(['mt_shop.shop_id'=>$data1->shop_id,'is_recommend'=>1,'p_id'=>2])
+            ->where(['mt_shop.shop_id'=>$data1->shop_id,'p_id'=>2])
             ->join('mt_type','mt_goods.t_id','=','mt_type.t_id')
             ->join('mt_shop','mt_shop.shop_id','=','mt_goods.shop_id')
             ->limit(4)->get(['t_name','goods_name','picture','goods_gd_num','price','shop_address_provice','shop_address_city','shop_address_area','goods_id','shop_name','limited_price','promotion_price','promotion_type']);
-//        var_dump($reconmend_shop);exit;
+        var_dump($reconmend_shop);exit;
         if($data1==NULL){
             $response = [
                 'code'=>'1',
