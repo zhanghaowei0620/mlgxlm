@@ -177,7 +177,7 @@ class GoodsController extends Controller
 //        var_dump($shopInfo);die;
         $shop_coupon=DB::table('mt_coupon')
             ->limit(2)
-            ->get(['coupon_redouction','discount']);
+            ->get(['coupon_redouction','discount','coupon_id','coupon_type','discount','coupon_redouction','coupon_price']);
 //                var_dump($shop_coupon);die;
         $goods_shop=DB::table('mt_goods')
             ->join('mt_shop','mt_shop.shop_id','=','mt_goods.shop_id')
