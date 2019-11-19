@@ -303,7 +303,7 @@ class Admin_loginController extends Controller
     public function userman(Request $request)
     {
         $shop_status=[
-            'shop_status'=>0
+            'shop_status'=>2
         ];
         $data=DB::table('admin_user')->where($shop_status)->count();
 //        var_dump($data);die;
@@ -327,7 +327,7 @@ class Admin_loginController extends Controller
     public function usermoney(Request $request)
     {
         $shop_status=[
-            'shop_status'=>0
+            'shop_status'=>2
         ];
         $data=DB::table('admin_user')->where($shop_status)->sum('admin_user_money');
         if($data){
@@ -352,7 +352,7 @@ class Admin_loginController extends Controller
     public function userintegral(Request $request)
     {
         $shop_status=[
-            'shop_status'=>0
+            'shop_status'=>2
         ];
         $data=DB::table('admin_user')->where($shop_status)->sum('admin_user_integral');
         if($data){
@@ -1290,7 +1290,7 @@ class Admin_loginController extends Controller
             $shopInfo = DB::table('mt_shop')
                 ->join('admin_user','admin_user.shop_id','=','mt_shop.shop_id')
                 ->where('mt_shop.shop_id',$shop_id)
-                ->first(['shop_name','shop_img','shop_project','shop_desc','shop_bus','shop_service','shop_address_provice','shop_address_city','shop_address_area','admin_tel']);
+                ->first(['shop_name','shop_img','shop_project','shop_desc','shop_bus','shop_service','shop_address_provice','shop_address_city','shop_address_area','admin_tel','shop_logo']);
             $response=[
                 'code'=>0,
                 'data'=>$shopInfo,
@@ -1301,7 +1301,7 @@ class Admin_loginController extends Controller
             $shopInfo = DB::table('mt_shop')
                 ->join('admin_user','mt_shop.shop_id','=','admin_user.shop_id')
                 ->where('mt_shop.shop_status',2)
-                ->get(['shop_name','shop_img','shop_project','shop_desc','shop_bus','shop_service','shop_address_provice','shop_address_city','shop_address_area'])->toArray();
+                ->get(['shop_name','shop_img','shop_project','shop_desc','shop_bus','shop_service','shop_address_provice','shop_address_city','shop_address_area','shop_logo'])->toArray();
             $response=[
                 'code'=>0,
                 'data'=>$shopInfo,
@@ -1319,7 +1319,8 @@ class Admin_loginController extends Controller
             'shop_project'=>$request->input('shop_project'),    //项目
             'shop_desc'=>$request->input('shop_desc'),          //简介
             'shop_bus'=>$request->input('shop_bus'),            //营业时间
-            'shop_service'=>$request->input('shop_service')     //服务
+            'shop_service'=>$request->input('shop_service'),   //服务
+            'shop_logo'=>$request->input('shop_logo')
         ];
         $updateShopInfo = DB::table('mt_shop')->where('shop_id',$shop_id)->update($update);
         if($updateShopInfo >0){
@@ -1337,8 +1338,12 @@ class Admin_loginController extends Controller
         }
     }
 
-//    //账号管理
-//    public function
+    //忘记密码
+    public function admin_forgetPwd(Request $request){
+
+    }
+
+
 
 
 
