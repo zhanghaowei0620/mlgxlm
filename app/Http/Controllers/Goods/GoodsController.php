@@ -618,7 +618,7 @@ class GoodsController extends Controller
             return json_encode($response,JSON_UNESCAPED_UNICODE);
         }else{
             $data1=[
-                'code'=>'1',
+                'code'=>0,
                 'msg'=>'此店铺没有被收藏，快去收藏吧'
             ];
             $response = [
@@ -649,7 +649,7 @@ class GoodsController extends Controller
             return json_encode($response,JSON_UNESCAPED_UNICODE);
         }else{
             $data1=[
-                'code'=>'1',
+                'code'=>0,
                 'msg'=>'此商品没有被收藏，快去收藏吧'
             ];
             $response = [
@@ -797,15 +797,21 @@ class GoodsController extends Controller
         $shopInfo = DB::table('mt_shop')->paginate(7);
         //var_dump($shopInfo);
         if($shopInfo){
-            $response = [
+            $data1=[
                 'code'=>'0',
                 'data'=>$shopInfo
             ];
+            $response = [
+                'data'=>$data1
+            ];
             return json_encode($response,JSON_UNESCAPED_UNICODE);
         }else{
-            $response = [
+            $data1=[
                 'code'=>'1',
                 'msg'=>'暂无店铺'
+            ];
+            $response = [
+                'data'=>$data1
             ];
             return json_encode($response,JSON_UNESCAPED_UNICODE);
         }
@@ -896,7 +902,7 @@ class GoodsController extends Controller
                 'code'=>1,
                 'msg'=>"预约失败",
             ];
-            return (json_encode($response, JSON_UNESCAPED_UNICODE));
+            die (json_encode($response, JSON_UNESCAPED_UNICODE));
         }
 
 
