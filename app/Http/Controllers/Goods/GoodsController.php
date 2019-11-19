@@ -489,7 +489,7 @@ class GoodsController extends Controller
         }else{
             $data=[
                 'code'=>0,
-                'msg'=>'购物车暂无数据，快去添加商品吧'
+                'msg'=>''
             ];
             $response = [
                 'data'=>$data
