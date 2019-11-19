@@ -185,6 +185,12 @@ class GoodsController extends Controller
             ->where(['mt_shop.shop_id'=>$shop_id])
             ->select(['mt_goods.goods_name','mt_goods.goods_id','mt_goods.market_price','mt_goods.picture','mt_goods.goods_gd_num'])
             ->paginate(4);
+        $goods_list=DB::table('mt_goods')
+            ->where(['mt_shop.shop_id'=>$shop_id])
+            ->join('mt_shop','mt_shop.shop_id','=','mt_goods.goods_id')
+            ->limit(4)
+            ->get();
+//        var_dump($goods_list);die;
 //        var_dump($goods_shop);die;
         //var_dump($shop_goodsInfo);exit;
         if($shopInfo){
@@ -193,6 +199,7 @@ class GoodsController extends Controller
                 'shopInfo'=>$shopInfo,
                 'shop_coupon'=>$shop_coupon,
                 'goods_shop'=>$goods_shop,
+                'goods_list'=$goods_list,
                 'code'=>'0'
             ];
             $response = [
