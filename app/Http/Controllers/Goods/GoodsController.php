@@ -352,7 +352,7 @@ class GoodsController extends Controller
             ->join('mt_type','mt_goods.t_id','=','mt_type.t_id')
             ->join('mt_shop','mt_shop.shop_id','=','mt_goods.shop_id')
             ->limit(4)->get(['t_name','goods_name','picture','goods_gd_num','price','shop_address_provice','shop_address_city','shop_address_area','goods_id','shop_name','limited_price','promotion_price','promotion_type']);
-        var_dump($reconmend_shop);exit;
+//        var_dump($reconmend_shop);exit;
         if($data1==NULL){
             $response = [
                 'code'=>'1',
