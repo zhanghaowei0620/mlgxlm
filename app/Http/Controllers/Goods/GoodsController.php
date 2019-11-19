@@ -309,7 +309,7 @@ class GoodsController extends Controller
 //            $goods_id = 7;
             $where = [
                 'goods_id'=>$goods_id,
-                'collection'=>0
+                'collection_cart'=>0
             ];
             $goods_cart = DB::table('mt_cart')->where($where)->get()->toArray();
 //            var_dump($goods_cart);exit;
@@ -350,7 +350,7 @@ class GoodsController extends Controller
                     'price'=>$goodsInfo->price,
                     'buy_num'=>$buy_num,
                     'create_time'=>time(),
-                    'collection'=>0,
+                    'collection_cart'=>0,
                     'uid'=>$uid
                 ];
 //                var_dump($data);exit;
@@ -387,7 +387,7 @@ class GoodsController extends Controller
         $openid = Redis::get('openid');
         $where = [
             'openid'=>$openid,
-            'collection'=>0
+            'collection_cart'=>0
         ];
         $cartInfo = DB::table('mt_cart')->where($where)->get()->toArray();
         //var_dump($cartInfo);exit;
@@ -449,9 +449,9 @@ class GoodsController extends Controller
             //        $buy_num = 1;
             $where = [
                 'goods_id'=>$goods_id,
-                'collection'=>1
+//                'collection'=>1
             ];
-            $goods_cart = DB::table('mt_cart')->where($where)->get()->toArray();
+            $goods_cart = DB::table('mt_collection_goods')->where($where)->get()->toArray();
             //var_dump($goods_cart);exit;
             if($goods_cart){
                 $response = [
@@ -473,16 +473,19 @@ class GoodsController extends Controller
                     'goods_name'=>$goodsInfo->goods_name,
                     'price'=>$goodsInfo->price,
                     'create_time'=>time(),
-                    'collection'=>1,
+//                    'collection'=>1,
                     'uid'=>$uid
                 ];
 //                var_dump($data);exit;
-                $add_cart = DB::table('mt_cart')->insertGetId($data);
+                $add_cart = DB::table('mt_collection_goods')->insertGetId($data);
 //                var_dump($add_cart);die;
                 if($add_cart){
-                    $response = [
+                    $data1=[
                         'code'=>'0',
                         'msg'=>'加入收藏成功'
+                    ];
+                    $response = [
+                        'data'=>$data1
                     ];
                     return json_encode($response,JSON_UNESCAPED_UNICODE);
                 }else{
@@ -494,9 +497,12 @@ class GoodsController extends Controller
                 }
             }
         }else{
-            $response = [
+            $info=[
                 'code'=>'2',
                 'msg'=>'请先去登录'
+            ];
+            $response = [
+                'data'=>$info
             ];
             die(json_encode($response,JSON_UNESCAPED_UNICODE));
         }
@@ -509,20 +515,26 @@ class GoodsController extends Controller
         if($openid){
             $where = [
                 'openid'=>$openid,
-                'collection'=>1
+//                'collection'=>1
             ];
-            $cartInfo = DB::table('mt_cart')->where($where)->get()->toArray();
+            $cartInfo = DB::table('mt_collection_goods')->where($where)->get()->toArray();
             //var_dump($cartInfo);exit;
             if($cartInfo){
-                $response = [
+                $data=[
                     'code'=>'0',
                     'cartInfo'=>$cartInfo
                 ];
+                $response = [
+                    'data'=>$data
+                ];
                 return json_encode($response,JSON_UNESCAPED_UNICODE);
             }else{
-                $response = [
+                $data1=[
                     'code'=>'1',
                     'msg'=>'收藏夹暂无数据，快去添加商品吧'
+                ];
+                $response = [
+                    'data'=>$data1
                 ];
                 die(json_encode($response,JSON_UNESCAPED_UNICODE));
             }
@@ -542,11 +554,11 @@ class GoodsController extends Controller
 //        $cart_id=$request->input('cart_id');
         $aa=[
           'goods_id'=>$goods_id,
-            'collection'=>1
+//            'collection'=>1
         ];
 //        var_dump($aa);die;
 
-        $data=DB::table('mt_cart')
+        $data=DB::table('mt_collection_goods')
             ->where($aa)
             ->delete();
 //        var_dump($data);die;
@@ -650,9 +662,12 @@ class GoodsController extends Controller
                 //var_dump($data);exit;
                 $add_shop_collection = DB::table('mt_shop_collection')->insertGetId($data);
                 if($add_shop_collection){
-                    $response = [
+                    $data1=[
                         'code'=>'0',
                         'msg'=>'店铺收藏成功'
+                    ];
+                    $response = [
+                        'data'=>$data1
                     ];
                     return json_encode($response,JSON_UNESCAPED_UNICODE);
                 }else{
@@ -687,9 +702,12 @@ class GoodsController extends Controller
                 ->get()->toArray();
             //var_dump($collectionInfo);exit;
             if($collectionInfo){
-                $response = [
+                $data1=[
                     'code'=>'0',
                     'cartInfo'=>$collectionInfo
+                ];
+                $response = [
+                    'data'=>$data1
                 ];
                 return json_encode($response,JSON_UNESCAPED_UNICODE);
             }else{
