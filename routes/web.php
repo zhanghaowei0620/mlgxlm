@@ -185,6 +185,9 @@ Route::any('couponinsert','Admin\Admin_loginController@couponinsert')->middlewar
 Route::post('admin_shop','Admin\Admin_loginController@admin_shop')->middleware('checkLogin');
 Route::post('admin_shop_update','Admin\Admin_loginController@admin_shop_update')->middleware('checkLogin');
 
+Route::post('admin_black','Admin\Admin_loginController@admin_black')->middleware('checkLogin');
+Route::post('admin_delete','Admin\Admin_loginController@admin_delete')->middleware('checkLogin');
+
 //商品展示
 Route::any('goodsList','Amindbackstage\Headquarters@goodsList')->middleware('checkLogin');
 //商品添加
