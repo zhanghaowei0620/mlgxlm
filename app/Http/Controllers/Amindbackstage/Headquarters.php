@@ -245,7 +245,8 @@ class Headquarters extends Controller
 
         }else{
             $update = [
-                'is_promotion'=>$is_promotion
+                'is_promotion'=>$is_promotion,
+                'promotion_price'=>0
             ];
             $update_promotion = DB::table('mt_goods')->where('goods_id',$goods_id)->update($update);
             if($update_promotion >= 0){
@@ -297,7 +298,8 @@ class Headquarters extends Controller
             }
         }else{
             $update = [
-                'limited_buy'=>$limited_buy
+                'limited_buy'=>$limited_buy,
+                'promotion_type'=>0
             ];
             $update_promotion = DB::table('mt_goods')->where('goods_id',$goods_id)->update($update);
             if($update_promotion >= 0){

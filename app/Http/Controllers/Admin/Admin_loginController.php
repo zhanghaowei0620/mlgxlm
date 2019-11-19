@@ -1314,7 +1314,7 @@ class Admin_loginController extends Controller
                     'data'=>$data
                 ];
                 if($data == true){
-                    $updateGoodsInfo = DB::table('mt_goods')->where('goods_id',$goods_id)->update(['is_coupon'=>1]);
+                    $updateGoodsInfo = DB::table('mt_goods')->where('goods_id',$goods_id)->update(['is_coupon'=>1,'promotion_type'=>2]);
 //                    var_dump($updateGoodsInfo);exit;
                     if($updateGoodsInfo >=0){
                         $response=[
