@@ -584,6 +584,25 @@ class Headquarters extends Controller
 
     }
 
+    //案例删除
+    public function admin_caseDelete(Request $request){
+        $case_id = $request->input('case_id');
+        $deleteCase = DB::table('mt_case')->where('case_id',$case_id)->delete();
+        if($deleteCase){
+            $response = [
+                'code'=>0,
+                'msg'=>'删除成功'
+            ];
+            return json_encode($response,JSON_UNESCAPED_UNICODE);
+        }else{
+            $response = [
+                'code'=>1,
+                'msg'=>'请求错误,请重试'
+            ];
+            die(json_encode($response,JSON_UNESCAPED_UNICODE));
+        }
+    }
+
     //分类删除
 //    public function admin_typeDelete(Request $request){
 //        $t_id = $request->input('t_id');

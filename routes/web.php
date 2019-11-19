@@ -233,6 +233,8 @@ Route::post('admin_caseAdd','Amindbackstage\Headquarters@admin_caseAdd')->middle
 
 Route::post('admin_caseList','Amindbackstage\Headquarters@admin_caseList')->middleware('checkLogin');
 
+Route::post('admin_caseDelete','Amindbackstage\Headquarters@admin_caseDelete')->middleware('checkLogin');
+
 
 
 
