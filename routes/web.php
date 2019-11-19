@@ -223,6 +223,10 @@ Route::post('admin_typeUpdate','Amindbackstage\Headquarters@admin_typeUpdate')->
 
 Route::get('admin_typeDelete','Amindbackstage\Headquarters@admin_typeDelete')->middleware('checkLogin');
 
+Route::get('admin_orderList','Amindbackstage\Headquarters@admin_orderList')->middleware('checkLogin');
+
+Route::get('admin_orderDetail','Amindbackstage\Headquarters@admin_orderDetail')->middleware('checkLogin');
+
 
 
 

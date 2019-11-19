@@ -409,8 +409,8 @@ class Headquarters extends Controller
 
     //分类添加
     public function admin_typeAdd(Request $request){
-        $pid = $request->input('t_id');
-        $t_name = $request->input('t_name');
+        $pid = $request->input('p_id');      //最大级为0   二级为最大级t_id
+        $t_name = $request->input('t_name');    //分类名称
         $tInfo = DB::table('mt_type')->where('t_name',$t_name)->first();
         if(!$tInfo){
             $insert = [
@@ -443,8 +443,8 @@ class Headquarters extends Controller
 
     //分类修改
     public function admin_typeUpdate(Request $request){
-        $t_id = $request->input('t_id');
-        $t_name = $request->input('t_name');
+        $t_id = $request->input('t_id');    //分类id
+        $t_name = $request->input('t_name');   //分类名称
         $typeInfo = DB::table('mt_type')->where('t_id',$t_id)->first();
         $pid = $typeInfo->p_id;
 //        var_dump($pid);exit;
@@ -473,6 +473,54 @@ class Headquarters extends Controller
 
     }
 
+    //订单列表
+    public function admin_orderList(Request $request){
+        $admin_judge = $request->input('admin_judge');
+        $shop_id = $request->input('shop_id');
+        if($admin_judge == 1){
+            $orderInfo = DB::table('mt_order')->get()->toArray();
+            //var_dump($orderInfo);exit;
+            $response = [
+                'code'=>0,
+                'data'=>$orderInfo,
+                'msg'=>'数据请求成功'
+            ];
+            return json_encode($response,JSON_UNESCAPED_UNICODE);
+        }else{
+            $orderInfo = DB::table('mt_order_detail')->where('shop_id',$shop_id)->get(['order_id','order_no','goods_id','goods_name','price','picture','buy_num','order_status','shop_id','shop_name','create_time'])->toArray();
+//            var_dump($orderInfo);exit;
+            $response = [
+                'code'=>0,
+                'data'=>$orderInfo,
+                'msg'=>'数据请求成功'
+            ];
+            return json_encode($response,JSON_UNESCAPED_UNICODE);
+        }
+
+    }
+
+    //订单详情-平台
+    public function admin_orderDetail(Request $request){
+        $order_id = $request->input('order_id');
+        $orderInfo = DB::table('mt_order_detail')->where('order_id',$order_id)->get(['order_id','order_no','goods_id','goods_name','price','picture','buy_num','order_status','shop_id','shop_name','create_time'])->toArray();
+//        var_dump($orderInfo);exit;
+        if($orderInfo){
+            $response = [
+                'code'=>0,
+                'data'=>$orderInfo,
+                'msg'=>'数据请求成功'
+            ];
+            return json_encode($response,JSON_UNESCAPED_UNICODE);
+        }else{
+            $response = [
+                'code'=>1,
+                'msg'=>'数据请求失败'
+            ];
+            die(json_encode($response,JSON_UNESCAPED_UNICODE));
+        }
+
+    }
+
     //分类删除
 //    public function admin_typeDelete(Request $request){
 //        $t_id = $request->input('t_id');
@@ -491,5 +539,7 @@ class Headquarters extends Controller
 //            return json_encode($response, JSON_UNESCAPED_UNICODE);
 //        }
 //    }
+
+
 
 }
