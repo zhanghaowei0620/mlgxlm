@@ -223,7 +223,15 @@ Route::post('admin_typeAdd','Amindbackstage\Headquarters@admin_typeAdd')->middle
 
 Route::post('admin_typeUpdate','Amindbackstage\Headquarters@admin_typeUpdate')->middleware('checkLogin');
 
-Route::get('admin_typeDelete','Amindbackstage\Headquarters@admin_typeDelete')->middleware('checkLogin');
+Route::post('admin_typeDelete','Amindbackstage\Headquarters@admin_typeDelete')->middleware('checkLogin');
+
+Route::post('admin_orderList','Amindbackstage\Headquarters@admin_orderList')->middleware('checkLogin');
+
+Route::post('admin_orderDetail','Amindbackstage\Headquarters@admin_orderDetail')->middleware('checkLogin');
+
+Route::post('admin_caseAdd','Amindbackstage\Headquarters@admin_caseAdd')->middleware('checkLogin');
+
+Route::post('admin_caseList','Amindbackstage\Headquarters@admin_caseList')->middleware('checkLogin');
 
 
 

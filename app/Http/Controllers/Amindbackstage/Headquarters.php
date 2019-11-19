@@ -409,8 +409,8 @@ class Headquarters extends Controller
 
     //分类添加
     public function admin_typeAdd(Request $request){
-        $pid = $request->input('t_id');
-        $t_name = $request->input('t_name');
+        $pid = $request->input('p_id');      //最大级为0   二级为最大级t_id
+        $t_name = $request->input('t_name');    //分类名称
         $tInfo = DB::table('mt_type')->where('t_name',$t_name)->first();
         if(!$tInfo){
             $insert = [
@@ -443,8 +443,8 @@ class Headquarters extends Controller
 
     //分类修改
     public function admin_typeUpdate(Request $request){
-        $t_id = $request->input('t_id');
-        $t_name = $request->input('t_name');
+        $t_id = $request->input('t_id');    //分类id
+        $t_name = $request->input('t_name');   //分类名称
         $typeInfo = DB::table('mt_type')->where('t_id',$t_id)->first();
         $pid = $typeInfo->p_id;
 //        var_dump($pid);exit;
@@ -473,6 +473,117 @@ class Headquarters extends Controller
 
     }
 
+    //订单列表
+    public function admin_orderList(Request $request){
+        $admin_judge = $request->input('admin_judge');
+        $shop_id = $request->input('shop_id');
+        if($admin_judge == 1){
+            $orderInfo = DB::table('mt_order')->get()->toArray();
+            //var_dump($orderInfo);exit;
+            $response = [
+                'code'=>0,
+                'data'=>$orderInfo,
+                'msg'=>'数据请求成功'
+            ];
+            return json_encode($response,JSON_UNESCAPED_UNICODE);
+        }else{
+            $orderInfo = DB::table('mt_order_detail')->where('shop_id',$shop_id)->get(['order_id','order_no','goods_id','goods_name','price','picture','buy_num','order_status','shop_id','shop_name','create_time'])->toArray();
+//            var_dump($orderInfo);exit;
+            $response = [
+                'code'=>0,
+                'data'=>$orderInfo,
+                'msg'=>'数据请求成功'
+            ];
+            return json_encode($response,JSON_UNESCAPED_UNICODE);
+        }
+
+    }
+
+    //订单详情-平台
+    public function admin_orderDetail(Request $request){
+        $order_id = $request->input('order_id');
+        $orderInfo = DB::table('mt_order_detail')->where('order_id',$order_id)->get(['order_id','order_no','goods_id','goods_name','price','picture','buy_num','order_status','shop_id','shop_name','create_time'])->toArray();
+//        var_dump($orderInfo);exit;
+        if($orderInfo){
+            $response = [
+                'code'=>0,
+                'data'=>$orderInfo,
+                'msg'=>'数据请求成功'
+            ];
+            return json_encode($response,JSON_UNESCAPED_UNICODE);
+        }else{
+            $response = [
+                'code'=>1,
+                'msg'=>'数据请求失败'
+            ];
+            die(json_encode($response,JSON_UNESCAPED_UNICODE));
+        }
+
+    }
+
+    //案例添加
+    public function admin_caseAdd(Request $request){
+        $shop_id = $request->input('shop_id');    //店铺id
+        $goods_id = $request->input('goods_id');    //商品id
+        $case_front = $request->input('case_front');    //案例-前
+        $case_after = $request->input('case_after');    //案例-后
+        $case_trouble = $request->input('case_trouble');    ////案例-毛病
+
+        $insert = [
+            'shop_id'=>$shop_id,
+            'goods_id'=>$goods_id,
+            'case_front'=>$case_front,
+            'case_after'=>$case_after,
+            'case_trouble'=>$case_trouble
+        ];
+        $insertCase = DB::table('mt_case')->insertGetId($insert);
+        if($insertCase){
+            $response = [
+                'code'=>0,
+                'msg'=>'添加成功'
+            ];
+            return json_encode($response,JSON_UNESCAPED_UNICODE);
+        }else{
+            $response = [
+                'code'=>1,
+                'msg'=>'添加失败'
+            ];
+            die(json_encode($response,JSON_UNESCAPED_UNICODE));
+        }
+    }
+
+    //案例列表
+    public function admin_caseList(Request $request){
+        $admin_judge = $request->input('admin_judge');
+        $shop_id = $request->input('shop_id');
+        if($admin_judge == 1){
+            $caseInfo = DB::table('mt_case')      //案例
+                ->join('mt_goods','mt_case.goods_id','=','mt_goods.goods_id')
+                ->join('mt_shop','mt_shop.shop_id','=','mt_goods.shop_id')
+                ->get(['case_id','case_front','case_after','case_trouble','goods_name','shop_name'])->toArray();
+
+            $response = [
+                'code'=>0,
+                'data'=>$caseInfo,
+                'msg'=>'数据请求成功'
+            ];
+            return json_encode($response,JSON_UNESCAPED_UNICODE);
+        }else{
+            $caseInfo = DB::table('mt_case')      //案例
+                ->join('mt_goods','mt_case.goods_id','=','mt_goods.goods_id')
+                ->join('mt_shop','mt_shop.shop_id','=','mt_goods.shop_id')
+                ->where('mt_case.shop_id',$shop_id)
+                ->get(['case_id','case_front','case_after','case_trouble','goods_name','shop_name'])->toArray();
+            $response = [
+                'code'=>0,
+                'data'=>$caseInfo,
+                'msg'=>'添加成功'
+            ];
+            return json_encode($response,JSON_UNESCAPED_UNICODE);
+        }
+
+    }
+
     //分类删除
 //    public function admin_typeDelete(Request $request){
 //        $t_id = $request->input('t_id');
@@ -491,5 +602,7 @@ class Headquarters extends Controller
 //            return json_encode($response, JSON_UNESCAPED_UNICODE);
 //        }
 //    }
+
+
 
 }
