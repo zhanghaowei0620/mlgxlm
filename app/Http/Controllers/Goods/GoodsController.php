@@ -719,7 +719,7 @@ class GoodsController extends Controller
         $where=[
             'goods_id'=>$goods_id
         ];
-        $data=DB::table('mt_cart')
+        $data=DB::table('mt_collection_goods')
             ->where($where)
             ->first();
         if($data){
