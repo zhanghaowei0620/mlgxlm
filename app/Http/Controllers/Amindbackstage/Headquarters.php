@@ -413,11 +413,13 @@ class Headquarters extends Controller
     public function admin_typeAdd(Request $request){
         $pid = $request->input('p_id');      //最大级为0   二级为最大级t_id
         $t_name = $request->input('t_name');    //分类名称
+        $t_img = $request->input('t_img');
         $tInfo = DB::table('mt_type')->where('t_name',$t_name)->first();
         if(!$tInfo){
             $insert = [
                 't_name'=>$t_name,
-                'p_id'=>$pid
+                'p_id'=>$pid，
+                't_img'=>$t_img
             ];
             $oneInsert = DB::table('mt_type')->insertGetId($insert);
             if($oneInsert){
