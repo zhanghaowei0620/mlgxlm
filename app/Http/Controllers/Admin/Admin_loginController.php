@@ -76,6 +76,29 @@ class Admin_loginController extends Controller
     public function userlist(Request $request)
     {
         $data=DB::table('admin_user')
+            ->select(['admin_id','admin_judge','admin_user','shop_status','admin_names','admin_tel','admin_consumption','admin_user_money','admin_user_integral'])      //shop_status 2启用  1拉黑
+            ->paginate(7);
+//        var_dump($data);exit;
+        if($data){
+            $response=[
+                'code'=>0,
+                'data'=>$data,
+                'msg'=>'您的数据类表请求成功',
+            ];
+            return json_encode($response,JSON_UNESCAPED_UNICODE);
+        }else{
+            $response=[
+                'code'=>1,
+                'msg'=>'您的数据类表请求失败',
+            ];
+            die(json_encode($response,JSON_UNESCAPED_UNICODE));
+        }
+    }
+
+    //用户管理列表
+    public function admin_list(Request $request)
+    {
+        $data=DB::table('admin_user')
             ->join('mt_shop','admin_user.shop_id','=','mt_shop.shop_id')
             ->select(['admin_user.admin_id','admin_user.admin_judge','admin_user.admin_user','admin_user.shop_status','mt_shop.shop_name','admin_user.shop_id'])      //shop_status 2启用  1拉黑
             ->paginate(7);

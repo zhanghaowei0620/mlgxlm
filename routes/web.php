@@ -118,6 +118,8 @@ Route::get('/subscribe', 'Goods\GoodsController@subscribe');   //预约
 Route::any('user','Admin\Admin_loginController@user');
 //用户列表
 Route::any('userlist','Admin\Admin_loginController@userlist')->middleware('checkLogin');
+
+Route::post('admin_list','Admin\Admin_loginController@admin_list')->middleware('checkLogin');
 Route::post('admin_pwdUpdate','Admin\Admin_loginController@admin_pwdUpdate')->middleware('checkLogin');
 //用户总人数
 Route::any('userman','Admin\Admin_loginController@userman')->middleware('checkLogin');
@@ -208,6 +210,8 @@ Route::post('admin_Assemble_list','Amindbackstage\Headquarters@admin_Assemble_li
 Route::post('admin_Limited_list','Amindbackstage\Headquarters@admin_Limited_list')->middleware('checkLogin');
 
 Route::post('admin_Limited','Amindbackstage\Headquarters@admin_Limited')->middleware('checkLogin');
+
+Route::get('admin_typeInfo','Amindbackstage\Headquarters@admin_typeInfo')->middleware('checkLogin');
 
 
 
