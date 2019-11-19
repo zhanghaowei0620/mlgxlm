@@ -199,7 +199,7 @@ class GoodsController extends Controller
                 'shopInfo'=>$shopInfo,
                 'shop_coupon'=>$shop_coupon,
                 'goods_shop'=>$goods_shop,
-                'goods_list'=$goods_list,
+                'goods_list'=>$goods_list,
                 'code'=>'0'
             ];
             $response = [
