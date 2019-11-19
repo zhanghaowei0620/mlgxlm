@@ -487,10 +487,13 @@ class GoodsController extends Controller
             ];
             return json_encode($response,JSON_UNESCAPED_UNICODE);
         }else{
+            $datainfo=[
+
+            ];
             $data=[
                 'code'=>0,
                 'msg'=>'购物车暂无数据，快去添加商品吧',
-                'datainfo'=>''
+                'datainfo'=>$datainfo
             ];
             $response = [
                 'data'=>$data
