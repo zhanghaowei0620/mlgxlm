@@ -46,6 +46,8 @@ Route::get('/bankcard_list', 'User\UserController@bankcard_list');   //银行卡
 
 Route::get('/add_bankcard_delete', 'User\UserController@add_bankcard_delete');   //银行卡解绑（删除）
 
+Route::get('/caselist', 'Goods\GoodsController@caselist');     //案例列表
+
 Route::get('/user_coupon', 'User\UserController@user_coupon');    //优惠券
 
 Route::get('/couponlist', 'Goods\GoodsController@couponlist');     //优惠卷列表

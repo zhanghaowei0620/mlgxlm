@@ -185,14 +185,19 @@ class GoodsController extends Controller
             ->where(['mt_shop.shop_id'=>$shop_id])
             ->select(['mt_goods.goods_name','mt_goods.goods_id','mt_goods.market_price','mt_goods.picture','mt_goods.goods_gd_num'])
             ->paginate(4);
-//        var_dump($goods_shop);die;
-        //var_dump($shop_goodsInfo);exit;
+        $goods_list=DB::table('mt_goods')
+            ->where(['mt_shop.shop_id'=>$shop_id])
+            ->join('mt_shop','mt_shop.shop_id','=','mt_goods.goods_id')
+            ->limit(4)
+            ->get();
+//       var_dump($caseInfo);die;
         if($shopInfo){
             $data=[
 //                'shop_goodsInfo'=>$shop_goodsInfo,
                 'shopInfo'=>$shopInfo,
                 'shop_coupon'=>$shop_coupon,
                 'goods_shop'=>$goods_shop,
+                'goods_list'=>$goods_list,
                 'code'=>'0'
             ];
             $response = [
@@ -210,31 +215,64 @@ class GoodsController extends Controller
             die(json_encode($response,JSON_UNESCAPED_UNICODE));
         }
     }
-    //优惠卷列表
-    public function couponlist(Request $request)
+    //案列
+    public function caselist(Request $request)
     {
-        $shop_id=$request ->input('shop_id');
-        $data=DB::table('mt_coupon')
-            ->where(['shop_id'=>$shop_id])
-            ->get();
-        if($data){
-            $data1=[
-              'code'=>0,
-              'data'=>$data,
-              'msg'=>'查询成功'
+        $goods_id=$request->input('goods_id');
+        $caseInfo = DB::table('mt_case')      //案例
+            ->join('mt_goods','mt_case.goods_id','=','mt_goods.goods_id')
+            ->join('mt_shop','mt_shop.shop_id','=','mt_goods.shop_id')
+            ->where(['mt_case.goods_id'=>$goods_id])
+            ->get(['case_id','case_front','case_after','case_trouble','goods_name','shop_name']);
+        var_dump($caseInfo);die;
+        if($caseInfo){
+            $data=[
+                'code'=>0,
+                'caseInfo'=>$caseInfo,
+                'msg'=>'案例展示成功'
             ];
             $response = [
-//                'code'=>0,
-                'data'=>$data1
+                'data'=>$data
             ];
             return json_encode($response,JSON_UNESCAPED_UNICODE);
         }else{
             $data1=[
                 'code'=>'1',
-                'msg'=>'查询失败'
+                'msg'=>'案例展示失败'
             ];
             $response = [
                 'data'=>$data1
+            ];
+            die(json_encode($response,JSON_UNESCAPED_UNICODE));
+        }
+
+    }
+    //优惠卷列表
+    public function couponlist(Request $request)
+    {
+        $shop_id=$request ->input('shop_id');
+        $couponInfo = DB::table('mt_goods')
+            ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
+            ->join('mt_coupon','mt_coupon.goods_id','=','mt_goods.goods_id')
+            ->where(['mt_shop.shop_id'=>$shop_id])
+            ->get(['mt_goods.goods_id','mt_shop.shop_id','mt_coupon.coupon_draw','mt_shop.shop_name','mt_shop.shop_id','mt_goods.coupon_price','mt_goods.coupon_redouction','coupon_start_time','mt_goods.picture','mt_coupon.coupon_type','mt_goods.goods_name','mt_coupon.discount','mt_goods.picture']);
+//        var_dump($couponInfo);
+        if($couponInfo){
+            $data = [
+                'code'=>0,
+                'couponInfo'=>$couponInfo
+            ];
+            $response = [
+                'data'=>$data
+            ];
+            return json_encode($response,JSON_UNESCAPED_UNICODE);
+        }else{
+            $data = [
+                'code'=>1,
+                'msg'=>'暂时没有商品优惠券'
+            ];
+            $response = [
+                'data'=>$data
             ];
             die(json_encode($response,JSON_UNESCAPED_UNICODE));
         }
