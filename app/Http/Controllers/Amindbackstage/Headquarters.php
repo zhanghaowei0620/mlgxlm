@@ -375,5 +375,45 @@ class Headquarters extends Controller
         }
     }
 
+    //无限级分类
+    public function list_level($data,$pid,$level){
+
+        static $array = array();
+
+        foreach ($data as $k => $v) {
+
+            if($pid == $v->p_id){
+
+                $v->level = $level;
+
+                $array[] = $v;
+
+                self::list_level($data,$v->t_id,$level+1);
+            }
+        }
+        return $array;
+    }
+
+    //分类管理
+    public function admin_typeInfo(Request $request){
+        $info = DB::table('mt_type')->get();
+        $result = $this->list_level($info,$pid=0,$level=0);
+//        var_dump($result);exit;
+        $response=[
+            'code'=>0,
+            'data'=>$result,
+            'msg'=>'数据请求成功'
+        ];
+        return (json_encode($response, JSON_UNESCAPED_UNICODE));
+    }
+
+    //分类添加
+    public function admin_typeAdd(Request $request){
+        $pid = $request->input('t_id');
+        $t_name = $request->input('t_name');
+        if($pid == null){
+
+        }
+    }
 
 }

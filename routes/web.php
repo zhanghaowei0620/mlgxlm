@@ -209,6 +209,8 @@ Route::post('admin_Limited_list','Amindbackstage\Headquarters@admin_Limited_list
 
 Route::post('admin_Limited','Amindbackstage\Headquarters@admin_Limited')->middleware('checkLogin');
 
+Route::get('admin_typeInfo','Amindbackstage\Headquarters@admin_typeInfo')->middleware('checkLogin');
+
 
 
 
