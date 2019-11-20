@@ -611,6 +611,37 @@ class Headquarters extends Controller
         }
     }
 
+    //案例修改
+    public function admin_caseUpdate(Request $request){
+        $case_id = $request->input('case_id');    //案例id
+        $case_front = $request->input('case_front');    //案例-前
+        $case_after = $request->input('case_after');    //案例-后
+        $case_trouble = $request->input('case_trouble');    //案例-毛病
+
+        $update = [
+            'case_id'=>$case_id,
+            'case_front'=>$case_front,
+            'case_after'=>$case_after,
+            'case_trouble'=>$case_trouble,
+        ];
+
+        $updateInfo = DB::table('mt_case')->where('case_id',$case_id)->update($update);
+        if($updateInfo >0){
+            $response=[
+                'code'=>0,
+                'msg'=>'案例修改成功'
+            ];
+            return json_encode($response, JSON_UNESCAPED_UNICODE);
+        }else{
+            $response=[
+                'code'=>0,
+                'msg'=>'您并未修改任何信息'
+            ];
+            die(json_encode($response, JSON_UNESCAPED_UNICODE));
+        }
+
+    }
+
     //分类删除
 //    public function admin_typeDelete(Request $request){
 //        $t_id = $request->input('t_id');
