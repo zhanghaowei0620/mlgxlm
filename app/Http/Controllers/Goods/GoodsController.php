@@ -255,7 +255,7 @@ class GoodsController extends Controller
             ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
             ->join('mt_coupon','mt_coupon.goods_id','=','mt_goods.goods_id')
             ->where(['mt_shop.shop_id'=>$shop_id])
-            ->get(['mt_goods.goods_id','mt_shop.shop_id','mt_coupon.coupon_draw','mt_shop.shop_name','mt_shop.shop_id','mt_goods.coupon_price','mt_goods.coupon_redouction','coupon_start_time','mt_goods.picture','mt_coupon.coupon_type','mt_goods.goods_name','mt_coupon.discount','mt_goods.picture']);
+            ->get(['mt_coupon.coupon_id','mt_coupon.coupon_id','mt_goods.goods_id','mt_shop.shop_id','mt_coupon.coupon_draw','mt_shop.shop_name','mt_coupon.discount','mt_shop.shop_id','mt_coupon.coupon_price','mt_coupon.coupon_redouction','mt_coupon.create_time','mt_coupon.expiration','mt_goods.picture','mt_coupon.coupon_type','mt_goods.goods_name','mt_coupon.discount','mt_goods.picture']);
 //        var_dump($couponInfo);
         if($couponInfo){
             $data = [
