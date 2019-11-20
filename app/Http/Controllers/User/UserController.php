@@ -55,7 +55,8 @@ class UserController extends Controller
                     'session_key' => $arr['session_key']
                 ];
                 if ($arr['openid'] && $arr['session_key']) {
-                    $key = "openid";
+                    $ip = $_SERVER['SERVER_ADDR'];
+                    $key = 'openid'.$ip;
                     Redis::set($key, $arr['openid']);
 //                $openid = Redis::get($key);
 //                var_dump($openid);exit;
@@ -99,7 +100,8 @@ class UserController extends Controller
                     'session_key' => $arr['session_key']
                 ];
                 if ($arr['openid'] && $arr['session_key']) {
-                    $key = "openid";
+                    $ip = $_SERVER['SERVER_ADDR'];
+                    $key = 'openid'.$ip;
                     Redis::set($key, $arr['openid']);
 //                $openid = Redis::get($key);
 //                var_dump($openid);exit;
@@ -146,7 +148,9 @@ class UserController extends Controller
         $name=$request->input('name');
 
         // $openid = Redis::set('openid','o9VUc5HEPNrYq5d5iQFygPVbX7EM');
-        $openid = Redis::get('openid');
+        $ip = $_SERVER['SERVER_ADDR'];
+        $key = 'openid'.$ip;
+        $openid = Redis::get($key);
         $userInfo = DB::table('mt_user')->where('openid', $openid)->first();
         //var_dump($userInfo);die;
         if ($userInfo) {
@@ -278,7 +282,9 @@ class UserController extends Controller
     public function user_Address_list(Request $request)
     {
         // $openid = Redis::set('openid','o9VUc5HEPNrYq5d5iQFygPVbX7EM');
-        $openid = Redis::get('openid');
+        $ip = $_SERVER['SERVER_ADDR'];
+        $key = 'openid'.$ip;
+        $openid = Redis::get($key);
         $user_addressInfo = DB::table('mt_user')
             ->join('mt_address', 'mt_user.uid', '=', 'mt_address.uid')
             ->where('mt_user.openid', $openid)
@@ -448,7 +454,9 @@ class UserController extends Controller
     public function user_center(Request $request)
     {
         //$openid = Redis::set('openid','o9VUc5HEPNrYq5d5iQFygPVbX7EM');
-        $openid = Redis::get('openid');
+        $ip = $_SERVER['SERVER_ADDR'];
+        $key = 'openid'.$ip;
+        $openid = Redis::get($key);
         //var_dump($openid);exit;
         if ($openid) {
             $userInfo = DB::table('mt_user')
@@ -487,7 +495,9 @@ class UserController extends Controller
     {
         $uid = $request->input('uid');
         $wx_name = $request->input('u_name');
-        $openid = Redis::get('openid');
+        $ip = $_SERVER['SERVER_ADDR'];
+        $key = 'openid'.$ip;
+        $openid = Redis::get($key);
         if ($openid) {
             $update = [
                 'wx_name' => $wx_name
