@@ -565,7 +565,9 @@ class Headquarters extends Controller
             $caseInfo = DB::table('mt_case')      //案例
                 ->join('mt_goods','mt_case.goods_id','=','mt_goods.goods_id')
                 ->join('mt_shop','mt_shop.shop_id','=','mt_goods.shop_id')
-                ->get(['case_id','case_front','case_after','case_trouble','goods_name','shop_name'])->toArray();
+                ->select(['case_id','case_front','case_after','case_trouble','goods_name','shop_name'])
+                ->paginate(2);
+
 
             $response = [
                 'code'=>0,
@@ -578,7 +580,8 @@ class Headquarters extends Controller
                 ->join('mt_goods','mt_case.goods_id','=','mt_goods.goods_id')
                 ->join('mt_shop','mt_shop.shop_id','=','mt_goods.shop_id')
                 ->where('mt_case.shop_id',$shop_id)
-                ->get(['case_id','case_front','case_after','case_trouble','goods_name','shop_name'])->toArray();
+                ->select(['case_id','case_front','case_after','case_trouble','goods_name','shop_name'])
+                ->paginate(2);
             $response = [
                 'code'=>0,
                 'data'=>$caseInfo,
