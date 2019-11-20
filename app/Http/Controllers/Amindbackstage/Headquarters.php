@@ -449,6 +449,7 @@ class Headquarters extends Controller
     public function admin_typeUpdate(Request $request){
         $t_id = $request->input('t_id');    //分类id
         $t_name = $request->input('t_name');   //分类名称
+        $t_img = $request->input('t_img');
         $typeInfo = DB::table('mt_type')->where('t_id',$t_id)->first();
         $pid = $typeInfo->p_id;
 //        var_dump($pid);exit;
@@ -459,7 +460,7 @@ class Headquarters extends Controller
             ];
             die(json_encode($response, JSON_UNESCAPED_UNICODE));
         }else{
-            $update = DB::table('mt_type')->where('t_id',$t_id)->update(['t_name',$t_name]);
+            $update = DB::table('mt_type')->where('t_id',$t_id)->update(['t_name'=>$t_name,'t_img'=>$t_img]);
             if($update >0){
                 $response=[
                     'code'=>0,
