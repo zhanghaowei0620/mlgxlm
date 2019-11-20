@@ -235,9 +235,9 @@ Route::post('admin_caseList','Amindbackstage\Headquarters@admin_caseList')->midd
 
 Route::post('admin_caseDelete','Amindbackstage\Headquarters@admin_caseDelete')->middleware('checkLogin');
 
-Route::get('admin_caseUpdate','Amindbackstage\Headquarters@admin_caseUpdate')->middleware('checkLogin');
+Route::post('admin_caseUpdate','Amindbackstage\Headquarters@admin_caseUpdate')->middleware('checkLogin');
 
-Route::get('shop_goods_add','Amindbackstage\Headquarters@shop_goods_add')->middleware('checkLogin');
+Route::post('admin_shop_goodsInfo','Amindbackstage\Headquarters@admin_shop_goodsInfo')->middleware('checkLogin');
 
 
 
