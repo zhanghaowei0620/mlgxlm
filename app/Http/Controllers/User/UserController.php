@@ -725,7 +725,8 @@ class UserController extends Controller
             ];
             $where = [
                 'mt_coupon.uid' => $uid,
-                'is_use' => 0
+                'is_use' => 0,
+                'coupon_draw' => 3
             ];
             $coupon = DB::table('mt_coupon')
                 ->join('mt_goods', 'mt_coupon.goods_id', '=', 'mt_goods.goods_id')

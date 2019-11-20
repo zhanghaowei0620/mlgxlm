@@ -48,7 +48,7 @@ Route::get('/add_bankcard_delete', 'User\UserController@add_bankcard_delete');  
 
 Route::get('/caselist', 'Goods\GoodsController@caselist');     //案例列表
 
-Route::get('/user_coupon', 'User\UserController@user_coupon');    //优惠券
+Route::get('/user_coupon', 'User\UserController@user_coupon');    //个人中心优惠券
 
 Route::get('/couponlist', 'Goods\GoodsController@couponlist');     //优惠卷列表
 
