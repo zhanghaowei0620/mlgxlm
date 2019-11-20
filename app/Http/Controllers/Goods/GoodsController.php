@@ -165,7 +165,6 @@ class GoodsController extends Controller
 
     //点击店铺获取店铺详情信息及店铺下所有的商品
     public function shop_goods(Request $request){
-         echo date("Y-m-d",strtotime("+1 day"));die;
         $shop_id = $request->input('shop_id');
 //        $shop_id = 2;
 //        $shop_goodsInfo = DB::table('mt_goods')
