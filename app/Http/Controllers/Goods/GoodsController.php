@@ -360,7 +360,9 @@ class GoodsController extends Controller
             ];
             die(json_encode($response,JSON_UNESCAPED_UNICODE));
         }else{
-            $openid = Redis::get('openid');
+            $ip = $_SERVER['SERVER_ADDR'];
+            $key = 'openid'.$ip;
+            $openid = Redis::get($key);
 //            var_dump($openid);exit;
             $userInfo = DB::table('mt_user')->where('openid',$openid)->first();
            // var_dump($userInfo);exit;
@@ -404,7 +406,9 @@ class GoodsController extends Controller
     //点击加入购物车
     public function add_cart(Request $request){
         $goods_id = $request->input('goods_id');
-        $openid = Redis::get('openid');
+        $ip = $_SERVER['SERVER_ADDR'];
+        $key = 'openid'.$ip;
+        $openid = Redis::get($key);
         if($openid){
             $buy_num = $request->input('buy_num');
             $user_info = DB::table('mt_user')->where('openid',$openid)->first();
@@ -494,7 +498,9 @@ class GoodsController extends Controller
 
     //获取购物车列表
     public function cartList(Request $request){
-        $openid = Redis::get('openid');
+        $ip = $_SERVER['SERVER_ADDR'];
+        $key = 'openid'.$ip;
+        $openid = Redis::get($key);
         $where = [
             'openid'=>$openid,
             'collection_cart'=>0
@@ -528,7 +534,9 @@ class GoodsController extends Controller
 
     //购物车删除
     public function cart_delete(Request $request){
-        $openid = Redis::get('openid');
+        $ip = $_SERVER['SERVER_ADDR'];
+        $key = 'openid'.$ip;
+        $openid = Redis::get($key);
         $cart_id=$request->input('cart_id');
         $where=[
             'cart_id'=>$cart_id,
@@ -559,7 +567,9 @@ class GoodsController extends Controller
     //点击加入收藏-商品
     public function  add_collection(Request $request){
         $goods_id = $request->input('goods_id');
-        $openid = Redis::get('openid');
+        $ip = $_SERVER['SERVER_ADDR'];
+        $key = 'openid'.$ip;
+        $openid = Redis::get($key);
         if($openid){
             $user_info = DB::table('mt_user')->where('openid',$openid)->first();
             $uid = $user_info->uid;
@@ -631,7 +641,9 @@ class GoodsController extends Controller
 
     //收藏列表-商品
     public function collection_list(Request $request){
-        $openid = Redis::get('openid');
+        $ip = $_SERVER['SERVER_ADDR'];
+        $key = 'openid'.$ip;
+        $openid = Redis::get($key);
         if($openid){
             $where = [
                 'openid'=>$openid,
@@ -769,7 +781,9 @@ class GoodsController extends Controller
     //店铺收藏
     public function shop_collection(Request $request){
         $shop_id = $request->input('shop_id');
-        $openid = Redis::get('openid');
+        $ip = $_SERVER['SERVER_ADDR'];
+        $key = 'openid'.$ip;
+        $openid = Redis::get($key);
         if($openid){
             $user_info = DB::table('mt_user')->where('openid',$openid)->first();
             $uid = $user_info->uid;
@@ -824,7 +838,9 @@ class GoodsController extends Controller
 
     //店铺收藏列表
     public function shop_collection_list(Request $request){
-        $openid = Redis::get('openid');
+        $ip = $_SERVER['SERVER_ADDR'];
+        $key = 'openid'.$ip;
+        $openid = Redis::get($key);
         if($openid){
             $user_info = DB::table('mt_user')->where('openid',$openid)->first();
             $uid = $user_info->uid;

@@ -456,8 +456,9 @@ class UserController extends Controller
         //$openid = Redis::set('openid','o9VUc5HEPNrYq5d5iQFygPVbX7EM');
         $ip = $_SERVER['SERVER_ADDR'];
         $key = 'openid'.$ip;
+//        var_dump($key);die;
         $openid = Redis::get($key);
-        //var_dump($openid);exit;
+//        var_dump($openid);exit;
         if ($openid) {
             $userInfo = DB::table('mt_user')
                 ->where('mt_user.openid', $openid)->get()->toArray();
@@ -537,7 +538,9 @@ class UserController extends Controller
     //我的足迹
     public function user_history(Request $request)
     {
-        $openid = Redis::get('openid');
+        $ip = $_SERVER['SERVER_ADDR'];
+        $key = 'openid'.$ip;
+        $openid = Redis::get($key);
         //var_dump($openid);exit;
         if ($openid) {
             $userInfo = DB::table('mt_user')->where('openid', $openid)->first();
@@ -617,7 +620,9 @@ class UserController extends Controller
     public function shop_settled(Request $request)
     {
         //var_dump(time()+86400);exit;
-        $openid = Redis::get('openid');
+        $ip = $_SERVER['SERVER_ADDR'];
+        $key = 'openid'.$ip;
+        $openid = Redis::get($key);
 //        var_dump($openid);exit;
         if ($openid) {
             $userInfo = DB::table('mt_user')->where('openid', $openid)->first();
@@ -696,7 +701,9 @@ class UserController extends Controller
     //个人中心优惠券
     public function user_coupon(Request $request)
     {
-        $openid = Redis::get('openid');
+        $ip = $_SERVER['SERVER_ADDR'];
+        $key = 'openid'.$ip;
+        $openid = Redis::get($key);
         if ($openid) {
             $userInfo = DB::table('mt_user')->where('openid', $openid)->first();
             //var_dump($userInfo);exit;
@@ -712,11 +719,14 @@ class UserController extends Controller
                 'mt_coupon.create_time',
                 'mt_coupon.expiration',
                 'mt_goods.goods_name',
+                'mt_coupon.discount',
+                'mt_coupon.coupon_type',
                 'mt_shop.shop_name'
             ];
             $where = [
                 'mt_coupon.uid' => $uid,
-                'is_use' => 0
+                'is_use' => 0,
+                'coupon_draw' => 3
             ];
             $coupon = DB::table('mt_coupon')
                 ->join('mt_goods', 'mt_coupon.goods_id', '=', 'mt_goods.goods_id')
@@ -836,7 +846,9 @@ class UserController extends Controller
         $bankcard_num = $request->input('bankcard_num');
         $bankcard_type = $request->input('bankcard_type');
         $bank = $request->input('bank');
-        $openid = Redis::get('openid');
+        $ip = $_SERVER['SERVER_ADDR'];
+        $key = 'openid'.$ip;
+        $openid = Redis::get($key);
         if ($openid) {
             $userInfo = DB::table('mt_user')->where('openid', $openid)->first();
             //var_dump($userInfo);exit;
@@ -899,7 +911,9 @@ class UserController extends Controller
     //银行卡列表
        public function  bankcard_list(Request $request)
         {
-            $openid = Redis::get('openid');
+            $ip = $_SERVER['SERVER_ADDR'];
+            $key = 'openid'.$ip;
+            $openid = Redis::get($key);
             $userInfo = DB::table('mt_user')->where('openid', $openid)->first();
             //var_dump($userInfo);exit;
             $uid = $userInfo->uid;
@@ -982,7 +996,9 @@ class UserController extends Controller
         }else{
             $integral = 1;
         }
-        $openid = Redis::get('openid');
+        $ip = $_SERVER['SERVER_ADDR'];
+        $key = 'openid'.$ip;
+        $openid = Redis::get($key);
         //var_dump($openid);
         if($openid){
             $userInfo = DB::table('mt_user')->where('openid', $openid)->first();

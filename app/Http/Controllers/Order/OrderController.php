@@ -20,7 +20,9 @@ class OrderController extends Controller
         //$total_price = "13131";
         $order_no = date("YmdHis",time()).rand(1000,9999);   //订单号
         $buy_num = $request->input('buy_num');    //购买数量
-        $openid = Redis::get('openid');
+        $ip = $_SERVER['SERVER_ADDR'];
+        $key = 'openid'.$ip;
+        $openid = Redis::get($key);
         if($openid){
             $userInfo = DB::table('mt_user')->where('openid',$openid)->first();
             $wx_name = $userInfo->wx_name;
@@ -106,7 +108,9 @@ class OrderController extends Controller
 
     //订单列表
     public function order_list(Request $request){
-        $openid = Redis::get('openid');
+        $ip = $_SERVER['SERVER_ADDR'];
+        $key = 'openid'.$ip;
+        $openid = Redis::get($key);
         if($openid){
             $orderInfo = DB::table('mt_user')
                 ->join('mt_order','mt_user.uid','=','mt_order.uid')
@@ -171,7 +175,9 @@ class OrderController extends Controller
     public function order_status_list(Request $request){
         $order_status_id = $request->input('order_status_id');
         //$order_status_id = 0;
-        $openid = Redis::get('openid');
+        $ip = $_SERVER['SERVER_ADDR'];
+        $key = 'openid'.$ip;
+        $openid = Redis::get($key);
         $where = [
             'mt_user.openid'=>$openid,
             'mt_order.order_status'=>$order_status_id
