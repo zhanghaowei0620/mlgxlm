@@ -101,7 +101,7 @@ class Admin_loginController extends Controller
         $data=DB::table('admin_user')
             ->join('mt_shop','admin_user.shop_id','=','mt_shop.shop_id')
             ->select(['admin_user.admin_id','admin_user.admin_judge','admin_user.admin_user','admin_user.shop_status','mt_shop.shop_name','admin_user.shop_id'])      //shop_status 2启用  1拉黑
-            ->paginate(7);
+            ->paginate(1);
 //        var_dump($data);exit;
         if($data){
             $response=[
