@@ -505,7 +505,10 @@ class GoodsController extends Controller
             'openid'=>$openid,
             'collection_cart'=>0
         ];
-        $cartInfo = DB::table('mt_cart')->where($where)->get()->toArray();
+        $cartInfo = DB::table('mt_cart')
+            ->join('mt_shop','mt_shop.shop_id','=','mt_cart.shop_id')
+            ->where($where)
+            ->get()->toArray();
         //var_dump($cartInfo);exit;
         if($cartInfo){
             $data=[

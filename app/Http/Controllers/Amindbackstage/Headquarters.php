@@ -641,6 +641,36 @@ class Headquarters extends Controller
         }
 
     }
+    //获得店铺下的所有商品
+    public function shop_goods_add(Request $request){
+        $shop_id=$request->input('shop_id');
+        $data=DB::table('mt_shop')
+            ->join('mt_goods','mt_shop.shop_id','=','mt_goods.shop_id')
+            ->where(['mt_shop.shop_id'=>$shop_id])
+            ->get();
+//        var_dump($data);die;
+        if($data){
+            $response=[
+                'code'=>0,
+                'data'=>$data,
+                'msg'=>'所有商品获得成功'
+            ];
+            return json_encode($response, JSON_UNESCAPED_UNICODE);
+        }else{
+            $response=[
+                'code'=>0,
+                'msg'=>'所有商品获得失败'
+            ];
+            die(json_encode($response, JSON_UNESCAPED_UNICODE));
+        }
+    }
+
+    //预约
+    public function admin_appointment(Request $request){
+
+    }
+
+    
 
     //分类删除
 //    public function admin_typeDelete(Request $request){
