@@ -254,15 +254,17 @@ class IndexController extends Controller
     public function limited_time(Request $request){
         $limited_type = $request->input('limited_type');
         $two_bar = $request->input('two_bar');
+        $lat1 = $request->input('lat1');
+        $lng1 = $request->input('lng1');
 //        $two_bar = 2;
 //        $limited_type = 2;
-        if($limited_type == null || $limited_type ==1){
-            if($two_bar == null || $two_bar == 1){
+        if($limited_type ==1){
+            if($two_bar == 1){
                 //echo 111;exit;
-                $lat1 = '112.558505';
-                $lng1 = '37.818498';
+//                $lat1 = '112.558505';
+//                $lng1 = '37.818498';
                 $time = time();
-                $limitedInfo = DB::select("SELECT s.shop_id,shop_name,goods_id,goods_name,market_price,picture,limited_price,limited_prople,shop_status, 6378.138*2*ASIN(SQRT(POW(SIN(($lat1*PI()/180-lat*PI()/180)/2),2)+COS($lat1*PI()/180)*COS(lat*PI()/180)*POW(SIN(($lng1*PI()/180-lng*PI()/180)/2),2))) AS juli  FROM mt_shop s inner join mt_goods g on s.shop_id = g.shop_id  where limited_start_time<=$time and limited_stop_time>$time && limited_buy = 1 && shop_status = 1 group by juli order by juli");
+                $limitedInfo = DB::select("SELECT s.shop_id,shop_name,goods_id,goods_name,market_price,picture,limited_price,limited_prople,shop_status, 6378.138*2*ASIN(SQRT(POW(SIN(($lat1*PI()/180-lat*PI()/180)/2),2)+COS($lat1*PI()/180)*COS(lat*PI()/180)*POW(SIN(($lng1*PI()/180-lng*PI()/180)/2),2))) AS juli  FROM mt_shop s inner join mt_goods g on s.shop_id = g.shop_id  where limited_start_time<$time and limited_stop_time>$time && limited_buy = 1 && shop_status = 1 group by juli order by juli");
                 //var_dump($limitedInfo);exit;
                 $data = [
                     'code'=>0,
@@ -274,7 +276,7 @@ class IndexController extends Controller
                 return json_encode($response,JSON_UNESCAPED_UNICODE);
             }else if($two_bar == 2){
                 $time = time();
-                $limitedInfo = DB::select("SELECT s.shop_id,shop_name,goods_id,goods_name,market_price,picture,limited_price,limited_prople,shop_status FROM mt_shop s inner join mt_goods g on s.shop_id = g.shop_id  where limited_start_time<=$time and limited_stop_time>$time && limited_buy = 1 && shop_status = 1 order by limited_price");
+                $limitedInfo = DB::select("SELECT s.shop_id,shop_name,goods_id,goods_name,market_price,picture,limited_price,limited_prople,shop_status FROM mt_shop s inner join mt_goods g on s.shop_id = g.shop_id  where limited_start_time<$time and limited_stop_time>$time && limited_buy = 1 && shop_status = 1 order by limited_price");
 //                var_dump($limitedInfo);exit;
                 $data = [
                     'code'=>0,
@@ -295,9 +297,9 @@ class IndexController extends Controller
                 die(json_encode($response,JSON_UNESCAPED_UNICODE));
             }
         }else if ($limited_type == 2){
-            if($two_bar == null || $two_bar == 1){
-                $lat1 = '112.558505';
-                $lng1 = '37.818498';
+            if($two_bar == 1){
+//                $lat1 = '112.558505';
+//                $lng1 = '37.818498';
                 $time = time();
                 $limitedInfo = DB::select("SELECT s.shop_id,shop_name,goods_id,goods_name,market_price,picture,limited_price,limited_prople,shop_status, 6378.138*2*ASIN(SQRT(POW(SIN(($lat1*PI()/180-lat*PI()/180)/2),2)+COS($lat1*PI()/180)*COS(lat*PI()/180)*POW(SIN(($lng1*PI()/180-lng*PI()/180)/2),2))) AS juli  FROM mt_shop s inner join mt_goods g on s.shop_id = g.shop_id  where limited_start_time>$time and limited_stop_time>$time && limited_buy = 1 && shop_status = 1 group by juli order by juli");
                 //var_dump($limitedInfo);exit;
@@ -331,6 +333,45 @@ class IndexController extends Controller
                 ];
                 die(json_encode($response,JSON_UNESCAPED_UNICODE));
             }
+        }else if ($limited_type == 3){
+            $start_time=strtotime(date("Y-m-d",time()));    //求今天开始时间
+            $tomorrow = $start_time+86400;    //明日开始时间
+            if($two_bar == 1){
+//                $lat1 = '112.558505';
+//                $lng1 = '37.818498';
+//                $time = time();
+                $limitedInfo = DB::select("SELECT s.shop_id,shop_name,goods_id,goods_name,market_price,picture,limited_price,limited_prople,shop_status, 6378.138*2*ASIN(SQRT(POW(SIN(($lat1*PI()/180-lat*PI()/180)/2),2)+COS($lat1*PI()/180)*COS(lat*PI()/180)*POW(SIN(($lng1*PI()/180-lng*PI()/180)/2),2))) AS juli  FROM mt_shop s inner join mt_goods g on s.shop_id = g.shop_id  where limited_start_time>$tomorrow and limited_stop_time>$tomorrow && limited_buy = 1 && shop_status = 1 group by juli order by juli");
+                //var_dump($limitedInfo);exit;
+                $data = [
+                    'code'=>0,
+                    'limitedInfo'=>$limitedInfo
+                ];
+                $response = [
+                    'data'=>$data
+                ];
+                return json_encode($response,JSON_UNESCAPED_UNICODE);
+            }else if($two_bar == 2){
+                $time = time();
+                $limitedInfo = DB::select("SELECT s.shop_id,shop_name,goods_id,goods_name,market_price,picture,limited_price,limited_prople,shop_status FROM mt_shop s inner join mt_goods g on s.shop_id = g.shop_id  where limited_start_time>$tomorrow and limited_stop_time>$tomorrow && limited_buy = 1 && shop_status = 1 order by limited_price");
+                //var_dump($limitedInfo);exit;
+                $data = [
+                    'code'=>0,
+                    'limitedInfo'=>$limitedInfo
+                ];
+                $response = [
+                    'data'=>$data
+                ];
+                return json_encode($response,JSON_UNESCAPED_UNICODE);
+            }else{
+                $data = [
+                    'code'=>1,
+                    'msg'=>'暂无商品抢购中'
+                ];
+                $response = [
+                    'data'=>$data
+                ];
+                die(json_encode($response,JSON_UNESCAPED_UNICODE));
+            }
         }
     }
 
@@ -342,11 +383,12 @@ class IndexController extends Controller
             ->orderBy('goods_gd_num','desc')
             ->limit(3)
             ->get(['shop_name','goods_id','goods_name','market_price','picture','promotion_price'])->toArray();
-
-        $lat1 = '112.558505';
-        $lng1 = '37.818498';    //距离最近
+        $lat1=$request->input('lat1');
+        $lng1=$request->input('lng1');
+//        $lat1 = '112.558505';
+//        $lng1 = '37.818498';    //距离最近
         $distance = DB::select("SELECT s.shop_id,shop_name,goods_id,goods_name,market_price,picture,prople,promotion_price, 6378.138*2*ASIN(SQRT(POW(SIN(($lat1*PI()/180-lat*PI()/180)/2),2)+COS($lat1*PI()/180)*COS(lat*PI()/180)*POW(SIN(($lng1*PI()/180-lng*PI()/180)/2),2))) AS juli  FROM mt_shop s inner join mt_goods g on s.shop_id = g.shop_id  where promotion_type = 1  group by juli order by juli");
-        //var_dump($distance);exit;
+//        var_dump($distance);exit;
 
         $assembleInfo = DB::table('mt_goods')       //价格最优
         ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
