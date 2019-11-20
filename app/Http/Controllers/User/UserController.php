@@ -456,8 +456,9 @@ class UserController extends Controller
         //$openid = Redis::set('openid','o9VUc5HEPNrYq5d5iQFygPVbX7EM');
         $ip = $_SERVER['SERVER_ADDR'];
         $key = 'openid'.$ip;
+//        var_dump($key);die;
         $openid = Redis::get($key);
-        //var_dump($openid);exit;
+//        var_dump($openid);exit;
         if ($openid) {
             $userInfo = DB::table('mt_user')
                 ->where('mt_user.openid', $openid)->get()->toArray();
@@ -466,7 +467,7 @@ class UserController extends Controller
                 $coupon_num = DB::table('mt_user')
                     ->join('mt_coupon', 'mt_user.uid', '=', 'mt_coupon.uid')
                     ->where('mt_user.openid', $openid)->get()->count();
-//                var_dump($coupon_num);exit;
+                var_dump($coupon_num);exit;
                 $data = [
                     'userInfo' => $userInfo,
                     'coupon_num' => $coupon_num,
