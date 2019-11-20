@@ -449,6 +449,7 @@ class Headquarters extends Controller
     public function admin_typeUpdate(Request $request){
         $t_id = $request->input('t_id');    //分类id
         $t_name = $request->input('t_name');   //分类名称
+        $t_img = $request->input('t_img');
         $typeInfo = DB::table('mt_type')->where('t_id',$t_id)->first();
         $pid = $typeInfo->p_id;
 //        var_dump($pid);exit;
@@ -459,7 +460,7 @@ class Headquarters extends Controller
             ];
             die(json_encode($response, JSON_UNESCAPED_UNICODE));
         }else{
-            $update = DB::table('mt_type')->where('t_id',$t_id)->update(['t_name',$t_name]);
+            $update = DB::table('mt_type')->where('t_id',$t_id)->update(['t_name'=>$t_name,'t_img'=>$t_img]);
             if($update >0){
                 $response=[
                     'code'=>0,
@@ -564,7 +565,9 @@ class Headquarters extends Controller
             $caseInfo = DB::table('mt_case')      //案例
                 ->join('mt_goods','mt_case.goods_id','=','mt_goods.goods_id')
                 ->join('mt_shop','mt_shop.shop_id','=','mt_goods.shop_id')
-                ->get(['case_id','case_front','case_after','case_trouble','goods_name','shop_name'])->toArray();
+                ->select(['case_id','case_front','case_after','case_trouble','goods_name','shop_name'])
+                ->paginate(2);
+
 
             $response = [
                 'code'=>0,
@@ -577,7 +580,8 @@ class Headquarters extends Controller
                 ->join('mt_goods','mt_case.goods_id','=','mt_goods.goods_id')
                 ->join('mt_shop','mt_shop.shop_id','=','mt_goods.shop_id')
                 ->where('mt_case.shop_id',$shop_id)
-                ->get(['case_id','case_front','case_after','case_trouble','goods_name','shop_name'])->toArray();
+                ->select(['case_id','case_front','case_after','case_trouble','goods_name','shop_name'])
+                ->paginate(2);
             $response = [
                 'code'=>0,
                 'data'=>$caseInfo,
@@ -605,6 +609,37 @@ class Headquarters extends Controller
             ];
             die(json_encode($response,JSON_UNESCAPED_UNICODE));
         }
+    }
+
+    //案例修改
+    public function admin_caseUpdate(Request $request){
+        $case_id = $request->input('case_id');    //案例id
+        $case_front = $request->input('case_front');    //案例-前
+        $case_after = $request->input('case_after');    //案例-后
+        $case_trouble = $request->input('case_trouble');    //案例-毛病
+
+        $update = [
+            'case_id'=>$case_id,
+            'case_front'=>$case_front,
+            'case_after'=>$case_after,
+            'case_trouble'=>$case_trouble,
+        ];
+
+        $updateInfo = DB::table('mt_case')->where('case_id',$case_id)->update($update);
+        if($updateInfo >0){
+            $response=[
+                'code'=>0,
+                'msg'=>'案例修改成功'
+            ];
+            return json_encode($response, JSON_UNESCAPED_UNICODE);
+        }else{
+            $response=[
+                'code'=>0,
+                'msg'=>'您并未修改任何信息'
+            ];
+            die(json_encode($response, JSON_UNESCAPED_UNICODE));
+        }
+
     }
 
     //分类删除
