@@ -243,6 +243,9 @@ Route::post('admin_caseUpdate','Amindbackstage\Headquarters@admin_caseUpdate')->
 
 Route::post('admin_shop_goodsInfo','Amindbackstage\Headquarters@admin_shop_goodsInfo')->middleware('checkLogin');
 
+Route::get('reselleradd','Amindbackstage\Headquarters@reselleradd');
+
+
 
 
 

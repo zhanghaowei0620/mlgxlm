@@ -670,6 +670,33 @@ class Headquarters extends Controller
 
     }
 
+    //是否成为分销商
+    public function reselleradd(Request $request)
+    {
+        $shop_id=$request->input('shop_id');
+        $upinfo=[
+            'shop_reseller'=>1
+        ];
+        $data=DB::table('mt_shop')
+            ->where(['shop_id'=>$shop_id])
+            ->update($upinfo);
+        var_dump($data);die;
+        if($data){
+            $response=[
+                'code'=>0,
+                'data'=>$data,
+                'msg'=>'恭喜您,成为分销商'
+            ];
+            return json_encode($response, JSON_UNESCAPED_UNICODE);
+        }else{
+            $response=[
+                'code'=>0,
+                'msg'=>'不好意思,您没有成为分销商'
+            ];
+            die(json_encode($response, JSON_UNESCAPED_UNICODE));
+        }
+    }
+
 
 
     
