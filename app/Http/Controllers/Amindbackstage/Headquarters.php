@@ -686,14 +686,13 @@ class Headquarters extends Controller
         if($data){
             $response=[
                 'code'=>0,
-                'data'=>$data,
                 'msg'=>'恭喜您,成为分销商'
             ];
             return json_encode($response, JSON_UNESCAPED_UNICODE);
         }else{
             $response=[
                 'code'=>0,
-                'msg'=>'不好意思,您没有成为分销商'
+                'msg'=>'不好意思,您已经是分销商了'
             ];
             die(json_encode($response, JSON_UNESCAPED_UNICODE));
         }
