@@ -504,18 +504,15 @@ class GoodsController extends Controller
         $key = 'openid'.$ip;
         $openid = Redis::get($key);
 //        $openid="o9VUc5AOsdEdOBeUAw4TdYg-F-dM";
-//        $data1=DB::table('mt_cart')
-//            ->join('mt_shop','mt_shop.shop_id','=','mt_cart.shop_id')
-//            ->where(['collection_cart'=>0])
-//            ->get(['mt_cart.shop_id']);
-//        var_dump($data1);die;
         $where = [
-            'openid'=>$openid,
+//            'openid'=>$openid,
             'collection_cart'=>0
         ];
 //        var_dump($where);die;
         $cartInfo = DB::table('mt_cart')
             ->join('mt_shop','mt_shop.shop_id','=','mt_cart.shop_id')
+            ->join('mt_collection_goods','mt_collection_goods.goods_id','=','mt_cart.goods_id')
+//            ->join('mt_collection_goods','mt_collection_goods.collection_goods_id','=','mt_cart.collection_goods_id')
             ->where($where)
             ->get()->toArray();
 //        var_dump($cartInfo);exit;
@@ -582,6 +579,7 @@ class GoodsController extends Controller
         $ip = $_SERVER['SERVER_ADDR'];
         $key = 'openid'.$ip;
         $openid = Redis::get($key);
+//        $openid="o9VUc5AOsdEdOBeUAw4TdYg-F-dM";
         if($openid){
             $user_info = DB::table('mt_user')->where('openid',$openid)->first();
             $uid = $user_info->uid;
@@ -589,6 +587,7 @@ class GoodsController extends Controller
             $where = [
                 'goods_id'=>$goods_id,
 //                'collection'=>1
+            'collection_info'=>1
             ];
             $goods_cart = DB::table('mt_collection_goods')->where($where)->get()->toArray();
             //var_dump($goods_cart);exit;
@@ -613,6 +612,7 @@ class GoodsController extends Controller
                     'price'=>$goodsInfo->price,
                     'create_time'=>time(),
 //                    'collection'=>1,
+                    'collection_info'=>1,
                     'uid'=>$uid
                 ];
 //                var_dump($data);exit;
@@ -734,7 +734,7 @@ class GoodsController extends Controller
     {
         $shop_id = $request->input('shop_id');
         $where=[
-          'shop_id'=>$shop_id
+          'shop_id'=>$shop_id,
         ];
         $data=DB::table('mt_shop_collection')
             ->where($where)
@@ -765,7 +765,8 @@ class GoodsController extends Controller
     {
         $goods_id = $request->input('goods_id');
         $where=[
-            'goods_id'=>$goods_id
+            'goods_id'=>$goods_id,
+            'collection_info'=>1
         ];
         $data=DB::table('mt_collection_goods')
             ->where($where)
