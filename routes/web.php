@@ -243,14 +243,10 @@ Route::post('admin_caseUpdate','Amindbackstage\Headquarters@admin_caseUpdate')->
 
 Route::post('admin_shop_goodsInfo','Amindbackstage\Headquarters@admin_shop_goodsInfo')->middleware('checkLogin');
 
-
 Route::get('test','Test\TestController@test')->middleware('checkLogin');
-
 Route::get('getInfo','Test\TestController@getInfo')->middleware('checkLogin');
-
 Route::post('weixinPay/notify','Test\TestController@notify')->middleware('checkLogin');
 
-Route::get('reselleradd','Amindbackstage\Headquarters@reselleradd');
 
 
 
