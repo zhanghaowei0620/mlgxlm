@@ -318,7 +318,8 @@ class IndexController extends Controller
                 return json_encode($response,JSON_UNESCAPED_UNICODE);
             }else if($two_bar == 2){
                 $time = time();
-                $limitedInfo = DB::select("SELECT s.shop_id,shop_name,goods_id,goods_name,market_price,picture,limited_price,limited_prople,shop_status FROM mt_shop s inner join mt_goods g on s.shop_id = g.shop_id  where limited_start_time>$time and limited_stop_time>$time && limited_buy = 1 && shop_status = 2 order by limited_price");
+//                $limitedInfo = DB::select("SELECT s.shop_id,shop_name,goods_id,goods_name,market_price,picture,limited_price,limited_prople,shop_status FROM mt_shop s inner join mt_goods g on s.shop_id = g.shop_id  where limited_start_time>$time and limited_stop_time>$time && limited_buy = 1 && shop_status = 2 order by limited_price");
+                $limitedInfo = DB::select("SELECT s.shop_id,shop_name,goods_id,goods_name,market_price,picture,limited_price,limited_prople,price,prople,shop_status FROM mt_shop s inner join mt_goods g on s.shop_id = g.shop_id  where limited_start_time<$time and limited_stop_time>$time && limited_buy = 1 && shop_status = 2 order by limited_price");
                 //var_dump($limitedInfo);exit;
                 $data = [
                     'code'=>0,
@@ -359,7 +360,8 @@ class IndexController extends Controller
                 return json_encode($response,JSON_UNESCAPED_UNICODE);
             }else if($two_bar == 2){
                 $time = time();
-                $limitedInfo = DB::select("SELECT s.shop_id,shop_name,goods_id,goods_name,market_price,picture,limited_price,limited_prople,shop_status FROM mt_shop s inner join mt_goods g on s.shop_id = g.shop_id  where limited_start_time>$tomorrow and limited_stop_time>$tomorrow && limited_buy = 1 && shop_status = 2 order by limited_price");
+//                $limitedInfo = DB::select("SELECT s.shop_id,shop_name,goods_id,goods_name,market_price,picture,limited_price,limited_prople,shop_status FROM mt_shop s inner join mt_goods g on s.shop_id = g.shop_id  where limited_start_time>$tomorrow and limited_stop_time>$tomorrow && limited_buy = 1 && shop_status = 2 order by limited_price");
+                $limitedInfo = DB::select("SELECT s.shop_id,shop_name,goods_id,goods_name,market_price,picture,limited_price,limited_prople,price,prople,shop_status FROM mt_shop s inner join mt_goods g on s.shop_id = g.shop_id  where limited_start_time<$time and limited_stop_time>$time && limited_buy = 1 && shop_status = 2 order by limited_price");
                 //var_dump($limitedInfo);exit;
                 $data = [
                     'code'=>0,
