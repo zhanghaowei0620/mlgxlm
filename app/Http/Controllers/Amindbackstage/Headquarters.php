@@ -673,14 +673,16 @@ class Headquarters extends Controller
     //是否成为分销商
     public function reselleradd(Request $request)
     {
+
         $shop_id=$request->input('shop_id');
         $upinfo=[
             'shop_reseller'=>1
         ];
+//        var_dump($upinfo);die;
         $data=DB::table('mt_shop')
             ->where(['shop_id'=>$shop_id])
             ->update($upinfo);
-        var_dump($data);die;
+//        var_dump($data);die;
         if($data){
             $response=[
                 'code'=>0,
