@@ -325,9 +325,9 @@ class GoodsController extends Controller
             ->where(['mt_goods.goods_id'=>$goods_id])
             ->get(['shop_name','admin_tel','shop_address_detail','goods_name','goods_effect','goods_duration','goods_process','goods_overdue_time','shop_bus','goods_appointment','goods_use_rule','shop_img','shop_logo','shop_star']);
 //        var_dump($shopsetInfo);die;
-        $aaa=DB::table('mt_goods')
-            ->where(['shop_id'=>$data1->shop_id])
-            ->get(['promotion_prople']);
+//        $aaa=DB::table('mt_goods')
+//            ->where(['shop_id'=>$data1->shop_id])
+//            ->get(['promotion_prople']);
 //        var_dump($aaa);die;
         $goods_list=DB::table('mt_goods')
             ->where(['mt_shop.shop_id'=>$data1->shop_id])
@@ -363,9 +363,10 @@ class GoodsController extends Controller
             $ip = $_SERVER['SERVER_ADDR'];
             $key = 'openid'.$ip;
             $openid = Redis::get($key);
+//            $openid="o9VUc5AOsdEdOBeUAw4TdYg-F-dM";
 //            var_dump($openid);exit;
             $userInfo = DB::table('mt_user')->where('openid',$openid)->first();
-           // var_dump($userInfo);exit;
+//            var_dump($userInfo);exit;
             $uid = $userInfo->uid;
             $where = [
                 'uid'=>$uid,
@@ -409,6 +410,7 @@ class GoodsController extends Controller
         $ip = $_SERVER['SERVER_ADDR'];
         $key = 'openid'.$ip;
         $openid = Redis::get($key);
+//        $openid="o9VUc5AOsdEdOBeUAw4TdYg-F-dM";
         if($openid){
             $buy_num = $request->input('buy_num');
             $user_info = DB::table('mt_user')->where('openid',$openid)->first();
@@ -501,15 +503,22 @@ class GoodsController extends Controller
         $ip = $_SERVER['SERVER_ADDR'];
         $key = 'openid'.$ip;
         $openid = Redis::get($key);
+//        $openid="o9VUc5AOsdEdOBeUAw4TdYg-F-dM";
+//        $data1=DB::table('mt_cart')
+//            ->join('mt_shop','mt_shop.shop_id','=','mt_cart.shop_id')
+//            ->where(['collection_cart'=>0])
+//            ->get(['mt_cart.shop_id']);
+//        var_dump($data1);die;
         $where = [
             'openid'=>$openid,
             'collection_cart'=>0
         ];
+//        var_dump($where);die;
         $cartInfo = DB::table('mt_cart')
             ->join('mt_shop','mt_shop.shop_id','=','mt_cart.shop_id')
             ->where($where)
             ->get()->toArray();
-        //var_dump($cartInfo);exit;
+//        var_dump($cartInfo);exit;
         if($cartInfo){
             $data=[
                 'code'=>'0',

@@ -114,6 +114,10 @@ Route::get('/nearby_shop', 'Goods\GoodsController@nearby_shop');   //附近店�
 
 Route::get('/subscribe', 'Goods\GoodsController@subscribe');   //预约
 
+Route::get('reseller', 'Reseller\ResellerController@reseller');   //分销系统
+
+
+
 
 
 
@@ -239,11 +243,17 @@ Route::post('admin_caseUpdate','Amindbackstage\Headquarters@admin_caseUpdate')->
 
 Route::post('admin_shop_goodsInfo','Amindbackstage\Headquarters@admin_shop_goodsInfo')->middleware('checkLogin');
 
+<<<<<<< HEAD
 Route::get('test','Test\TestController@test')->middleware('checkLogin');
 
 Route::get('getInfo','Test\TestController@getInfo')->middleware('checkLogin');
 
 Route::post('weixinPay/notify','Test\TestController@notify')->middleware('checkLogin');
+=======
+Route::get('reselleradd','Amindbackstage\Headquarters@reselleradd');
+
+
+>>>>>>> 68d367043475ea1d94d45564761f3c55fb553f8e
 
 
 
