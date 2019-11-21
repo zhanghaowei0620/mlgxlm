@@ -642,7 +642,7 @@ class Headquarters extends Controller
 
     }
     //获得店铺下的所有商品
-    public function shop_goods_add(Request $request){
+    public function admin_shop_goodsInfo(Request $request){
         $shop_id=$request->input('shop_id');
         $data=DB::table('mt_shop')
             ->join('mt_goods','mt_shop.shop_id','=','mt_goods.shop_id')
