@@ -114,6 +114,10 @@ Route::get('/nearby_shop', 'Goods\GoodsController@nearby_shop');   //附近店�
 
 Route::get('/subscribe', 'Goods\GoodsController@subscribe');   //预约
 
+Route::get('reseller', 'Reseller\ResellerController@reseller');   //分销系统
+
+
+
 
 
 
