@@ -24,7 +24,6 @@ class UserController extends Controller
 
             cache([$key => $access], $time);
         }
-
         return $access;
     }
 
@@ -33,6 +32,7 @@ class UserController extends Controller
     {
         $code = $request->input('code');
         $userinfo = $request->input('userinfo');
+        $openid_d= $request->input('openid_d');
         //var_dump(json_decode($userinfo));exit;
         $userinfo = json_decode($userinfo);
         $wx_name = $userinfo->userInfo->nickName;
@@ -84,14 +84,29 @@ class UserController extends Controller
                 die(json_encode($response, JSON_UNESCAPED_UNICODE));
             }
         } else {
-            $insertInfo = [
-                'wx_name' => $wx_name,
-                'wx_headimg' => $wx_headimg,
-                'openid' => $arr['openid'],
-                'session_key' => $arr['session_key'],
-                //'wx_unionid'=>$arr['unionid'],
-                'wx_login_time' => time()
-            ];
+            $data1=DB::table('mt_user')
+                ->where(['openid'=>$openid_d])
+                ->get();
+            if($data1){
+                $insertInfo = [
+                    'wx_name' => $wx_name,
+                    'wx_headimg' => $wx_headimg,
+                    'openid' => $arr['openid'],
+                    'session_key' => $arr['session_key'],
+                    //'wx_unionid'=>$arr['unionid'],
+                    'c_id'=>$openid_d,
+                    'wx_login_time' => time()
+                ];
+            }else{
+                $insertInfo = [
+                    'wx_name' => $wx_name,
+                    'wx_headimg' => $wx_headimg,
+                    'openid' => $arr['openid'],
+                    'session_key' => $arr['session_key'],
+                    //'wx_unionid'=>$arr['unionid'],
+                    'wx_login_time' => time()
+                ];
+            }
             //var_dump($arr);exit;
             $insertUserInfo = DB::table('mt_user')->insertGetId($insertInfo);
             if ($insertUserInfo) {
@@ -585,8 +600,9 @@ class UserController extends Controller
     //主营项目
     public function shop_type(){
         $info = DB::table('mt_type')->get();
+//        var_dump($info);die;
         $result = $this->list_level($info,$pid=0,$level=0);
-        //var_dump($result);
+//        var_dump($result);die;
         $data = [
             'code' => 0,
             'shop_type' => $result
@@ -597,6 +613,7 @@ class UserController extends Controller
         return json_encode($response, JSON_UNESCAPED_UNICODE);
 
     }
+
     public function list_level($data,$pid,$level){
 
         static $array = array();
@@ -623,6 +640,7 @@ class UserController extends Controller
         $ip = $_SERVER['SERVER_ADDR'];
         $key = 'openid'.$ip;
         $openid = Redis::get($key);
+//        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
 //        var_dump($openid);exit;
         if ($openid) {
             $userInfo = DB::table('mt_user')->where('openid', $openid)->first();
@@ -999,6 +1017,7 @@ class UserController extends Controller
         $ip = $_SERVER['SERVER_ADDR'];
         $key = 'openid'.$ip;
         $openid = Redis::get($key);
+//        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
         //var_dump($openid);
         if($openid){
             $userInfo = DB::table('mt_user')->where('openid', $openid)->first();

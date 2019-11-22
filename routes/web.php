@@ -114,7 +114,7 @@ Route::get('/nearby_shop', 'Goods\GoodsController@nearby_shop');   //附近店�
 
 Route::get('/subscribe', 'Goods\GoodsController@subscribe');   //预约
 
-Route::get('reseller', 'Reseller\ResellerController@reseller');   //分销系统
+Route::get('reseller', 'Reseller\ResellerController@reseller');   //分销
 
 
 
@@ -263,7 +263,6 @@ Route::post('test','Test\TestController@test')->middleware('checkLogin');       
 Route::post('getInfo','Test\TestController@getInfo')->middleware('checkLogin');     //微信获取用户openid
 
 Route::post('weixinPay/notify','Test\TestController@notify')->middleware('checkLogin');     //微信支付-异步回调
-
 
 
 

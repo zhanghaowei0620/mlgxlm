@@ -315,7 +315,7 @@ class GoodsController extends Controller
         $goods_id = $request->input('goods_id');
         $data1=DB::table('mt_goods')
             ->join('mt_shop','mt_shop.shop_id','=','mt_goods.shop_id')
-            ->join('mt_coupon','mt_coupon.goods_id','=','mt_goods.goods_id')
+//            ->join('mt_coupon','mt_coupon.goods_id','=','mt_goods.goods_id')
             ->where(['mt_goods.goods_id'=>$goods_id])
             ->first();
 //        var_dump($data1);exit;
@@ -414,6 +414,7 @@ class GoodsController extends Controller
         if($openid){
             $buy_num = $request->input('buy_num');
             $user_info = DB::table('mt_user')->where('openid',$openid)->first();
+//            var_dump($user_info);die;
             $uid = $user_info->uid;
 //            $buy_num = 1;
 //            $goods_id = 7;
@@ -432,7 +433,7 @@ class GoodsController extends Controller
                 if($update_buynum==true){
                     $aa=[
                         'code'=>'0',
-                        'msg'=>'加入购物车成功'
+                        'msg'=>'加入购物车成功111'
                     ];
                     $response = [
                         'data'=>$aa
@@ -504,18 +505,13 @@ class GoodsController extends Controller
         $key = 'openid'.$ip;
         $openid = Redis::get($key);
 //        $openid="o9VUc5AOsdEdOBeUAw4TdYg-F-dM";
-//        $data1=DB::table('mt_cart')
-//            ->join('mt_shop','mt_shop.shop_id','=','mt_cart.shop_id')
-//            ->where(['collection_cart'=>0])
-//            ->get(['mt_cart.shop_id']);
-//        var_dump($data1);die;
         $where = [
-            'openid'=>$openid,
-            'collection_cart'=>0
+            'mt_cart.openid'=>$openid,
+//            'collection_cart'=>0
         ];
+//        $info=DB::table('')
 //        var_dump($where);die;
         $cartInfo = DB::table('mt_cart')
-            ->join('mt_shop','mt_shop.shop_id','=','mt_cart.shop_id')
             ->where($where)
             ->get()->toArray();
 //        var_dump($cartInfo);exit;
@@ -582,6 +578,7 @@ class GoodsController extends Controller
         $ip = $_SERVER['SERVER_ADDR'];
         $key = 'openid'.$ip;
         $openid = Redis::get($key);
+//        $openid="o9VUc5AOsdEdOBeUAw4TdYg-F-dM";
         if($openid){
             $user_info = DB::table('mt_user')->where('openid',$openid)->first();
             $uid = $user_info->uid;
@@ -589,6 +586,7 @@ class GoodsController extends Controller
             $where = [
                 'goods_id'=>$goods_id,
 //                'collection'=>1
+            'collection_info'=>1
             ];
             $goods_cart = DB::table('mt_collection_goods')->where($where)->get()->toArray();
             //var_dump($goods_cart);exit;
@@ -613,12 +611,21 @@ class GoodsController extends Controller
                     'price'=>$goodsInfo->price,
                     'create_time'=>time(),
 //                    'collection'=>1,
+                    'collection_info'=>1,
                     'uid'=>$uid
                 ];
 //                var_dump($data);exit;
                 $add_cart = DB::table('mt_collection_goods')->insertGetId($data);
 //                var_dump($add_cart);die;
                 if($add_cart){
+                    $datainfo=DB::table('mt_cart')
+                        ->where(['goods_id'=>$goods_id])
+                        ->first();
+                    if($datainfo){
+                        $infos=DB::table('mt_cart')
+                            ->where(['goods_id'=>$goods_id])
+                            ->update(['collection_cart'=>1]);
+                    }
                     $data1=[
                         'code'=>'0',
                         'msg'=>'加入收藏成功'
@@ -734,7 +741,7 @@ class GoodsController extends Controller
     {
         $shop_id = $request->input('shop_id');
         $where=[
-          'shop_id'=>$shop_id
+          'shop_id'=>$shop_id,
         ];
         $data=DB::table('mt_shop_collection')
             ->where($where)
@@ -765,7 +772,8 @@ class GoodsController extends Controller
     {
         $goods_id = $request->input('goods_id');
         $where=[
-            'goods_id'=>$goods_id
+            'goods_id'=>$goods_id,
+            'collection_info'=>1
         ];
         $data=DB::table('mt_collection_goods')
             ->where($where)
