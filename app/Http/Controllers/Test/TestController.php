@@ -32,7 +32,7 @@ class TestController extends Controller
         $mch_id = '1535423301';
         $nonce_str = $this->nonce_str();
         $body = '测试订单-'.mt_rand(1111,9999) . Str::random(6);
-        $order_id = time().mt_rand(11111,99999);//测试订单号 随机生成
+        $order_id = 'zhangsan-'.time().mt_rand(11111,99999);//测试订单号 随机生成
         $trade_type = 'JSAPI';
         $notify_url = 'http://lvs.mlgxlm.com/weixinPay/notify';
         //dump($openid);die;
@@ -232,6 +232,7 @@ class TestController extends Controller
      * 微信支付回调
      */
     public function notify(){
+        echo 111;exit;
         $xml = file_get_contents("php://input");
         $xml_obj = simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA);
         $xml_arr = json_decode(json_encode($xml_obj), true);

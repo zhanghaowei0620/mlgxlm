@@ -670,13 +670,25 @@ class Headquarters extends Controller
 
     }
 
-    //是否成为分销商
-    public function reselleradd(Request $request)
-    {
+    //判断是否为分销商
+    public function admin_is_reseller(Request $request){
+        $shop_id = $request->input('shop_id');
+        $shop_resellerInfo = DB::table('mt_shop')->where('shop_id',$shop_id)->first(['shop_reseller']);
+        $shop_reseller = $shop_resellerInfo->shop_reseller;
+        $response=[
+            'code'=>0,
+            'data'=>$shop_reseller,
+            'msg'=>'数据请求成功'
+        ];
+        return json_encode($response, JSON_UNESCAPED_UNICODE);
+    }
 
+    //申请成为分销商
+    public function admin_apply_reseller(Request $request)
+    {
         $shop_id=$request->input('shop_id');
         $upinfo=[
-            'shop_reseller'=>1
+            'shop_reseller'=>2
         ];
 //        var_dump($upinfo);die;
         $data=DB::table('mt_shop')
@@ -686,21 +698,218 @@ class Headquarters extends Controller
         if($data){
             $response=[
                 'code'=>0,
-                'msg'=>'恭喜您,成为分销商'
+                'msg'=>'申请成功,请耐心等待审核'
             ];
             return json_encode($response, JSON_UNESCAPED_UNICODE);
         }else{
             $response=[
-                'code'=>0,
-                'msg'=>'不好意思,您已经是分销商了'
+                'code'=>1,
+                'msg'=>'请求出现错误,请重试'
             ];
             die(json_encode($response, JSON_UNESCAPED_UNICODE));
         }
     }
 
+    //申请列表
+    public function admin_apply_reseller_list(Request $request){
+        $admin_judge = $request->input('admin_judge');
+        if($admin_judge == 1){
+            $shop_apply_reseller = DB::table('mt_shop')->where('shop_reseller',2)->get(['shop_id','shop_name','shop_img','shop_address_provice','shop_address_city','shop_address_area'])->toArray();
+//            var_dump($shop_apply_reseller);exit;
+            $response=[
+                'code'=>0,
+                'data'=>$shop_apply_reseller,
+                'msg'=>'数据请求成功'
+            ];
+            return json_encode($response, JSON_UNESCAPED_UNICODE);
+        }else{
+            $response=[
+                'code'=>1,
+                'msg'=>'没有权限'
+            ];
+            die(json_encode($response, JSON_UNESCAPED_UNICODE));
+        }
+    }
+
+    //审核
+    public function admin_reseller_examine(Request $request){
+        $shop_id = $request->input('shop_id');
+        $admin_judge = $request->input('admin_judge');
+        if($admin_judge == 1){
+            $shopUpdate = DB::table('mt_shop')->where('shop_id',$shop_id)->update(['shop_reseller'=>1]);
+            $admin_userUpdate = DB::table('admin_user')->where('shop_id',$shop_id)->update(['shop_reseller'=>1]);
+            if($shopUpdate >0 && $admin_userUpdate > 0){
+//                echo 111;exit;
+                $response=[
+                    'code'=>0,
+                    'msg'=>'审核成功'
+                ];
+                return json_encode($response, JSON_UNESCAPED_UNICODE);
+            }else{
+                $response=[
+                    'code'=>1,
+                    'msg'=>'系统出现错误，请重试'
+                ];
+                die(json_encode($response, JSON_UNESCAPED_UNICODE));
+            }
+        }else{
+            $response=[
+                'code'=>1,
+                'msg'=>'抱歉，您没有权限执行此功能'
+            ];
+            die(json_encode($response, JSON_UNESCAPED_UNICODE));
+        }
+    }
+
+    //分销商列表
+    public function admin_reseller_list(Request $request){
+        $admin_judge = $request->input('admin_judge');
+        if($admin_judge == 1){
+            $resellerInfo = DB::table('mt_shop')
+                ->join('admin_user','mt_shop.shop_id','=','admin_user.shop_id')
+                ->where('mt_shop.shop_reseller',1)
+                ->get(['mt_shop.shop_id','mt_shop.shop_name','mt_shop.shop_img','mt_shop.shop_address_provice','mt_shop.shop_address_city','mt_shop.shop_address_area','admin_user.admin_user','admin_user.admin_tel'])->toArray();
+//            var_dump($resellerInfo);exit;
+            $response=[
+                'code'=>0,
+                'msg'=>$resellerInfo,
+                'msg'=>'数据请求成功'
+            ];
+            return json_encode($response, JSON_UNESCAPED_UNICODE);
+        }else{
+            $response=[
+                'code'=>1,
+                'msg'=>'抱歉，您没有权限执行此功能'
+            ];
+            die(json_encode($response, JSON_UNESCAPED_UNICODE));
+        }
+    }
+
+    //上传分销商品
+    public function admin_reseller_upload_goods(Request $request){
+        $shop_id = $request->input('shop_id');          //店铺id
+        $re_goods_name = $request->input('re_goods_name');     //商品名称
+        $re_goods_price = $request->input('re_goods_price');    //价格
+        $re_goods_stock = $request->input('re_goods_stock');    //销量
+        $re_goods_picture = $request->input('re_goods_picture');    //主图
+        $re_goods_introduction = $request->input('re_goods_introduction');  //商品简介
+        $is_distribution = $request->input('is_distribution');      //是否开启分销   0为否  1为是
+        $re_goods_planting_picture = $request->input('re_goods_planting_picture');      //轮播图
+        $re_goods_picture_detail = $request->input('re_goods_picture_detail');      //图文详情
+        $re_production_time = $request->input('re_production_time');        //生产时间
+        $re_expiration_time = $request->input('re_expiration_time');        //过期时间
+
+        $admin_userInfo = DB::table('admin_user')->where('shop_id', $shop_id)->first(['shop_reseller']);
+        $shop_reseller = $admin_userInfo->shop_reseller;
+        //            var_dump($shop_reseller);exit;
+        if ($shop_reseller == 1) {
+            $insert = [
+                're_goods_name'=>$re_goods_name,
+                're_goods_price'=>$re_goods_price,
+                're_goods_stock'=>$re_goods_stock,
+                're_goods_picture'=>$re_goods_picture,
+                're_goods_introduction'=>$re_goods_introduction,
+                'is_distribution'=>$is_distribution,
+                're_goods_planting_picture'=>$re_goods_planting_picture,
+                're_goods_picture_detail'=>$re_goods_picture_detail,
+                're_production_time'=>$re_production_time,
+                're_expiration_time'=>$re_expiration_time,
+                'shop_id'=>$shop_id
+            ];
+            $re_goodsInsert = DB::table('re_goods')->insertGetId($insert);
+//            var_dump($re_goodsInsert);exit;
+            if($re_goodsInsert){
+                $response=[
+                    'code'=>0,
+                    'msg'=>'上传成功'
+                ];
+                return json_encode($response, JSON_UNESCAPED_UNICODE);
+            }else{
+                $response=[
+                    'code'=>1,
+                    'msg'=>'系统出现错误,请重试'
+                ];
+                die(json_encode($response, JSON_UNESCAPED_UNICODE));
+            }
+        }else{
+            $response=[
+                'code'=>1,
+                'msg'=>'抱歉，您还不是分销商，暂无权限'
+            ];
+            die(json_encode($response, JSON_UNESCAPED_UNICODE));
+        }
+    }
+
+    //分销商品列表
+    public function admin_reseller_goods_list(Request $request){
+        $admin_judge = $request->input('admin_judge');
+        $shop_id = $request->input('shop_id');
+        if($admin_judge == 1){
+            $resellerInfo=DB::table('re_goods')
+                ->join('mt_shop','mt_shop.shop_id','=','re_goods.shop_id')
+                ->select(['mt_shop.shop_id','mt_shop.shop_name','re_goods.re_goods_id','re_goods_name','re_goods_price','re_goods_stock','re_goods_picture','re_goods_introduction','is_distribution','re_goods_volume','re_goods_planting_picture','re_goods_picture_detail','re_production_time','re_expiration_time'])
+                ->paginate(6);
+//        var_dump($resellerInfo);exit;
+            if($resellerInfo){
+                $response=[
+                    'code'=>0,
+                    'data'=>$resellerInfo,
+                    'msg'=>'数据请求成功'
+                ];
+                return json_encode($response, JSON_UNESCAPED_UNICODE);
+            }else{
+                $response=[
+                    'code'=>1,
+                    'msg'=>'数据请求失败'
+                ];
+                die(json_encode($response, JSON_UNESCAPED_UNICODE));
+            }
+        }else{
+            $admin_userInfo = DB::table('admin_user')->where('shop_id', $shop_id)->first(['shop_reseller']);
+            $shop_reseller = $admin_userInfo->shop_reseller;
+            if($shop_reseller == 1){
+                $resellerInfo=DB::table('re_goods')
+                    ->join('mt_shop','mt_shop.shop_id','=','re_goods.shop_id')
+                    ->where('re_goods.shop_id',$shop_id)
+                    ->select(['mt_shop.shop_id','mt_shop.shop_name','re_goods.re_goods_id','re_goods_name','re_goods_price','re_goods_stock','re_goods_picture','re_goods_introduction','is_distribution','re_goods_volume','re_goods_planting_picture','re_goods_picture_detail','re_production_time','re_expiration_time'])
+                    ->paginate(6);
+//        var_dump($resellerInfo);exit;
+                if($resellerInfo){
+                    $response=[
+                        'code'=>0,
+                        'data'=>$resellerInfo,
+                        'msg'=>'数据请求成功'
+                    ];
+                    return json_encode($response, JSON_UNESCAPED_UNICODE);
+                }else{
+                    $response=[
+                        'code'=>1,
+                        'msg'=>'数据请求失败'
+                    ];
+                    die(json_encode($response, JSON_UNESCAPED_UNICODE));
+                }
+            }else{
+                $response=[
+                    'code'=>1,
+                    'msg'=>'您还不是分销商，暂无查看权限'
+                ];
+                die(json_encode($response, JSON_UNESCAPED_UNICODE));
+            }
+        }
+    }
+
+//    //是否开启分销
+//    public function admin_reseller_goods(Request $request){
+//        $goods_id = $request->input('goods_id');
+//
+//    }
 
 
-    
+
+
+
+
+
 
     //分类删除
 //    public function admin_typeDelete(Request $request){
