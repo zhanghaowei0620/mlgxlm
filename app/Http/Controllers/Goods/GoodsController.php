@@ -407,10 +407,10 @@ class GoodsController extends Controller
     //点击加入购物车
     public function add_cart(Request $request){
         $goods_id = $request->input('goods_id');
-//        $ip = $_SERVER['SERVER_ADDR'];
-//        $key = 'openid'.$ip;
-//        $openid = Redis::get($key);
-        $openid="o9VUc5AOsdEdOBeUAw4TdYg-F-dM";
+        $ip = $_SERVER['SERVER_ADDR'];
+        $key = 'openid'.$ip;
+        $openid = Redis::get($key);
+//        $openid="o9VUc5AOsdEdOBeUAw4TdYg-F-dM";
         if($openid){
             $buy_num = $request->input('buy_num');
             $user_info = DB::table('mt_user')->where('openid',$openid)->first();
@@ -501,10 +501,10 @@ class GoodsController extends Controller
 
     //获取购物车列表
     public function cartList(Request $request){
-//        $ip = $_SERVER['SERVER_ADDR'];
-//        $key = 'openid'.$ip;
-//        $openid = Redis::get($key);
-        $openid="o9VUc5AOsdEdOBeUAw4TdYg-F-dM";
+        $ip = $_SERVER['SERVER_ADDR'];
+        $key = 'openid'.$ip;
+        $openid = Redis::get($key);
+//        $openid="o9VUc5AOsdEdOBeUAw4TdYg-F-dM";
         $where = [
             'mt_cart.openid'=>$openid,
 //            'collection_cart'=>0
@@ -512,13 +512,8 @@ class GoodsController extends Controller
 //        $info=DB::table('')
 //        var_dump($where);die;
         $cartInfo = DB::table('mt_cart')
-//            ->join('mt_shop','mt_shop.shop_id','=','mt_cart.shop_id')
-//            ->join('mt_collection_goods','mt_collection_goods.goods_id','=','mt_cart.goods_id')
-//            ->join('mt_collection_goods','mt_collection_goods.collection_goods_id','=','mt_cart.collection_goods_id')
             ->where($where)
             ->get()->toArray();
-//        $data1=DB::table('mt_cart')
-//            ->join()
 //        var_dump($cartInfo);exit;
         if($cartInfo){
             $data=[
@@ -623,6 +618,14 @@ class GoodsController extends Controller
                 $add_cart = DB::table('mt_collection_goods')->insertGetId($data);
 //                var_dump($add_cart);die;
                 if($add_cart){
+                    $datainfo=DB::table('mt_cart')
+                        ->where(['goods_id'=>$goods_id])
+                        ->first();
+                    if($datainfo){
+                        $infos=DB::table('mt_cart')
+                            ->where(['goods_id'=>$goods_id])
+                            ->update(['collection_cart'=>1]);
+                    }
                     $data1=[
                         'code'=>'0',
                         'msg'=>'加入收藏成功'
