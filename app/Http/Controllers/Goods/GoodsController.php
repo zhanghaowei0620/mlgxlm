@@ -512,7 +512,7 @@ class GoodsController extends Controller
 //        $info=DB::table('')
 //        var_dump($where);die;
         $cartInfo = DB::table('mt_cart')
-            ->join('mt_shop','mt_shop.shop_id','=','mt_cart.shop_id')
+//            ->join('mt_shop','mt_shop.shop_id','=','mt_cart.shop_id')
 //            ->join('mt_collection_goods','mt_collection_goods.goods_id','=','mt_cart.goods_id')
 //            ->join('mt_collection_goods','mt_collection_goods.collection_goods_id','=','mt_cart.collection_goods_id')
             ->where($where)
