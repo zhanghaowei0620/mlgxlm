@@ -585,8 +585,9 @@ class UserController extends Controller
     //主营项目
     public function shop_type(){
         $info = DB::table('mt_type')->get();
+//        var_dump($info);die;
         $result = $this->list_level($info,$pid=0,$level=0);
-        //var_dump($result);
+//        var_dump($result);die;
         $data = [
             'code' => 0,
             'shop_type' => $result
@@ -597,6 +598,7 @@ class UserController extends Controller
         return json_encode($response, JSON_UNESCAPED_UNICODE);
 
     }
+
     public function list_level($data,$pid,$level){
 
         static $array = array();
@@ -623,6 +625,7 @@ class UserController extends Controller
         $ip = $_SERVER['SERVER_ADDR'];
         $key = 'openid'.$ip;
         $openid = Redis::get($key);
+//        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
 //        var_dump($openid);exit;
         if ($openid) {
             $userInfo = DB::table('mt_user')->where('openid', $openid)->first();
@@ -999,6 +1002,7 @@ class UserController extends Controller
         $ip = $_SERVER['SERVER_ADDR'];
         $key = 'openid'.$ip;
         $openid = Redis::get($key);
+//        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
         //var_dump($openid);
         if($openid){
             $userInfo = DB::table('mt_user')->where('openid', $openid)->first();

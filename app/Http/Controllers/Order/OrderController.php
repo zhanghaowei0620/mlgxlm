@@ -111,6 +111,7 @@ class OrderController extends Controller
         $ip = $_SERVER['SERVER_ADDR'];
         $key = 'openid'.$ip;
         $openid = Redis::get($key);
+//        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
         if($openid){
             $orderInfo = DB::table('mt_user')
                 ->join('mt_order','mt_user.uid','=','mt_order.uid')

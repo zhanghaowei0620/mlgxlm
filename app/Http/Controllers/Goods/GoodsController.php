@@ -505,9 +505,10 @@ class GoodsController extends Controller
         $openid = Redis::get($key);
 //        $openid="o9VUc5AOsdEdOBeUAw4TdYg-F-dM";
         $where = [
-            'openid'=>$openid,
-            'collection_cart'=>0
+            'mt_cart.openid'=>$openid,
+            'mt_cart.collection_cart'=>0
         ];
+//        $info=DB::table('')
 //        var_dump($where);die;
         $cartInfo = DB::table('mt_cart')
             ->join('mt_shop','mt_shop.shop_id','=','mt_cart.shop_id')
