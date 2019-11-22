@@ -506,12 +506,12 @@ class GoodsController extends Controller
 //        $openid="o9VUc5AOsdEdOBeUAw4TdYg-F-dM";
         $where = [
             'mt_cart.openid'=>$openid,
-            'mt_cart.collection_cart'=>0
+            'collection_cart'=>0
         ];
 //        $info=DB::table('')
 //        var_dump($where);die;
         $cartInfo = DB::table('mt_cart')
-            ->join('mt_shop','mt_shop.shop_id','=','mt_cart.shop_id')
+//            ->join('mt_shop','mt_shop.shop_id','=','mt_cart.shop_id')
             ->join('mt_collection_goods','mt_collection_goods.goods_id','=','mt_cart.goods_id')
 //            ->join('mt_collection_goods','mt_collection_goods.collection_goods_id','=','mt_cart.collection_goods_id')
             ->where($where)
