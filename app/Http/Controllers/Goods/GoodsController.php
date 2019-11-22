@@ -505,7 +505,7 @@ class GoodsController extends Controller
         $openid = Redis::get($key);
 //        $openid="o9VUc5AOsdEdOBeUAw4TdYg-F-dM";
         $where = [
-//            'openid'=>$openid,
+            'openid'=>$openid,
             'collection_cart'=>0
         ];
 //        var_dump($where);die;
