@@ -694,8 +694,11 @@ class Headquarters extends Controller
         $data=DB::table('mt_shop')
             ->where(['shop_id'=>$shop_id])
             ->update($upinfo);
+        $admin_data=DB::table('admin_user')
+            ->where(['shop_id'=>$shop_id])
+            ->update($upinfo);
 //        var_dump($data);die;
-        if($data){
+        if($data >0 && $admin_data >0){
             $response=[
                 'code'=>0,
                 'msg'=>'申请成功,请耐心等待审核'
