@@ -243,7 +243,7 @@ Route::post('admin_caseUpdate','Amindbackstage\Headquarters@admin_caseUpdate')->
 
 Route::post('admin_shop_goodsInfo','Amindbackstage\Headquarters@admin_shop_goodsInfo')->middleware('checkLogin');
 
-Route::post('admin_reselleradd','Amindbackstage\Headquarters@admin_reselleradd')->middleware('checkLogin');     //申请成为分销商
+Route::post('admin_apply_reseller','Amindbackstage\Headquarters@admin_apply_reseller')->middleware('checkLogin');     //申请成为分销商
 
 Route::post('admin_apply_reseller_list','Amindbackstage\Headquarters@admin_apply_reseller_list')->middleware('checkLogin');     //分销商申请列表
 
