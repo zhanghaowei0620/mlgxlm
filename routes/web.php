@@ -262,7 +262,9 @@ Route::post('admin_reseller_upload_goods','Amindbackstage\Headquarters@admin_res
 
 Route::post('admin_reseller_goods_list','Amindbackstage\Headquarters@admin_reseller_goods_list')->middleware('checkLogin');          //分销商品列表
 
-Route::post('admin_is_reseller','Amindbackstage\Headquarters@admin_is_reseller')->middleware('checkLogin');
+Route::post('admin_is_reseller','Amindbackstage\Headquarters@admin_is_reseller')->middleware('checkLogin');     //判断是否为分销商
+
+Route::post('admin_reseller_delete','Amindbackstage\Headquarters@admin_reseller_delete')->middleware('checkLogin');    //取消分销商资格
 
 
 Route::post('test','Test\TestController@test')->middleware('checkLogin');          //微信支付

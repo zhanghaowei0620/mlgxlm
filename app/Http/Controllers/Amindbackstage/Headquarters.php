@@ -765,6 +765,36 @@ class Headquarters extends Controller
         }
     }
 
+    //取消分销商资格
+    public function admin_reseller_delete(Request $request){
+        $shop_id = $request->input('shop_id');
+        $admin_judge = $request->input('admin_judge');
+        if($admin_judge == 1){
+            $shopUpdate = DB::table('mt_shop')->where('shop_id',$shop_id)->update(['shop_reseller'=>0]);
+            $admin_userUpdate = DB::table('admin_user')->where('shop_id',$shop_id)->update(['shop_reseller'=>0]);
+            if($shopUpdate >0 && $admin_userUpdate > 0){
+//                echo 111;exit;
+                $response=[
+                    'code'=>0,
+                    'msg'=>'成功取消分销商资格'
+                ];
+                return json_encode($response, JSON_UNESCAPED_UNICODE);
+            }else{
+                $response=[
+                    'code'=>1,
+                    'msg'=>'系统出现错误，请重试'
+                ];
+                die(json_encode($response, JSON_UNESCAPED_UNICODE));
+            }
+        }else{
+            $response=[
+                'code'=>1,
+                'msg'=>'抱歉，您没有权限执行此功能'
+            ];
+            die(json_encode($response, JSON_UNESCAPED_UNICODE));
+        }
+    }
+
     //分销商列表
     public function admin_reseller_list(Request $request){
         $admin_judge = $request->input('admin_judge');
@@ -933,6 +963,7 @@ class Headquarters extends Controller
 //            return json_encode($response, JSON_UNESCAPED_UNICODE);
 //        }
 //    }
+
 
 
 
