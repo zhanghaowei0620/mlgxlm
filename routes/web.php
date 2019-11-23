@@ -116,6 +116,9 @@ Route::get('/subscribe', 'Goods\GoodsController@subscribe');   //预约
 
 Route::get('reseller', 'Reseller\ResellerController@reseller');   //分销
 
+Route::get('gets', 'Reseller\ResellerController@gets');   //分销
+
+
 
 
 

@@ -32,7 +32,7 @@ class UserController extends Controller
     {
         $code = $request->input('code');
         $userinfo = $request->input('userinfo');
-        $openid_d= $request->input('openid_d');
+        $shop_random_str= $request->input('shop_random_str');
         //var_dump(json_decode($userinfo));exit;
         $userinfo = json_decode($userinfo);
         $wx_name = $userinfo->userInfo->nickName;
@@ -85,7 +85,7 @@ class UserController extends Controller
             }
         } else {
             $data1=DB::table('mt_user')
-                ->where(['openid'=>$openid_d])
+                ->where(['shop_random_str'=>$shop_random_str])
                 ->get();
             if($data1){
                 $insertInfo = [
@@ -94,7 +94,7 @@ class UserController extends Controller
                     'openid' => $arr['openid'],
                     'session_key' => $arr['session_key'],
                     //'wx_unionid'=>$arr['unionid'],
-                    'c_id'=>$openid_d,
+                    'shop_random_str'=>$shop_random_str,
                     'wx_login_time' => time()
                 ];
             }else{
