@@ -84,38 +84,29 @@ class UserController extends Controller
                 die(json_encode($response, JSON_UNESCAPED_UNICODE));
             }
         } else {
-            $insertInfo = [
-                'wx_name' => $wx_name,
-                'wx_headimg' => $wx_headimg,
-                'openid' => $arr['openid'],
-                'session_key' => $arr['session_key'],
-                //'wx_unionid'=>$arr['unionid'],
-                'c_id'=>$openid_d,
-                'wx_login_time' => time()
-            ];
-//            $data1=DB::table('mt_user')
-//                ->where(['openid'=>$openid_d])
-//                ->get();
-//            if($data1){
-//                $insertInfo = [
-//                    'wx_name' => $wx_name,
-//                    'wx_headimg' => $wx_headimg,
-//                    'openid' => $arr['openid'],
-//                    'session_key' => $arr['session_key'],
-//                    //'wx_unionid'=>$arr['unionid'],
-//                    'c_id'=>$openid_d,
-//                    'wx_login_time' => time()
-//                ];
-//            }else{
-//                $insertInfo = [
-//                    'wx_name' => $wx_name,
-//                    'wx_headimg' => $wx_headimg,
-//                    'openid' => $arr['openid'],
-//                    'session_key' => $arr['session_key'],
-//                    //'wx_unionid'=>$arr['unionid'],
-//                    'wx_login_time' => time()
-//                ];
-//            }
+            $data1=DB::table('mt_user')
+                ->where(['openid'=>$openid_d])
+                ->get();
+            if($data1){
+                $insertInfo = [
+                    'wx_name' => $wx_name,
+                    'wx_headimg' => $wx_headimg,
+                    'openid' => $arr['openid'],
+                    'session_key' => $arr['session_key'],
+                    //'wx_unionid'=>$arr['unionid'],
+                    'c_id'=>$openid_d,
+                    'wx_login_time' => time()
+                ];
+            }else{
+                $insertInfo = [
+                    'wx_name' => $wx_name,
+                    'wx_headimg' => $wx_headimg,
+                    'openid' => $arr['openid'],
+                    'session_key' => $arr['session_key'],
+                    //'wx_unionid'=>$arr['unionid'],
+                    'wx_login_time' => time()
+                ];
+            }
             //var_dump($arr);exit;
             $insertUserInfo = DB::table('mt_user')->insertGetId($insertInfo);
             if ($insertUserInfo) {
