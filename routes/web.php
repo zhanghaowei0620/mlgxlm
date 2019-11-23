@@ -205,6 +205,10 @@ Route::post('admin_shop_update','Admin\Admin_loginController@admin_shop_update')
 Route::post('admin_black','Admin\Admin_loginController@admin_black')->middleware('checkLogin');
 Route::post('admin_delete','Admin\Admin_loginController@admin_delete')->middleware('checkLogin');
 
+Route::get('admin_accessToken','Admin\Admin_loginController@admin_accessToken');
+
+Route::get('admin_weixin_code','Admin\Admin_loginController@admin_weixin_code');
+
 //商品展示
 Route::any('goodsList','Amindbackstage\Headquarters@goodsList')->middleware('checkLogin');
 //商品添加
@@ -266,6 +270,8 @@ Route::post('test','Test\TestController@test')->middleware('checkLogin');       
 Route::post('getInfo','Test\TestController@getInfo')->middleware('checkLogin');     //微信获取用户openid
 
 Route::post('weixinPay/notify','Test\TestController@notify')->middleware('checkLogin');     //微信支付-异步回调
+
+
 
 
 
