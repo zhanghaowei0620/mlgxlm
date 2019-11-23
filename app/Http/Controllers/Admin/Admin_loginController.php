@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redis;
 use Storage;
 use Illuminate\Support\Str;
+use GuzzleHttp\Client;
 
 class Admin_loginController extends Controller
 {
@@ -749,6 +750,39 @@ class Admin_loginController extends Controller
             ];
             return (json_encode($response, JSON_UNESCAPED_UNICODE));
         }
+    }
+
+    //获取access_Token
+    public function admin_accessToken(){
+        $access = Cache('access');
+        if (empty($access)) {
+            $url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" . env('WEIXXIN_APP_ID') . "&secret=" . env('WEIXXIN_KEY') . "";
+            $info = file_get_contents($url);
+            $arrInfo = json_decode($info, true);
+            $key = "access";
+            $access = $arrInfo['access_token'];
+            $time = $arrInfo['expires_in'];
+
+            cache([$key => $access], $time);
+        }
+        return $access;
+    }
+
+    //生成小程序二维码
+    public function admin_weixin_code(Request $request){
+        $accessToken = $this->admin_accessToken();
+        $url = "https://api.weixin.qq.com/wxa/getwxacodeunlimit?access_token=$accessToken";
+        $objurl = new Client();
+        $page = "/pages/home/home";
+        $data= [
+            'scene'=>'46da46d4a6d4a6d4adadfwe',
+        ];
+        $strJson = json_encode($data,JSON_UNESCAPED_UNICODE);
+        $response = $objurl->request('POST',$url,[
+            'body'=>$strJson
+        ]);
+        $res_str = $response->getBody();
+        var_dump($res_str);exit;
     }
 
     /*

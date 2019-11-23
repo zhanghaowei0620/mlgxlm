@@ -776,7 +776,7 @@ class Headquarters extends Controller
 //            var_dump($resellerInfo);exit;
             $response=[
                 'code'=>0,
-                'msg'=>$resellerInfo,
+                'data'=>$resellerInfo,
                 'msg'=>'数据请求成功'
             ];
             return json_encode($response, JSON_UNESCAPED_UNICODE);
