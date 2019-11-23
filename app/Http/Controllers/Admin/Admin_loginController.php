@@ -756,7 +756,7 @@ class Admin_loginController extends Controller
     public function admin_accessToken(){
         $access = Cache('access');
         if (empty($access)) {
-            $url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" . env('WEIXIN_APP_ID') . "&secret=" . env('WEIXIN_KEY') . "";
+            $url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" . env('WX_APP_ID') . "&secret=" . env('WX_KEY') . "";
             $info = file_get_contents($url);
             $arrInfo = json_decode($info, true);
             $key = "access";
@@ -795,8 +795,9 @@ class Admin_loginController extends Controller
      */
     public function examine(Request $request)
     {
-        $shop_id=$request->input('shop_id');
         $accessToken = $this->admin_accessToken();
+//        var_dump($accessToken);exit;
+        $shop_id=$request->input('shop_id');
         $url = "https://api.weixin.qq.com/wxa/getwxacode?access_token=$accessToken";
         $postdata = [
             "path" => "/pages/index/index?shop_id=$shop_id",
