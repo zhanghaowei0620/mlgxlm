@@ -756,7 +756,7 @@ class Admin_loginController extends Controller
     public function admin_accessToken(){
         $access = Cache('access');
         if (empty($access)) {
-            $url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" . env('WEIXXIN_APP_ID') . "&secret=" . env('WEIXXIN_KEY') . "";
+            $url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" . env('WEIXIN_APP_ID') . "&secret=" . env('WEIXIN_KEY') . "";
             $info = file_get_contents($url);
             $arrInfo = json_decode($info, true);
             $key = "access";
@@ -768,21 +768,26 @@ class Admin_loginController extends Controller
         return $access;
     }
 
-    //生成小程序二维码
-    public function admin_weixin_code(Request $request){
-        $accessToken = $this->admin_accessToken();
-        $url = "https://api.weixin.qq.com/wxa/getwxacodeunlimit?access_token=$accessToken";
-        $objurl = new Client();
-        $page = "/pages/home/home";
-        $data= [
-            'scene'=>'46da46d4a6d4a6d4adadfwe',
-        ];
-        $strJson = json_encode($data,JSON_UNESCAPED_UNICODE);
-        $response = $objurl->request('POST',$url,[
-            'body'=>$strJson
-        ]);
-        $res_str = $response->getBody();
-        var_dump($res_str);exit;
+    public function curl_post($url='',$postdata='',$options=array()){
+        $ch=curl_init($url);
+        curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
+        curl_setopt($ch,CURLOPT_POST,1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $postdata);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
+        if(!empty($options)){
+         curl_setopt_array($ch, $options);
+        }
+        $data=curl_exec($ch);
+        curl_close($ch);
+        return $data;
+     }
+
+    public function data_uri($contents, $mime)
+    {
+        $base64   = base64_encode($contents);
+        return ('data:' . $mime . ';base64,' . $base64);
     }
 
     /*
@@ -791,17 +796,28 @@ class Admin_loginController extends Controller
     public function examine(Request $request)
     {
         $shop_id=$request->input('shop_id');
+        $accessToken = $this->admin_accessToken();
+        $url = "https://api.weixin.qq.com/wxa/getwxacode?access_token=$accessToken";
+        $postdata = [
+            "path" => "/pages/index/index?shop_id=1",
+            "width" => 430,
+        ];
+        $res = $this->curl_post($url,json_encode($postdata),$options=array());
+        $img = './images/'.time().'.jpg';
+        $r = file_put_contents($img,$res);
         $where=[
           'shop_id'=>$shop_id
         ];
         $data1=[
-            'shop_status'=>2
+            'shop_status'=>2,
+            'shop_rand'=>$img
         ];
         $data=DB::table('mt_shop')->where($where)->update($data1);
 //        var_dump($data);die;
         if($data){
             $shopUserInfo = DB::table('admin_user')->where('shop_id',$shop_id)->get()->toArray();
             if(!$shopUserInfo){
+//                echo "<img src='".$img."'>";
                 $shopPhone = DB::table('mt_shop')->where('shop_id',$shop_id)->first('shop_phone');
 //                var_dump($shopPhone);exit;
                 $shop_phone = $shopPhone->shop_phone;
@@ -810,7 +826,7 @@ class Admin_loginController extends Controller
                     'admin_pwd'=>password_hash($shop_phone,PASSWORD_DEFAULT),
                     'admin_tel'=>$shop_phone,
                     'admin_judge'=>2,
-                    'shop_id'=>$shop_id
+                    'shop_id'=>$shop_id,
                 ];
                 DB::table('admin_user')->insertGetId($insert);
             }
