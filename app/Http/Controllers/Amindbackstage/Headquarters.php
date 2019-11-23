@@ -688,7 +688,8 @@ class Headquarters extends Controller
     {
         $shop_id=$request->input('shop_id');
         $upinfo=[
-            'shop_reseller'=>2
+            'shop_reseller'=>2,
+            'shop_reseller_time'=>time()
         ];
 //        var_dump($upinfo);die;
         $data=DB::table('mt_shop')
@@ -696,9 +697,9 @@ class Headquarters extends Controller
             ->update($upinfo);
         $admin_data=DB::table('admin_user')
             ->where(['shop_id'=>$shop_id])
-            ->update($upinfo);
+            ->update(['shop_reseller'=>2]);
 //        var_dump($data);die;
-        if($data >0 && $admin_data >0){
+        if($data >0 && $admin_data >0   ){
             $response=[
                 'code'=>0,
                 'msg'=>'申请成功,请耐心等待审核'
@@ -717,7 +718,7 @@ class Headquarters extends Controller
     public function admin_apply_reseller_list(Request $request){
         $admin_judge = $request->input('admin_judge');
         if($admin_judge == 1){
-            $shop_apply_reseller = DB::table('mt_shop')->where('shop_reseller',2)->get(['shop_id','shop_name','shop_img','shop_address_provice','shop_address_city','shop_address_area'])->toArray();
+            $shop_apply_reseller = DB::table('mt_shop')->where('shop_reseller',2)->get(['shop_id','shop_name','shop_img','shop_address_provice','shop_address_city','shop_address_area','shop_reseller_time'])->toArray();
 //            var_dump($shop_apply_reseller);exit;
             $response=[
                 'code'=>0,
