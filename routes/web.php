@@ -253,7 +253,7 @@ Route::post('admin_apply_reseller_list','Amindbackstage\Headquarters@admin_apply
 
 Route::post('admin_reseller_examine','Amindbackstage\Headquarters@admin_reseller_examine')->middleware('checkLogin');   //分销商审核
 
-Route::get('admin_reseller_list','Amindbackstage\Headquarters@admin_reseller_list')->middleware('checkLogin');        //分销商列表
+Route::post('admin_reseller_list','Amindbackstage\Headquarters@admin_reseller_list')->middleware('checkLogin');        //分销商列表
 
 Route::post('admin_reseller_upload_goods','Amindbackstage\Headquarters@admin_reseller_upload_goods')->middleware('checkLogin');         //上传分销商品
 
