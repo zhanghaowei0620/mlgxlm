@@ -816,7 +816,7 @@ class Admin_loginController extends Controller
         $data1=[
             'shop_status'=>2,
             'shop_rand'=>$img,
-            'shop_rand_str'=>$scene
+            'shop_random_str'=>$scene
         ];
         $data=DB::table('mt_shop')->where($where)->update($data1);
 //        var_dump($data);die;
