@@ -799,7 +799,7 @@ class Admin_loginController extends Controller
         $accessToken = $this->admin_accessToken();
         $url = "https://api.weixin.qq.com/wxa/getwxacode?access_token=$accessToken";
         $postdata = [
-            "path" => "/pages/index/index?shop_id=1",
+            "path" => "/pages/index/index?shop_id=$shop_id",
             "width" => 430,
         ];
         $res = $this->curl_post($url,json_encode($postdata),$options=array());
