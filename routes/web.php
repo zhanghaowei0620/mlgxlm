@@ -243,9 +243,26 @@ Route::post('admin_caseUpdate','Amindbackstage\Headquarters@admin_caseUpdate')->
 
 Route::post('admin_shop_goodsInfo','Amindbackstage\Headquarters@admin_shop_goodsInfo')->middleware('checkLogin');
 
-Route::get('test','Test\TestController@test')->middleware('checkLogin');
-Route::get('getInfo','Test\TestController@getInfo')->middleware('checkLogin');
-Route::post('weixinPay/notify','Test\TestController@notify')->middleware('checkLogin');
+Route::post('admin_apply_reseller','Amindbackstage\Headquarters@admin_apply_reseller')->middleware('checkLogin');     //申请成为分销商
+
+Route::post('admin_apply_reseller_list','Amindbackstage\Headquarters@admin_apply_reseller_list')->middleware('checkLogin');     //分销商申请列表
+
+Route::post('admin_reseller_examine','Amindbackstage\Headquarters@admin_reseller_examine')->middleware('checkLogin');   //分销商审核
+
+Route::post('admin_reseller_list','Amindbackstage\Headquarters@admin_reseller_list')->middleware('checkLogin');        //分销商列表
+
+Route::post('admin_reseller_upload_goods','Amindbackstage\Headquarters@admin_reseller_upload_goods')->middleware('checkLogin');         //上传分销商品
+
+Route::post('admin_reseller_goods_list','Amindbackstage\Headquarters@admin_reseller_goods_list')->middleware('checkLogin');          //分销商品列表
+
+Route::post('admin_is_reseller','Amindbackstage\Headquarters@admin_is_reseller')->middleware('checkLogin');
+
+
+Route::post('test','Test\TestController@test')->middleware('checkLogin');          //微信支付
+
+Route::post('getInfo','Test\TestController@getInfo')->middleware('checkLogin');     //微信获取用户openid
+
+Route::post('weixinPay/notify','Test\TestController@notify')->middleware('checkLogin');     //微信支付-异步回调
 
 
 
