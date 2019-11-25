@@ -1208,7 +1208,7 @@ class UserController extends Controller
         $client = new OssClient($this->acessKeyId, $this->accessKeySecret,env('ALI_OSS_ENDPOINT'));
         //获取目录中的文件
         $file_path = './files';
-        echo 'storage path ：' . $file_path;echo '<hr>';
+        echo './files :' . $file_path;echo '<hr>';
         $file_list = scandir($file_path);
         echo '<pre>';print_r($file_list);echo '</pre>';echo '<hr>';
         foreach($file_list as $k=>$v){
