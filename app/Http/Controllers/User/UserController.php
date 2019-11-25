@@ -1242,6 +1242,32 @@ class UserController extends Controller
         $filesize = $file['size'];
         $filetype = $file['type'];
         $test   = move_uploaded_file($file['tmp_name'], $destination . iconv("UTF-8", "gb2312", $filename));
+        $files=[
+            'move_url'=>$file
+        ];
+        $data=DB::table('mt_move')
+//            ->join('mt_shop','mt_shop.shop_id','=','mt_move.shop_id')
+//            ->where(['shop_id'=>$shop_id])
+            ->insert($files);
+        if($data){
+            $data1 = [
+                'code'=>0,
+                'msg'=>'上传成功'
+            ];
+            $response = [
+                'data' => $data1
+            ];
+            return json_encode($response, JSON_UNESCAPED_UNICODE);
+        }else{
+            $data1 = [
+                'code'=>1,
+                'msg'=>'上传失败'
+            ];
+            $response = [
+                'data' => $data1
+            ];
+            die(json_encode($response, JSON_UNESCAPED_UNICODE));
+        }
 
     }
 
