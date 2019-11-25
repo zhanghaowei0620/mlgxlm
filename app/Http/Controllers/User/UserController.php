@@ -1201,6 +1201,7 @@ class UserController extends Controller
     protected $accessKeySecret  = 'VlTglNdH9AthF5AK8JHPhWI9mMPH5N';
     protected $bucket = 'mlgxlm';
 
+    //视频上传到阿里云OSS
     public function saveToOss()
     {
         //视频成功转移到Oss之后，删除本地文件
@@ -1235,7 +1236,7 @@ class UserController extends Controller
 
     public function vidoes(Request $request)
     {
-        $destination = './files';
+        $destination = './files/';
         $file = $_FILES['file']; // 获取上传的视频
 //        var_dump($file);die;
         $filename = $file['name'];
