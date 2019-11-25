@@ -269,6 +269,8 @@ Route::post('admin_is_reseller','Amindbackstage\Headquarters@admin_is_reseller')
 
 Route::post('admin_reseller_delete','Amindbackstage\Headquarters@admin_reseller_delete')->middleware('checkLogin');    //取消分销商资格
 
+Route::get('admin_reseller_goods','Amindbackstage\Headquarters@admin_reseller_goods')->middleware('checkLogin');    //是否开启分销-商品
+
 
 Route::post('test','Test\TestController@test')->middleware('checkLogin');          //微信支付
 
