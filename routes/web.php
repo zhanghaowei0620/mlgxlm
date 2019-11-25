@@ -42,6 +42,8 @@ Route::post('/upload', 'User\UserController@upload');   //图片上传（多图�
 
 Route::get('/add_bankcard', 'User\UserController@add_bankcard');   //银行卡接口
 
+Route::post('/vidoes', 'User\UserController@vidoes');   //视频
+
 Route::get('/bankcard_list', 'User\UserController@bankcard_list');   //银行卡列表
 
 Route::get('/add_bankcard_delete', 'User\UserController@add_bankcard_delete');   //银行卡解绑（删除）
@@ -103,6 +105,8 @@ Route::get('user_center', 'User\UserController@user_center');     //用户中心
 Route::get('user_update', 'User\UserController@user_update');      //修改用户信息
 
 Route::get('user_history', 'User\UserController@user_history');     //我的足迹
+
+Route::get('saveToOss', 'User\UserController@saveToOss');     //视频上传到Oss
 
 Route::get('user_sign', 'User\UserController@user_sign');    //签到
 
