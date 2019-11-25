@@ -802,7 +802,7 @@ class Headquarters extends Controller
             $resellerInfo = DB::table('mt_shop')
                 ->join('admin_user','mt_shop.shop_id','=','admin_user.shop_id')
                 ->where('mt_shop.shop_reseller',1)
-                ->get(['mt_shop.shop_id','mt_shop.shop_name','mt_shop.shop_img','mt_shop.shop_address_provice','mt_shop.shop_address_city','mt_shop.shop_address_area','admin_user.admin_user','admin_user.admin_tel'])->toArray();
+                ->selete(['mt_shop.shop_id','mt_shop.shop_name','mt_shop.shop_img','mt_shop.shop_address_provice','mt_shop.shop_address_city','mt_shop.shop_address_area','admin_user.admin_user','admin_user.admin_tel'])->paginate(7);
 //            var_dump($resellerInfo);exit;
             $response=[
                 'code'=>0,
@@ -882,7 +882,7 @@ class Headquarters extends Controller
             $resellerInfo=DB::table('re_goods')
                 ->join('mt_shop','mt_shop.shop_id','=','re_goods.shop_id')
                 ->select(['mt_shop.shop_id','mt_shop.shop_name','re_goods.re_goods_id','re_goods_name','re_goods_price','re_goods_stock','re_goods_picture','re_goods_introduction','is_distribution','re_goods_volume','re_goods_planting_picture','re_goods_picture_detail','re_production_time','re_expiration_time'])
-                ->paginate(6);
+                ->paginate(7);
 //        var_dump($resellerInfo);exit;
             if($resellerInfo){
                 $response=[
@@ -932,11 +932,71 @@ class Headquarters extends Controller
         }
     }
 
-//    //是否开启分销
-//    public function admin_reseller_goods(Request $request){
-//        $goods_id = $request->input('goods_id');
-//
-//    }
+    //是否开启分销
+    public function admin_reseller_goods(Request $request){
+        $goods_id = $request->input('goods_id');
+        $shop_id = $request->input('shop_id');
+        $goods_reseller = $request->input('goods_reseller');
+        $shopInfo = DB::table('mt_shop')->where('shop_id',$shop_id)->first(['shop_reseller']);      //查看当前店铺是否为分销商
+        $shop_reseller = $shopInfo->shop_reseller;
+
+        $admin_userInfo = DB::table('admin_user')->where('shop_id',$shop_id)->first(['shop_reseller']);    //查看当前用户是否为分销商
+        $admin_shop_reseller = $admin_userInfo->shop_reseller;
+        $goods_resellerInfo = DB::table('mt_goods')->where('goods_id',$goods_id)->first(['goods_reseller']);      //查看当前商品是否开启分销
+        $goods_reseller1 = $goods_resellerInfo->goods_reseller;
+//        var_dump($admin_shop_reseller);exit;
+        if($shop_reseller == 1 && $admin_shop_reseller == 1){
+            if($goods_reseller == 1){
+                if($goods_reseller1 == 0){
+                    $update_goods_reseller = DB::table('mt_goods')->where('goods_id',$goods_id)->update(['goods_reseller'=>$goods_reseller]);
+                    if($update_goods_reseller>0){
+                        $response=[
+                            'code'=>0,
+                            'msg'=>'商品开启分销成功'
+                        ];
+                        return json_encode($response, JSON_UNESCAPED_UNICODE);
+                    }else{
+                        $response=[
+                            'code'=>1,
+                            'msg'=>'系统出现错误，请重试'
+                        ];
+                        die(json_encode($response, JSON_UNESCAPED_UNICODE));
+                    }
+                }else{
+                    $response=[
+                        'code'=>1,
+                        'msg'=>'该商品已是分销商品，请勿重复点击'
+                    ];
+                    die(json_encode($response, JSON_UNESCAPED_UNICODE));
+                }
+            }else{
+                if($goods_reseller1 == 1){
+                    $update_goods_reseller = DB::table('mt_goods')->where('goods_id',$goods_id)->update(['goods_reseller'=>$goods_reseller]);
+                    if($update_goods_reseller>0){
+                        $response=[
+                            'code'=>0,
+                            'msg'=>'商品关闭分销成功'
+                        ];
+                        return json_encode($response, JSON_UNESCAPED_UNICODE);
+                    }else{
+                        $response=[
+                            'code'=>1,
+                            'msg'=>'系统出现错误，请重试'
+                        ];
+                        die(json_encode($response, JSON_UNESCAPED_UNICODE));
+                    }
+                }else{
+                    $response=[
+                        'code'=>1,
+                        'msg'=>'该商品并未开启分销，请勿重复点击'
+                    ];
+                    die(json_encode($response, JSON_UNESCAPED_UNICODE));
+                }
+            }
+
+        }
+
+    }
 
 
 
