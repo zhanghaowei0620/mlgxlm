@@ -71,7 +71,7 @@ class Headquarters extends Controller
         $ext=$request->file('file')->getClientOriginalExtension();
         $filename=time().rand().".".$ext;
         $upload   = move_uploaded_file($file['tmp_name'], $destination . iconv("UTF-8", "gb2312", $filename));
-        $da = 111;
+//        $da = 111;
 
         $path = '/images/' . $filename;
         if($upload){
