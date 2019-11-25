@@ -55,6 +55,12 @@ class Headquarters extends Controller
                 ];
                 return (json_encode($response, JSON_UNESCAPED_UNICODE));
             }
+        }else{
+            $response=[
+                'code'=>2,
+                'msg'=>'请先登录'
+            ];
+            die(json_encode($response, JSON_UNESCAPED_UNICODE));
         }
 
     }
@@ -328,7 +334,7 @@ class Headquarters extends Controller
                 'msg'=>'成功'
             ];
             return (json_encode($response, JSON_UNESCAPED_UNICODE));
-        }else{
+        }elseif($admin_judge == 2){
             $data=DB::table('mt_goods')
                 ->where(['is_promotion'=>1,'shop_id'=>$shop_id])
                 ->select(['goods_id','goods_name','promotion_price','promotion_prople','prople','picture'])
@@ -339,6 +345,12 @@ class Headquarters extends Controller
                 'msg'=>'成功'
             ];
             return (json_encode($response, JSON_UNESCAPED_UNICODE));
+        }else{
+            $response=[
+                'code'=>2,
+                'msg'=>'请先登录'
+            ];
+            die(json_encode($response, JSON_UNESCAPED_UNICODE));
         }
     }
 
@@ -362,7 +374,7 @@ class Headquarters extends Controller
                 'msg'=>'成功'
             ];
             return (json_encode($response, JSON_UNESCAPED_UNICODE));
-        }else{
+        }elseif($admin_judge == 2){
             $data=DB::table('mt_goods')
                 ->where(['limited_buy'=>1,'shop_id'=>$shop_id])
                 ->where('limited_stop_time','>',$time)
@@ -374,6 +386,12 @@ class Headquarters extends Controller
                 'msg'=>'成功'
             ];
             return (json_encode($response, JSON_UNESCAPED_UNICODE));
+        }else{
+            $response=[
+                'code'=>2,
+                'msg'=>'请先登录'
+            ];
+            die(json_encode($response, JSON_UNESCAPED_UNICODE));
         }
     }
 
@@ -491,7 +509,7 @@ class Headquarters extends Controller
                 'msg'=>'数据请求成功'
             ];
             return json_encode($response,JSON_UNESCAPED_UNICODE);
-        }else{
+        }elseif($admin_judge == 2){
             $orderInfo = DB::table('mt_order_detail')->where('shop_id',$shop_id)->get(['order_id','order_no','goods_id','goods_name','price','picture','buy_num','order_status','shop_id','shop_name','create_time'])->toArray();
 //            var_dump($orderInfo);exit;
             $response = [
@@ -500,6 +518,12 @@ class Headquarters extends Controller
                 'msg'=>'数据请求成功'
             ];
             return json_encode($response,JSON_UNESCAPED_UNICODE);
+        }else{
+            $response=[
+                'code'=>2,
+                'msg'=>'请先登录'
+            ];
+            die(json_encode($response, JSON_UNESCAPED_UNICODE));
         }
 
     }
@@ -575,7 +599,7 @@ class Headquarters extends Controller
                 'msg'=>'数据请求成功'
             ];
             return json_encode($response,JSON_UNESCAPED_UNICODE);
-        }else{
+        }elseif($admin_judge == 2){
             $caseInfo = DB::table('mt_case')      //案例
                 ->join('mt_goods','mt_case.goods_id','=','mt_goods.goods_id')
                 ->join('mt_shop','mt_shop.shop_id','=','mt_goods.shop_id')
@@ -588,6 +612,12 @@ class Headquarters extends Controller
                 'msg'=>'添加成功'
             ];
             return json_encode($response,JSON_UNESCAPED_UNICODE);
+        }else{
+            $response=[
+                'code'=>2,
+                'msg'=>'请先登录'
+            ];
+            die(json_encode($response, JSON_UNESCAPED_UNICODE));
         }
 
     }
@@ -898,7 +928,7 @@ class Headquarters extends Controller
                 ];
                 die(json_encode($response, JSON_UNESCAPED_UNICODE));
             }
-        }else{
+        }elseif($admin_judge == 2){
             $admin_userInfo = DB::table('admin_user')->where('shop_id', $shop_id)->first(['shop_reseller']);
             $shop_reseller = $admin_userInfo->shop_reseller;
             if($shop_reseller == 1){
@@ -929,6 +959,12 @@ class Headquarters extends Controller
                 ];
                 die(json_encode($response, JSON_UNESCAPED_UNICODE));
             }
+        }else{
+            $response=[
+                'code'=>2,
+                'msg'=>'请先登录'
+            ];
+            die(json_encode($response, JSON_UNESCAPED_UNICODE));
         }
     }
 
@@ -997,6 +1033,63 @@ class Headquarters extends Controller
         }
 
     }
+
+    //订单
+    public function admin_reseller_order(Request $request){
+        $admin_judge = $request->input('admin_judge');
+        $shop_id = $request->input('shop_id');
+        if($admin_judge == 1){
+            $orderInfo = DB::table('admin_user')
+                ->join('mt_order_detail','admin_user.shop_id','=','mt_order_detail.shop_id')
+                ->where('order_type',2)
+                ->select(['order_id','order_no','mt_order_detail.shop_id','mt_order_detail.shop_name','mt_order_detail.goods_name','mt_order_detail.price','mt_order_detail.picture','mt_order_detail.create_time','mt_order_detail.buy_num'])->paginate(7);
+//            var_dump($orderInfo);exit;
+            if($orderInfo){
+                $response=[
+                    'code'=>0,
+                    'data'=>$orderInfo,
+                    'msg'=>'数据请求成功'
+                ];
+                return json_encode($response, JSON_UNESCAPED_UNICODE);
+            }else{
+                $response=[
+                    'code'=>1,
+                    'msg'=>'系统出现错误，请重试'
+                ];
+                die(json_encode($response, JSON_UNESCAPED_UNICODE));
+            }
+        }elseif($admin_judge == 2){
+            $orderInfo = DB::table('admin_user')
+                ->join('mt_order_detail','admin_user.shop_id','=','mt_order_detail.shop_id')
+                ->where(['order_type'=>2,'mt_order_detail.shop_id'=>$shop_id])
+                ->select(['order_id','order_no','mt_order_detail.shop_id','mt_order_detail.shop_name','mt_order_detail.goods_name','mt_order_detail.price','mt_order_detail.picture','mt_order_detail.create_time','mt_order_detail.buy_num'])->paginate(7);
+//            var_dump($orderInfo);exit;
+            if($orderInfo){
+                $response=[
+                    'code'=>0,
+                    'data'=>$orderInfo,
+                    'msg'=>'数据请求成功'
+                ];
+                return json_encode($response, JSON_UNESCAPED_UNICODE);
+            }else{
+                $response=[
+                    'code'=>1,
+                    'msg'=>'系统出现错误，请重试'
+                ];
+                die(json_encode($response, JSON_UNESCAPED_UNICODE));
+            }
+        }else{
+            $response=[
+                'code'=>2,
+                'msg'=>'请先登录'
+            ];
+            die(json_encode($response, JSON_UNESCAPED_UNICODE));
+        }
+    }
+
+
+
+
 
 
 
