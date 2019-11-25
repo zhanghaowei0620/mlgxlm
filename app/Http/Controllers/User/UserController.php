@@ -1243,7 +1243,7 @@ class UserController extends Controller
         $filetype = $file['type'];
         $test   = move_uploaded_file($file['tmp_name'], $destination . iconv("UTF-8", "gb2312", $filename));
         $files=[
-            'move_url'=>$file
+            'move_url'=>$destination.$filename
         ];
         $data=DB::table('mt_move')
 //            ->join('mt_shop','mt_shop.shop_id','=','mt_move.shop_id')
