@@ -120,6 +120,16 @@ class UserController extends Controller
                     Redis::set($key, $arr['openid']);
 //                $openid = Redis::get($key);
 //                var_dump($openid);exit;
+                    $accesstoken=$this ->accessToken();
+                    $scene=mt_rand(1111,9999) . Str::random(6);
+                    $url = "https://api.weixin.qq.com/wxa/getwxacodeunlimit?access_token=$accesstoken";
+                    $postdata = [
+                        "page" => "/pages/index/index",
+                        "scene" => $scene,
+                    ];
+                    $res = $this->curl_postt($url,json_encode($postdata),$options=array());
+                    $img = './images/'.time().'.jpg';
+                    $r = file_put_contents($img,$res);
                     $data1=[
                         'code' => '0',
                         'msg' => '登录成功',
@@ -144,8 +154,22 @@ class UserController extends Controller
                 die(json_encode($response, JSON_UNESCAPED_UNICODE));
             }
         }
+    }
 
-
+    public function curl_postt($url='',$postdata='',$options=array()){
+        $ch=curl_init($url);
+        curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
+        curl_setopt($ch,CURLOPT_POST,1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $postdata);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
+        if(!empty($options)){
+            curl_setopt_array($ch, $options);
+        }
+        $data=curl_exec($ch);
+        curl_close($ch);
+        return $data;
     }
 
     //用户地址添加
