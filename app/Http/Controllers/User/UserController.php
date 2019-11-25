@@ -1206,7 +1206,7 @@ class UserController extends Controller
         //视频成功转移到Oss之后，删除本地文件
         $client = new OssClient($this->acessKeyId, $this->accessKeySecret,env('ALI_OSS_ENDPOINT'));
         //获取目录中的文件
-        $file_path = storage_path('app/public/files');
+        $file_path = './files';
         echo 'storage path ：' . $file_path;echo '<hr>';
         $file_list = scandir($file_path);
         echo '<pre>';print_r($file_list);echo '</pre>';echo '<hr>';
@@ -1235,9 +1235,9 @@ class UserController extends Controller
 
     public function vidoes(Request $request)
     {
-        $destination =storage_path('app/public/files');
+        $destination = './files';
         $file = $_FILES['file']; // 获取上传的视频
-        var_dump($file);die;
+//        var_dump($file);die;
         $filename = $file['name'];
         $filesize = $file['size'];
         $filetype = $file['type'];
