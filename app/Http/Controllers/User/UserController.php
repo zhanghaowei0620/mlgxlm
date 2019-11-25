@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redis;
+use OSS\OssClient;
+use OSS\Core\OssException;
+use Illuminate\Support\Str;
 use GuzzleHttp\Client;
 
 class UserController extends Controller
@@ -1193,5 +1196,58 @@ class UserController extends Controller
             die(json_encode($response, JSON_UNESCAPED_UNICODE));
         }
     }
-    
+
+    protected $acessKeyId  = 'LTAI4Fg1rz6e6xsRu1k3tbT1';
+    protected $accessKeySecret  = 'VlTglNdH9AthF5AK8JHPhWI9mMPH5N';
+    protected $bucket = 'mlgxlm';
+
+    public function saveToOss()
+    {
+        //视频成功转移到Oss之后，删除本地文件
+        $client = new OssClient($this->acessKeyId, $this->accessKeySecret,env('ALI_OSS_ENDPOINT'));
+        //获取目录中的文件
+        $file_path = storage_path('app/public/files');
+        echo 'storage path ：' . $file_path;echo '<hr>';
+        $file_list = scandir($file_path);
+        echo '<pre>';print_r($file_list);echo '</pre>';echo '<hr>';
+        foreach($file_list as $k=>$v){
+            if($v=='.' || $v=='..'){
+                continue;
+            }
+            $file_name = 'files/'.$v;
+            $local_file = $file_path . '/'.$v;
+            echo "本地文件： ".$local_file;echo '</br>';
+            //上传
+            //$rs = $client->uploadFile($this->bucket,$file_name,$local_file);
+            //echo '<pre>';print_r($rs);echo '</pre>';die;
+            try{
+                $client->uploadFile($this->bucket,$file_name,$local_file);
+            } catch(OssException $e) {
+                printf(__FUNCTION__ . ": FAILED\n");
+                printf($e->getMessage() . "\n");
+                return;
+            }
+            //上传成功后 删除 本地文件
+            echo $local_file . '上传成功';echo '</br>';echo '<hr>';echo '<hr>';
+            unlink($local_file);
+        }
+    }
+
+    public function vidoes(Request $request)
+    {
+        $destination =storage_path('app/public/files');
+        $file = $_FILES['file']; // 获取上传的视频
+        var_dump($file);die;
+        $filename = $file['name'];
+        $filesize = $file['size'];
+        $filetype = $file['type'];
+        $test   = move_uploaded_file($file['tmp_name'], $destination . iconv("UTF-8", "gb2312", $filename));
+
+    }
+
+
+
+
+
+
 }
