@@ -273,6 +273,10 @@ Route::post('admin_reseller_goods','Amindbackstage\Headquarters@admin_reseller_g
 
 Route::post('admin_reseller_order','Amindbackstage\Headquarters@admin_reseller_order')->middleware('checkLogin');    //是否开启分销-商品
 
+Route::post('admin_reseller_goods_update','Amindbackstage\Headquarters@admin_reseller_goods_update')->middleware('checkLogin');   //分销商品修改
+
+Route::post('admin_reseller_goods_delete','Amindbackstage\Headquarters@admin_reseller_goods_delete')->middleware('checkLogin');   //分销商品删除
+
 
 Route::post('test','Test\TestController@test')->middleware('checkLogin');          //微信支付
 

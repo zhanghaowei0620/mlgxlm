@@ -832,7 +832,7 @@ class Headquarters extends Controller
             $resellerInfo = DB::table('mt_shop')
                 ->join('admin_user','mt_shop.shop_id','=','admin_user.shop_id')
                 ->where('mt_shop.shop_reseller',1)
-                ->selete(['mt_shop.shop_id','mt_shop.shop_name','mt_shop.shop_img','mt_shop.shop_address_provice','mt_shop.shop_address_city','mt_shop.shop_address_area','admin_user.admin_user','admin_user.admin_tel'])->paginate(7);
+                ->select(['mt_shop.shop_id','mt_shop.shop_name','mt_shop.shop_img','mt_shop.shop_address_provice','mt_shop.shop_address_city','mt_shop.shop_address_area','admin_user.admin_user','admin_user.admin_tel'])->paginate(7);
 //            var_dump($resellerInfo);exit;
             $response=[
                 'code'=>0,
@@ -972,7 +972,7 @@ class Headquarters extends Controller
     public function admin_reseller_goods(Request $request){
         $goods_id = $request->input('goods_id');
         $shop_id = $request->input('shop_id');
-        $goods_reseller = $request->input('goods_reseller');
+        $goods_reseller = $request->input('goods_reseller');    //0为否  1为是
         $shopInfo = DB::table('mt_shop')->where('shop_id',$shop_id)->first(['shop_reseller']);      //查看当前店铺是否为分销商
         $shop_reseller = $shopInfo->shop_reseller;
 
@@ -1030,6 +1030,12 @@ class Headquarters extends Controller
                 }
             }
 
+        }else{
+            $response=[
+                'code'=>1,
+                'msg'=>'抱歉，您还不是分销商，暂无权限'
+            ];
+            die(json_encode($response, JSON_UNESCAPED_UNICODE));
         }
 
     }
@@ -1082,6 +1088,93 @@ class Headquarters extends Controller
             $response=[
                 'code'=>2,
                 'msg'=>'请先登录'
+            ];
+            die(json_encode($response, JSON_UNESCAPED_UNICODE));
+        }
+    }
+
+    //分销商品修改
+    public function admin_reseller_goods_update(Request $request){
+        $shop_id = $request->input('shop_id');
+        $re_goods_id = $request->input('re_goods_id');
+        $re_goods_name = $request->input('re_goods_name');     //商品名称
+        $re_goods_price = $request->input('re_goods_price');    //价格
+        $re_goods_stock = $request->input('re_goods_stock');    //库存
+        $re_goods_picture = $request->input('re_goods_picture');    //主图
+        $re_goods_introduction = $request->input('re_goods_introduction');  //商品简介
+        $is_distribution = $request->input('is_distribution');      //是否开启分销   0为否  1为是
+        $re_goods_planting_picture = $request->input('re_goods_planting_picture');      //轮播图
+        $re_goods_picture_detail = $request->input('re_goods_picture_detail');      //图文详情
+        $re_production_time = $request->input('re_production_time');        //生产时间
+        $re_expiration_time = $request->input('re_expiration_time');        //过期时间
+        $shopInfo = DB::table('mt_shop')->where('shop_id',$shop_id)->first(['shop_reseller']);      //查看当前店铺是否为分销商
+        $shop_reseller = $shopInfo->shop_reseller;
+        $admin_userInfo = DB::table('admin_user')->where('shop_id',$shop_id)->first(['shop_reseller']);    //查看当前用户是否为分销商
+        $admin_shop_reseller = $admin_userInfo->shop_reseller;
+        if($shop_reseller == 1 && $admin_shop_reseller == 1){
+            $update = [
+                're_goods_name'=>$re_goods_name,
+                're_goods_price'=>$re_goods_price,
+                're_goods_stock'=>$re_goods_stock,
+                're_goods_picture'=>$re_goods_picture,
+                're_goods_introduction'=>$re_goods_introduction,
+                'is_distribution'=>$is_distribution,
+                're_goods_planting_picture'=>$re_goods_planting_picture,
+                're_goods_picture_detail'=>$re_goods_picture_detail,
+                're_production_time'=>$re_production_time,
+                're_expiration_time'=>$re_expiration_time,
+                'shop_id'=>$shop_id
+            ];
+            $update_re_goodsInfo = DB::table('re_goods')->where('re_goods_id',$re_goods_id)->update($update);
+            if($update_re_goodsInfo){
+                $response=[
+                    'code'=>0,
+                    'msg'=>'修改成功'
+                ];
+                return json_encode($response, JSON_UNESCAPED_UNICODE);
+            }else{
+                $response=[
+                    'code'=>1,
+                    'msg'=>'系统出现错误,请重试'
+                ];
+                die(json_encode($response, JSON_UNESCAPED_UNICODE));
+            }
+        }else{
+            $response=[
+                'code'=>2,
+                'msg'=>'抱歉，您还不是分销商，暂无权限'
+            ];
+            die(json_encode($response, JSON_UNESCAPED_UNICODE));
+        }
+    }
+
+    //分销商品删除
+    public function admin_reseller_goods_delete(Request $request){
+        $shop_id = $request->input('shop_id');
+        $re_goods_id = $request->input('re_goods_id');
+        $shopInfo = DB::table('mt_shop')->where('shop_id',$shop_id)->first(['shop_reseller']);      //查看当前店铺是否为分销商
+        $shop_reseller = $shopInfo->shop_reseller;
+        $admin_userInfo = DB::table('admin_user')->where('shop_id',$shop_id)->first(['shop_reseller']);    //查看当前用户是否为分销商
+        $admin_shop_reseller = $admin_userInfo->shop_reseller;
+        if($shop_reseller == 1 && $admin_shop_reseller == 1){
+            $delete_re_goodsInfo = DB::table('re_goods')->where('re_goods_id',$re_goods_id)->delete();
+            if($delete_re_goodsInfo){
+                $response=[
+                    'code'=>0,
+                    'msg'=>'删除成功'
+                ];
+                return json_encode($response, JSON_UNESCAPED_UNICODE);
+            }else{
+                $response=[
+                    'code'=>1,
+                    'msg'=>'系统出现错误，请重试'
+                ];
+                die(json_encode($response, JSON_UNESCAPED_UNICODE));
+            }
+        }else{
+            $response=[
+                'code'=>2,
+                'msg'=>'抱歉，您还不是分销商，暂无权限'
             ];
             die(json_encode($response, JSON_UNESCAPED_UNICODE));
         }
