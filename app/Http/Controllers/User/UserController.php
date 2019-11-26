@@ -754,7 +754,7 @@ class UserController extends Controller
         $data1=DB::table('mt_shop')
             ->join('mt_user','mt_shop.uid','=','mt_user.uid')
             ->where(['openid'=>$openid])
-            ->get(['shop_status'])->toArray();
+            ->get(['shop_status','mt_shop.shop_id'])->toArray();
 //        var_dump($data1);die;
         if($data1){
             $data = [
