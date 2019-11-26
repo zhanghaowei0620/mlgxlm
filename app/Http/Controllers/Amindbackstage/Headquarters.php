@@ -973,18 +973,20 @@ class Headquarters extends Controller
         $re_goods_id = $request->input('re_goods_id');
         $shop_id = $request->input('shop_id');
         $goods_reseller = $request->input('goods_reseller');    //0为否  1为是
+//        var_dump($goods_reseller);exit;
         $shopInfo = DB::table('mt_shop')->where('shop_id',$shop_id)->first(['shop_reseller']);      //查看当前店铺是否为分销商
         $shop_reseller = $shopInfo->shop_reseller;
-
         $admin_userInfo = DB::table('admin_user')->where('shop_id',$shop_id)->first(['shop_reseller']);    //查看当前用户是否为分销商
         $admin_shop_reseller = $admin_userInfo->shop_reseller;
-        $goods_resellerInfo = DB::table('re_goods')->where('re_goods_id',$re_goods_id)->first(['is_distribution']);      //查看当前商品是否开启分销
-        $goods_reseller1 = $goods_resellerInfo->goods_reseller;
 //        var_dump($admin_shop_reseller);exit;
+        $goods_resellerInfo = DB::table('re_goods')->where('re_goods_id',$re_goods_id)->first(['is_distribution']);      //查看当前商品是否开启分销
+//        var_dump($goods_resellerInfo);exit;
+        $is_distribution = $goods_resellerInfo->is_distribution;
+
         if($shop_reseller == 1 && $admin_shop_reseller == 1){
             if($goods_reseller == 1){
-                if($goods_reseller1 == 0){
-                    $update_goods_reseller = DB::table('mt_goods')->where('goods_id',$goods_id)->update(['goods_reseller'=>$goods_reseller]);
+                if($is_distribution == 0){
+                    $update_goods_reseller = DB::table('re_goods')->where('re_goods_id',$re_goods_id)->update(['is_distribution'=>$goods_reseller]);
                     if($update_goods_reseller>0){
                         $response=[
                             'code'=>0,
@@ -1006,8 +1008,8 @@ class Headquarters extends Controller
                     die(json_encode($response, JSON_UNESCAPED_UNICODE));
                 }
             }else{
-                if($goods_reseller1 == 1){
-                    $update_goods_reseller = DB::table('mt_goods')->where('goods_id',$goods_id)->update(['goods_reseller'=>$goods_reseller]);
+                if($is_distribution == 1){
+                    $update_goods_reseller = DB::table('re_goods')->where('re_goods_id',$re_goods_id)->update(['is_distribution'=>$goods_reseller]);
                     if($update_goods_reseller>0){
                         $response=[
                             'code'=>0,
