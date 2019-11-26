@@ -748,7 +748,7 @@ class Headquarters extends Controller
     public function admin_apply_reseller_list(Request $request){
         $admin_judge = $request->input('admin_judge');
         if($admin_judge == 1){
-            $shop_apply_reseller = DB::table('mt_shop')->where('shop_reseller',2)->get(['shop_id','shop_name','shop_img','shop_address_provice','shop_address_city','shop_address_area','shop_reseller_time'])->toArray();
+            $shop_apply_reseller = DB::table('mt_shop')->where('shop_reseller',2)->select(['shop_id','shop_name','shop_img','shop_address_provice','shop_address_city','shop_address_area','shop_reseller_time'])->paginate(7);
 //            var_dump($shop_apply_reseller);exit;
             $response=[
                 'code'=>0,
