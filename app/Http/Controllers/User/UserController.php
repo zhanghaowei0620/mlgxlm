@@ -1233,9 +1233,10 @@ class UserController extends Controller
             unlink($local_file);
         }
     }
-
+    //发现视频上传
     public function vidoes(Request $request)
     {
+        $shop_id=$request->input('shop_id');
         $destination = './files/';
         $file = $_FILES['file']; // 获取上传的视频
 //        var_dump($file);die;
@@ -1248,7 +1249,7 @@ class UserController extends Controller
         ];
         $data=DB::table('mt_move')
 //            ->join('mt_shop','mt_shop.shop_id','=','mt_move.shop_id')
-//            ->where(['shop_id'=>$shop_id])
+            ->where(['shop_id'=>$shop_id])
             ->insert($files);
         if($data){
             $data1 = [
@@ -1270,6 +1271,80 @@ class UserController extends Controller
             die(json_encode($response, JSON_UNESCAPED_UNICODE));
         }
 
+    }
+
+    //用户评价视频上传
+    public function uservidoes(Request $request)
+    {
+        $uid=$request->input('uid');
+        $destination = './files/';
+        $file = $_FILES['file']; // 获取上传的视频
+//        var_dump($file);die;
+        $filename = $file['name'];
+        $filesize = $file['size'];
+        $filetype = $file['type'];
+        $test   = move_uploaded_file($file['tmp_name'], $destination . iconv("UTF-8", "gb2312", $filename));
+        $files=[
+            'move_url'=>$destination.$filename
+        ];
+        $data=DB::table('mt_move')
+//            ->join('mt_shop','mt_shop.shop_id','=','mt_move.shop_id')
+            ->where(['uid'=>$uid])
+            ->insert($files);
+        if($data){
+            $data1 = [
+                'code'=>0,
+                'msg'=>'上传成功'
+            ];
+            $response = [
+                'data' => $data1
+            ];
+            return json_encode($response, JSON_UNESCAPED_UNICODE);
+        }else{
+            $data1 = [
+                'code'=>1,
+                'msg'=>'上传失败'
+            ];
+            $response = [
+                'data' => $data1
+            ];
+            die(json_encode($response, JSON_UNESCAPED_UNICODE));
+        }
+
+    }
+
+    //发布
+    public function releaseadd(Request $request)
+    {
+        $shop_id=$request->input('shop_id');
+        $mt_experience=$request->input('mt_experience');
+        $mt_title=$request->input('mt_title');
+        $inser=[
+          'mt_experience'=>$mt_experience,
+            'mt_title'=>$mt_title
+        ];
+        $data=DB::table('mt_release')
+            ->where(['shop_id'=>$shop_id])
+            ->insert($inser);
+        if($data){
+            $data1 = [
+                'code'=>0,
+                'msg'=>'发布成功'
+            ];
+            $response = [
+                'data' => $data1
+            ];
+            return json_encode($response, JSON_UNESCAPED_UNICODE);
+        }else{
+            $data1 = [
+                'code'=>1,
+                'msg'=>'发布失败'
+            ];
+            $response = [
+                'data' => $data1
+            ];
+            die(json_encode($response, JSON_UNESCAPED_UNICODE));
+        }
     }
 
 
