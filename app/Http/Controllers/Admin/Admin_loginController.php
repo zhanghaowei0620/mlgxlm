@@ -181,8 +181,12 @@ class Admin_loginController extends Controller
                 $ip = $_SERVER['SERVER_ADDR'];
                 $key = 'H:userlogin_id'.$ip;
                 redis::del($key);
+                $data = [
+                    'code'=>0
+                ];
                 $response=[
                     'code'=>0,
+                    'data'=>$data,
                     'msg'=>'修改成功,请重新登录'
                 ];
                 return json_encode($response,JSON_UNESCAPED_UNICODE);
@@ -190,6 +194,9 @@ class Admin_loginController extends Controller
         }else{
             $response=[
                 'code'=>1,
+                'data'=>[
+                    'code'=>0
+                ],
                 'msg'=>'上个密码出现错误,请重试'
             ];
             die(json_encode($response,JSON_UNESCAPED_UNICODE));
