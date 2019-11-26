@@ -102,7 +102,7 @@ class Admin_loginController extends Controller
         $data=DB::table('admin_user')
             ->join('mt_shop','admin_user.shop_id','=','mt_shop.shop_id')
             ->select(['admin_user.admin_id','admin_user.admin_judge','admin_user.admin_user','admin_user.shop_status','mt_shop.shop_name','admin_user.shop_id'])      //shop_status 2启用  1拉黑
-            ->paginate(1);
+            ->paginate(7);
 //        var_dump($data);exit;
         if($data){
             $response=[
@@ -1438,7 +1438,7 @@ class Admin_loginController extends Controller
             $shopInfo = DB::table('mt_shop')
                 ->join('admin_user','admin_user.shop_id','=','mt_shop.shop_id')
                 ->where('mt_shop.shop_id',$shop_id)
-                ->first(['shop_name','shop_img','shop_project','shop_desc','shop_bus','shop_service','shop_address_provice','shop_address_city','shop_address_area','admin_tel','shop_logo']);
+                ->first(['shop_name','shop_img','shop_project','shop_desc','shop_bus','shop_service','shop_address_provice','shop_address_city','shop_address_area','admin_tel','admin_id','shop_logo']);
             $response=[
                 'code'=>0,
                 'data'=>$shopInfo,
