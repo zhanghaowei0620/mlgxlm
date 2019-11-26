@@ -1143,7 +1143,7 @@ class Admin_loginController extends Controller
                 ];
                 return (json_encode($response,JSON_UNESCAPED_UNICODE));
             }
-        }else{
+        }elseif($admin_judge == 2){
             $data=DB::table('mt_coupon')
                 ->join('mt_shop','mt_coupon.shop_id','=','mt_shop.shop_id')
                 ->join('mt_goods','mt_coupon.goods_id','=','mt_goods.goods_id')
@@ -1165,6 +1165,12 @@ class Admin_loginController extends Controller
                 ];
                 return (json_encode($response,JSON_UNESCAPED_UNICODE));
             }
+        }else{
+            $response=[
+                'code'=>2,
+                'msg'=>'请先登录'
+            ];
+            die(json_encode($response, JSON_UNESCAPED_UNICODE));
         }
 
     }
@@ -1439,7 +1445,7 @@ class Admin_loginController extends Controller
                 'msg'=>'数据请求成功'
             ];
             return json_encode($response, JSON_UNESCAPED_UNICODE);
-        }else{
+        }elseif($admin_judge == 1){
             $shopInfo = DB::table('mt_shop')
                 ->join('admin_user','mt_shop.shop_id','=','admin_user.shop_id')
                 ->where('mt_shop.shop_status',2)
@@ -1450,6 +1456,12 @@ class Admin_loginController extends Controller
                 'msg'=>'数据请求成功'
             ];
             return json_encode($response, JSON_UNESCAPED_UNICODE);
+        }else{
+            $response=[
+                'code'=>2,
+                'msg'=>'请先登录'
+            ];
+            die(json_encode($response, JSON_UNESCAPED_UNICODE));
         }
     }
 

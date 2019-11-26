@@ -970,7 +970,7 @@ class Headquarters extends Controller
 
     //是否开启分销
     public function admin_reseller_goods(Request $request){
-        $goods_id = $request->input('goods_id');
+        $re_goods_id = $request->input('re_goods_id');
         $shop_id = $request->input('shop_id');
         $goods_reseller = $request->input('goods_reseller');    //0为否  1为是
         $shopInfo = DB::table('mt_shop')->where('shop_id',$shop_id)->first(['shop_reseller']);      //查看当前店铺是否为分销商
@@ -978,7 +978,7 @@ class Headquarters extends Controller
 
         $admin_userInfo = DB::table('admin_user')->where('shop_id',$shop_id)->first(['shop_reseller']);    //查看当前用户是否为分销商
         $admin_shop_reseller = $admin_userInfo->shop_reseller;
-        $goods_resellerInfo = DB::table('mt_goods')->where('goods_id',$goods_id)->first(['goods_reseller']);      //查看当前商品是否开启分销
+        $goods_resellerInfo = DB::table('re_goods')->where('re_goods_id',$re_goods_id)->first(['is_distribution']);      //查看当前商品是否开启分销
         $goods_reseller1 = $goods_resellerInfo->goods_reseller;
 //        var_dump($admin_shop_reseller);exit;
         if($shop_reseller == 1 && $admin_shop_reseller == 1){
@@ -1179,6 +1179,7 @@ class Headquarters extends Controller
             die(json_encode($response, JSON_UNESCAPED_UNICODE));
         }
     }
+
 
 
 
