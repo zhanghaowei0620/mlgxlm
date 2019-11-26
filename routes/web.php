@@ -42,7 +42,7 @@ Route::post('/upload', 'User\UserController@upload');   //图片上传（多图�
 
 Route::get('/add_bankcard', 'User\UserController@add_bankcard');   //银行卡接口
 
-Route::post('/vidoes', 'User\UserController@vidoes');   //视频
+Route::post('/vidoes', 'User\UserController@vidoes');   //视频上传到OSS
 
 Route::get('/bankcard_list', 'User\UserController@bankcard_list');   //银行卡列表
 

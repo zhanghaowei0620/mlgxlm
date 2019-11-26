@@ -1233,9 +1233,10 @@ class UserController extends Controller
             unlink($local_file);
         }
     }
-
+    //视频上传
     public function vidoes(Request $request)
     {
+        $shop_id=$request->input('shop_id');
         $destination = './files/';
         $file = $_FILES['file']; // 获取上传的视频
 //        var_dump($file);die;
@@ -1248,7 +1249,7 @@ class UserController extends Controller
         ];
         $data=DB::table('mt_move')
 //            ->join('mt_shop','mt_shop.shop_id','=','mt_move.shop_id')
-//            ->where(['shop_id'=>$shop_id])
+            ->where(['shop_id'=>$shop_id])
             ->insert($files);
         if($data){
             $data1 = [
