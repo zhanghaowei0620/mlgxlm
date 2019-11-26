@@ -745,6 +745,39 @@ class UserController extends Controller
         }
 
     }
+    public function is_shop_settled()
+    {
+        $ip = $_SERVER['SERVER_ADDR'];
+        $key = 'openid'.$ip;
+        $openid = Redis::get($key);
+//        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
+        $data1=DB::table('mt_shop')
+            ->join('mt_user','mt_shop.uid','=','mt_user.uid')
+            ->where(['openid'=>$openid])
+            ->get(['shop_status'])->toArray();
+//        var_dump($data1);die;
+        if($data1){
+            $data = [
+                'code' => '0',
+                'data'=>$data1,
+                'msg' => ''
+            ];
+            $response = [
+                'data' => $data
+            ];
+            return json_encode($response, JSON_UNESCAPED_UNICODE);
+        }else{
+            $data = [
+                'code' => '1',
+                'msg' => '请重试'
+            ];
+            $response = [
+                'data' => $data
+            ];
+            return json_encode($response, JSON_UNESCAPED_UNICODE);
+        }
+    }
+
 
     //个人中心优惠券
     public function user_coupon(Request $request)
@@ -1119,7 +1152,7 @@ class UserController extends Controller
                             'integral'=>$issign->integral+1,
                             'sign_num'=>1
                         ];
-                        var_dump($update);die;
+//                        var_dump($update);die;
                         $updateInfo = DB::table('mt_user_sign')->where('uid',$uid)->update($update);
                         if($updateInfo==true){
                             $data = [
@@ -1316,16 +1349,27 @@ class UserController extends Controller
     //发布
     public function releaseadd(Request $request)
     {
-        $shop_id=$request->input('shop_id');
+//        $ip = $_SERVER['SERVER_ADDR'];
+//        $key = 'openid'.$ip;
+//        $openid = Redis::get($key);
+        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
+        $info=DB::table('mt_user')
+            ->join('mt_shop','mt_shop.uid','=','mt_user.uid')
+            ->where(['openid'=>$openid])
+            ->get(['shop_id']);
+        var_dump($info);die;
         $mt_experience=$request->input('mt_experience');
         $mt_title=$request->input('mt_title');
+        $mt_move_url=$request->input('mt_move_url');
         $inser=[
           'mt_experience'=>$mt_experience,
-            'mt_title'=>$mt_title
+            'mt_title'=>$mt_title,
+            'mt_move_url'=>$mt_move_url
         ];
         $data=DB::table('mt_release')
-            ->where(['shop_id'=>$shop_id])
+            ->where($info)
             ->insert($inser);
+//        var_dump($data);die;
         if($data){
             $data1 = [
                 'code'=>0,
