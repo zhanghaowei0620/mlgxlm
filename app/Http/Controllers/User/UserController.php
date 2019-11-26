@@ -880,6 +880,7 @@ class UserController extends Controller
     //多图上传及图片上传
     public function upload(Request $request)
     {
+        var_dump($_FILES);
         if (!empty($_FILES)) {
             //获取扩展名
             $file = json_encode($_FILES);
@@ -1288,6 +1289,7 @@ class UserController extends Controller
         if($data){
             $data1 = [
                 'code'=>0,
+                'address'=>$destination.$filename,
                 'msg'=>'上传成功'
             ];
             $response = [
@@ -1357,23 +1359,41 @@ class UserController extends Controller
         $info=DB::table('mt_user')
             ->join('mt_shop','mt_shop.uid','=','mt_user.uid')
             ->where(['openid'=>$openid])
-            ->get(['shop_id']);
-        var_dump($info);die;
+            ->first(['shop_id']);
+//        var_dump($info);exit;
         $mt_experience=$request->input('mt_experience');
         $mt_title=$request->input('mt_title');
         $mt_move_url=$request->input('mt_move_url');
-        $inser=[
-          'mt_experience'=>$mt_experience,
-            'mt_title'=>$mt_title,
-            'mt_move_url'=>$mt_move_url
-        ];
+        $mt_pic_url=$request->input('mt_pic_url');
+        if($info){
+            $inser=[
+                'mt_experience'=>$mt_experience,
+                'mt_title'=>$mt_title,
+                'mt_move_url'=>$mt_move_url,
+                'mt_pic_url'=>$mt_pic_url,
+                'shop_id'=>$info->shop_id
+            ];
+//            dump($inser);
+        }else{
+            $inser=[
+                'mt_experience'=>$mt_experience,
+                'mt_title'=>$mt_title,
+                'mt_pic_url'=>$mt_pic_url,
+                'mt_move_url'=>$mt_move_url
+            ];
+        }
+//        $inser=[
+//          'mt_experience'=>$mt_experience,
+//            'mt_title'=>$mt_title,
+//            'mt_move_url'=>$mt_move_url
+//        ];
         $data=DB::table('mt_release')
             ->where($info)
             ->insert($inser);
-//        var_dump($data);die;
         if($data){
             $data1 = [
                 'code'=>0,
+                'info'=>1,
                 'msg'=>'发布成功'
             ];
             $response = [
@@ -1383,6 +1403,7 @@ class UserController extends Controller
         }else{
             $data1 = [
                 'code'=>1,
+                'info'=>0,
                 'msg'=>'发布失败'
             ];
             $response = [
@@ -1391,7 +1412,14 @@ class UserController extends Controller
             die(json_encode($response, JSON_UNESCAPED_UNICODE));
         }
     }
+    //模板消息
+    public function template(Request $request)
+    {
+        $token = $this->accessToken();
+        $url="https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send?access_token=$token";
+//        var_dump($url);die;
 
+    }
 
 
 
