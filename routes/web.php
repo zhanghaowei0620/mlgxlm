@@ -42,7 +42,7 @@ Route::get('/accessToken', 'User\UserController@accessToken');   //accessToken
 
 Route::post('/bankcard', 'User\UserController@bankcard');   //银行卡接口
 
-Route::post('/upload', 'User\UserController@upload');   //图片上传（多图）
+Route::post('/xcx_upload', 'User\UserController@upload');   //图片上传（多图）
 
 Route::get('/add_bankcard', 'User\UserController@add_bankcard');   //银行卡接口
 

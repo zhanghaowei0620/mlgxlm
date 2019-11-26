@@ -880,7 +880,6 @@ class UserController extends Controller
     //多图上传及图片上传
     public function upload(Request $request)
     {
-        var_dump($_FILES);
         if (!empty($_FILES)) {
             //获取扩展名
             $file = json_encode($_FILES);
