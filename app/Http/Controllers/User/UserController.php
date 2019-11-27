@@ -1496,7 +1496,7 @@ class UserController extends Controller
         ];
         return json_encode($response, JSON_UNESCAPED_UNICODE);
     }
-    
+
 
     //发现列表详情
     public function releaselist_Detail(Request $request){
