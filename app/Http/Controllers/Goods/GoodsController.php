@@ -571,7 +571,7 @@ class GoodsController extends Controller
         if($data1){
             $data=[
                 'code'=>'0',
-                'msg'=>'支付成功'
+                'msg'=>'成功'
             ];
             $response = [
                 'data'=>$data
@@ -579,8 +579,8 @@ class GoodsController extends Controller
             return json_encode($response,JSON_UNESCAPED_UNICODE);
         }else{
             $data=[
-                'code'=>'0',
-                'msg'=>'支付失败'
+                'code'=>'1',
+                'msg'=>'失败'
             ];
             $response = [
                 'data'=>$data
