@@ -86,10 +86,13 @@ class OrderController extends Controller
             $res = DB::table('mt_cart')->where('uid',$uid)->whereIn('goods_id',['goods_id'=>$goods_id])->update($UpdateNum);
 //            var_dump($res);die;
             if($res>=0){
-                $response = [
+                $data=[
                     'code'=>'0',
                     'msg'=>'生成订单成功',
                     'order_id'=>$order_id,
+                ];
+                $response = [
+                    'data'=>$data
                 ];
                 return json_encode($response,JSON_UNESCAPED_UNICODE);
             }
@@ -117,13 +120,13 @@ class OrderController extends Controller
                 ->where('mt_user.openid',$openid)
                 ->get();
             $response = [
-                'error'=>0,
+                'code'=>0,
                 'data'=>$orderInfo
             ];
             return json_encode($response,JSON_UNESCAPED_UNICODE);
         }else{
             $response = [
-                'error'=>1,
+                'code'=>1,
                 'msg'=>'请先去登陆'
             ];
             die(json_encode($response,JSON_UNESCAPED_UNICODE));
