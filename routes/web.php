@@ -30,6 +30,8 @@ Route::get('/shop_goods', 'Goods\GoodsController@shop_goods');   //根据店铺i
 
 Route::get('/weChat', 'User\UserController@weChat');   //微信登陆
 
+Route::get('/usertime', 'User\UserController@usertime');   //微信登陆
+
 Route::get('/shop_settled', 'User\UserController@shop_settled');    //商家入驻
 
 Route::get('/is_shop_settled', 'User\UserController@is_shop_settled');    //判断已有商家入驻
