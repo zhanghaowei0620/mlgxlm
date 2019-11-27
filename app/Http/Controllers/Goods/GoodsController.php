@@ -567,7 +567,7 @@ class GoodsController extends Controller
         $data1=DB::table('mt_user')
             ->where(['openid'=>$openid])
             ->update($updates);
-        var_dump($data1);die;
+//        var_dump($data1);die;
         if($data1){
             $data=[
                 'code'=>'0',
