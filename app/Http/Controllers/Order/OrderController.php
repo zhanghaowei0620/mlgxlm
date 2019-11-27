@@ -173,15 +173,21 @@ class OrderController extends Controller
         $order_detailInfo = DB::table('mt_order_detail')->where('order_id',$order_id)->get();
         //var_dump($order_detailInfo);exit;
         if($order_detailInfo){
-            $response = [
-                'error'=>0,
+            $data=[
+                'code'=>0,
                 'data'=>$order_detailInfo
+            ];
+            $response = [
+                'data'=>$data
             ];
             return json_encode($response,JSON_UNESCAPED_UNICODE);
         }else{
-            $response = [
-                'error'=>1,
+            $data=[
+                'code'=>1,
                 'msg'=>'订单出现错误，请重新下单'
+            ];
+            $response = [
+                'data'=>$data
             ];
             die(json_encode($response,JSON_UNESCAPED_UNICODE));
         }
