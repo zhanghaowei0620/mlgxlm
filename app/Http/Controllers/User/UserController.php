@@ -1421,6 +1421,9 @@ class UserController extends Controller
         $ip = $_SERVER['SERVER_ADDR'];
         $key = 'openid'.$ip;
         $openid = Redis::get($key);
+        $userInfo = DB::table('mt_user')->where('openid',$openid)->first();
+        $uid = $userInfo->uid;
+//        var_dump($userInfo);exit;
 //        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
         $info=DB::table('mt_user')
             ->join('mt_shop','mt_shop.uid','=','mt_user.uid')
@@ -1438,7 +1441,8 @@ class UserController extends Controller
                 'mt_move_url'=>$mt_move_url,
                 'mt_pic_url'=>$mt_pic_url,
                 'shop_id'=>$info->shop_id,
-                'create_time'=>time()
+                'create_time'=>time(),
+                'uid'=>$uid
             ];
 //            dump($inser);
         }else{
@@ -1447,7 +1451,8 @@ class UserController extends Controller
                 'mt_title'=>$mt_title,
                 'mt_pic_url'=>$mt_pic_url,
                 'mt_move_url'=>$mt_move_url,
-                'create_time'=>time()
+                'create_time'=>time(),
+                'uid'=>$uid
             ];
         }
 //        $inser=[
@@ -1484,7 +1489,9 @@ class UserController extends Controller
 //    //发现列表
     public function releaselist(Request $request)
     {
-        $releaselistInfo = DB::table('mt_release')->orderBy('create_time')->paginate(10);
+        $releaselistInfo = DB::table('mt_release')
+            ->join('mt_user','mt_release.uid','=','uid')
+            ->orderBy('create_time')->paginate(10);
 
         $data = [
             'code'=>0,
