@@ -98,8 +98,10 @@ class UserController extends Controller
                     'session_key' => $arr['session_key'],
                     //'wx_unionid'=>$arr['unionid'],
                     'shop_random_str'=>$shop_random_str,
-                    'wx_login_time' => time()
+                    'wx_login_time' => time(),
+                    'wx_user_login' => time()
                 ];
+                var_dump($insertInfo);die;
             }else{
                 $insertInfo = [
                     'wx_name' => $wx_name,
@@ -107,7 +109,8 @@ class UserController extends Controller
                     'openid' => $arr['openid'],
                     'session_key' => $arr['session_key'],
                     //'wx_unionid'=>$arr['unionid'],
-                    'wx_login_time' => time()
+                    'wx_login_time' => time(),
+                    'wx_user_login'=> time()
                 ];
             }
             //var_dump($arr);exit;
@@ -158,6 +161,40 @@ class UserController extends Controller
             }
         }
     }
+    //判断用户是否第一次登陆
+    public function usertime(Request $request)
+    {
+//        $openid = Redis::set('openid','o9VUc5AOsdEdOBeUAw4TdYg-F-dM');
+//        $ip = $_SERVER['SERVER_ADDR'];
+//        $key = 'openid'.$ip;
+//        $openid = Redis::get($key);
+        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
+        $data=DB::table('mt_user')
+            ->where(['openid'=>$openid])
+            ->get();
+//        var_dump($data);die;
+        if($data){
+            $data1=[
+                'code' => '0',
+                'msg' => '',
+                'data' => $data
+            ];
+            $response = [
+                'data' => $data1
+            ];
+            return json_encode($response, JSON_UNESCAPED_UNICODE);
+        }else{
+            $data1=[
+                'code' => '1',
+                'msg' => '222'
+            ];
+            $response = [
+                'data' => $data1
+            ];
+            return json_encode($response, JSON_UNESCAPED_UNICODE);
+        }
+    }
+
 
     public function curl_postt($url='',$postdata='',$options=array()){
         $ch=curl_init($url);
@@ -1351,10 +1388,10 @@ class UserController extends Controller
     //发布
     public function releaseadd(Request $request)
     {
-        $ip = $_SERVER['SERVER_ADDR'];
-        $key = 'openid'.$ip;
-        $openid = Redis::get($key);
-//        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
+//        $ip = $_SERVER['SERVER_ADDR'];
+//        $key = 'openid'.$ip;
+//        $openid = Redis::get($key);
+        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
         $info=DB::table('mt_user')
             ->join('mt_shop','mt_shop.uid','=','mt_user.uid')
             ->where(['openid'=>$openid])
@@ -1410,6 +1447,12 @@ class UserController extends Controller
             ];
             die(json_encode($response, JSON_UNESCAPED_UNICODE));
         }
+    }
+
+    //发现列表
+    public function releaselist(Request $request)
+    {
+
     }
     //模板消息
     public function template(Request $request)
