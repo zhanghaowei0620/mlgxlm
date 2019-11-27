@@ -115,7 +115,7 @@ class UserController extends Controller
             }
             //var_dump($arr);exit;
             $insertUserInfo = DB::table('mt_user')->insertGetId($insertInfo);
-            var_dump($insertUserInfo);die;
+//            var_dump($insertUserInfo);die;
             if ($insertUserInfo) {
                 $data = [
                     'openid' => $arr['openid'],
@@ -166,13 +166,13 @@ class UserController extends Controller
     public function usertime(Request $request)
     {
 //        $openid = Redis::set('openid','o9VUc5AOsdEdOBeUAw4TdYg-F-dM');
-//        $ip = $_SERVER['SERVER_ADDR'];
-//        $key = 'openid'.$ip;
-//        $openid = Redis::get($key);
-        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
+        $ip = $_SERVER['SERVER_ADDR'];
+        $key = 'openid'.$ip;
+        $openid = Redis::get($key);
+//        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
         $data=DB::table('mt_user')
             ->where(['openid'=>$openid])
-            ->get();
+            ->get(['wx_user_login']);
 //        var_dump($data);die;
         if($data){
             $data1=[
@@ -187,7 +187,7 @@ class UserController extends Controller
         }else{
             $data1=[
                 'code' => '1',
-                'msg' => '222'
+                'msg' => 'x'
             ];
             $response = [
                 'data' => $data1
