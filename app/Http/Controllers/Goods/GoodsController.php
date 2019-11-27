@@ -546,7 +546,8 @@ class GoodsController extends Controller
         $ip = $_SERVER['SERVER_ADDR'];
         $key = 'openid'.$ip;
         $openid = Redis::get($key);
-//        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
+        var_dump($openid);die;
+//        $openid='o9VUc5MWyq5GgW3kF_90NnrQkBH8';
 //        $aa=DB::table('mt_user')
 //            ->where(['openid'=>$openid])
 //            ->get(['uid']);
