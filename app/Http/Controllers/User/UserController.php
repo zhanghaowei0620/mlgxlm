@@ -101,7 +101,7 @@ class UserController extends Controller
                     'wx_login_time' => time(),
                     'wx_user_login' => time()
                 ];
-                var_dump($insertInfo);die;
+//                var_dump($insertInfo);die;
             }else{
                 $insertInfo = [
                     'wx_name' => $wx_name,
@@ -115,6 +115,7 @@ class UserController extends Controller
             }
             //var_dump($arr);exit;
             $insertUserInfo = DB::table('mt_user')->insertGetId($insertInfo);
+            var_dump($insertUserInfo);die;
             if ($insertUserInfo) {
                 $data = [
                     'openid' => $arr['openid'],
