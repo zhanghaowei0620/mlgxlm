@@ -1063,7 +1063,7 @@ class UserController extends Controller
         }
 
       //银行卡解绑（删除）
-        public function  add_bankcard_delete(Request $request)
+    public function  add_bankcard_delete(Request $request)
         {
             $bankcard_id=$request->input('bankcard_id');
             $where=[
@@ -1417,6 +1417,7 @@ class UserController extends Controller
     //发布
     public function releaseadd(Request $request)
     {
+//        var_dump(time());exit;
         $ip = $_SERVER['SERVER_ADDR'];
         $key = 'openid'.$ip;
         $openid = Redis::get($key);
@@ -1436,7 +1437,8 @@ class UserController extends Controller
                 'mt_title'=>$mt_title,
                 'mt_move_url'=>$mt_move_url,
                 'mt_pic_url'=>$mt_pic_url,
-                'shop_id'=>$info->shop_id
+                'shop_id'=>$info->shop_id,
+                'create_time'=>time()
             ];
 //            dump($inser);
         }else{
@@ -1444,7 +1446,8 @@ class UserController extends Controller
                 'mt_experience'=>$mt_experience,
                 'mt_title'=>$mt_title,
                 'mt_pic_url'=>$mt_pic_url,
-                'mt_move_url'=>$mt_move_url
+                'mt_move_url'=>$mt_move_url,
+                'create_time'=>time()
             ];
         }
 //        $inser=[
@@ -1481,7 +1484,7 @@ class UserController extends Controller
 //    //发现列表
     public function releaselist(Request $request)
     {
-        $releaselistInfo = DB::table('mt_release')->get()->toArray();
+        $releaselistInfo = DB::table('mt_release')->orderBy('create_time')->paginate(10);
 
         $data = [
             'code'=>0,
@@ -1493,6 +1496,7 @@ class UserController extends Controller
         ];
         return json_encode($response, JSON_UNESCAPED_UNICODE);
     }
+    
 
     //发现列表详情
     public function releaselist_Detail(Request $request){
