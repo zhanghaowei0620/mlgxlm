@@ -1491,7 +1491,7 @@ class UserController extends Controller
     {
         $releaselistInfo = DB::table('mt_release')
             ->join('mt_user','mt_release.uid','=','mt_user.uid')
-            ->orderBy('mt_release.create_time')->paginate(10);
+            ->orderBy('mt_release.create_time','desc')->paginate(10);
 
         $data = [
             'code'=>0,
