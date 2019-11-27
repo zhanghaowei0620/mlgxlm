@@ -1351,10 +1351,10 @@ class UserController extends Controller
     //发布
     public function releaseadd(Request $request)
     {
-//        $ip = $_SERVER['SERVER_ADDR'];
-//        $key = 'openid'.$ip;
-//        $openid = Redis::get($key);
-        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
+        $ip = $_SERVER['SERVER_ADDR'];
+        $key = 'openid'.$ip;
+        $openid = Redis::get($key);
+//        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
         $info=DB::table('mt_user')
             ->join('mt_shop','mt_shop.uid','=','mt_user.uid')
             ->where(['openid'=>$openid])
