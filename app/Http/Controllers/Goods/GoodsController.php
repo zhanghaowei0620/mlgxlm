@@ -558,7 +558,7 @@ class GoodsController extends Controller
             ->join('mt_order_detail','mt_user.uid','=','mt_order_detail.uid')
             ->where(['openid'=>$openid])
             ->first(['mt_user.money']);
-        var_dump($data);die;
+//        var_dump($data);die;
         $money=$data->money-$price;
 //        var_dump($money);die;
         $updates=[
@@ -567,6 +567,7 @@ class GoodsController extends Controller
         $data1=DB::table('mt_user')
             ->where(['openid'=>$openid])
             ->update($updates);
+        var_dump($data1);die;
         if($data1){
             $data=[
                 'code'=>'0',
