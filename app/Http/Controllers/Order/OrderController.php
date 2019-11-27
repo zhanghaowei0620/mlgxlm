@@ -20,10 +20,10 @@ class OrderController extends Controller
         //$total_price = "13131";
         $order_no = date("YmdHis",time()).rand(1000,9999);   //订单号
         $buy_num = $request->input('buy_num');    //购买数量
-        $ip = $_SERVER['SERVER_ADDR'];
-        $key = 'openid'.$ip;
-        $openid = Redis::get($key);
-//        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
+//        $ip = $_SERVER['SERVER_ADDR'];
+//        $key = 'openid'.$ip;
+//        $openid = Redis::get($key);
+        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
         if($openid){
             $userInfo = DB::table('mt_user')->where('openid',$openid)->first();
 //            var_dump($userInfo);die;
@@ -57,7 +57,7 @@ class OrderController extends Controller
             $num = DB::table('mt_goods')
                 ->join('mt_cart','mt_goods.goods_id','=','mt_cart.goods_id')
                 ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
-                ->whereIn('mt_goods.goods_id',$goods_id)
+                ->whereIn('mt_goods.goods_id',['goods_id'=>$goods_id])
                 ->get();
             //var_dump($num);exit;
             foreach($num as $k=>$v){
@@ -83,7 +83,7 @@ class OrderController extends Controller
                 'buy_num'=>0,
                 'update_time'=>time()
             ];
-            $res = DB::table('mt_cart')->where('uid',$uid)->whereIn('goods_id',$goods_id)->update($UpdateNum);
+            $res = DB::table('mt_cart')->where('uid',$uid)->whereIn('goods_id',['goods_id'=>$goods_id])->update($UpdateNum);
             if($res){
                 $response = [
                     'error'=>'0',
