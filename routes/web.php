@@ -12,7 +12,7 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('index');
 });
 
 //Route::get('/访问方式', '文件夹名\控制器名@方法名');
