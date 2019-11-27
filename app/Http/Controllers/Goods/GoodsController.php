@@ -543,10 +543,10 @@ class GoodsController extends Controller
     //使用分享币点击购买服务
     public function moneybuy(Request $request)
     {
-//        $ip = $_SERVER['SERVER_ADDR'];
-//        $key = 'openid'.$ip;
-//        $openid = Redis::get($key);
-        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
+        $ip = $_SERVER['SERVER_ADDR'];
+        $key = 'openid'.$ip;
+        $openid = Redis::get($key);
+//        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
         $price=$request->input('price');
         $data=DB::table('mt_user')
             ->where(['openid'=>$openid])
