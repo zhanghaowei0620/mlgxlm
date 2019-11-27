@@ -546,11 +546,18 @@ class GoodsController extends Controller
         $ip = $_SERVER['SERVER_ADDR'];
         $key = 'openid'.$ip;
         $openid = Redis::get($key);
-//        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
+//        var_dump($openid);die;
+//        $openid='o9VUc5MWyq5GgW3kF_90NnrQkBH8';
+//        $aa=DB::table('mt_user')
+//            ->where(['openid'=>$openid])
+//            ->get(['uid']);
+//        var_dump($aa);die;
+        $order_id=$request->input('order_id');
         $price=$request->input('price');
         $data=DB::table('mt_user')
+            ->join('mt_order_detail','mt_user.uid','=','mt_order_detail.uid')
             ->where(['openid'=>$openid])
-            ->first(['money']);
+            ->first(['mt_user.money']);
 //        var_dump($data);die;
         $money=$data->money-$price;
 //        var_dump($money);die;
@@ -560,6 +567,7 @@ class GoodsController extends Controller
         $data1=DB::table('mt_user')
             ->where(['openid'=>$openid])
             ->update($updates);
+        var_dump($data1);die;
         if($data1){
             $data=[
                 'code'=>'0',
