@@ -84,17 +84,12 @@ class OrderController extends Controller
                 'update_time'=>time()
             ];
             $res = DB::table('mt_cart')->where('uid',$uid)->whereIn('goods_id',['goods_id'=>$goods_id])->update($UpdateNum);
-            if($res){
+//            var_dump($res);die;
+            if($res>=0){
                 $response = [
-                    'error'=>'0',
+                    'code'=>'0',
                     'msg'=>'生成订单成功',
-                    'order_no'=>$order_no
-                ];
-                return json_encode($response,JSON_UNESCAPED_UNICODE);
-            }else{
-                $response = [
-                    'error'=>'1',
-                    'msg'=>'生成订单失败'
+                    'order_id'=>$order_id,
                 ];
                 return json_encode($response,JSON_UNESCAPED_UNICODE);
             }
