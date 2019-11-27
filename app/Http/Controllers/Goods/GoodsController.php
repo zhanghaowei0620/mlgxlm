@@ -501,10 +501,10 @@ class GoodsController extends Controller
 
     //获取购物车列表
     public function cartList(Request $request){
-        $ip = $_SERVER['SERVER_ADDR'];
-        $key = 'openid'.$ip;
-        $openid = Redis::get($key);
-//        $openid="o9VUc5AOsdEdOBeUAw4TdYg-F-dM";
+//        $ip = $_SERVER['SERVER_ADDR'];
+//        $key = 'openid'.$ip;
+//        $openid = Redis::get($key);
+        $openid="o9VUc5AOsdEdOBeUAw4TdYg-F-dM";
         $where = [
             'mt_cart.openid'=>$openid,
 //            'collection_cart'=>0
@@ -537,6 +537,47 @@ class GoodsController extends Controller
                 'data'=>$data
             ];
             die(json_encode($response,JSON_UNESCAPED_UNICODE));
+        }
+    }
+
+    //使用分享币点击购买服务
+    public function moneybuy(Request $request)
+    {
+//        $ip = $_SERVER['SERVER_ADDR'];
+//        $key = 'openid'.$ip;
+//        $openid = Redis::get($key);
+        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
+        $price=$request->input('price');
+        $data=DB::table('mt_user')
+            ->where(['openid'=>$openid])
+            ->first(['money']);
+//        var_dump($data);die;
+        $money=$data->money-$price;
+//        var_dump($money);die;
+        $updates=[
+          'money'=>$money
+        ];
+        $data1=DB::table('mt_user')
+            ->where(['openid'=>$openid])
+            ->update($updates);
+        if($data1){
+            $data=[
+                'code'=>'0',
+                'msg'=>'支付成功'
+            ];
+            $response = [
+                'data'=>$data
+            ];
+            return json_encode($response,JSON_UNESCAPED_UNICODE);
+        }else{
+            $data=[
+                'code'=>'0',
+                'msg'=>'支付失败'
+            ];
+            $response = [
+                'data'=>$data
+            ];
+            return json_encode($response,JSON_UNESCAPED_UNICODE);
         }
     }
 

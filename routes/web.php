@@ -74,6 +74,8 @@ Route::get('/add_cart', 'Goods\GoodsController@add_cart');      //点击商品�
 
 Route::get('/cartList', 'Goods\GoodsController@cartList');      //购物车列表
 
+Route::get('/moneybuy', 'Goods\GoodsController@moneybuy');      //用分享币来购买服务
+
 Route::get('/cart_delete', 'Goods\GoodsController@cart_delete');    //购物车删除
 
 Route::get('/collectionaddd', 'Goods\GoodsController@collectionaddd');     //查询店铺是否收藏

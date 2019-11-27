@@ -1116,10 +1116,10 @@ class UserController extends Controller
         }else{
             $integral = 1;
         }
-        $ip = $_SERVER['SERVER_ADDR'];
-        $key = 'openid'.$ip;
-        $openid = Redis::get($key);
-//        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
+//        $ip = $_SERVER['SERVER_ADDR'];
+//        $key = 'openid'.$ip;
+//        $openid = Redis::get($key);
+        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
         //var_dump($openid);
         if($openid){
             $userInfo = DB::table('mt_user')->where('openid', $openid)->first();
