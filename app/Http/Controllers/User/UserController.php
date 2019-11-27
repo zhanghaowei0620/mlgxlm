@@ -931,14 +931,13 @@ class UserController extends Controller
             }
             //此处地址根据项目而定，唯一注意的就是图片命名，这里难得去获取后缀，随便写了个png
             $http_type = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')) ? 'https://' : 'http://';
-            $website = $http_type . $_SERVER['HTTP_HOST'];
+//            $website = $http_type . $_SERVER['HTTP_HOST'];
             if (!is_dir(public_path() . '/images')) mkdir(public_path() . '/images', 0777, true);
             $imageSavePath = '/images' . '/' . uniqid() . rand(1, 100) . '.jpg';
             $uploaded = move_uploaded_file($_FILES['file']['tmp_name'], public_path() . $imageSavePath);
-            $path = $website . $imageSavePath;
             if ($uploaded) {
                 $path1=[
-                  'path'=>$path
+                  'path'=>$imageSavePath
                 ];
                 $response=[
                     'code'=>0,
@@ -1305,6 +1304,35 @@ class UserController extends Controller
             unlink($local_file);
         }
     }
+
+    public function saveToOss1()
+    {
+        //视频成功转移到Oss之后，删除本地文件
+        $client = new OssClient($this->acessKeyId, $this->accessKeySecret,env('ALI_OSS_ENDPOINT'));
+        //获取目录中的文件
+        $file_path = './images';
+        $file_list = scandir($file_path);
+        foreach($file_list as $k=>$v){
+            if($v=='.' || $v=='..'){
+                continue;
+            }
+            $file_name = 'images/'.$v;
+            $local_file = $file_path . '/'.$v;
+            //上传
+            //$rs = $client->uploadFile($this->bucket,$file_name,$local_file);
+            //echo '<pre>';print_r($rs);echo '</pre>';die;
+            try{
+                $client->uploadFile($this->bucket,$file_name,$local_file);
+            } catch(OssException $e) {
+                printf(__FUNCTION__ . ": FAILED\n");
+                printf($e->getMessage() . "\n");
+                return;
+            }
+            //上传成功后 删除 本地文件
+            echo $local_file . '上传成功';echo '</br>';echo '<hr>';echo '<hr>';
+            unlink($local_file);
+        }
+    }
     //发现视频上传
     public function vidoes(Request $request)
     {
@@ -1450,11 +1478,11 @@ class UserController extends Controller
         }
     }
 
-    //发现列表
-    public function releaselist(Request $request)
-    {
-
-    }
+//    //发现列表
+//    public function releaselist(Request $request)
+//    {
+//        DB::table('')
+//    }
     //模板消息
     public function template(Request $request)
     {
