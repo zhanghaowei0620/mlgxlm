@@ -1417,10 +1417,10 @@ class UserController extends Controller
     //发布
     public function releaseadd(Request $request)
     {
-//        $ip = $_SERVER['SERVER_ADDR'];
-//        $key = 'openid'.$ip;
-//        $openid = Redis::get($key);
-        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
+        $ip = $_SERVER['SERVER_ADDR'];
+        $key = 'openid'.$ip;
+        $openid = Redis::get($key);
+//        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
         $info=DB::table('mt_user')
             ->join('mt_shop','mt_shop.uid','=','mt_user.uid')
             ->where(['openid'=>$openid])
@@ -1483,6 +1483,22 @@ class UserController extends Controller
     {
         $releaselistInfo = DB::table('mt_release')->get()->toArray();
 
+        $data = [
+            'code'=>0,
+            'info'=>$releaselistInfo,
+            'msg'=>'发布成功'
+        ];
+        $response = [
+            'data' => $data
+        ];
+        return json_encode($response, JSON_UNESCAPED_UNICODE);
+    }
+
+    //发现列表详情
+    public function releaselist_Detail(Request $request){
+        $mt_release_id = $request->input('mt_release_id');
+        $releaselistInfo = DB::table('mt_release')->where('mt_release_id',$mt_release_id)->get()->toArray();
+//        var_dump($releaselistInfo);exit;
         $data = [
             'code'=>0,
             'info'=>$releaselistInfo,
