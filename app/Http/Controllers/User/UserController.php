@@ -1479,10 +1479,20 @@ class UserController extends Controller
     }
 
 //    //发现列表
-//    public function releaselist(Request $request)
-//    {
-//        DB::table('')
-//    }
+    public function releaselist(Request $request)
+    {
+        $releaselistInfo = DB::table('mt_release')->get()->toArray();
+
+        $data = [
+            'code'=>0,
+            'info'=>$releaselistInfo,
+            'msg'=>'发布成功'
+        ];
+        $response = [
+            'data' => $data
+        ];
+        return json_encode($response, JSON_UNESCAPED_UNICODE);
+    }
     //模板消息
     public function template(Request $request)
     {

@@ -120,7 +120,9 @@ Route::get('user_history', 'User\UserController@user_history');     //我的足�
 
 Route::get('saveToOss', 'User\UserController@saveToOss');     //视频上传到Oss
 
-Route::get('saveToOss', 'User\UserController@saveToOss1');     //视频上传到Oss
+Route::get('saveToOss', 'User\UserController@saveToOss1');     //发现列表
+
+Route::post('releaselist', 'User\UserController@releaselist');
 
 Route::get('user_sign', 'User\UserController@user_sign');    //签到
 
