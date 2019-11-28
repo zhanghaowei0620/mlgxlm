@@ -146,7 +146,7 @@ class IndexController extends Controller
     }
 
     //
-    public function type_lists(Reuqest $request)
+    public function type_lists()
     {
         $type_lists=DB::table('mt_type')
             ->get(['t_name']);
