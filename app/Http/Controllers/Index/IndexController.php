@@ -120,6 +120,9 @@ class IndexController extends Controller
                 ->limit(6)
                 ->get(['goods_id','goods_name','price','picture']);       //推荐
 //            var_dump($shop_set);exit;
+            $type_lists=DB::table('mt_type')
+                ->get(['t_name']);
+//            var_dump($type_lists);die;
 
             $data = [
                 'type'          =>  $type,
@@ -133,7 +136,8 @@ class IndexController extends Controller
                 'discountInfo' => $discountInfo,
                 'salesInfo'   => $salesInfo,
                 'limitedInfo'=>$limitedInfo,
-                'code'         =>  0
+                'code'         =>  0,
+                'type_lists'  =>$type_lists
             ];
             $response = [
                 'data'=>$data
