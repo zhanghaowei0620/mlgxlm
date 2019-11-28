@@ -1579,21 +1579,51 @@ class UserController extends Controller
     //发现列表详情
     public function releaselist_Detail(Request $request){
         $mt_release_id = $request->input('mt_release_id');
-        $releaselistInfo = DB::table('mt_release')->where('mt_release_id',$mt_release_id)->get()->toArray();    //发布信息
-        $count = DB::table('mt_fabulous')->where('mt_release_id',$mt_release_id)->count();   //点赞个数
-        $mt_commentInfo = DB::table('mt_comment')->where('mt_release_id',$mt_release_id)->get()->toArray();
+        $shop_id = DB::table('mt_release')->where('mt_release_id',$mt_release_id)->first(['shop_id']);
+//        var_dump($shop_id);exit;
+        if($shop_id->shop_id != NULL){
+            $releaselistInfo = DB::table('mt_release')
+                ->join('mt_shop','mt_release.shop_id','=','mt_shop.shop_id')
+                ->where('mt_release_id',$mt_release_id)
+                ->get(['mt_shop.shop_id','shop_name','shop_score','shop_address_provice','shop_address_city','shop_address_area','shop_img','mt_release_id','mt_experience','mt_title','mt_move_url','mt_pic_url','mt_release.uid','create_time'])->toArray();    //发布信息
+//            var_dump($releaselistInfo);exit;
+            $count = DB::table('mt_fabulous')->where('mt_release_id',$mt_release_id)->count();   //点赞个数
+            $mt_commentInfo = DB::table('mt_comment')->where('mt_release_id',$mt_release_id)->get()->toArray();
 //        var_dump($mt_commentInfo);exit;
-        $data = [
-            'code'=>0,
-            'info'=>$releaselistInfo,
-            'count'=>$count,
-            'mt_commentInfo'=>$mt_commentInfo,
-            'msg'=>'数据请求成功'
-        ];
-        $response = [
-            'data' => $data
-        ];
-        return json_encode($response, JSON_UNESCAPED_UNICODE);
+            $data = [
+                'code'=>0,
+                'info'=>$releaselistInfo,
+                'count'=>$count,
+                'mt_commentInfo'=>$mt_commentInfo,
+                'msg'=>'数据请求成功'
+            ];
+            $response = [
+                'data' => $data
+            ];
+            return json_encode($response, JSON_UNESCAPED_UNICODE);
+        }else{
+            $releaselistInfo = DB::table('mt_release')
+                ->join('mt_user','mt_release.uid','=','mt_user.uid')
+                ->where('mt_release_id',$mt_release_id)
+                ->get(['mt_release_id','mt_experience','mt_title','mt_move_url','mt_pic_url','mt_release.uid','create_time','wx_name','wx_headimg'])->toArray();    //发布信息
+//            var_dump($releaselistInfo);exit;
+            $count = DB::table('mt_fabulous')->where('mt_release_id',$mt_release_id)->count();   //点赞个数
+            $mt_commentInfo_count = DB::table('mt_comment')->where('mt_release_id',$mt_release_id)->count();   //评论条数
+            $mt_commentInfo = DB::table('mt_comment')->where('mt_release_id',$mt_release_id)->get()->toArray();
+            $data = [
+                'code'=>0,
+                'info'=>$releaselistInfo,
+                'count'=>$count,
+                'mt_commentInfo'=>$mt_commentInfo,
+                'mt_commentInfo_count'=>$mt_commentInfo_count,
+                'msg'=>'数据请求成功'
+            ];
+            $response = [
+                'data' => $data
+            ];
+            return json_encode($response, JSON_UNESCAPED_UNICODE);
+        }
+
     }
 
     // 发现-点赞
