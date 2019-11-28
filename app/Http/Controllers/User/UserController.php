@@ -1208,7 +1208,7 @@ class UserController extends Controller
                         $updateInfo = DB::table('mt_user_sign')->where('uid',$uid)->update($update);
                         if($updateInfo==true){
                             $data = [
-                                'code'=>0,
+                                'code'=>1,
                                 'msg'=>'签到成功'
                             ];
                             $response = [
