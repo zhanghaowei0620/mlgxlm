@@ -645,7 +645,7 @@ class UserController extends Controller
             } else {
                 $data = [
                     'code' => 1,
-                    'msg' => 你暂时未浏览过任何商品
+                    'msg' => '你暂时未浏览过任何商品'
                 ];
                 $response = [
                     'data' => $data
@@ -655,7 +655,7 @@ class UserController extends Controller
         } else {
             $data = [
                 'code' => 2,
-                'msg' => 请先登录
+                'msg' => '请先登录'
             ];
             $response = [
                 'data' => $data
@@ -1115,10 +1115,10 @@ class UserController extends Controller
         }else{
             $integral = 1;
         }
-//        $ip = $_SERVER['SERVER_ADDR'];
-//        $key = 'openid'.$ip;
-//        $openid = Redis::get($key);
-        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
+        $ip = $_SERVER['SERVER_ADDR'];
+        $key = 'openid'.$ip;
+        $openid = Redis::get($key);
+        $openid='o9VUc5PYuVtGQBGunurBYIViWtWw';
         //var_dump($openid);
         if($openid){
             $userInfo = DB::table('mt_user')->where('openid', $openid)->first();
@@ -1132,8 +1132,14 @@ class UserController extends Controller
                     'first_sign_time'=>time(),
                     'sign_time'=>time(),
                     'integral'=>$integral,
-                    'sign_num'=>$user_signInfo->sign_num+1
+                    'sign_num'=>1
                 ];
+                $insera=[
+                  'uid'=>$uid,
+                  'first_sign_time'=>time(),
+                    'integral'=>$integral
+                ];
+                $aa =DB ::table('mt_user_sign_list')->insert($insera);
                 $sign = DB::table('mt_user_sign')->insertGetId($insert);
                 if($sign == true){
                     $data = [
@@ -1157,6 +1163,7 @@ class UserController extends Controller
             }else{
                 //php获取今日开始时间戳和结束时间戳
                 $today_start = mktime(0, 0, 0, date('m'), date('d'), date('Y'));
+//                var_dump($today_start);die;
                 $today_end = mktime(0, 0, 0, date('m'), date('d') + 1, date('Y')) - 1;
                 //php获取昨日起始时间戳和结束时间戳
                 $yesterday_start = mktime(0, 0, 0, date('m'), date('d') - 1, date('Y'));
@@ -1169,21 +1176,26 @@ class UserController extends Controller
                     ->first();//判断昨天是否已签到过
 //                var_dump($id_select);die;
                 if($id_select == NULL){
-                    $issign = Db::table('mt_user_sign')
-                        ->where('uid', '=', $uid)
-                        ->where('sign_time', '>=', $today_start)
-                        ->where('sign_time', '<=', $today_end)
-                        ->first();
-                    if($issign != NULL){
-                        $data = [
-                            'code'=>1,
-                            'msg'=>'你今天已经签到过了'
-                        ];
-                        $response = [
-                            'data' => $data
-                        ];
-                        die(json_encode($response, JSON_UNESCAPED_UNICODE));
+//                    $issign = Db::table('mt_user_sign')
+//                        ->where('uid', '=', $uid)
+//                        ->where('sign_time', '>=', $today_start)
+//                        ->where('sign_time', '<=', $today_end)
+//                        ->first();
+//                    var_dump($issign);die;
+                    if($id_select != NULL){
+//                        $data = [
+//                            'code'=>1,
+//                            'msg'=>'你今天已经签到过了'
+//                        ];
+//                        $response = [
+//                            'data' => $data
+//                        ];
+//                        die(json_encode($response, JSON_UNESCAPED_UNICODE));
                     }else{
+                        $issign = Db::table('mt_user_sign')
+                            ->where('uid', '=', $uid)
+                            ->first();
+//                        var_dump($issign);exit;
                         $update = [
                             'first_sign_time'=>time(),
                             'sign_time'=>time(),
@@ -1218,6 +1230,8 @@ class UserController extends Controller
                         ->where('sign_time', '>=', $today_start)
                         ->where('sign_time', '<=', $today_end)
                         ->first();
+//                    var_dump($issign);exit;
+
                     if($issign != NULL){
                         $data = [
                             'code'=>1,
@@ -1228,6 +1242,9 @@ class UserController extends Controller
                         ];
                         die(json_encode($response, JSON_UNESCAPED_UNICODE));
                     }else{
+                        $issign = Db::table('mt_user_sign')
+                            ->where('uid', '=', $uid)
+                            ->first();
                         $update = [
                             'sign_time'=>time(),
                             'integral'=>$issign->integral+1,
@@ -1266,6 +1283,42 @@ class UserController extends Controller
             ];
             die(json_encode($response, JSON_UNESCAPED_UNICODE));
         }
+    }
+    //判断今日是否已签到
+    public function user_sign_add(Request $request)
+    {
+        $ip = $_SERVER['SERVER_ADDR'];
+        $key = 'openid'.$ip;
+        $openid = Redis::get($key);
+//        $openid='o9VUc5PYuVtGQBGunurBYIViWtWw';
+        $userInfo = DB::table('mt_user')->where('openid', $openid)->first();
+//            var_dump($userInfo);exit;
+        $uid = $userInfo->uid;
+        $issign = Db::table('mt_user_sign_list')
+            ->where('uid', '=', $uid)
+            ->get();
+//                    var_dump($issign);die;
+        if($issign){
+            $data=[
+              'code'=>0,
+              'msg'=>'OK',
+              'data'=>$issign
+            ];
+            $response=[
+                'data'=>$data
+            ];
+            return json_encode($response, JSON_UNESCAPED_UNICODE);
+        }else{
+            $data=[
+                'code'=>1,
+                'msg'=>'NO',
+            ];
+            $response=[
+                'data'=>$data
+            ];
+            return json_encode($response, JSON_UNESCAPED_UNICODE);
+        }
+
     }
 
     protected $acessKeyId  = 'LTAI4Fg1rz6e6xsRu1k3tbT1';

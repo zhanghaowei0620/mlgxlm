@@ -555,7 +555,7 @@ class GoodsController extends Controller
         $order_id=$request->input('order_id');
         $price=$request->input('price');
         $data=DB::table('mt_user')
-            ->join('mt_order_detail','mt_user.uid','=','mt_order_detail.uid')
+//            ->join('mt_order_detail','mt_user.uid','=','mt_order_detail.uid')
             ->where(['openid'=>$openid])
             ->first(['mt_user.money']);
 //        var_dump($data);die;
@@ -565,10 +565,12 @@ class GoodsController extends Controller
           'money'=>$money
         ];
         $data1=DB::table('mt_user')
+//            ->join('mt_order_detail','mt_order_detail.uid','=','mt_user.uid')
             ->where(['openid'=>$openid])
             ->update($updates);
-        var_dump($data1);die;
-        if($data1){
+//        var_dump($data1);die;
+        if($data1 > 0){
+//            echo ;die;
             $data=[
                 'code'=>'0',
                 'msg'=>'支付成功'
@@ -579,7 +581,7 @@ class GoodsController extends Controller
             return json_encode($response,JSON_UNESCAPED_UNICODE);
         }else{
             $data=[
-                'code'=>'0',
+                'code'=>'1',
                 'msg'=>'支付失败'
             ];
             $response = [
