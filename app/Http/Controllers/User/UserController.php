@@ -538,10 +538,11 @@ class UserController extends Controller
     {
         //$openid = Redis::set('openid','o9VUc5HEPNrYq5d5iQFygPVbX7EM');
         $ip = $_SERVER['SERVER_ADDR'];
+//        var_dump($ip);exit;
         $key = 'openid'.$ip;
 //        var_dump($key);die;
         $openid = Redis::get($key);
-        var_dump($openid);exit;
+//        var_dump($openid);exit;
         if ($openid) {
             $userInfo = DB::table('mt_user')
                 ->where('mt_user.openid', $openid)->get()->toArray();
