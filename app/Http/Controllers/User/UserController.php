@@ -1307,12 +1307,13 @@ class UserController extends Controller
         $key = 'openid'.$ip;
         $openid = Redis::get($key);
 //        $openid='o9VUc5MWyq5GgW3kF_90NnrQkBH8';
-
+        var_dump($openid);die;
         $userInfo = DB::table('mt_user')->where('openid', $openid)->first();
 //            var_dump($userInfo);exit;
         $uid = $userInfo->uid;
         $issign = Db::table('mt_user_sign_list')
             ->where('uid', '=', $uid)
+            ->where(['is_issign'=>1])
             ->get();
 //                    var_dump($issign);die;
         if($issign){
@@ -1320,7 +1321,6 @@ class UserController extends Controller
               'code'=>0,
               'msg'=>'OK',
               'data'=>$issign,
-                'issign'=>1
             ];
             $response=[
                 'data'=>$data
