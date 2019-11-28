@@ -155,9 +155,8 @@ class UserController extends Controller
     //判断用户是否第一次登陆
     public function usertime(Request $request)
     {
-//        $openid = Redis::set('openid','o9VUc5AOsdEdOBeUAw4TdYg-F-dM');
-        $ip = $_SERVER['SERVER_ADDR'];
-        $key = 'openid'.$ip;
+        $openid1 = $request->input('openid');
+        $key = $openid1;
         $openid = Redis::get($key);
 //        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
         $data=DB::table('mt_user')
@@ -221,8 +220,8 @@ class UserController extends Controller
         $name=$request->input('name');
 
         // $openid = Redis::set('openid','o9VUc5HEPNrYq5d5iQFygPVbX7EM');
-        $ip = $_SERVER['SERVER_ADDR'];
-        $key = 'openid'.$ip;
+        $openid1 = $request->input('openid');
+        $key = $openid1;
         $openid = Redis::get($key);
         $userInfo = DB::table('mt_user')->where('openid', $openid)->first();
         //var_dump($userInfo);die;
@@ -354,9 +353,8 @@ class UserController extends Controller
     //用户地址列表
     public function user_Address_list(Request $request)
     {
-        // $openid = Redis::set('openid','o9VUc5HEPNrYq5d5iQFygPVbX7EM');
-        $ip = $_SERVER['SERVER_ADDR'];
-        $key = 'openid'.$ip;
+        $openid1 = $request->input('openid');
+        $key = $openid1;
         $openid = Redis::get($key);
         $user_addressInfo = DB::table('mt_user')
             ->join('mt_address', 'mt_user.uid', '=', 'mt_address.uid')
@@ -528,10 +526,6 @@ class UserController extends Controller
     {
         $openid1 = $request->input('openid');
         $key = $openid1;
-        //$openid = Redis::set('openid','o9VUc5HEPNrYq5d5iQFygPVbX7EM');
-//        var_dump($ip);exit;
-        $key = $openid1;
-//        var_dump($key);die;
         $openid = Redis::get($key);
 //        var_dump($openid);exit;
         if ($openid) {
@@ -571,8 +565,8 @@ class UserController extends Controller
     {
         $uid = $request->input('uid');
         $wx_name = $request->input('u_name');
-        $ip = $_SERVER['SERVER_ADDR'];
-        $key = 'openid'.$ip;
+        $openid1 = $request->input('openid');
+        $key = $openid1;
         $openid = Redis::get($key);
         if ($openid) {
             $update = [
@@ -613,8 +607,8 @@ class UserController extends Controller
     //我的足迹
     public function user_history(Request $request)
     {
-        $ip = $_SERVER['SERVER_ADDR'];
-        $key = 'openid'.$ip;
+        $openid1 = $request->input('openid');
+        $key = $openid1;
         $openid = Redis::get($key);
         //var_dump($openid);exit;
         if ($openid) {
@@ -696,9 +690,8 @@ class UserController extends Controller
     //商家入驻
     public function shop_settled(Request $request)
     {
-        //var_dump(time()+86400);exit;
-        $ip = $_SERVER['SERVER_ADDR'];
-        $key = 'openid'.$ip;
+        $openid1 = $request->input('openid');
+        $key = $openid1;
         $openid = Redis::get($key);
 //        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
 //        var_dump($openid);exit;
@@ -775,10 +768,10 @@ class UserController extends Controller
         }
 
     }
-    public function is_shop_settled()
+    public function is_shop_settled(Request $request)
     {
-        $ip = $_SERVER['SERVER_ADDR'];
-        $key = 'openid'.$ip;
+        $openid1 = $request->input('openid');
+        $key = $openid1;
         $openid = Redis::get($key);
 //        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
         $data1=DB::table('mt_shop')
@@ -813,8 +806,8 @@ class UserController extends Controller
     //个人中心优惠券
     public function user_coupon(Request $request)
     {
-        $ip = $_SERVER['SERVER_ADDR'];
-        $key = 'openid'.$ip;
+        $openid1 = $request->input('openid');
+        $key = $openid1;
         $openid = Redis::get($key);
         if ($openid) {
             $userInfo = DB::table('mt_user')->where('openid', $openid)->first();
@@ -957,8 +950,8 @@ class UserController extends Controller
         $bankcard_num = $request->input('bankcard_num');
         $bankcard_type = $request->input('bankcard_type');
         $bank = $request->input('bank');
-        $ip = $_SERVER['SERVER_ADDR'];
-        $key = 'openid'.$ip;
+        $openid1 = $request->input('openid');
+        $key = $openid1;
         $openid = Redis::get($key);
         if ($openid) {
             $userInfo = DB::table('mt_user')->where('openid', $openid)->first();
@@ -1022,8 +1015,8 @@ class UserController extends Controller
     //银行卡列表
     public function  bankcard_list(Request $request)
         {
-            $ip = $_SERVER['SERVER_ADDR'];
-            $key = 'openid'.$ip;
+            $openid1 = $request->input('openid');
+            $key = $openid1;
             $openid = Redis::get($key);
             $userInfo = DB::table('mt_user')->where('openid', $openid)->first();
             //var_dump($userInfo);exit;
@@ -1108,9 +1101,8 @@ class UserController extends Controller
         }else{
             $integral = 1;
         }
-        $ip = $_SERVER['SERVER_ADDR'];
-        $key = 'openid'.$ip;
-//        $openid = Redis::set($key,'o9VUc5PYuVtGQBGunurBYIViWtWw');
+        $openid1 = $request->input('openid');
+        $key = $openid1;
         $openid = Redis::get($key);
         //var_dump($openid);
         if($openid){
@@ -1295,11 +1287,9 @@ class UserController extends Controller
     //判断今日是否已签到
     public function user_sign_add(Request $request)
     {
-        $ip = $_SERVER['SERVER_ADDR'];
-        $key = 'openid'.$ip;
+        $openid1 = $request->input('openid');
+        $key = $openid1;
         $openid = Redis::get($key);
-//        $openid='o9VUc5MWyq5GgW3kF_90NnrQkBH8';
-        var_dump($openid);die;
         $userInfo = DB::table('mt_user')->where('openid', $openid)->first();
 //            var_dump($userInfo);exit;
         $uid = $userInfo->uid;
@@ -1481,8 +1471,8 @@ class UserController extends Controller
     public function releaseadd(Request $request)
     {
 //        var_dump(time());exit;
-        $ip = $_SERVER['SERVER_ADDR'];
-        $key = 'openid'.$ip;
+        $openid1 = $request->input('openid');
+        $key = $openid1;
         $openid = Redis::get($key);
         $userInfo = DB::table('mt_user')->where('openid',$openid)->first();
         $uid = $userInfo->uid;
@@ -1621,8 +1611,8 @@ class UserController extends Controller
     // 发现-点赞
     public function release_Fabulous(Request $request){
         $mt_release_id = $request->input('mt_release_id');
-        $ip = $_SERVER['SERVER_ADDR'];
-        $key = 'openid'.$ip;
+        $openid1 = $request->input('openid');
+        $key = $openid1;
         $openid = Redis::get($key);
 
         $userInfo = DB::table('mt_user')->where('openid', $openid)->first();
@@ -1672,8 +1662,8 @@ class UserController extends Controller
     public function release_comment(Request $request){
         $mt_release_id = $request->input('mt_release_id');      //发现id
         $comment = $request->input('comment');      //评论内容
-        $ip = $_SERVER['SERVER_ADDR'];
-        $key = 'openid'.$ip;
+        $openid1 = $request->input('openid');
+        $key = $openid1;
         $openid = Redis::get($key);
         $userInfo = DB::table('mt_user')->where('openid', $openid)->first();
         $uid = $userInfo->uid;
