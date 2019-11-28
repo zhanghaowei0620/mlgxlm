@@ -120,8 +120,6 @@ class IndexController extends Controller
                 ->limit(6)
                 ->get(['goods_id','goods_name','price','picture']);       //推荐
 //            var_dump($shop_set);exit;
-            $type_lists=DB::table('mt_type')
-                ->get(['t_name']);
 //            var_dump($type_lists);die;
 
             $data = [
@@ -137,7 +135,6 @@ class IndexController extends Controller
                 'salesInfo'   => $salesInfo,
                 'limitedInfo'=>$limitedInfo,
                 'code'         =>  0,
-                'type_lists'  =>$type_lists
             ];
             $response = [
                 'data'=>$data
@@ -146,6 +143,32 @@ class IndexController extends Controller
             return json_encode($response,JSON_UNESCAPED_UNICODE);
         }
 
+    }
+
+    //
+    public function type_lists(Reuqest $request)
+    {
+        $type_lists=DB::table('mt_type')
+            ->get(['t_name']);
+        if($type_lists){
+            $data=[
+                'code'=>0,
+                'data'=>$type_lists
+            ];
+            $response=[
+                'data'=>$data
+            ]
+            return json_encode($response,JSON_UNESCAPED_UNICODE);
+        }else{
+            $data = [
+                'code'=>1,
+                'msg'=>'NO'
+            ];
+            $response = [
+                'data'=>$data
+            ];
+            die(json_encode($response,JSON_UNESCAPED_UNICODE));
+        }
     }
 
     //首页优惠券
