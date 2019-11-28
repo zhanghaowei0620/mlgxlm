@@ -1278,6 +1278,32 @@ class UserController extends Controller
             die(json_encode($response, JSON_UNESCAPED_UNICODE));
         }
     }
+    //判断今日是否已签到
+    public function user_sign_add(Request $request)
+    {
+        $ip = $_SERVER['SERVER_ADDR'];
+        $key = 'openid'.$ip;
+        $openid = Redis::get($key);
+//        $openid='o9VUc5MWyq5GgW3kF_90NnrQkBH8';
+        $userInfo = DB::table('mt_user')->where('openid', $openid)->first();
+//            var_dump($userInfo);exit;
+        $uid = $userInfo->uid;
+        $issign = Db::table('mt_user_sign')
+            ->where('uid', '=', $uid)
+            ->first();
+//                    var_dump($issign);die;
+        if($issign != NULL){
+            $data = [
+                'code'=>1,
+                'time'=>date("Y-m-d",time()),
+                'msg'=>'你今天已经签到过了'
+            ];
+            $response = [
+                'data' => $data
+            ];
+            die(json_encode($response, JSON_UNESCAPED_UNICODE));
+        }
+    }
 
     protected $acessKeyId  = 'LTAI4Fg1rz6e6xsRu1k3tbT1';
     protected $accessKeySecret  = 'VlTglNdH9AthF5AK8JHPhWI9mMPH5N';

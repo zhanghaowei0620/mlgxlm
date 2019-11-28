@@ -128,6 +128,8 @@ Route::get('releaselist_Detail', 'User\UserController@releaselist_Detail');     
 
 Route::get('user_sign', 'User\UserController@user_sign');    //签到
 
+Route::get('user_sign_add', 'User\UserController@user_sign_add');    //查询每日是否签到
+
 Route::get('/whole_shop', 'Goods\GoodsController@whole_shop');    //全部店铺
 
 Route::get('/nearby_shop', 'Goods\GoodsController@nearby_shop');   //附近店铺
