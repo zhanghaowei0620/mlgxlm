@@ -1028,7 +1028,7 @@ class UserController extends Controller
         }
     }
     //银行卡列表
-       public function  bankcard_list(Request $request)
+    public function  bankcard_list(Request $request)
         {
             $ip = $_SERVER['SERVER_ADDR'];
             $key = 'openid'.$ip;
@@ -1575,18 +1575,132 @@ class UserController extends Controller
     //发现列表详情
     public function releaselist_Detail(Request $request){
         $mt_release_id = $request->input('mt_release_id');
-        $releaselistInfo = DB::table('mt_release')->where('mt_release_id',$mt_release_id)->get()->toArray();
-//        var_dump($releaselistInfo);exit;
+        $releaselistInfo = DB::table('mt_release')->where('mt_release_id',$mt_release_id)->get()->toArray();    //发布信息
+        $count = DB::table('mt_fabulous')->where('mt_release_id',$mt_release_id)->count();   //点赞个数
+        $mt_commentInfo = DB::table('mt_comment')->where('mt_release_id',$mt_release_id)->get()->toArray();
+//        var_dump($mt_commentInfo);exit;
         $data = [
             'code'=>0,
             'info'=>$releaselistInfo,
-            'msg'=>'发布成功'
+            'count'=>$count,
+            'mt_commentInfo'=>$mt_commentInfo,
+            'msg'=>'数据请求成功'
         ];
         $response = [
             'data' => $data
         ];
         return json_encode($response, JSON_UNESCAPED_UNICODE);
     }
+
+    // 发现-点赞
+    public function release_Fabulous(Request $request){
+        $mt_release_id = $request->input('mt_release_id');
+        $ip = $_SERVER['SERVER_ADDR'];
+        $key = 'openid'.$ip;
+        $openid = Redis::get($key);
+
+        $userInfo = DB::table('mt_user')->where('openid', $openid)->first();
+        //var_dump($userInfo);exit;
+        $uid = $userInfo->uid;
+        $mt_fabulousInfo = DB::table('mt_fabulous')->where('uid',$uid)->first();
+        if($mt_fabulousInfo){
+            $data = [
+                'code'=>1,
+                'msg'=>'抱歉，每人只能点赞一次'
+            ];
+            $response = [
+                'data' => $data
+            ];
+            die(json_encode($response, JSON_UNESCAPED_UNICODE));
+        }else{
+            $insert = [
+                'mt_release_id'=>$mt_release_id,
+                'uid'=>$uid
+            ];
+            $insertInfo = DB::table('mt_fabulous')->insertGetId($insert);
+//        var_dump($insertInfo);exit;
+            if($insertInfo){
+                $data = [
+                    'code'=>0,
+                    'msg'=>'点赞成功'
+                ];
+                $response = [
+                    'data' => $data
+                ];
+                return json_encode($response, JSON_UNESCAPED_UNICODE);
+            }else{
+                $data = [
+                    'code'=>1,
+                    'msg'=>'点赞失败'
+                ];
+                $response = [
+                    'data' => $data
+                ];
+                die(json_encode($response, JSON_UNESCAPED_UNICODE));
+            }
+        }
+
+    }
+
+    //发现-评论
+    public function release_comment(Request $request){
+        $mt_release_id = $request->input('mt_release_id');      //发现id
+        $comment = $request->input('comment');      //评论内容
+        $ip = $_SERVER['SERVER_ADDR'];
+        $key = 'openid'.$ip;
+        $openid = Redis::get($key);
+        $userInfo = DB::table('mt_user')->where('openid', $openid)->first();
+        $uid = $userInfo->uid;
+
+        $insert = [
+            'mt_release_id'=>$mt_release_id,
+            'comment'=>$comment,
+            'uid'=>$uid
+        ];
+
+        $insertInfo = DB::table('mt_comment')->insertGetId($insert);
+//        var_dump($insertInfo);exit;
+        if($insertInfo){
+            $data = [
+                'code'=>0,
+                'msg'=>'评论成功'
+            ];
+            $response = [
+                'data' => $data
+            ];
+            return json_encode($response, JSON_UNESCAPED_UNICODE);
+        }else{
+            $data = [
+                'code'=>1,
+                'msg'=>'评论失败'
+            ];
+            $response = [
+                'data' => $data
+            ];
+            die(json_encode($response, JSON_UNESCAPED_UNICODE));
+        }
+
+    }
+
+    //发现-点赞个数
+//    public function release_Fabulous_count(Request $request){
+//        $mt_release_id = $request->input('mt_release_id');
+//        $count = DB::table('mt_fabulous')->where('mt_release_id',$mt_release_id)->count();   //点赞个数
+////        var_dump($count);exit;
+//
+//        $data = [
+//            'code'=>0,
+//            'count'=>$count,
+//            'msg'=>'数据请求成功'
+//        ];
+//        $response = [
+//            'data' => $data
+//        ];
+//        return json_encode($response, JSON_UNESCAPED_UNICODE);
+//
+//
+//    }
+
     //模板消息
     public function template(Request $request)
     {
