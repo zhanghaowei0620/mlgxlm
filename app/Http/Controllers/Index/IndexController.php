@@ -203,9 +203,12 @@ class IndexController extends Controller
 
     //点击优惠券 领取
     public function coupon_receive(Request $request){
-        $ip = $_SERVER['SERVER_ADDR'];
-        $key = 'openid'.$ip;
-        $openid =  Redis::get($key);
+//        $ip = $_SERVER['SERVER_ADDR'];
+//        $key = 'openid'.$ip;
+//        $openid =  Redis::get($key);
+        $openid1 = $request->input('openid');
+        $key = $openid1;
+        $openid = Redis::get($key);
         if($openid){
             $userInfo = DB::table('mt_user')->where('openid',$openid)->first('uid');
             //var_dump($userInfo);
