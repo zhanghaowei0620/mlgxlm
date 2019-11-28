@@ -1118,7 +1118,7 @@ class UserController extends Controller
         $ip = $_SERVER['SERVER_ADDR'];
         $key = 'openid'.$ip;
         $openid = Redis::get($key);
-//        $openid='o9VUc5PYuVtGQBGunurBYIViWtWw';
+        $openid='o9VUc5PYuVtGQBGunurBYIViWtWw';
         //var_dump($openid);
         if($openid){
             $userInfo = DB::table('mt_user')->where('openid', $openid)->first();
@@ -1134,6 +1134,12 @@ class UserController extends Controller
                     'integral'=>$integral,
                     'sign_num'=>1
                 ];
+                $insera=[
+                  'uid'=>$uid,
+                  'first_sign_time'=>time(),
+                    'integral'=>$integral
+                ];
+                $aa =DB ::table('mt_user_sign_list')->insert($insera);
                 $sign = DB::table('mt_user_sign')->insertGetId($insert);
                 if($sign == true){
                     $data = [
@@ -1284,25 +1290,35 @@ class UserController extends Controller
         $ip = $_SERVER['SERVER_ADDR'];
         $key = 'openid'.$ip;
         $openid = Redis::get($key);
-//        $openid='o9VUc5MWyq5GgW3kF_90NnrQkBH8';
+        $openid='o9VUc5PYuVtGQBGunurBYIViWtWw';
         $userInfo = DB::table('mt_user')->where('openid', $openid)->first();
 //            var_dump($userInfo);exit;
         $uid = $userInfo->uid;
-        $issign = Db::table('mt_user_sign')
+        $issign = Db::table('mt_user_sign_list')
             ->where('uid', '=', $uid)
             ->first();
 //                    var_dump($issign);die;
-        if($issign != NULL){
-            $data = [
+        if($issign){
+            $data=[
+              'code'=>0,
+              'msg'=>'OK',
+              'data'=>$issign
+            ];
+            $response=[
+                'data'=>$data
+            ];
+            return json_encode($response, JSON_UNESCAPED_UNICODE);
+        }else{
+            $data=[
                 'code'=>1,
-                'time'=>date("Y-m-d",time()),
-                'msg'=>'你今天已经签到过了'
+                'msg'=>'NO',
             ];
-            $response = [
-                'data' => $data
+            $response=[
+                'data'=>$data
             ];
-            die(json_encode($response, JSON_UNESCAPED_UNICODE));
+            return json_encode($response, JSON_UNESCAPED_UNICODE);
         }
+
     }
 
     protected $acessKeyId  = 'LTAI4Fg1rz6e6xsRu1k3tbT1';
