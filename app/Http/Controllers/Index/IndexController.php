@@ -157,7 +157,7 @@ class IndexController extends Controller
             ];
             $response=[
                 'data'=>$data
-            ]
+            ];
             return json_encode($response,JSON_UNESCAPED_UNICODE);
         }else{
             $data = [
