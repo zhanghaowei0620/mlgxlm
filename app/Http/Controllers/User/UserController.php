@@ -1297,12 +1297,15 @@ class UserController extends Controller
             ->where('uid', '=', $uid)
             ->where(['is_issign'=>1])
             ->get();
+        $aaaa=DB::table('mt_user_sign')->where('openid',$openid)->get(['integral']);
 //                    var_dump($issign);die;
         if($issign){
             $data=[
               'code'=>0,
               'msg'=>'OK',
               'data'=>$issign,
+                'is_issign'=>$issign->is_issign,
+                'integral'=>$aaaa
             ];
             $response=[
                 'data'=>$data
