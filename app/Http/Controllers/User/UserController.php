@@ -1118,7 +1118,7 @@ class UserController extends Controller
         $ip = $_SERVER['SERVER_ADDR'];
         $key = 'openid'.$ip;
         $openid = Redis::get($key);
-//        $openid='o9VUc5KN78P_jViUQnGjica4GIQs';
+        $openid='o9VUc5PYuVtGQBGunurBYIViWtWw';
         //var_dump($openid);
         if($openid){
             $userInfo = DB::table('mt_user')->where('openid', $openid)->first();
@@ -1165,26 +1165,26 @@ class UserController extends Controller
 
                 $id_select = Db::table('mt_user_sign')
                     ->where('uid', '=', $uid)
-//                    ->where('sign_time', '>=', $yesterday_start)
-//                    ->where('sign_time', '<=', $yesterday_end)
+                    ->where('sign_time', '>=', $yesterday_start)
+                    ->where('sign_time', '<=', $yesterday_end)
                     ->first();//判断昨天是否已签到过
 //                var_dump($id_select);die;
                 if($id_select == NULL){
-//                    $issign = Db::table('mt_user_sign')
-//                        ->where('uid', '=', $uid)
-////                        ->where('sign_time', '>=', $today_start)
-////                        ->where('sign_time', '<=', $today_end)
-//                        ->first();
-////                    var_dump($issign);die;
-//                    if($issign != NULL){
-//                        $data = [
-//                            'code'=>1,
-//                            'msg'=>'你今天已经签到过了'
-//                        ];
-//                        $response = [
-//                            'data' => $data
-//                        ];
-//                        die(json_encode($response, JSON_UNESCAPED_UNICODE));
+                    $issign = Db::table('mt_user_sign')
+                        ->where('uid', '=', $uid)
+                        ->where('sign_time', '>=', $today_start)
+                        ->where('sign_time', '<=', $today_end)
+                        ->first();
+//                    var_dump($issign);die;
+                    if($issign != NULL){
+                        $data = [
+                            'code'=>1,
+                            'msg'=>'你今天已经签到过了'
+                        ];
+                        $response = [
+                            'data' => $data
+                        ];
+                        die(json_encode($response, JSON_UNESCAPED_UNICODE));
                     }else{
                         $issign = Db::table('mt_user_sign')
                             ->where('uid', '=', $uid)
@@ -1221,8 +1221,8 @@ class UserController extends Controller
                 }else{
                     $issign = Db::table('mt_user_sign')
                         ->where('uid', '=', $uid)
-//                        ->where('sign_time', '>=', $today_start)
-//                        ->where('sign_time', '<=', $today_end)
+                        ->where('sign_time', '>=', $today_start)
+                        ->where('sign_time', '<=', $today_end)
                         ->first();
 //                    var_dump($issign);exit;
 
