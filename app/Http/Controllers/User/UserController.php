@@ -1165,15 +1165,15 @@ class UserController extends Controller
 
                 $id_select = Db::table('mt_user_sign')
                     ->where('uid', '=', $uid)
-                    ->where('sign_time', '>=', $yesterday_start)
-                    ->where('sign_time', '<=', $yesterday_end)
+//                    ->where('sign_time', '>=', $yesterday_start)
+//                    ->where('sign_time', '<=', $yesterday_end)
                     ->first();//判断昨天是否已签到过
 //                var_dump($id_select);die;
                 if($id_select == NULL){
                     $issign = Db::table('mt_user_sign')
                         ->where('uid', '=', $uid)
-                        ->where('sign_time', '>=', $today_start)
-                        ->where('sign_time', '<=', $today_end)
+//                        ->where('sign_time', '>=', $today_start)
+//                        ->where('sign_time', '<=', $today_end)
                         ->first();
 //                    var_dump($issign);die;
                     if($issign != NULL){
@@ -1221,8 +1221,8 @@ class UserController extends Controller
                 }else{
                     $issign = Db::table('mt_user_sign')
                         ->where('uid', '=', $uid)
-                        ->where('sign_time', '>=', $today_start)
-                        ->where('sign_time', '<=', $today_end)
+//                        ->where('sign_time', '>=', $today_start)
+//                        ->where('sign_time', '<=', $today_end)
                         ->first();
 //                    var_dump($issign);exit;
 
