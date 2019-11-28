@@ -127,16 +127,6 @@ class UserController extends Controller
                     Redis::set($key, $arr['openid']);
 //                $openid = Redis::get($key);
 //                var_dump($openid);exit;
-                    $accesstoken=$this ->accessToken();
-                    $scene=mt_rand(1111,9999) . Str::random(6);
-                    $url = "https://api.weixin.qq.com/wxa/getwxacodeunlimit?access_token=$accesstoken";
-                    $postdata = [
-                        "page" => "/pages/index/index",
-                        "scene" => $scene,
-                    ];
-                    $res = $this->curl_postt($url,json_encode($postdata),$options=array());
-                    $img = './images/'.time().'.jpg';
-                    $r = file_put_contents($img,$res);
                     $data1=[
                         'code' => '0',
                         'msg' => '登录成功',
