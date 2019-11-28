@@ -127,16 +127,6 @@ class UserController extends Controller
                     Redis::set($key, $arr['openid']);
 //                $openid = Redis::get($key);
 //                var_dump($openid);exit;
-                    $accesstoken=$this ->accessToken();
-                    $scene=mt_rand(1111,9999) . Str::random(6);
-                    $url = "https://api.weixin.qq.com/wxa/getwxacodeunlimit?access_token=$accesstoken";
-                    $postdata = [
-                        "page" => "/pages/index/index",
-                        "scene" => $scene,
-                    ];
-                    $res = $this->curl_postt($url,json_encode($postdata),$options=array());
-                    $img = './images/'.time().'.jpg';
-                    $r = file_put_contents($img,$res);
                     $data1=[
                         'code' => '0',
                         'msg' => '登录成功',
@@ -536,8 +526,15 @@ class UserController extends Controller
     //用户中心
     public function user_center(Request $request)
     {
+<<<<<<< HEAD
         $openid1 = $request->input('openid');
         $key = $openid1;
+=======
+        //$openid = Redis::set('openid','o9VUc5HEPNrYq5d5iQFygPVbX7EM');
+        $ip = $_SERVER['SERVER_ADDR'];
+//        var_dump($ip);exit;
+        $key = 'openid'.$ip;
+>>>>>>> bf7f8b4487a7c5151d82e5837e5bd7f8851d50c4
 //        var_dump($key);die;
         $openid = Redis::get($key);
 //        var_dump($openid);exit;
@@ -1305,31 +1302,21 @@ class UserController extends Controller
         $ip = $_SERVER['SERVER_ADDR'];
         $key = 'openid'.$ip;
         $openid = Redis::get($key);
-//        $openid='o9VUc5PYuVtGQBGunurBYIViWtWw';
-//        $timestr = time();
-//        $now_day = date('w',$timestr);
-//        //获取一周的第一天，注意第一天应该是星期一
-//        $sunday_str = $timestr;
-//        $sunday = date('Y-m-d', $sunday_str);
-////        var_dump($sunday);die;
-//        //获取一周的最后一天，注意最后一天是星期六
-//        $strday_str = $timestr + (7-$now_day)*60*60*24;
-//        $strday = date('Y-m-d', $strday_str);
-////        var_dump($sunday);die;
-//        $weekarray=["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
-//        echo $weekarray[date("w",time())];echo "</br>";
+//        $openid='o9VUc5MWyq5GgW3kF_90NnrQkBH8';
+        var_dump($openid);die;
         $userInfo = DB::table('mt_user')->where('openid', $openid)->first();
 //            var_dump($userInfo);exit;
         $uid = $userInfo->uid;
         $issign = Db::table('mt_user_sign_list')
             ->where('uid', '=', $uid)
+            ->where(['is_issign'=>1])
             ->get();
 //                    var_dump($issign);die;
         if($issign){
             $data=[
               'code'=>0,
               'msg'=>'OK',
-              'data'=>$issign
+              'data'=>$issign,
             ];
             $response=[
                 'data'=>$data
