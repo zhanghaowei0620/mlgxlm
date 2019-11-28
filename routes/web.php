@@ -126,7 +126,7 @@ Route::get('saveToOss1', 'User\UserController@saveToOss1');     //图片上传�
 
 Route::post('releaselist', 'User\UserController@releaselist');     //发现列表
 
-Route::get('releaselist_Detail', 'User\UserController@releaselist_Detail');     //发现列表-详情
+Route::post('releaselist_Detail', 'User\UserController@releaselist_Detail');     //发现列表-详情
 
 Route::post('release_Fabulous', 'User\UserController@release_Fabulous');   //发现-点赞
 
