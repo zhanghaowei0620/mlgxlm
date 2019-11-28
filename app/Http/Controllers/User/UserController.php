@@ -1118,7 +1118,7 @@ class UserController extends Controller
         $ip = $_SERVER['SERVER_ADDR'];
         $key = 'openid'.$ip;
         $openid = Redis::get($key);
-//        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
+//        $openid='o9VUc5KN78P_jViUQnGjica4GIQs';
         //var_dump($openid);
         if($openid){
             $userInfo = DB::table('mt_user')->where('openid', $openid)->first();
@@ -1132,7 +1132,7 @@ class UserController extends Controller
                     'first_sign_time'=>time(),
                     'sign_time'=>time(),
                     'integral'=>$integral,
-                    'sign_num'=>$user_signInfo->sign_num+1
+                    'sign_num'=>1
                 ];
                 $sign = DB::table('mt_user_sign')->insertGetId($insert);
                 if($sign == true){
@@ -1186,6 +1186,10 @@ class UserController extends Controller
                         ];
                         die(json_encode($response, JSON_UNESCAPED_UNICODE));
                     }else{
+                        $issign = Db::table('mt_user_sign')
+                            ->where('uid', '=', $uid)
+                            ->first();
+//                        var_dump($issign);exit;
                         $update = [
                             'first_sign_time'=>time(),
                             'sign_time'=>time(),
@@ -1220,6 +1224,7 @@ class UserController extends Controller
                         ->where('sign_time', '>=', $today_start)
                         ->where('sign_time', '<=', $today_end)
                         ->first();
+//                    var_dump($issign);exit;
 
                     if($issign != NULL){
                         $data = [
@@ -1231,6 +1236,9 @@ class UserController extends Controller
                         ];
                         die(json_encode($response, JSON_UNESCAPED_UNICODE));
                     }else{
+                        $issign = Db::table('mt_user_sign')
+                            ->where('uid', '=', $uid)
+                            ->first();
                         $update = [
                             'sign_time'=>time(),
                             'integral'=>$issign->integral+1,
