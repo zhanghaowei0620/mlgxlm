@@ -1108,8 +1108,9 @@ class UserController extends Controller
         //die;
 
         $weekarray=["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
-         //var_dump($weekarray[date("w",strtotime("2019-11-4"))]);
-        //echo $weekarray[date("w",time())];echo "</br>";
+//         var_dump($weekarray[date("w",strtotime("2019-11-4"))]);
+        $ans= $weekarray[date("w",time())];
+//        var_dump($ans);die;
         if($weekarray[date("w",time())] == '星期六' || $weekarray[date("w",time())] == '星期天'){
             $integral = 2;
         }else{
@@ -1117,8 +1118,8 @@ class UserController extends Controller
         }
         $ip = $_SERVER['SERVER_ADDR'];
         $key = 'openid'.$ip;
+//        $openid = Redis::set($key,'o9VUc5PYuVtGQBGunurBYIViWtWw');
         $openid = Redis::get($key);
-        $openid='o9VUc5PYuVtGQBGunurBYIViWtWw';
         //var_dump($openid);
         if($openid){
             $userInfo = DB::table('mt_user')->where('openid', $openid)->first();
@@ -1135,13 +1136,14 @@ class UserController extends Controller
                     'sign_num'=>1
                 ];
                 $insera=[
-                  'uid'=>$uid,
-                  'first_sign_time'=>time(),
-                    'integral'=>$integral
+                    'uid'=>$uid,
+                    'first_sign_time'=>time(),
+                    'integral'=>$integral,
+                    'wekkend'=>$ans
                 ];
                 $aa =DB ::table('mt_user_sign_list')->insert($insera);
                 $sign = DB::table('mt_user_sign')->insertGetId($insert);
-                if($sign == true){
+                if($sign && $aa){
                     $data = [
                         'code'=>0,
                         'msg'=>'签到成功'
@@ -1176,21 +1178,21 @@ class UserController extends Controller
                     ->first();//判断昨天是否已签到过
 //                var_dump($id_select);die;
                 if($id_select == NULL){
-//                    $issign = Db::table('mt_user_sign')
-//                        ->where('uid', '=', $uid)
-//                        ->where('sign_time', '>=', $today_start)
-//                        ->where('sign_time', '<=', $today_end)
-//                        ->first();
+                    $issign = Db::table('mt_user_sign')
+                        ->where('uid', '=', $uid)
+                        ->where('sign_time', '>=', $today_start)
+                        ->where('sign_time', '<=', $today_end)
+                        ->first();
 //                    var_dump($issign);die;
-                    if($id_select != NULL){
-//                        $data = [
-//                            'code'=>1,
-//                            'msg'=>'你今天已经签到过了'
-//                        ];
-//                        $response = [
-//                            'data' => $data
-//                        ];
-//                        die(json_encode($response, JSON_UNESCAPED_UNICODE));
+                    if($issign != NULL){
+                        $data = [
+                            'code'=>1,
+                            'msg'=>'你今天已经签到过了'
+                        ];
+                        $response = [
+                            'data' => $data
+                        ];
+                        die(json_encode($response, JSON_UNESCAPED_UNICODE));
                     }else{
                         $issign = Db::table('mt_user_sign')
                             ->where('uid', '=', $uid)
@@ -1202,9 +1204,16 @@ class UserController extends Controller
                             'integral'=>$issign->integral+1,
                             'sign_num'=>1
                         ];
+                        $insera=[
+                            'uid'=>$uid,
+                            'first_sign_time'=>time(),
+                            'integral'=>$integral,
+                            'wekkend'=>$ans
+                        ];
+                        $aa =DB ::table('mt_user_sign_list')->insert($insera);
 //                        var_dump($update);die;
                         $updateInfo = DB::table('mt_user_sign')->where('uid',$uid)->update($update);
-                        if($updateInfo==true){
+                        if($updateInfo>0 && $aa){
                             $data = [
                                 'code'=>0,
                                 'msg'=>'签到成功'
@@ -1250,8 +1259,15 @@ class UserController extends Controller
                             'integral'=>$issign->integral+1,
                             'sign_num'=>$issign->sign_num+1
                         ];
+                        $insera=[
+                            'uid'=>$uid,
+                            'first_sign_time'=>time(),
+                            'integral'=>$integral,
+                            'wekkend'=>$ans
+                        ];
+                        $aa =DB ::table('mt_user_sign_list')->insert($insera);
                         $updateInfo = DB::table('mt_user_sign')->where('uid',$uid)->update($update);
-                        if($updateInfo==true){
+                        if($updateInfo>0 && $aa){
                             $data = [
                                 'code'=>0,
                                 'msg'=>'签到成功'
@@ -1291,6 +1307,18 @@ class UserController extends Controller
         $key = 'openid'.$ip;
         $openid = Redis::get($key);
 //        $openid='o9VUc5PYuVtGQBGunurBYIViWtWw';
+//        $timestr = time();
+//        $now_day = date('w',$timestr);
+//        //获取一周的第一天，注意第一天应该是星期一
+//        $sunday_str = $timestr;
+//        $sunday = date('Y-m-d', $sunday_str);
+////        var_dump($sunday);die;
+//        //获取一周的最后一天，注意最后一天是星期六
+//        $strday_str = $timestr + (7-$now_day)*60*60*24;
+//        $strday = date('Y-m-d', $strday_str);
+////        var_dump($sunday);die;
+//        $weekarray=["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+//        echo $weekarray[date("w",time())];echo "</br>";
         $userInfo = DB::table('mt_user')->where('openid', $openid)->first();
 //            var_dump($userInfo);exit;
         $uid = $userInfo->uid;
