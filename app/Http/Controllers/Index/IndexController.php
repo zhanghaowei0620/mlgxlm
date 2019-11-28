@@ -149,7 +149,7 @@ class IndexController extends Controller
     public function type_lists()
     {
         $type_lists=DB::table('mt_type')
-            ->get(['t_name']);
+            ->get();
         if($type_lists){
             $data=[
                 'code'=>0,
