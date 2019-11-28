@@ -1118,8 +1118,8 @@ class UserController extends Controller
         }
         $ip = $_SERVER['SERVER_ADDR'];
         $key = 'openid'.$ip;
+//        $openid = Redis::set($key,'o9VUc5PYuVtGQBGunurBYIViWtWw');
         $openid = Redis::get($key);
-//        $openid='o9VUc5PYuVtGQBGunurBYIViWtWw';
         //var_dump($openid);
         if($openid){
             $userInfo = DB::table('mt_user')->where('openid', $openid)->first();
@@ -1136,14 +1136,14 @@ class UserController extends Controller
                     'sign_num'=>1
                 ];
                 $insera=[
-                  'uid'=>$uid,
-                  'first_sign_time'=>time(),
+                    'uid'=>$uid,
+                    'first_sign_time'=>time(),
                     'integral'=>$integral,
                     'wekkend'=>$ans
                 ];
                 $aa =DB ::table('mt_user_sign_list')->insert($insera);
                 $sign = DB::table('mt_user_sign')->insertGetId($insert);
-                if($sign == true){
+                if($sign && $aa){
                     $data = [
                         'code'=>0,
                         'msg'=>'签到成功'
@@ -1178,21 +1178,21 @@ class UserController extends Controller
                     ->first();//判断昨天是否已签到过
 //                var_dump($id_select);die;
                 if($id_select == NULL){
-//                    $issign = Db::table('mt_user_sign')
-//                        ->where('uid', '=', $uid)
-//                        ->where('sign_time', '>=', $today_start)
-//                        ->where('sign_time', '<=', $today_end)
-//                        ->first();
+                    $issign = Db::table('mt_user_sign')
+                        ->where('uid', '=', $uid)
+                        ->where('sign_time', '>=', $today_start)
+                        ->where('sign_time', '<=', $today_end)
+                        ->first();
 //                    var_dump($issign);die;
-                    if($id_select != NULL){
-//                        $data = [
-//                            'code'=>1,
-//                            'msg'=>'你今天已经签到过了'
-//                        ];
-//                        $response = [
-//                            'data' => $data
-//                        ];
-//                        die(json_encode($response, JSON_UNESCAPED_UNICODE));
+                    if($issign != NULL){
+                        $data = [
+                            'code'=>1,
+                            'msg'=>'你今天已经签到过了'
+                        ];
+                        $response = [
+                            'data' => $data
+                        ];
+                        die(json_encode($response, JSON_UNESCAPED_UNICODE));
                     }else{
                         $issign = Db::table('mt_user_sign')
                             ->where('uid', '=', $uid)
@@ -1204,11 +1204,18 @@ class UserController extends Controller
                             'integral'=>$issign->integral+1,
                             'sign_num'=>1
                         ];
+                        $insera=[
+                            'uid'=>$uid,
+                            'first_sign_time'=>time(),
+                            'integral'=>$integral,
+                            'wekkend'=>$ans
+                        ];
+                        $aa =DB ::table('mt_user_sign_list')->insert($insera);
 //                        var_dump($update);die;
                         $updateInfo = DB::table('mt_user_sign')->where('uid',$uid)->update($update);
-                        if($updateInfo==true){
+                        if($updateInfo>0 && $aa){
                             $data = [
-                                'code'=>1,
+                                'code'=>0,
                                 'msg'=>'签到成功'
                             ];
                             $response = [
@@ -1252,8 +1259,15 @@ class UserController extends Controller
                             'integral'=>$issign->integral+1,
                             'sign_num'=>$issign->sign_num+1
                         ];
+                        $insera=[
+                            'uid'=>$uid,
+                            'first_sign_time'=>time(),
+                            'integral'=>$integral,
+                            'wekkend'=>$ans
+                        ];
+                        $aa =DB ::table('mt_user_sign_list')->insert($insera);
                         $updateInfo = DB::table('mt_user_sign')->where('uid',$uid)->update($update);
-                        if($updateInfo==true){
+                        if($updateInfo>0 && $aa){
                             $data = [
                                 'code'=>0,
                                 'msg'=>'签到成功'
