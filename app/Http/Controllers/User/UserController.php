@@ -1296,7 +1296,7 @@ class UserController extends Controller
         $uid = $userInfo->uid;
         $issign = Db::table('mt_user_sign_list')
             ->where('uid', '=', $uid)
-            ->first();
+            ->get();
 //                    var_dump($issign);die;
         if($issign){
             $data=[
