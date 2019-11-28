@@ -541,7 +541,7 @@ class UserController extends Controller
         $key = 'openid'.$ip;
 //        var_dump($key);die;
         $openid = Redis::get($key);
-//        var_dump($openid);exit;
+        var_dump($openid);exit;
         if ($openid) {
             $userInfo = DB::table('mt_user')
                 ->where('mt_user.openid', $openid)->get()->toArray();
