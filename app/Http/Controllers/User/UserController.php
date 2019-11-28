@@ -524,16 +524,8 @@ class UserController extends Controller
     //用户中心
     public function user_center(Request $request)
     {
-
-        //$openid = Redis::set('openid','o9VUc5HEPNrYq5d5iQFygPVbX7EM');
-//        $ip = $_SERVER['SERVER_ADDR'];
-//        var_dump($ip);exit;
-//        $key = 'openid'.$ip;
-//        var_dump($key);die;
-
         $openid1 = $request->input('openid');
         $key = $openid1;
-
         $openid = Redis::get($key);
 //        var_dump($openid);exit;
         if ($openid) {
