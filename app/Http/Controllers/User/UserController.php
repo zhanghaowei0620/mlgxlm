@@ -1306,19 +1306,8 @@ class UserController extends Controller
         $ip = $_SERVER['SERVER_ADDR'];
         $key = 'openid'.$ip;
         $openid = Redis::get($key);
-//        $openid='o9VUc5PYuVtGQBGunurBYIViWtWw';
-//        $timestr = time();
-//        $now_day = date('w',$timestr);
-//        //获取一周的第一天，注意第一天应该是星期一
-//        $sunday_str = $timestr;
-//        $sunday = date('Y-m-d', $sunday_str);
-////        var_dump($sunday);die;
-//        //获取一周的最后一天，注意最后一天是星期六
-//        $strday_str = $timestr + (7-$now_day)*60*60*24;
-//        $strday = date('Y-m-d', $strday_str);
-////        var_dump($sunday);die;
-//        $weekarray=["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
-//        echo $weekarray[date("w",time())];echo "</br>";
+//        $openid='o9VUc5MWyq5GgW3kF_90NnrQkBH8';
+
         $userInfo = DB::table('mt_user')->where('openid', $openid)->first();
 //            var_dump($userInfo);exit;
         $uid = $userInfo->uid;
@@ -1330,7 +1319,8 @@ class UserController extends Controller
             $data=[
               'code'=>0,
               'msg'=>'OK',
-              'data'=>$issign
+              'data'=>$issign,
+                'issign'=>1
             ];
             $response=[
                 'data'=>$data

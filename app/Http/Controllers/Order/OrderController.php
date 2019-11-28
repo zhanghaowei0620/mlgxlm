@@ -137,10 +137,10 @@ class OrderController extends Controller
 
     //订单列表
     public function order_list(Request $request){
-//        $ip = $_SERVER['SERVER_ADDR'];
-//        $key = 'openid'.$ip;
-//        $openid = Redis::get($key);
-        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
+        $ip = $_SERVER['SERVER_ADDR'];
+        $key = 'openid'.$ip;
+        $openid = Redis::get($key);
+//        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
         if($openid){
             $orderInfo = DB::table('mt_user')
                 ->join('mt_order','mt_user.uid','=','mt_order.uid')
