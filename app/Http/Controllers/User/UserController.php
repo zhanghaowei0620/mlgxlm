@@ -1170,21 +1170,21 @@ class UserController extends Controller
                     ->first();//判断昨天是否已签到过
 //                var_dump($id_select);die;
                 if($id_select == NULL){
-                    $issign = Db::table('mt_user_sign')
-                        ->where('uid', '=', $uid)
-//                        ->where('sign_time', '>=', $today_start)
-//                        ->where('sign_time', '<=', $today_end)
-                        ->first();
-//                    var_dump($issign);die;
-                    if($issign != NULL){
-                        $data = [
-                            'code'=>1,
-                            'msg'=>'你今天已经签到过了'
-                        ];
-                        $response = [
-                            'data' => $data
-                        ];
-                        die(json_encode($response, JSON_UNESCAPED_UNICODE));
+//                    $issign = Db::table('mt_user_sign')
+//                        ->where('uid', '=', $uid)
+////                        ->where('sign_time', '>=', $today_start)
+////                        ->where('sign_time', '<=', $today_end)
+//                        ->first();
+////                    var_dump($issign);die;
+//                    if($issign != NULL){
+//                        $data = [
+//                            'code'=>1,
+//                            'msg'=>'你今天已经签到过了'
+//                        ];
+//                        $response = [
+//                            'data' => $data
+//                        ];
+//                        die(json_encode($response, JSON_UNESCAPED_UNICODE));
                     }else{
                         $issign = Db::table('mt_user_sign')
                             ->where('uid', '=', $uid)
