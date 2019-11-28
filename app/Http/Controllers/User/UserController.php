@@ -1587,7 +1587,7 @@ class UserController extends Controller
             $releaselistInfo = DB::table('mt_release')
                 ->join('mt_user','mt_release.uid','=','mt_user.uid')
                 ->where('mt_release_id',$mt_release_id)
-                ->get(['mt_release_id','mt_experience','mt_title','mt_move_url','mt_pic_url','mt_release.uid','create_time','wx_name','wx_headimg'])->toArray();    //发布信息
+                ->first(['mt_release_id','mt_experience','mt_title','mt_move_url','mt_pic_url','mt_release.uid','create_time','wx_name','wx_headimg']);    //发布信息
 //            var_dump($releaselistInfo);exit;
             $count = DB::table('mt_fabulous')->where('mt_release_id',$mt_release_id)->count();   //点赞个数
             $mt_commentInfo_count = DB::table('mt_comment')->where('mt_release_id',$mt_release_id)->count();   //评论条数
