@@ -1118,7 +1118,7 @@ class UserController extends Controller
         $ip = $_SERVER['SERVER_ADDR'];
         $key = 'openid'.$ip;
         $openid = Redis::get($key);
-//        $openid='o9VUc5PYuVtGQBGunurBYIViWtWw';
+        $openid='o9VUc5PYuVtGQBGunurBYIViWtWw';
         //var_dump($openid);
         if($openid){
             $userInfo = DB::table('mt_user')->where('openid', $openid)->first();
@@ -1176,21 +1176,21 @@ class UserController extends Controller
                     ->first();//判断昨天是否已签到过
 //                var_dump($id_select);die;
                 if($id_select == NULL){
-                    $issign = Db::table('mt_user_sign')
-                        ->where('uid', '=', $uid)
-                        ->where('sign_time', '>=', $today_start)
-                        ->where('sign_time', '<=', $today_end)
-                        ->first();
+//                    $issign = Db::table('mt_user_sign')
+//                        ->where('uid', '=', $uid)
+//                        ->where('sign_time', '>=', $today_start)
+//                        ->where('sign_time', '<=', $today_end)
+//                        ->first();
 //                    var_dump($issign);die;
-                    if($issign != NULL){
-                        $data = [
-                            'code'=>1,
-                            'msg'=>'你今天已经签到过了'
-                        ];
-                        $response = [
-                            'data' => $data
-                        ];
-                        die(json_encode($response, JSON_UNESCAPED_UNICODE));
+                    if($id_select != NULL){
+//                        $data = [
+//                            'code'=>1,
+//                            'msg'=>'你今天已经签到过了'
+//                        ];
+//                        $response = [
+//                            'data' => $data
+//                        ];
+//                        die(json_encode($response, JSON_UNESCAPED_UNICODE));
                     }else{
                         $issign = Db::table('mt_user_sign')
                             ->where('uid', '=', $uid)
