@@ -645,7 +645,7 @@ class UserController extends Controller
             } else {
                 $data = [
                     'code' => 1,
-                    'msg' => 你暂时未浏览过任何商品
+                    'msg' => '你暂时未浏览过任何商品'
                 ];
                 $response = [
                     'data' => $data
@@ -655,7 +655,7 @@ class UserController extends Controller
         } else {
             $data = [
                 'code' => 2,
-                'msg' => 请先登录
+                'msg' => '请先登录'
             ];
             $response = [
                 'data' => $data
@@ -1115,10 +1115,10 @@ class UserController extends Controller
         }else{
             $integral = 1;
         }
-//        $ip = $_SERVER['SERVER_ADDR'];
-//        $key = 'openid'.$ip;
-//        $openid = Redis::get($key);
-        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
+        $ip = $_SERVER['SERVER_ADDR'];
+        $key = 'openid'.$ip;
+        $openid = Redis::get($key);
+//        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
         //var_dump($openid);
         if($openid){
             $userInfo = DB::table('mt_user')->where('openid', $openid)->first();
@@ -1157,6 +1157,7 @@ class UserController extends Controller
             }else{
                 //php获取今日开始时间戳和结束时间戳
                 $today_start = mktime(0, 0, 0, date('m'), date('d'), date('Y'));
+//                var_dump($today_start);die;
                 $today_end = mktime(0, 0, 0, date('m'), date('d') + 1, date('Y')) - 1;
                 //php获取昨日起始时间戳和结束时间戳
                 $yesterday_start = mktime(0, 0, 0, date('m'), date('d') - 1, date('Y'));
@@ -1174,6 +1175,7 @@ class UserController extends Controller
                         ->where('sign_time', '>=', $today_start)
                         ->where('sign_time', '<=', $today_end)
                         ->first();
+//                    var_dump($issign);die;
                     if($issign != NULL){
                         $data = [
                             'code'=>1,
@@ -1218,6 +1220,7 @@ class UserController extends Controller
                         ->where('sign_time', '>=', $today_start)
                         ->where('sign_time', '<=', $today_end)
                         ->first();
+
                     if($issign != NULL){
                         $data = [
                             'code'=>1,
