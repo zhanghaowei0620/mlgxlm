@@ -145,7 +145,7 @@ class IndexController extends Controller
 
     }
 
-    //
+    //更多
     public function type_lists()
     {
         $type_lists=DB::table('mt_type')

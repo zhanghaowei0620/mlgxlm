@@ -58,8 +58,8 @@ class UserController extends Controller
                     'session_key' => $arr['session_key']
                 ];
                 if ($arr['openid'] && $arr['session_key']) {
-//                    $ip = $_SERVER['SERVER_ADDR'];
-                    $key = $arr['openid'];
+                    $ip = $_SERVER['SERVER_ADDR'];
+                    $key = 'openid'.$ip;
                     Redis::set($key, $arr['openid']);
 //                $openid = Redis::get($key);
 //                var_dump($openid);exit;
@@ -122,8 +122,8 @@ class UserController extends Controller
                     'session_key' => $arr['session_key']
                 ];
                 if ($arr['openid'] && $arr['session_key']) {
-//                    $ip = $_SERVER['SERVER_ADDR'];
-                    $key = $key = $arr['openid'];;
+                    $ip = $_SERVER['SERVER_ADDR'];
+                    $key = 'openid'.$ip;
                     Redis::set($key, $arr['openid']);
 //                $openid = Redis::get($key);
 //                var_dump($openid);exit;
@@ -526,11 +526,10 @@ class UserController extends Controller
     //用户中心
     public function user_center(Request $request)
     {
-        $openid1 = $request->input('openid');
-        $key = $openid1;
         //$openid = Redis::set('openid','o9VUc5HEPNrYq5d5iQFygPVbX7EM');
+        $ip = $_SERVER['SERVER_ADDR'];
 //        var_dump($ip);exit;
-        $key = $openid1;
+        $key = 'openid'.$ip;
 //        var_dump($key);die;
         $openid = Redis::get($key);
 //        var_dump($openid);exit;
