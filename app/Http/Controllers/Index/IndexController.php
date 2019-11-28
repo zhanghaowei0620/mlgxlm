@@ -146,10 +146,10 @@ class IndexController extends Controller
     }
 
     //
-    public function type_lists(Reuqest $request)
+    public function type_lists()
     {
         $type_lists=DB::table('mt_type')
-            ->get(['t_name']);
+            ->get();
         if($type_lists){
             $data=[
                 'code'=>0,
@@ -157,7 +157,7 @@ class IndexController extends Controller
             ];
             $response=[
                 'data'=>$data
-            ]
+            ];
             return json_encode($response,JSON_UNESCAPED_UNICODE);
         }else{
             $data = [
@@ -203,9 +203,12 @@ class IndexController extends Controller
 
     //点击优惠券 领取
     public function coupon_receive(Request $request){
-        $ip = $_SERVER['SERVER_ADDR'];
-        $key = 'openid'.$ip;
-        $openid =  Redis::get($key);
+//        $ip = $_SERVER['SERVER_ADDR'];
+//        $key = 'openid'.$ip;
+//        $openid =  Redis::get($key);
+        $openid1 = $request->input('openid');
+        $key = $openid1;
+        $openid = Redis::get($key);
         if($openid){
             $userInfo = DB::table('mt_user')->where('openid',$openid)->first('uid');
             //var_dump($userInfo);

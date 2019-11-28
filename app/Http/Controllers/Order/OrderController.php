@@ -21,8 +21,11 @@ class OrderController extends Controller
 
         $order_no = date("YmdHis",time()).rand(1000,9999);   //订单号
 //        $buy_num = $request->input('buy_num');    //购买数量
-        $ip = $_SERVER['SERVER_ADDR'];
-        $key = 'openid'.$ip;
+//        $ip = $_SERVER['SERVER_ADDR'];
+//        $key = 'openid'.$ip;
+//        $openid = Redis::get($key);
+        $openid1 = $request->input('openid');
+        $key = $openid1;
         $openid = Redis::get($key);
 //        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
         if($openid){
@@ -137,8 +140,11 @@ class OrderController extends Controller
 
     //订单列表
     public function order_list(Request $request){
-        $ip = $_SERVER['SERVER_ADDR'];
-        $key = 'openid'.$ip;
+//        $ip = $_SERVER['SERVER_ADDR'];
+//        $key = 'openid'.$ip;
+//        $openid = Redis::get($key);
+        $openid1 = $request->input('openid');
+        $key = $openid1;
         $openid = Redis::get($key);
 //        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
         if($openid){
@@ -217,8 +223,11 @@ class OrderController extends Controller
     public function order_status_list(Request $request){
         $order_status_id = $request->input('order_status_id');
         //$order_status_id = 0;
-        $ip = $_SERVER['SERVER_ADDR'];
-        $key = 'openid'.$ip;
+//        $ip = $_SERVER['SERVER_ADDR'];
+//        $key = 'openid'.$ip;
+//        $openid = Redis::get($key);
+        $openid1 = $request->input('openid');
+        $key = $openid1;
         $openid = Redis::get($key);
         $where = [
             'mt_user.openid'=>$openid,
