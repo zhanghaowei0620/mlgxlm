@@ -136,6 +136,8 @@ Route::post('release_comment', 'User\UserController@release_comment');   //发�
 
 Route::post('release_Fabulous_count', 'User\UserController@release_Fabulous_count');    //点赞个数
 
+Route::get('admin_juli', 'User\UserController@admin_juli');
+
 Route::get('user_sign', 'User\UserController@user_sign');    //签到
 
 Route::get('user_sign_add', 'User\UserController@user_sign_add');    //查询每日是否签到
