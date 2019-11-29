@@ -647,7 +647,7 @@ class GoodsController extends Controller
         $openid1 = $request->input('openid');
         $key = $openid1;
         $openid = Redis::get($key);
-//        $openid="o9VUc5AOsdEdOBeUAw4TdYg-F-dM";
+//        $openid="o9VUc5MWyq5GgW3kF_90NnrQkBH8";
         if($openid){
             $user_info = DB::table('mt_user')->where('openid',$openid)->first();
             $uid = $user_info->uid;
@@ -670,7 +670,7 @@ class GoodsController extends Controller
                     ->join('mt_goods','mt_shop.shop_id','=','mt_shop.shop_id')
                     ->where('mt_goods.goods_id',$goods_id)
                     ->first();
-                //var_dump($goodsInfo);exit;
+//                var_dump($goodsInfo);exit;
                 $data = [
                     'goods_id'=>$goodsInfo->goods_id,
                     'shop_id'=>$goodsInfo->shop_id,
@@ -681,7 +681,8 @@ class GoodsController extends Controller
                     'create_time'=>time(),
 //                    'collection'=>1,
                     'collection_info'=>1,
-                    'uid'=>$uid
+                    'uid'=>$uid,
+                    'openid'=>$openid
                 ];
 //                var_dump($data);exit;
                 $add_cart = DB::table('mt_collection_goods')->insertGetId($data);
