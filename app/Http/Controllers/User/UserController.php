@@ -1762,7 +1762,7 @@ class UserController extends Controller
         $mt_release_id = $request->input('mt_release_id');
         $mt_commentInfo = DB::table('mt_comment')
             ->join('mt_user','mt_comment.uid','=','mt_user.uid')
-            ->where('mt_release_id',$mt_release_id)->limit(5)->get()->toArray();
+            ->where('mt_release_id',$mt_release_id)->paginate(1);
 
         $data = [
             'code'=>0,
