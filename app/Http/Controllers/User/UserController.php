@@ -1763,7 +1763,7 @@ class UserController extends Controller
         $mt_release_id = $request->input('mt_release_id');
         $mt_commentInfo = DB::table('mt_comment')
             ->join('mt_user','mt_comment.uid','=','mt_user.uid')
-            ->where('mt_release_id',$mt_release_id)->orderBy('create_time','desc')->paginate(1);
+            ->where('mt_release_id',$mt_release_id)->orderBy('create_time','desc')->paginate(5);
 
         $data = [
             'code'=>0,
