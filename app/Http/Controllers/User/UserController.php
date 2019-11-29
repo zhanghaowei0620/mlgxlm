@@ -1582,7 +1582,7 @@ class UserController extends Controller
             $count = DB::table('mt_fabulous')->where('mt_release_id',$mt_release_id)->count();   //点赞个数
             $mt_commentInfo = DB::table('mt_comment')
                 ->join('mt_user','mt_comment.uid','=','mt_user.uid')
-                ->where('mt_release_id',$mt_release_id)->limit(5)->get()->toArray();
+                ->where('mt_release_id',$mt_release_id)->orderBy('create_time','desc')->limit(5)->get()->toArray();
             $is_fabulousInfo = DB::table('mt_fabulous')->where(['uid'=>$uid,'mt_release_id'=>$mt_release_id])->first();
             if($is_fabulousInfo){
                 $data = [
@@ -1617,7 +1617,7 @@ class UserController extends Controller
             $mt_commentInfo_count = DB::table('mt_comment')->where('mt_release_id',$mt_release_id)->count();   //评论条数
             $mt_commentInfo = DB::table('mt_comment')
                 ->join('mt_user','mt_comment.uid','=','mt_user.uid')
-                ->where('mt_release_id',$mt_release_id)->limit(5)->get()->toArray();
+                ->where('mt_release_id',$mt_release_id)->orderBy('create_time','desc')->limit(5)->get()->toArray();
             $is_fabulousInfo = DB::table('mt_fabulous')->where(['uid'=>$uid,'mt_release_id'=>$mt_release_id])->first();   //判断用户是否点赞
             if($is_fabulousInfo){
                 $data = [
@@ -1711,7 +1711,8 @@ class UserController extends Controller
         $insert = [
             'mt_release_id'=>$mt_release_id,
             'comment'=>$comment,
-            'uid'=>$uid
+            'uid'=>$uid,
+            'create_time'=>time()
         ];
 
         $insertInfo = DB::table('mt_comment')->insertGetId($insert);
@@ -1762,7 +1763,7 @@ class UserController extends Controller
         $mt_release_id = $request->input('mt_release_id');
         $mt_commentInfo = DB::table('mt_comment')
             ->join('mt_user','mt_comment.uid','=','mt_user.uid')
-            ->where('mt_release_id',$mt_release_id)->paginate(1);
+            ->where('mt_release_id',$mt_release_id)->orderBy('create_time','desc')->paginate(1);
 
         $data = [
             'code'=>0,
