@@ -1622,7 +1622,7 @@ class UserController extends Controller
         $userInfo = DB::table('mt_user')->where('openid', $openid)->first();
         //var_dump($userInfo);exit;
         $uid = $userInfo->uid;
-        $mt_fabulousInfo = DB::table('mt_fabulous')->where('uid',$uid)->first();
+        $mt_fabulousInfo = DB::table('mt_fabulous')->where(['uid'=>$uid,'mt_release_id'=>$mt_release_id])->first();
         if($mt_fabulousInfo){
             $data = [
                 'code'=>1,
@@ -1720,6 +1720,8 @@ class UserController extends Controller
 //
 //
 //    }
+
+
 
     //模板消息
     public function template(Request $request)
