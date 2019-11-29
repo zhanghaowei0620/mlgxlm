@@ -735,13 +735,14 @@ class GoodsController extends Controller
         $openid1 = $request->input('openid');
         $key = $openid1;
         $openid = Redis::get($key);
+//        $openid='o9VUc5MWyq5GgW3kF_90NnrQkBH8';
         if($openid){
             $where = [
                 'openid'=>$openid,
 //                'collection'=>1
             ];
-            $cartInfo = DB::table('mt_collection_goods')->where($where)->get()->toArray();
-            //var_dump($cartInfo);exit;
+            $cartInfo = DB::table('mt_collection_goods')->where($where)->select()->paginate(6);
+//            var_dump($cartInfo);exit;
             if($cartInfo){
                 $data=[
                     'code'=>'0',
@@ -948,7 +949,7 @@ class GoodsController extends Controller
             $collectionInfo = DB::table('mt_shop_collection')
                 ->join('mt_shop','mt_shop_collection.shop_id','=','mt_shop.shop_id')
                 ->where($where)
-                ->get()->toArray();
+                ->select()->paginate(6);
             //var_dump($collectionInfo);exit;
             if($collectionInfo){
                 $data1=[
