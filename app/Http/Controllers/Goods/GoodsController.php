@@ -1042,12 +1042,12 @@ class GoodsController extends Controller
 
     //附近店铺-附近店铺
     public function nearby_shop(Request $request){
-//        $lat1 = '112.558505';
-//        $lng1 = '37.818498';
-        $lat1 = $request->input('lat');//经度
-        $lng1 = $request->input('lng');//纬度
+//        $lng1 = '112.606565';
+//        $lat1= '37.69946';
+        $lat1 = $request->input('lat');//纬度
+        $lng1 = $request->input('lng');//经度
 
-        $shopInfo =  DB::select("SELECT s.shop_id,shop_name,shop_address_provice,shop_address_city,shop_address_area,shop_score,goods_id,goods_name,price,market_price,introduction,picture,promotion_price,prople,shop_label,shop_status, 6378.138*2*ASIN(SQRT(POW(SIN(($lat1*PI()/180-lat*PI()/180)/2),2)+COS($lat1*PI()/180)*COS(lat*PI()/180)*POW(SIN(($lng1*PI()/180-lng*PI()/180)/2),2))) AS juli  FROM mt_shop s inner join mt_goods g on s.shop_id = g.shop_id  where shop_status = 1 group by juli order by juli");
+        $shopInfo =  DB::select("SELECT s.shop_id,shop_name,shop_address_provice,shop_address_city,shop_address_area,shop_score,goods_id,goods_name,price,market_price,introduction,picture,promotion_price,prople,shop_label,shop_status, 6378.138*2*ASIN(SQRT(POW(SIN(($lat1*PI()/180-lat*PI()/180)/2),2)+COS($lat1*PI()/180)*COS(lat*PI()/180)*POW(SIN(($lng1*PI()/180-lng*PI()/180)/2),2))) AS juli  FROM mt_shop s inner join mt_goods g on s.shop_id = g.shop_id  where shop_status = 2 group by juli order by juli");
         //var_dump($shopInfo);exit;
         $data = [
             'code'=>0,
@@ -1144,6 +1144,14 @@ class GoodsController extends Controller
 //            ->paginate(4);
 //        var_dump($data);die;
 //    }
+
+    //拼团购买
+    public function group_buy(Request $request)
+    {
+        $group_id=$request->input('group_id');
+        
+
+    }
 
 
 

@@ -1290,6 +1290,7 @@ class UserController extends Controller
         $openid1 = $request->input('openid');
         $key = $openid1;
         $openid = Redis::get($key);
+        $openid= 'o9VUc5MWyq5GgW3kF_90NnrQkBH8';
         $userInfo = DB::table('mt_user')->where('openid', $openid)->first();
 //            var_dump($userInfo);exit;
         $uid = $userInfo->uid;
@@ -1297,14 +1298,14 @@ class UserController extends Controller
             ->where('uid', '=', $uid)
             ->where(['is_issign'=>1])
             ->get();
-        $aaaa=DB::table('mt_user_sign')->where('openid',$openid)->get(['integral']);
+        $aaaa=DB::table('mt_user_sign')->where('uid',$uid)->get(['integral']);
 //                    var_dump($issign);die;
         if($issign){
             $data=[
-              'code'=>0,
-              'msg'=>'OK',
-              'data'=>$issign,
-                'is_issign'=>$issign->is_issign,
+                'code'=>0,
+                'msg'=>'OK',
+                'data'=>$issign,
+                'is_issign'=>1,
                 'integral'=>$aaaa
             ];
             $response=[
