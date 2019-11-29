@@ -1087,7 +1087,7 @@ class GoodsController extends Controller
             $page1=$request->input('page');
             $page_num=$request->input('page_num');
             $page=($page1-1)*10;
-            $shopInfo =  DB::select("SELECT *, 6378.138*2*ASIN(SQRT(POW(SIN(($lat1*PI()/180-lat*PI()/180)/2),2)+COS($lat1*PI()/180)*COS(lat*PI()/180)*POW(SIN(($lng1*PI()/180-lng*PI()/180)/2),2))) AS juli  from mt_shop s inner join mt_type t on s.t_id = t.t_id where s.shop_status = 2 order by s.shop_volume limit $page,$page_num");
+            $shopInfo =  DB::select("SELECT *, 6378.138*2*ASIN(SQRT(POW(SIN(($lat1*PI()/180-lat*PI()/180)/2),2)+COS($lat1*PI()/180)*COS(lat*PI()/180)*POW(SIN(($lng1*PI()/180-lng*PI()/180)/2),2))) AS juli  from mt_shop s inner join mt_type t on s.t_id = t.t_id where s.shop_status = 2 order by s.shop_volume  desc limit $page,$page_num");
 //            $shopInfo =  DB::select("SELECT s.shop_id,shop_name,shop_volume,shop_address_provice,shop_address_city,shop_address_area,shop_score,goods_id,goods_name,price,market_price,introduction,shop_img,promotion_price,prople,shop_label,shop_status,t.t_name,t.p_id, 6378.138*2*ASIN(SQRT(POW(SIN(($lat1*PI()/180-lat*PI()/180)/2),2)+COS($lat1*PI()/180)*COS(lat*PI()/180)*POW(SIN(($lng1*PI()/180-lng*PI()/180)/2),2))) AS juli  FROM mt_shop s inner join mt_goods g on s.shop_id = g.shop_id  inner join mt_type t on t.t_id = s.t_id where shop_status = 2 group by juli order by juli limit $page,10");
 //            var_dump($shopInfo);exit;
             $data=[
