@@ -1580,7 +1580,9 @@ class UserController extends Controller
                 ->first(['mt_shop.shop_id','shop_name','shop_score','shop_address_provice','shop_address_city','shop_address_area','shop_img','mt_release_id','mt_experience','mt_title','mt_move_url','mt_pic_url','mt_release.uid','create_time']);    //发布信息
 //            var_dump($releaselistInfo);exit;
             $count = DB::table('mt_fabulous')->where('mt_release_id',$mt_release_id)->count();   //点赞个数
-            $mt_commentInfo = DB::table('mt_comment')->where('mt_release_id',$mt_release_id)->get()->toArray();
+            $mt_commentInfo = DB::table('mt_comment')
+                ->join('mt_user','mt_comment.uid','=','mt_user.uid')
+                ->where('mt_release_id',$mt_release_id)->orderBy('create_time','desc')->limit(5)->get()->toArray();
             $is_fabulousInfo = DB::table('mt_fabulous')->where(['uid'=>$uid,'mt_release_id'=>$mt_release_id])->first();
             if($is_fabulousInfo){
                 $data = [
@@ -1613,7 +1615,9 @@ class UserController extends Controller
 //            var_dump($releaselistInfo);exit;
             $count = DB::table('mt_fabulous')->where('mt_release_id',$mt_release_id)->count();   //点赞个数
             $mt_commentInfo_count = DB::table('mt_comment')->where('mt_release_id',$mt_release_id)->count();   //评论条数
-            $mt_commentInfo = DB::table('mt_comment')->where('mt_release_id',$mt_release_id)->get()->toArray();
+            $mt_commentInfo = DB::table('mt_comment')
+                ->join('mt_user','mt_comment.uid','=','mt_user.uid')
+                ->where('mt_release_id',$mt_release_id)->orderBy('create_time','desc')->limit(5)->get()->toArray();
             $is_fabulousInfo = DB::table('mt_fabulous')->where(['uid'=>$uid,'mt_release_id'=>$mt_release_id])->first();   //判断用户是否点赞
             if($is_fabulousInfo){
                 $data = [
@@ -1707,7 +1711,8 @@ class UserController extends Controller
         $insert = [
             'mt_release_id'=>$mt_release_id,
             'comment'=>$comment,
-            'uid'=>$uid
+            'uid'=>$uid,
+            'create_time'=>time()
         ];
 
         $insertInfo = DB::table('mt_comment')->insertGetId($insert);
@@ -1752,6 +1757,26 @@ class UserController extends Controller
 //
 //
 //    }
+
+    //更多评论
+    public function admin_comment(Request $request){
+        $mt_release_id = $request->input('mt_release_id');
+        $mt_commentInfo = DB::table('mt_comment')
+            ->join('mt_user','mt_comment.uid','=','mt_user.uid')
+            ->where('mt_release_id',$mt_release_id)->orderBy('create_time','desc')->paginate(5);
+
+        $data = [
+            'code'=>0,
+            'mt_commentInfo'=>$mt_commentInfo,
+            'msg'=>'数据请求成功'
+        ];
+        $response = [
+            'data' => $data
+        ];
+        return json_encode($response, JSON_UNESCAPED_UNICODE);
+    }
+
+
 
 
 
