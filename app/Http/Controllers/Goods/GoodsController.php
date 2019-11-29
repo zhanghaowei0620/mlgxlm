@@ -880,6 +880,7 @@ class GoodsController extends Controller
         $openid1 = $request->input('openid');
         $key = $openid1;
         $openid = Redis::get($key);
+//        $openid='o9VUc5MWyq5GgW3kF_90NnrQkBH8';
         if($openid){
             $user_info = DB::table('mt_user')->where('openid',$openid)->first();
             $uid = $user_info->uid;
@@ -940,6 +941,7 @@ class GoodsController extends Controller
         $openid1 = $request->input('openid');
         $key = $openid1;
         $openid = Redis::get($key);
+//        $openid='o9VUc5MWyq5GgW3kF_90NnrQkBH8';
         if($openid){
             $user_info = DB::table('mt_user')->where('openid',$openid)->first();
             $uid = $user_info->uid;
@@ -948,6 +950,7 @@ class GoodsController extends Controller
             ];
             $collectionInfo = DB::table('mt_shop_collection')
                 ->join('mt_shop','mt_shop_collection.shop_id','=','mt_shop.shop_id')
+                ->join('mt_type','mt_shop_collection.t_id','=','mt_type.t_id')
                 ->where($where)
                 ->select()->paginate(6);
             //var_dump($collectionInfo);exit;
@@ -963,7 +966,7 @@ class GoodsController extends Controller
             }else{
                 $data1=[
                     'code'=>'1',
-                    'msg'=>'收藏夹暂无数据，快去添加商品吧'
+                    'msg'=>'收藏夹暂无数据，快去收藏店铺吧'
                 ];
                 $response = [
                     'data'=>$data1
