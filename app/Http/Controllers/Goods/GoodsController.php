@@ -647,7 +647,7 @@ class GoodsController extends Controller
         $openid1 = $request->input('openid');
         $key = $openid1;
         $openid = Redis::get($key);
-//        $openid="o9VUc5AOsdEdOBeUAw4TdYg-F-dM";
+//        $openid="o9VUc5MWyq5GgW3kF_90NnrQkBH8";
         if($openid){
             $user_info = DB::table('mt_user')->where('openid',$openid)->first();
             $uid = $user_info->uid;
@@ -670,7 +670,7 @@ class GoodsController extends Controller
                     ->join('mt_goods','mt_shop.shop_id','=','mt_shop.shop_id')
                     ->where('mt_goods.goods_id',$goods_id)
                     ->first();
-                //var_dump($goodsInfo);exit;
+//                var_dump($goodsInfo);exit;
                 $data = [
                     'goods_id'=>$goodsInfo->goods_id,
                     'shop_id'=>$goodsInfo->shop_id,
@@ -681,7 +681,8 @@ class GoodsController extends Controller
                     'create_time'=>time(),
 //                    'collection'=>1,
                     'collection_info'=>1,
-                    'uid'=>$uid
+                    'uid'=>$uid,
+                    'openid'=>$openid
                 ];
 //                var_dump($data);exit;
                 $add_cart = DB::table('mt_collection_goods')->insertGetId($data);
@@ -735,13 +736,16 @@ class GoodsController extends Controller
         $openid1 = $request->input('openid');
         $key = $openid1;
         $openid = Redis::get($key);
+//        $openid='o9VUc5MWyq5GgW3kF_90NnrQkBH8';
         if($openid){
             $where = [
                 'openid'=>$openid,
 //                'collection'=>1
             ];
-            $cartInfo = DB::table('mt_collection_goods')->where($where)->get()->toArray();
-            //var_dump($cartInfo);exit;
+            $cartInfo = DB::table('mt_collection_goods')
+                ->join('mt_shop','mt_shop.shop_id','=','mt_collection_goods.shop_id')
+                ->where($where)->select()->paginate(10);
+//            var_dump($cartInfo);exit;
             if($cartInfo){
                 $data=[
                     'code'=>'0',
@@ -879,9 +883,12 @@ class GoodsController extends Controller
         $openid1 = $request->input('openid');
         $key = $openid1;
         $openid = Redis::get($key);
+//        $openid='o9VUc5MWyq5GgW3kF_90NnrQkBH8';
         if($openid){
             $user_info = DB::table('mt_user')->where('openid',$openid)->first();
             $uid = $user_info->uid;
+            $shop_infos=DB ::table('mt_shop')->where(['shop_id'=>$shop_id])->first();
+            $t_id=$shop_infos->t_id;
             //$shop_id = 1;
             $where = [
                 'shop_id'=>$shop_id,
@@ -898,7 +905,8 @@ class GoodsController extends Controller
             }else{
                 $data = [
                     'shop_id'=>$shop_id,
-                    'uid'=>$uid
+                    'uid'=>$uid,
+                    't_id'=>$t_id
                 ];
                 //var_dump($data);exit;
                 $add_shop_collection = DB::table('mt_shop_collection')->insertGetId($data);
@@ -939,6 +947,7 @@ class GoodsController extends Controller
         $openid1 = $request->input('openid');
         $key = $openid1;
         $openid = Redis::get($key);
+//        $openid='o9VUc5MWyq5GgW3kF_90NnrQkBH8';
         if($openid){
             $user_info = DB::table('mt_user')->where('openid',$openid)->first();
             $uid = $user_info->uid;
@@ -947,8 +956,9 @@ class GoodsController extends Controller
             ];
             $collectionInfo = DB::table('mt_shop_collection')
                 ->join('mt_shop','mt_shop_collection.shop_id','=','mt_shop.shop_id')
+                ->join('mt_type','mt_shop_collection.t_id','=','mt_type.t_id')
                 ->where($where)
-                ->get()->toArray();
+                ->select()->paginate(10);
             //var_dump($collectionInfo);exit;
             if($collectionInfo){
                 $data1=[
@@ -962,7 +972,7 @@ class GoodsController extends Controller
             }else{
                 $data1=[
                     'code'=>'1',
-                    'msg'=>'收藏夹暂无数据，快去添加商品吧'
+                    'msg'=>'收藏夹暂无数据，快去收藏店铺吧'
                 ];
                 $response = [
                     'data'=>$data1
@@ -1056,8 +1066,11 @@ class GoodsController extends Controller
 //        $sss=count($qqq);
 //        var_dump($qqq);die;
         if($limited_type == 1){     //附近
+            $page=$request->input('page');
+
 //            $shopInfo =  DB::select("SELECT s.shop_id,shop_name,shop_address_provice,shop_address_city,shop_address_area,shop_score,goods_id,goods_name,price,market_price,introduction,picture,promotion_price,prople,shop_label,shop_status, 6378.138*2*ASIN(SQRT(POW(SIN(($lat1*PI()/180-lat*PI()/180)/2),2)+COS($lat1*PI()/180)*COS(lat*PI()/180)*POW(SIN(($lng1*PI()/180-lng*PI()/180)/2),2))) AS juli  FROM mt_shop s inner join mt_goods g on s.shop_id = g.shop_id  where shop_status = 2 group by juli order by juli");
-            $shopInfo =  DB::select("SELECT s.shop_id,shop_name,shop_address_provice,shop_address_city,shop_address_area,shop_score,goods_id,goods_name,price,market_price,introduction,picture,promotion_price,prople,shop_label,shop_status,mt_type.t_name,mt_type.p_id, 6378.138*2*ASIN(SQRT(POW(SIN(($lat1*PI()/180-lat*PI()/180)/2),2)+COS($lat1*PI()/180)*COS(lat*PI()/180)*POW(SIN(($lng1*PI()/180-lng*PI()/180)/2),2))) AS juli  FROM mt_shop s inner join mt_goods g on s.shop_id = g.shop_id inner join mt_type on mt_type.t_id = mt_shop.t_id where shop_status = 2  group by juli order by juli");
+            $shopInfo =  DB::select("SELECT s.shop_id,shop_name,shop_address_provice,shop_address_city,shop_address_area,shop_score,goods_id,goods_name,price,market_price,introduction,shop_img,promotion_price,prople,shop_label,shop_status,t.t_name,t.p_id, 6378.138*2*ASIN(SQRT(POW(SIN(($lat1*PI()/180-lat*PI()/180)/2),2)+COS($lat1*PI()/180)*COS(lat*PI()/180)*POW(SIN(($lng1*PI()/180-lng*PI()/180)/2),2))) AS juli  FROM mt_shop s inner join mt_goods g on s.shop_id = g.shop_id  inner join mt_type t on t.t_id = s.t_id where shop_status = 2  group by juli order by juli limit $page,10");
+//            var_dump($shopInfo);exit;
             $data=[
               'code'=>0,
               'shopInfo'=>$shopInfo
@@ -1067,7 +1080,9 @@ class GoodsController extends Controller
             ];
             return json_encode($response,JSON_UNESCAPED_UNICODE);
         }else if($limited_type ==2){ //销量
-            $shopInfo =  DB::select("SELECT s.shop_id,shop_name,shop_volume,shop_address_provice,shop_address_city,shop_address_area,shop_score,goods_id,goods_name,price,market_price,introduction,picture,promotion_price,prople,shop_label,shop_status,mt_type.t_name,mt_type.p_id, 6378.138*2*ASIN(SQRT(POW(SIN(($lat1*PI()/180-lat*PI()/180)/2),2)+COS($lat1*PI()/180)*COS(lat*PI()/180)*POW(SIN(($lng1*PI()/180-lng*PI()/180)/2),2))) AS juli  FROM mt_shop s inner join mt_goods g on s.shop_id = g.shop_id inner join mt_type on mt_type.t_id = mt_shop.t_id where shop_status = 2 group by juli order by juli");
+            $page=$request->input('page');
+            $shopInfo =  DB::select("SELECT s.shop_id,shop_name,shop_volume,shop_address_provice,shop_address_city,shop_address_area,shop_score,goods_id,goods_name,price,market_price,introduction,shop_img,promotion_price,prople,shop_label,shop_status,t.t_name,t.p_id, 6378.138*2*ASIN(SQRT(POW(SIN(($lat1*PI()/180-lat*PI()/180)/2),2)+COS($lat1*PI()/180)*COS(lat*PI()/180)*POW(SIN(($lng1*PI()/180-lng*PI()/180)/2),2))) AS juli  FROM mt_shop s inner join mt_goods g on s.shop_id = g.shop_id  inner join mt_type t on t.t_id = s.t_id where shop_status = 2 group by juli order by juli limit $page,10");
+//            var_dump($shopInfo);exit;
             $data=[
                 'code'=>0,
                 'shopInfo'=>$shopInfo
