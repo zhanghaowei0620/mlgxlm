@@ -742,7 +742,9 @@ class GoodsController extends Controller
                 'openid'=>$openid,
 //                'collection'=>1
             ];
-            $cartInfo = DB::table('mt_collection_goods')->where($where)->select()->paginate(6);
+            $cartInfo = DB::table('mt_collection_goods')
+                ->join('mt_shop','mt_shop.shop_id','=','mt_collection_goods.shop_id')
+                ->where($where)->select()->paginate(10);
 //            var_dump($cartInfo);exit;
             if($cartInfo){
                 $data=[
@@ -956,7 +958,7 @@ class GoodsController extends Controller
                 ->join('mt_shop','mt_shop_collection.shop_id','=','mt_shop.shop_id')
                 ->join('mt_type','mt_shop_collection.t_id','=','mt_type.t_id')
                 ->where($where)
-                ->select()->paginate(6);
+                ->select()->paginate(10);
             //var_dump($collectionInfo);exit;
             if($collectionInfo){
                 $data1=[
