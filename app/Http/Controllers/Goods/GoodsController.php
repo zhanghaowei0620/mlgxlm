@@ -1046,17 +1046,38 @@ class GoodsController extends Controller
 //        $lat1= '37.69946';
         $lat1 = $request->input('lat');//纬度
         $lng1 = $request->input('lng');//经度
-
-        $shopInfo =  DB::select("SELECT s.shop_id,shop_name,shop_address_provice,shop_address_city,shop_address_area,shop_score,goods_id,goods_name,price,market_price,introduction,picture,promotion_price,prople,shop_label,shop_status, 6378.138*2*ASIN(SQRT(POW(SIN(($lat1*PI()/180-lat*PI()/180)/2),2)+COS($lat1*PI()/180)*COS(lat*PI()/180)*POW(SIN(($lng1*PI()/180-lng*PI()/180)/2),2))) AS juli  FROM mt_shop s inner join mt_goods g on s.shop_id = g.shop_id  where shop_status = 2 group by juli order by juli");
+        $limited_type = $request->input('limited_type');// 1为附近店铺 2为销量最高
+//        $aa=DB::table('mt_goods')
+//            ->join('mt_shop','mt_shop.shop_id','=','mt_goods.shop_id')
+//            ->first(['goods_id','mt_goods.shop_id','goods_gd_num']);
+//        $qqq=DB::table('mt_goods')
+//            ->where(['shop_id'=>$aa->shop_id])
+//            ->get(['goods_gd_num']);
+//        $sss=count($qqq);
+//        var_dump($qqq);die;
+        if($limited_type == 1){
+//            $shopInfo =  DB::select("SELECT s.shop_id,shop_name,shop_address_provice,shop_address_city,shop_address_area,shop_score,goods_id,goods_name,price,market_price,introduction,picture,promotion_price,prople,shop_label,shop_status, 6378.138*2*ASIN(SQRT(POW(SIN(($lat1*PI()/180-lat*PI()/180)/2),2)+COS($lat1*PI()/180)*COS(lat*PI()/180)*POW(SIN(($lng1*PI()/180-lng*PI()/180)/2),2))) AS juli  FROM mt_shop s inner join mt_goods g on s.shop_id = g.shop_id  where shop_status = 2 group by juli order by juli");
+            $shopInfo =  DB::select("SELECT s.shop_id,shop_name,shop_address_provice,shop_address_city,shop_address_area,shop_score,goods_id,goods_name,price,market_price,introduction,picture,promotion_price,prople,shop_label,shop_status, 6378.138*2*ASIN(SQRT(POW(SIN(($lat1*PI()/180-lat*PI()/180)/2),2)+COS($lat1*PI()/180)*COS(lat*PI()/180)*POW(SIN(($lng1*PI()/180-lng*PI()/180)/2),2))) AS juli  FROM mt_shop s inner join mt_goods g on s.shop_id = g.shop_id  where shop_status = 2 group by juli order by juli");
+            $data=[
+              'code'=>0,
+              'shopInfo'=>$shopInfo
+            ];
+            $response = [
+                'data'=>$data
+            ];
+            return json_encode($response,JSON_UNESCAPED_UNICODE);
+        }else if($limited_type ==2){
+            $shopInfo =  DB::select("SELECT s.shop_id,shop_name,shop_volume,shop_address_provice,shop_address_city,shop_address_area,shop_score,goods_id,goods_name,price,market_price,introduction,picture,promotion_price,prople,shop_label,shop_status, 6378.138*2*ASIN(SQRT(POW(SIN(($lat1*PI()/180-lat*PI()/180)/2),2)+COS($lat1*PI()/180)*COS(lat*PI()/180)*POW(SIN(($lng1*PI()/180-lng*PI()/180)/2),2))) AS juli  FROM mt_shop s inner join mt_goods g on s.shop_id = g.shop_id  where shop_status = 2 group by juli order by juli");
+            $data=[
+                'code'=>0,
+                'shopInfo'=>$shopInfo
+            ];
+            $response = [
+                'data'=>$data
+            ];
+            return json_encode($response,JSON_UNESCAPED_UNICODE);
+        }
         //var_dump($shopInfo);exit;
-        $data = [
-            'code'=>0,
-            'shopInfo'=>$shopInfo
-        ];
-        $response = [
-            'data'=>$data,
-        ];
-        return json_encode($response,JSON_UNESCAPED_UNICODE);
 
 //        $shopInfo = DB::table('mt_shop')
 //            ->join('mt_goods','mt_shop.shop_id','=','mt_goods.shop_id')
