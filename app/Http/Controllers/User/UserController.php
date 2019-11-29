@@ -1565,6 +1565,12 @@ class UserController extends Controller
     //发现列表详情
     public function releaselist_Detail(Request $request){
         $mt_release_id = $request->input('mt_release_id');
+        $openid1 = $request->input('openid');
+        $key = $openid1;
+        $openid = Redis::get($key);
+        $userInfo = DB::table('mt_user')->where('openid', $openid)->first();
+        //var_dump($userInfo);exit;
+        $uid = $userInfo->uid;
         $shop_id = DB::table('mt_release')->where('mt_release_id',$mt_release_id)->first(['shop_id']);
 //        var_dump($shop_id);exit;
         if($shop_id->shop_id != NULL){
@@ -1575,14 +1581,26 @@ class UserController extends Controller
 //            var_dump($releaselistInfo);exit;
             $count = DB::table('mt_fabulous')->where('mt_release_id',$mt_release_id)->count();   //点赞个数
             $mt_commentInfo = DB::table('mt_comment')->where('mt_release_id',$mt_release_id)->get()->toArray();
-//        var_dump($mt_commentInfo);exit;
-            $data = [
-                'code'=>0,
-                'info'=>$releaselistInfo,
-                'count'=>$count,
-                'mt_commentInfo'=>$mt_commentInfo,
-                'msg'=>'数据请求成功'
-            ];
+            $is_fabulousInfo = DB::table('mt_fabulous')->where(['uid'=>$uid,'mt_release_id'=>$mt_release_id])->first();
+            if($is_fabulousInfo){
+                $data = [
+                    'code'=>0,
+                    'info'=>$releaselistInfo,
+                    'count'=>$count,
+                    'mt_commentInfo'=>$mt_commentInfo,
+                    'is_fabulousInfo'=>1,
+                    'msg'=>'数据请求成功'
+                ];
+            }else{
+                $data = [
+                    'code'=>0,
+                    'info'=>$releaselistInfo,
+                    'count'=>$count,
+                    'mt_commentInfo'=>$mt_commentInfo,
+                    'is_fabulousInfo'=>0,
+                    'msg'=>'数据请求成功'
+                ];
+            }
             $response = [
                 'data' => $data
             ];
@@ -1596,14 +1614,28 @@ class UserController extends Controller
             $count = DB::table('mt_fabulous')->where('mt_release_id',$mt_release_id)->count();   //点赞个数
             $mt_commentInfo_count = DB::table('mt_comment')->where('mt_release_id',$mt_release_id)->count();   //评论条数
             $mt_commentInfo = DB::table('mt_comment')->where('mt_release_id',$mt_release_id)->get()->toArray();
-            $data = [
-                'code'=>0,
-                'info'=>$releaselistInfo,
-                'count'=>$count,
-                'mt_commentInfo'=>$mt_commentInfo,
-                'mt_commentInfo_count'=>$mt_commentInfo_count,
-                'msg'=>'数据请求成功'
-            ];
+            $is_fabulousInfo = DB::table('mt_fabulous')->where(['uid'=>$uid,'mt_release_id'=>$mt_release_id])->first();   //判断用户是否点赞
+            if($is_fabulousInfo){
+                $data = [
+                    'code'=>0,
+                    'info'=>$releaselistInfo,
+                    'count'=>$count,
+                    'mt_commentInfo'=>$mt_commentInfo,
+                    'is_fabulousInfo'=>1,
+                    'mt_commentInfo_count'=>$mt_commentInfo_count,
+                    'msg'=>'数据请求成功'
+                ];
+            }else{
+                $data = [
+                    'code'=>0,
+                    'info'=>$releaselistInfo,
+                    'count'=>$count,
+                    'mt_commentInfo'=>$mt_commentInfo,
+                    'is_fabulousInfo'=>0,
+                    'mt_commentInfo_count'=>$mt_commentInfo_count,
+                    'msg'=>'数据请求成功'
+                ];
+            }
             $response = [
                 'data' => $data
             ];
