@@ -1757,6 +1757,24 @@ class UserController extends Controller
 //
 //    }
 
+    //更多评论
+    public function admin_comment(Request $request){
+        $mt_release_id = $request->input('mt_release_id');
+        $mt_commentInfo = DB::table('mt_comment')
+            ->join('mt_user','mt_comment.uid','=','mt_user.uid')
+            ->where('mt_release_id',$mt_release_id)->limit(5)->get()->toArray();
+
+        $data = [
+            'code'=>0,
+            'mt_commentInfo'=>$mt_commentInfo,
+            'msg'=>'数据请求成功'
+        ];
+        $response = [
+            'data' => $data
+        ];
+        return json_encode($response, JSON_UNESCAPED_UNICODE);
+    }
+
 
 
 
