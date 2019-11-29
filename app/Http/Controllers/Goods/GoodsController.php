@@ -884,6 +884,8 @@ class GoodsController extends Controller
         if($openid){
             $user_info = DB::table('mt_user')->where('openid',$openid)->first();
             $uid = $user_info->uid;
+            $shop_infos=DB ::table('mt_shop')->where(['shop_id'=>$shop_id])->first();
+            $t_id=$shop_infos->t_id;
             //$shop_id = 1;
             $where = [
                 'shop_id'=>$shop_id,
@@ -900,7 +902,8 @@ class GoodsController extends Controller
             }else{
                 $data = [
                     'shop_id'=>$shop_id,
-                    'uid'=>$uid
+                    'uid'=>$uid,
+                    't_id'=>$t_id
                 ];
                 //var_dump($data);exit;
                 $add_shop_collection = DB::table('mt_shop_collection')->insertGetId($data);
