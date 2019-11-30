@@ -305,26 +305,6 @@ class OrderController extends Controller
                     'pt_sum'=>1,
                 ];
                 $infodata =DB::table('mt_pt_list')->insert($data_order);
-                if($infodata){
-                    $data=[
-                        'code'=>0,
-                        'msg'=>'成功',
-                    ];
-                    $response = [
-                        'data'=>$data
-                    ];
-                    return json_encode($response,JSON_UNESCAPED_UNICODE);
-                }else{
-                    $data=[
-                        'code'=>0,
-                        'msg'=>'失败',
-                        'data'=>$datailData,
-                    ];
-                    $response = [
-                        'data'=>$data
-                    ];
-                    return json_encode($response,JSON_UNESCAPED_UNICODE);
-                }
 
                 $dataData = DB::table('mt_order')->where('order_no',$order_no)->first();
                 $order_id = $dataData->order_id;
