@@ -72,7 +72,7 @@ class ResellerController extends Controller
         $shop_resellerInfo = DB::table('re_goods')
             ->join('mt_shop','re_goods.shop_id','=','mt_shop.shop_id')
             ->where('mt_shop.shop_reseller',1)
-            ->get(['mt_shop.shop_id','mt_shop.shop_name','re_goods.re_goods_id','re_goods.re_goods_name','re_goods.re_goods_price','re_goods.re_goods_picture','re_goods.re_goods_volume'])->toArray();
+            ->get(['mt_shop.shop_id','mt_shop.shop_name','mt_shop.shop_img','re_goods.re_goods_id','re_goods.re_goods_name','re_goods.re_goods_price','re_goods.re_goods_picture','re_goods.re_goods_volume'])->toArray();
 //        var_dump($shop_resellerInfo);exit;
         $data = [
             'code'=>0,
@@ -85,7 +85,11 @@ class ResellerController extends Controller
         return json_encode($response, JSON_UNESCAPED_UNICODE);
     }
 
-    //
+    // 分销商品列表
+    public function index_reseller_goodsList(Request $request){
+        $shop_id = $request->input('shop_id');
+
+    }
 
 
 
