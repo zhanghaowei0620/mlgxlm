@@ -100,6 +100,8 @@ Route::get('/shop_collection_list', 'Goods\GoodsController@shop_collection_list'
 
 Route::get('/add_order', 'Order\OrderController@add_order');      //生成订单
 
+Route::get('/pt_add', 'Order\OrderController@pt_add');      //生成拼团订单
+
 Route::get('/order_list', 'Order\OrderController@order_list');     //订单列表
 
 Route::get('/order_status_list', 'Order\OrderController@order_status_list');     //根据订单状态获取订单信息
