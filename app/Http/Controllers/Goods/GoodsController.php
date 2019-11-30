@@ -183,8 +183,9 @@ class GoodsController extends Controller
         $goods_shop=DB::table('mt_goods')
             ->join('mt_shop','mt_shop.shop_id','=','mt_goods.shop_id')
             ->where(['mt_shop.shop_id'=>$shop_id])
-            ->select(['mt_goods.goods_name','mt_goods.goods_id','mt_goods.market_price','mt_goods.picture','mt_goods.goods_gd_num'])
+            ->select(['mt_goods.goods_name','mt_goods.goods_id','mt_goods.market_price','mt_goods.picture','mt_goods.goods_gd_num','shop_name','mt_shop.shop_address_provice','mt_shop.shop_address_city','mt_shop.shop_address_area'])
             ->paginate(4);
+//        var_dump($goods_shop);die;
         $goods_list=DB::table('mt_goods')
             ->where(['mt_shop.shop_id'=>$shop_id])
             ->join('mt_shop','mt_shop.shop_id','=','mt_goods.goods_id')
