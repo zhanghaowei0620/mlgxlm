@@ -215,7 +215,7 @@ class OrderController extends Controller
                         'pt_team'=>$data_pt->pt_team.','.$uid,
                         'pt_order_id' =>$data_pt->pt_order_id.','.$order_no,
                         'pt_start_time'=>time(),
-                        'pt_state'=>1,
+                        'pt_state'=>0,
                         'pt_sum'=>$data_pt->pt_sum+1,
                     ];
 //                    $infodata =DB::table('mt_pt_list')->insert($data_order);
