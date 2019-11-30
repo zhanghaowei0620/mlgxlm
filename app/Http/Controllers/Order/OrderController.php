@@ -304,13 +304,13 @@ class OrderController extends Controller
                     ];
                     $datailData = DB::table('mt_order_detail')->insert($info);
                     $dainfo=DB::table('mt_order')
-                        ->where(['order_no'=>$$order_no])
+                        ->where(['order_no'=>$order_no])
                         ->first();
                     if($dainfo){
                         $data=[
                             'code'=>0,
                             'msg'=>'成功',
-                            'data'=>$datailData
+                            'data'=>$dainfo
                         ];
                         $response = [
                             'data'=>$data
