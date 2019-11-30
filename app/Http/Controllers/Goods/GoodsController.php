@@ -416,7 +416,7 @@ class GoodsController extends Controller
         $openid1 = $request->input('openid');
         $key = $openid1;
         $openid = Redis::get($key);
-//        $openid="o9VUc5AOsdEdOBeUAw4TdYg-F-dM";
+        $openid="o9VUc5AOsdEdOBeUAw4TdYg-F-dM";
         if($openid){
             $buy_num = $request->input('buy_num');
             $user_info = DB::table('mt_user')->where('openid',$openid)->first();
@@ -431,16 +431,16 @@ class GoodsController extends Controller
             $goods_cart = DB::table('mt_cart')->where($where)->get()->toArray();
 //            var_dump($goods_cart);exit;
             if($goods_cart){
-                $update = [
-                    'buy_num'=>$goods_cart[0]->buy_num+$buy_num
-                ];
-                $update_buynum = DB::table('mt_cart')->where('goods_id',$goods_id)->update($update);
-//                var_dump($update_buynum);exit;
-                if($update_buynum==true){
+//                $update = [
+//                    'buy_num'=>$goods_cart[0]->buy_num+$buy_num
+//                ];
+//                $update_buynum = DB::table('mt_cart')->where('goods_id',$goods_id)->update($update);
+                $cart_is=DB::table('mt_cart')->where(['goods_id'=>$goods_id])->get();
+//                var_dump($cart_is);exit;
+                if($cart_is==true){
                     $aa=[
                         'code'=>'0',
-                        'msg'=>'加入购物车成功111'
-                    ];
+                        'msg'=>'您的购物车已有此商品'                   ];
                     $response = [
                         'data'=>$aa
                     ];
@@ -570,7 +570,7 @@ class GoodsController extends Controller
 //            ->join('mt_order_detail','mt_user.uid','=','mt_order_detail.uid')
             ->where(['openid'=>$openid])
             ->first(['mt_user.money']);
-//        var_dump($data);die;
+//        var_dump($data);die; VB
         $money=$data->money-$price;
 //        var_dump($money);die;
         $updates=[
