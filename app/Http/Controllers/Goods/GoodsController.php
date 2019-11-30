@@ -416,7 +416,7 @@ class GoodsController extends Controller
         $openid1 = $request->input('openid');
         $key = $openid1;
         $openid = Redis::get($key);
-        $openid="o9VUc5AOsdEdOBeUAw4TdYg-F-dM";
+//        $openid="o9VUc5AOsdEdOBeUAw4TdYg-F-dM";
         if($openid){
             $buy_num = $request->input('buy_num');
             $user_info = DB::table('mt_user')->where('openid',$openid)->first();
@@ -440,7 +440,8 @@ class GoodsController extends Controller
                 if($cart_is==true){
                     $aa=[
                         'code'=>'0',
-                        'msg'=>'您的购物车已有此商品'                   ];
+                        'msg'=>'您的购物车已有此商品'
+                    ];
                     $response = [
                         'data'=>$aa
                     ];
