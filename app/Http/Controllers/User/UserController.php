@@ -1758,7 +1758,7 @@ class UserController extends Controller
 //
 //    }
 
-    //更多评论
+    //发现-更多评论
     public function admin_comment(Request $request){
         $mt_release_id = $request->input('mt_release_id');
         $mt_commentInfo = DB::table('mt_comment')

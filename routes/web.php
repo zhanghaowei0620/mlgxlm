@@ -154,6 +154,9 @@ Route::get('/subscribe', 'Goods\GoodsController@subscribe');   //预约
 
 Route::get('reseller', 'Reseller\ResellerController@reseller');   //分销
 
+Route::post('index_reseller_Apply', 'Reseller\ResellerController@index_reseller_Apply');   //分销
+
+
 
 
 
