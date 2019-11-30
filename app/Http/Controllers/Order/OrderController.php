@@ -195,15 +195,6 @@ class OrderController extends Controller
                         'data'=>$data
                     ];
                     return json_encode($response,JSON_UNESCAPED_UNICODE);
-                }else{
-                    $data=[
-                        'code'=>1,
-                        'msg'=>'操作有误,请重新尝试',
-                    ];
-                    $response = [
-                        'data'=>$data
-                    ];
-                    return json_encode($response,JSON_UNESCAPED_UNICODE);
                 }
                 $data_pt=DB::table('mt_pt_list')->where("pt_id",$pt_id)->first();
                 if($data_pt){
