@@ -152,9 +152,10 @@ Route::get('/nearby_shop', 'Goods\GoodsController@nearby_shop');   //附近店�
 
 Route::get('/subscribe', 'Goods\GoodsController@subscribe');   //预约
 
-Route::get('reseller', 'Reseller\ResellerController@reseller');   //分销
 
-Route::post('index_reseller_Apply', 'Reseller\ResellerController@index_reseller_Apply');   //分销
+Route::post('index_reseller_Apply', 'Reseller\ResellerController@index_reseller_Apply');   //分销-申请
+
+Route::post('index_rellerList', 'Reseller\ResellerController@index_rellerList');    //分销中心-列表
 
 
 
