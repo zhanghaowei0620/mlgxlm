@@ -188,7 +188,8 @@ class OrderController extends Controller
                         'order_method'=>1,
                         'total_price'=>$total_price,
                         'create_time'=>time(),
-                        'good_cate'=>$good_cate
+                        'good_cate'=>$good_cate,
+                        'uid'=>$uid
                     ];
                     $infodata =DB::table('mt_order')->insert($data_order);
 
@@ -266,7 +267,8 @@ class OrderController extends Controller
                     'order_method'=>1,
                     'total_price'=>$total_price,
                     'create_time'=>time(),
-                    'good_cate'=>$good_cate
+                    'good_cate'=>$good_cate,
+                    'uid'=>$uid
                 ];
                 $infodata =DB::table('mt_order')->insert($data_order);
 

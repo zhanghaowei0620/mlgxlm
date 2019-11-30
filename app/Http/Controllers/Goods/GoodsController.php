@@ -336,12 +336,18 @@ class GoodsController extends Controller
             ->join('mt_shop','mt_shop.shop_id','=','mt_goods.goods_id')
             ->limit(4)
             ->get();
-        $seller = DB::table('mt_goods')
-            ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
-            ->join('mt_user','mt_goods.uid','=','mt_user.uid')
-            ->where(['mt_shop.shop_id'=>$data1->shop_id])
-//            ->limit(2)
-            ->get(['goods_id','goods_name','picture','promotion_price','prople','promotion_prople','wx_name','wx_headimg'])->toArray();
+//        $seller = DB::table('mt_goods')
+//            ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
+//            ->join('mt_user','mt_goods.uid','=','mt_user.uid')
+//            ->where(['mt_shop.shop_id'=>$data1->shop_id])
+////            ->limit(2)
+//            ->get(['goods_id','goods_name','picture','promotion_price','prople','promotion_prople','wx_name','wx_headimg'])->toArray();
+//        var_dump($seller);die;
+        $seller = DB ::table('mt_pt_list')
+            ->join('mt_shop','mt_pt_list.shop_id','=','mt_shop.shop_id')
+            ->join('mt_user','mt_pt_list.uid','=','mt_user.uid')
+            ->where(['pt_state'=>0,'goods_id'=>$goods_id])
+            ->get();
 //        var_dump($seller);die;
         $assesslist=DB::table('mt_assess')
             ->join('mt_user','mt_assess.uid','=','mt_user.uid')
@@ -573,6 +579,7 @@ class GoodsController extends Controller
 //            ->join('mt_order_detail','mt_user.uid','=','mt_order_detail.uid')
             ->where(['openid'=>$openid])
             ->first(['mt_user.money']);
+
 //        var_dump($data);die; VB
         $money=$data->money-$price;
 //        var_dump($money);die;
