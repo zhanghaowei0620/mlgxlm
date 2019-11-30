@@ -27,16 +27,29 @@ class IndexController extends Controller
                 ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
                 ->where(['promotion_type'=>$promotion_type])
                 ->get(['shop_name','shop_address_provice','shop_address_city','shop_address_area','shop_score','goods_id','goods_name','price','market_price','introduction','picture','promotion_price','prople','shop_label'])->toArray();   //店铺精选   默认为1
-            //var_dump($goodsInfo);exit;
-
-
+//            var_dump($goodsInfo);exit;
             $week_newshop = DB::table('mt_shop')
                 ->join('mt_goods','mt_goods.shop_id','=','mt_shop.shop_id')
                 ->where(['mt_shop.shop_address_city'=>$shop_address_city])
                 ->orderBy('shop_add_time')
                 ->limit(3)
                 ->get(['mt_shop.shop_id','shop_name','shop_Ename','shop_desc','shop_label','shop_address_provice','shop_address_city','shop_address_area','shop_score'])->toArray();    //本周新店
-            //var_dump($week_newshop);exit;
+            if($shop_address_city == NULL){
+                $week_newshop_add = DB :: table('mt_shop')
+                    ->join('mt_goods','mt_goods.shop_id','=','mt_shop.shop_id')
+                    ->orderBy('shop_add_time')
+                    ->limit(3)
+                    ->get(['mt_shop.shop_id','shop_name','shop_Ename','shop_desc','shop_label','shop_address_provice','shop_address_city','shop_address_area','shop_score'])->toArray();    //本周新店
+//                var_dump($week_newshop_add);die;
+            }
+//            $week_newshop = DB::table('mt_shop')
+//                ->join('mt_goods','mt_goods.shop_id','=','mt_shop.shop_id')
+//                ->where(['mt_shop.shop_address_city'=>$shop_address_city])
+//                ->orderBy('shop_add_time')
+//                ->limit(3)
+//                ->get(['mt_shop.shop_id','shop_name','shop_Ename','shop_desc','shop_label','shop_address_provice','shop_address_city','shop_address_area','shop_score'])->toArray();    //本周新店
+
+//            var_dump($week_newshop);exit;
             $recommend = DB::table('mt_goods')
                 ->join('mt_shop','mt_shop.shop_id','=','mt_goods.shop_id')
                 ->where(['is_recommend'=>1])
