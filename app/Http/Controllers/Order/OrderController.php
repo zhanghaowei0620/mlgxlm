@@ -376,7 +376,7 @@ class OrderController extends Controller
         $data=DB::table('mt_order')
             ->join('mt_order_detail','mt_order.uid','=','mt_order_detail.uid')
             ->where(['mt_order.uid'=>$orderInfo->uid,'good_cate'=>$good_cate])
-            ->first();
+            ->get()->toArray();
 //        var_dump($data);die;
         if($data){
             $data=[
