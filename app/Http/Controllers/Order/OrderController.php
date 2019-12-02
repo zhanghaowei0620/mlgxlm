@@ -125,8 +125,6 @@ class OrderController extends Controller
                 ];
                 return json_encode($response,JSON_UNESCAPED_UNICODE);
             }
-
-
         }else{
             $response = [
                 'error'=>'1',
@@ -155,10 +153,6 @@ class OrderController extends Controller
             $uid = $userInfo->uid;
 //            var_dump($uid);die;
             if($pt_id){
-
-
-
-
                 $dataData = DB::table('mt_pt_list')->where('pt_id',$pt_id)->first(['pt_state']);
                 if($dataData->pt_state == 1){
                     $data=[
@@ -365,6 +359,46 @@ class OrderController extends Controller
             ];
             return json_encode($response,JSON_UNESCAPED_UNICODE);
         }
+    }
+    //用户下所有的订单
+    public function open_order_list(Request $request)
+    {
+        $openid1 = $request->input('openid');
+        $good_cate=$request->input('good_cate');
+        $key = $openid1;
+        $openid = Redis::get($key);
+//        $openid='o9VUc5MWyq5GgW3kF_90NnrQkBH8';
+        $orderInfo = DB::table('mt_user')
+            ->join('mt_order','mt_user.uid','=','mt_order.uid')
+            ->where('mt_user.openid',$openid)
+            ->first();
+//        var_dump($orderInfo);die;
+        $data=DB::table('mt_order')
+            ->join('mt_order_detail','mt_order.uid','=','mt_order_detail.uid')
+            ->where(['mt_order.uid'=>$orderInfo->uid,'good_cate'=>$good_cate])
+            ->first();
+//        var_dump($data);die;
+        if($data){
+            $data=[
+                'code'=>0,
+                'msg'=>'展示成功',
+                'data'=>$data
+            ];
+            $response = [
+                'data'=>$data
+            ];
+            return json_encode($response,JSON_UNESCAPED_UNICODE);
+        }else{
+            $data=[
+                'code'=>0,
+                'msg'=>'展示失败'
+            ];
+            $response = [
+                'data'=>$data
+            ];
+            return json_encode($response,JSON_UNESCAPED_UNICODE);
+        }
+
     }
 
 

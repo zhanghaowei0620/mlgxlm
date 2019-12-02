@@ -102,6 +102,8 @@ Route::get('/pt_add', 'Order\OrderController@pt_add');      //生成拼团订单
 
 Route::get('/pt_add_list', 'Order\OrderController@pt_add_list');      //拼团列表
 
+Route::get('/open_order_list', 'Order\OrderController@open_order_list');      //拼团列表
+
 Route::get('/order_list', 'Order\OrderController@order_list');     //订单列表
 
 Route::get('/order_status_list', 'Order\OrderController@order_status_list');     //根据订单状态获取订单信息
