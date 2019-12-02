@@ -204,10 +204,14 @@ class OrderController extends Controller
                     ];
 //                    $infodata =DB::table('mt_pt_list')->insert($data_order);
                     $infodata = DB::table('mt_pt_list')->where('pt_id',$pt_id)->update($data_order);
+                    $dainfo=DB::table('mt_order')
+                        ->where(['order_no'=>$order_no])
+                        ->first(['order_id']);
                     if($infodata){
                         $data=[
                             'code'=>0,
                             'msg'=>'拼团成功',
+                            'data'=>$dainfo
                         ];
                         $response = [
                             'data'=>$data
@@ -309,6 +313,7 @@ class OrderController extends Controller
                     $dainfo=DB::table('mt_order')
                         ->where(['order_no'=>$order_no])
                         ->first();
+//                    var_dump($dainfo);die;
                     if($dainfo){
                         $data=[
                             'code'=>0,
