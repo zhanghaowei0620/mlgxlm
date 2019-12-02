@@ -348,7 +348,7 @@ class OrderController extends Controller
         $goods_id=$request->input('goods_id');
         $data=DB::table('mt_pt_list')
             ->join('mt_user','mt_user.uid','=','mt_pt_list.uid')
-            ->where(['goods_id'=>$goods_id])
+            ->where(['goods_id'=>$goods_id,'pt_state'=>0])
             ->get(['mt_pt_list.pt_id','mt_pt_list.uid','mt_user.wx_name','mt_user.wx_headimg','mt_pt_list.pt_team']);
         if($data){
             $data=[
