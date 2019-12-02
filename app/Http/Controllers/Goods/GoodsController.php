@@ -325,7 +325,7 @@ class GoodsController extends Controller
             ->join('admin_user','mt_shop.shop_id','=','admin_user.shop_id')
             ->join('mt_goods','mt_goods.shop_id','=','mt_shop.shop_id')
             ->where(['mt_goods.goods_id'=>$goods_id])
-            ->get(['shop_name','admin_tel','shop_address_detail','goods_name','goods_effect','goods_duration','goods_process','goods_overdue_time','shop_bus','goods_appointment','goods_use_rule','shop_img','shop_logo','shop_star']);
+            ->get(['shop_name','admin_tel','shop_address_detail','goods_name','goods_effect','goods_duration','goods_process','goods_overdue_time','shop_bus','goods_appointment','goods_use_rule','shop_img','shop_logo','shop_star','mt_goods.prople']);
 //        var_dump($shopsetInfo);die;
 //        $aaa=DB::table('mt_goods')
 //            ->where(['shop_id'=>$data1->shop_id])
@@ -368,13 +368,10 @@ class GoodsController extends Controller
             ];
             die(json_encode($response,JSON_UNESCAPED_UNICODE));
         }else{
-//            $ip = $_SERVER['SERVER_ADDR'];
-//            $key = 'openid'.$ip;
-//            $openid = Redis::get($key);
             $openid1 = $request->input('openid');
             $key = $openid1;
             $openid = Redis::get($key);
-//            $openid="o9VUc5AOsdEdOBeUAw4TdYg-F-dM";
+            $openid="o9VUc5AOsdEdOBeUAw4TdYg-F-dM";
 //            var_dump($openid);exit;
             $userInfo = DB::table('mt_user')->where('openid',$openid)->first();
 //            var_dump($userInfo);exit;

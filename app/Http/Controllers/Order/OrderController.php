@@ -146,13 +146,14 @@ class OrderController extends Controller
         $openid1 = $request->input('openid');
         $key = $openid1;
         $openid = Redis::get($key);
-        $openid='o9VUc5MWyq5GgW3kF_90NnrQkBH8';
+//        $openid='o9VUc5MWyq5GgW3kF_90NnrQkBH8';
 //        $total_price = 100;   //总价
         $order_no = date("YmdHis",time()).rand(1000,9999);   //订单号
         if($openid){
             $userInfo = DB::table('mt_user')->where(['openid'=>$openid])->first();
             $wx_name = $userInfo->wx_name;
             $uid = $userInfo->uid;
+//            var_dump($uid);die;
             if($pt_id){
                 $sss = DB::table('mt_pt_list')
                     ->join('mt_goods','mt_pt_list.goods_id','=','mt_goods.goods_id')
@@ -189,7 +190,6 @@ class OrderController extends Controller
                         'total_price'=>$total_price,
                         'create_time'=>time(),
                         'good_cate'=>$good_cate,
-                        'uid'=>$uid
                     ];
                     $infodata =DB::table('mt_order')->insert($data_order);
 
@@ -268,9 +268,9 @@ class OrderController extends Controller
                     'total_price'=>$total_price,
                     'create_time'=>time(),
                     'good_cate'=>$good_cate,
-                    'uid'=>$uid
                 ];
                 $infodata =DB::table('mt_order')->insert($data_order);
+//                var_dump($data_order);die;
 
                 $data_order = [
                     'goods_id'=> $goods_id,
@@ -280,6 +280,7 @@ class OrderController extends Controller
                     'pt_start_time'=>time(),
                     'pt_state'=>0,
                     'pt_sum'=>1,
+                    'uid'=>$uid
                 ];
                 $infodata =DB::table('mt_pt_list')->insert($data_order);
 
@@ -330,11 +331,7 @@ class OrderController extends Controller
                     }
                 }
             }
-
-//
 //            $dataData = DB::table('mt_goods')->where('goods_id',$goods_id)->get(['promotion_prople']);
-
-
 
         }else{
             $response = [
