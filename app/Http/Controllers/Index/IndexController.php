@@ -26,7 +26,7 @@ class IndexController extends Controller
             $goodsInfo = DB::table('mt_goods')
                 ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
                 ->where(['promotion_type'=>$promotion_type])
-                ->get(['shop_name','shop_address_provice','shop_address_city','shop_address_area','shop_score','goods_id','goods_name','price','market_price','introduction','picture','promotion_price','prople','shop_label'])->toArray();   //店铺精选   默认为1
+                ->get(['shop_name','shop_address_provice','shop_address_city','shop_address_area','shop_score','goods_id','goods_name','price','market_price','introduction','picture','promotion_price','prople','shop_label','mt_goods.pt_num_all','mt_goods.goods_effect'])->toArray();   //店铺精选   默认为1
 //            var_dump($goodsInfo);exit;
             $week_newshop = DB::table('mt_shop')
                 ->join('mt_goods','mt_goods.shop_id','=','mt_shop.shop_id')
@@ -90,7 +90,7 @@ class IndexController extends Controller
                 ->join('mt_type','mt_goods.t_id','=','mt_type.t_id')
                 ->where(['promotion_type'=>1],['mt_shop.shop_address_city'=>$shop_address_city])
                 ->limit(6)
-                ->get(['promotion_type','mt_goods.goods_id','goods_name','goods_type','market_price','mt_goods.price','picture','description','mt_shop.shop_name','mt_goods.prople','promotion_price','mt_type.t_name','star'])->toArray();
+                ->get(['promotion_type','mt_goods.goods_id','goods_name','goods_type','market_price','mt_goods.price','picture','description','mt_shop.shop_name','mt_goods.prople','promotion_price','mt_type.t_name','star','mt_goods.pt_num_all','mt_goods.goods_effect'])->toArray();
 //            var_dump($goodsInfo);exit;
             $discountInfo= DB ::table('mt_goods')
                 ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')

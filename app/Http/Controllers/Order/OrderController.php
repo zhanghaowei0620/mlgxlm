@@ -146,7 +146,7 @@ class OrderController extends Controller
         $openid1 = $request->input('openid');
         $key = $openid1;
         $openid = Redis::get($key);
-//        $openid='o9VUc5MWyq5GgW3kF_90NnrQkBH8';
+        $openid='o9VUc5MWyq5GgW3kF_90NnrQkBH8';
 //        $total_price = 100;   //总价
         $order_no = date("YmdHis",time()).rand(1000,9999);   //订单号
         if($openid){
@@ -155,17 +155,8 @@ class OrderController extends Controller
             $uid = $userInfo->uid;
 //            var_dump($uid);die;
             if($pt_id){
-                $sss = DB::table('mt_pt_list')
-                    ->join('mt_goods','mt_pt_list.goods_id','=','mt_goods.goods_id')
-                    ->where('mt_pt_list.pt_id',$pt_id)
-                    ->first(['mt_pt_list.pt_sum','mt_goods.promotion_prople']);
-//            var_dump($sss->pt_sum,$sss->promotion_prople);
-                if($sss->pt_sum == $sss->promotion_prople){
-                    $data_up = [
-                        'pt_state'=> 1,
-                    ];
-                    $res = DB::table('mt_pt_list')->where('pt_id',$pt_id)->update($data_up);
-                }
+
+
 
 
                 $dataData = DB::table('mt_pt_list')->where('pt_id',$pt_id)->first(['pt_state']);
@@ -179,6 +170,8 @@ class OrderController extends Controller
                     ];
                     return json_encode($response,JSON_UNESCAPED_UNICODE);
                 }
+
+
                 $data_pt=DB::table('mt_pt_list')->where("pt_id",$pt_id)->first();
                 if($data_pt){
                     $data_order = [
@@ -190,23 +183,41 @@ class OrderController extends Controller
                         'total_price'=>$total_price,
                         'create_time'=>time(),
                         'good_cate'=>$good_cate,
+                        'has_pt_id'=>$pt_id
                     ];
                     $infodata =DB::table('mt_order')->insert($data_order);
 
-                    $data_order = [
-                        'goods_id'=> $goods_id,
-                        'shop_id'=> $shop_id,
-                        'pt_team'=>$data_pt->pt_team.','.$uid,
-                        'pt_order_id' =>$data_pt->pt_order_id.','.$order_no,
-                        'pt_start_time'=>time(),
-                        'pt_state'=>0,
-                        'pt_sum'=>$data_pt->pt_sum+1,
-                    ];
-//                    $infodata =DB::table('mt_pt_list')->insert($data_order);
-                    $infodata = DB::table('mt_pt_list')->where('pt_id',$pt_id)->update($data_order);
+
+
+
                     $dainfo=DB::table('mt_order')
                         ->where(['order_no'=>$order_no])
                         ->first(['order_id']);
+
+                    $dataData = DB::table('mt_order')->where('order_no',$order_no)->first();
+                    $order_id = $dataData->order_id;
+                    $num = DB::table('mt_goods')
+                        ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
+                        ->where('mt_goods.goods_id',$goods_id)
+                        ->get();
+                    foreach($num as $k=>$v){
+                        $info=[
+                            'uid'=>$uid,
+                            'order_id'=>$order_id,
+                            'order_no'=>$order_no,
+                            'goods_id'=>$v->goods_id,
+                            'goods_name'=>$v->goods_name,
+                            'price'=>$v->price,
+                            'picture'=>$v->picture,
+                            'buy_num'=>1,
+                            'shop_id'=>$v->shop_id,
+                            'shop_name'=>$v->shop_name,
+                            'create_time'=>time(),
+                        ];
+                        $datailData = DB::table('mt_order_detail')->insert($info);
+                    }
+
+
                     if($infodata){
                         $data=[
                             'code'=>0,
@@ -227,29 +238,8 @@ class OrderController extends Controller
                         ];
                         return json_encode($response,JSON_UNESCAPED_UNICODE);
                     }
-                    $dataData = DB::table('mt_order')->where('order_no',$order_no)->first();
-                    $order_id = $dataData->order_id;
-                    $num = DB::table('mt_goods')
-                        ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
-                        ->where('mt_goods.goods_id',$goods_id)
-                        ->get();
-                    foreach($num as $k=>$v){
-                        $info=[
-                            'uid'=>$uid,
-                            'order_id'=>$order_id,
-                            'order_no'=>$order_no,
-                            'goods_id'=>$v->goods_id,
-                            'goods_name'=>$v->goods_name,
-                            'price'=>$v->price,
-                            'picture'=>$v->picture,
-                            'buy_num'=>1,
-                            'order_status'=>0,
-                            'shop_id'=>$v->shop_id,
-                            'shop_name'=>$v->shop_name,
-                            'create_time'=>time(),
-                        ];
-                        $datailData = DB::table('mt_order_detail')->insert($info);
-                    }
+
+
 
                 }else{
                     $data=[
@@ -272,21 +262,21 @@ class OrderController extends Controller
                     'total_price'=>$total_price,
                     'create_time'=>time(),
                     'good_cate'=>$good_cate,
+                    'has_pt_id'=>0
                 ];
                 $infodata =DB::table('mt_order')->insert($data_order);
-//                var_dump($data_order);die;
 
-                $data_order = [
-                    'goods_id'=> $goods_id,
-                    'pt_team'=>$uid,
-                    'shop_id'=> $shop_id,
-                    'pt_order_id' =>$order_no,
-                    'pt_start_time'=>time(),
-                    'pt_state'=>0,
-                    'pt_sum'=>1,
-                    'uid'=>$uid
-                ];
-                $infodata =DB::table('mt_pt_list')->insert($data_order);
+//                $data_order = [
+//                    'goods_id'=> $goods_id,
+//                    'pt_team'=>$uid,
+//                    'shop_id'=> $shop_id,
+//                    'pt_order_id' =>$order_no,
+//                    'pt_start_time'=>time(),
+//                    'pt_state'=>0,
+//                    'pt_sum'=>1,
+//                    'uid'=>$uid
+//                ];
+//                $infodata =DB::table('mt_pt_list')->insert($data_order);
 
                 $dataData = DB::table('mt_order')->where('order_no',$order_no)->first();
                 $order_id = $dataData->order_id;
@@ -304,7 +294,6 @@ class OrderController extends Controller
                         'price'=>$v->price,
                         'picture'=>$v->picture,
                         'buy_num'=>1,
-                        'order_status'=>0,
                         'shop_id'=>$v->shop_id,
                         'shop_name'=>$v->shop_name,
                         'create_time'=>time(),
