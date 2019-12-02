@@ -342,6 +342,38 @@ class OrderController extends Controller
         }
     }
 
+    //拼团列表
+    public function pt_add_list(Request $request)
+    {
+        $goods_id=$request->input('goods_id');
+        $data=DB::table('mt_pt_list')
+            ->join('mt_user','mt_user.uid','=','mt_pt_list.uid')
+            ->where(['goods_id'=>$goods_id])
+            ->get(['mt_pt_list.pt_id','mt_pt_list.uid','mt_user.wx_name','mt_user.wx_headimg','mt_pt_list.pt_team']);
+        if($data){
+            $data=[
+                'code'=>0,
+                'msg'=>'展示成功',
+                'data'=>$data
+            ];
+            $response = [
+                'data'=>$data
+            ];
+            return json_encode($response,JSON_UNESCAPED_UNICODE);
+        }else{
+            $data=[
+                'code'=>1,
+                'msg'=>'请重新尝试展示列表'
+            ];
+            $response = [
+                'data'=>$data
+            ];
+            return json_encode($response,JSON_UNESCAPED_UNICODE);
+        }
+
+    }
+
+
     //订单列表
     public function order_list(Request $request){
 //        $ip = $_SERVER['SERVER_ADDR'];
