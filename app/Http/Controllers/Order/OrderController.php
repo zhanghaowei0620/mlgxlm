@@ -367,15 +367,15 @@ class OrderController extends Controller
         $good_cate=$request->input('good_cate');
         $key = $openid1;
         $openid = Redis::get($key);
-//        $openid='o9VUc5MWyq5GgW3kF_90NnrQkBH8';
+        $openid='o9VUc5MWyq5GgW3kF_90NnrQkBH8';
         $orderInfo = DB::table('mt_user')
 //            ->join('mt_order','mt_user.uid','=','mt_order.uid')
             ->where('openid',$openid)
             ->first();
 //        var_dump($orderInfo);die;
-        $data=DB::table('mt_order')
-            ->join('mt_order_detail','mt_order.order_id','=','mt_order_detail.order_id')
-            ->join('mt_shop','mt_shop.uid','=','mt_order.uid')
+        $data=DB::table('mt_order_detail')
+            ->join('mt_order','mt_order.order_id','=','mt_order_detail.order_id')
+            ->join('mt_shop','mt_shop.shop_id','=','mt_order_detail.shop_id')
             ->where(['mt_order.uid'=>$orderInfo->uid,'good_cate'=>$good_cate])
             ->get()->toArray();
 //        var_dump($data);die;
