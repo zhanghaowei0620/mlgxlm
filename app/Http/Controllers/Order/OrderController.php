@@ -375,6 +375,7 @@ class OrderController extends Controller
 //        var_dump($orderInfo);die;
         $data=DB::table('mt_order')
             ->join('mt_order_detail','mt_order.order_id','=','mt_order_detail.order_id')
+            ->join('mt_shop','mt_shop.uid','=','mt_order.uid')
             ->where(['mt_order.uid'=>$orderInfo->uid,'good_cate'=>$good_cate])
             ->get()->toArray();
 //        var_dump($data);die;
