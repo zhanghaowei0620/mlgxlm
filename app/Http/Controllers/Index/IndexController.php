@@ -186,6 +186,18 @@ class IndexController extends Controller
 
     //首页优惠券
     public function index_coupon(Request $request){
+//        $openid = $request->input('openid');
+//        $openid = "o9VUc5MWyq5GgW3kF_90NnrQkBH8";
+//        $userInfo = DB::table('mt_user')->where('openid',$openid)->first(['uid']);
+//        $uid = $userInfo->uid;
+//        $couponInfo = DB::table('mt_coupon')->where('uid',$uid)->get(['goods_id'])->toArray();
+////        var_dump($couponInfo);exit;
+//        $last_names = array_column($couponInfo, 'goods_id', 'goods_id');
+//        print_r($last_names);exit;
+        $goodsInfo = DB::table('mt_goods')
+            ->where('is_coupon',1)
+            ->get()->toArray();
+//        var_dump($goodsInfo);exit;
 //        echo time()+86400;exit;
         $couponInfo = DB::table('mt_goods')
             ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
@@ -196,7 +208,8 @@ class IndexController extends Controller
         if($couponInfo){
                 $data = [
                     'code'=>0,
-                    'couponInfo'=>$couponInfo
+                    'couponInfo'=>$couponInfo,
+                    'goodsInfo'=>$goodsInfo
                 ];
                 $response = [
                     'data'=>$data
