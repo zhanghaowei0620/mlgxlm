@@ -87,8 +87,8 @@ class ResellerController extends Controller
 
     // 分销商品列表
     public function index_reseller_goodsList(Request $request){
-        $is_reseller = $request->input('is_reseller');
-        $shop_id = $request->input('shop_id');
+        $is_reseller = $request->input('is_reseller');    //1为全部商品   2为店铺销量  3为新品
+        $shop_id = $request->input('shop_id');   //店铺id
 
         if($is_reseller == 1){
             $re_goodsInfo = DB::table('re_goods')->where('shop_id',$shop_id)->paginate(6);
@@ -137,7 +137,7 @@ class ResellerController extends Controller
         $shop_id = $request->input('shop_id');
         //商品详情信息
         $re_goodsShopInfo = DB::table('re_goods')->join('mt_shop','re_goods.shop_id','=','mt_shop.shop_id')
-            ->where('re_goods.re_goods_id',$re_goods_id)->first(['re_goods_name','re_goods_price','re_goods_stock','re_goods_picture','re_goods_introduction','is_distribution','re_goods_volume','re_goods_planting_picture','re_goods_picture_detail','re_production_time','re_expiration_time','mt_shop.shop_id','shop_name','shop_score']);
+            ->where('re_goods.re_goods_id',$re_goods_id)->first(['re_goods_name','re_goods_price','re_goods_stock','re_goods_picture','re_goods_introduction','is_distribution','re_goods_volume','re_goods_planting_picture','re_goods_picture_detail','re_production_time','re_expiration_time','mt_shop.shop_id','shop_name','shop_score','sjop_address_provice','shop_address_city','shop_address_area']);
 //        var_dump($re_goodsShopInfo);exit;
 
         $re_evaluateInfo = DB::table('re_evaluate')
