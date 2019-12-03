@@ -181,9 +181,6 @@ class OrderController extends Controller
                     ];
                     $infodata =DB::table('mt_order')->insert($data_order);
 
-
-
-
                     $dainfo=DB::table('mt_order')
                         ->where(['order_no'=>$order_no])
                         ->first(['order_id']);
@@ -370,11 +367,11 @@ class OrderController extends Controller
                         ];
                         $datailData = DB::table('mt_order_detail')->insert($info);
                     }
-                    if($datailData){
+                    if($infodata){
                         $data=[
                             'code'=>0,
                             'msg'=>'成功',
-                            'data'=>$datailData
+                            'data'=>$dainfo
                         ];
                         $response = [
                             'data'=>$data
@@ -441,11 +438,14 @@ class OrderController extends Controller
                     ];
                     $datailData = DB::table('mt_order_detail')->insert($info);
                 }
-                if($datailData){
+                $dainfo=DB::table('mt_order')
+                    ->where(['order_no'=>$order_no])
+                    ->first();
+                if($dainfo){
                     $data=[
                         'code'=>0,
                         'msg'=>'成功',
-                        'data'=>$datailData
+                        'data'=>$dainfo
                     ];
                     $response = [
                         'data'=>$data
