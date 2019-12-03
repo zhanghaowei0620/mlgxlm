@@ -87,13 +87,72 @@ class ResellerController extends Controller
 
     // 分销商品列表
     public function index_reseller_goodsList(Request $request){
+        $is_reseller = $request->input('is_reseller');
         $shop_id = $request->input('shop_id');
 
-        $re_goodsInfo = DB::table('re_goods')->where('shop_id',$shop_id)->get();
+        if($is_reseller == 1){
+            $re_goodsInfo = DB::table('re_goods')->where('shop_id',$shop_id)->paginate(6);
 
+            $data = [
+                'code'=>0,
+                're_goodsInfo'=>$re_goodsInfo,
+                'msg'=>'数据请求成功'
+            ];
+            $response = [
+                'data' => $data
+            ];
+            return json_encode($response, JSON_UNESCAPED_UNICODE);
+        }elseif($is_reseller == 2){
+//            echo time();exit;
+            $re_goodsInfo = DB::table('re_goods')->where('shop_id',$shop_id)->orderBy('re_goods_volume','desc')->paginate(6);
+//            var_dump($re_goodsInfo);exit;
+            $data = [
+                'code'=>0,
+                're_goodsInfo'=>$re_goodsInfo,
+                'msg'=>'数据请求成功'
+            ];
+            $response = [
+                'data' => $data
+            ];
+            return json_encode($response, JSON_UNESCAPED_UNICODE);
+        }elseif ($is_reseller == 3){
+            $re_goodsInfo = DB::table('re_goods')->where('shop_id',$shop_id)->orderBy('create_time','desc')->paginate(6);
+//            var_dump($re_goodsInfo);exit;
+            $data = [
+                'code'=>0,
+                're_goodsInfo'=>$re_goodsInfo,
+                'msg'=>'数据请求成功'
+            ];
+            $response = [
+                'data' => $data
+            ];
+            return json_encode($response, JSON_UNESCAPED_UNICODE);
+        }
+
+    }
+
+    //分销商品详情
+    public function index_reseller_goodsDetail(Request $request){
+        $re_goods_id = $request->input('re_goods_id');
+        $shop_id = $request->input('shop_id');
+        //商品详情信息
+        $re_goodsShopInfo = DB::table('re_goods')->join('mt_shop','re_goods.shop_id','=','mt_shop.shop_id')
+            ->where('re_goods.re_goods_id',$re_goods_id)->first(['re_goods_name','re_goods_price','re_goods_stock','re_goods_picture','re_goods_introduction','is_distribution','re_goods_volume','re_goods_planting_picture','re_goods_picture_detail','re_production_time','re_expiration_time','mt_shop.shop_id','shop_name','shop_score']);
+//        var_dump($re_goodsShopInfo);exit;
+
+        $re_evaluateInfo = DB::table('re_evaluate')
+            ->join('mt_user','re_evaluate.uid','=','mt_user.uid')
+            ->where('re_goods_id',$re_goods_id)->orderBy('create_time','desc')->limit(5)->get()->toArray();    //评价信息
+
+        $re_evaluateInfo_count = DB::table('re_evaluate')->where('re_goods_id',$re_goods_id)->count();   //评论条数
+
+        $re_goods_recommend = DB::table('re_goods')->where('shop_id',$shop_id)->get();   //店铺推荐
         $data = [
             'code'=>0,
-            're_goodsInfo'=>$re_goodsInfo,
+            're_goodsShopInfo'=>$re_goodsShopInfo,
+            're_evaluateInfo_count'=>$re_evaluateInfo_count,
+            're_evaluateInfo'=>$re_evaluateInfo,
+            're_goods_recommend'=>$re_goods_recommend,
             'msg'=>'数据请求成功'
         ];
         $response = [
