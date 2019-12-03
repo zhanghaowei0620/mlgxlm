@@ -317,8 +317,8 @@ class GoodsController extends Controller
         $goods_id = $request->input('goods_id');
         $data1=DB::table('mt_goods')
             ->join('mt_shop','mt_shop.shop_id','=','mt_goods.shop_id')
-            ->join('mt_coupon','mt_coupon.goods_id','=','mt_goods.goods_id')
-            ->where(['mt_goods.goods_id'=>$goods_id,'uid'=>$uid,'coupon_draw'=>3])
+//            ->join('mt_coupon','mt_coupon.goods_id','=','mt_goods.goods_id')
+            ->where(['mt_goods.goods_id'=>$goods_id])
             ->first();
 //        var_dump($data1);exit;
         $shopsetInfo=DB::table('mt_shop')
@@ -326,7 +326,7 @@ class GoodsController extends Controller
             ->join('mt_goods','mt_goods.shop_id','=','mt_shop.shop_id')
             ->where(['mt_goods.goods_id'=>$goods_id])
             ->get(['shop_name','admin_tel','shop_address_detail','goods_name','goods_effect','goods_duration','goods_process','goods_overdue_time','shop_bus','goods_appointment','goods_use_rule','shop_img','shop_logo','shop_star','mt_goods.prople']);
-//        $coupon_lists=DB::table('mt_coupon')->where(['uid'=>$uid,'goods_id'=>$goods_id,'coupon_draw'=>3])->first();
+        $coupon_lists=DB::table('mt_coupon')->where(['uid'=>$uid,'goods_id'=>$goods_id,'coupon_draw'=>3])->first();
         $goods_list=DB::table('mt_goods')
             ->where(['mt_shop.shop_id'=>$data1->shop_id])
             ->join('mt_shop','mt_shop.shop_id','=','mt_goods.goods_id')
@@ -391,7 +391,7 @@ class GoodsController extends Controller
                 'shop_set'=>$shopsetInfo,
                 'goods_list'=>$goods_list,
                 'seller'=>$seller,
-//                'coupon_lists'=>$coupon_lists,
+                'coupon_lists'=>$coupon_lists,
                 'assesslist'=>$assesslist,
                 'recommend_shop'=>$reconmend_shop
             ];
