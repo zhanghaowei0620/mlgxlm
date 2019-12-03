@@ -96,7 +96,6 @@ class OrderController extends Controller
                         'price'=>$v->price,
                         'picture'=>$v->picture,
                         'buy_num'=>$buy_num,
-                        'order_status'=>0,
                         'shop_id'=>$v->shop_id,
                         'shop_name'=>$v->shop_name,
                         'create_time'=>time()
