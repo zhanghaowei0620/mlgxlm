@@ -1580,6 +1580,7 @@ class UserController extends Controller
                 ->first(['mt_shop.shop_id','shop_name','shop_score','shop_address_provice','shop_address_city','shop_address_area','shop_img','mt_release_id','mt_experience','mt_title','mt_move_url','mt_pic_url','mt_release.uid','create_time']);    //发布信息
 //            var_dump($releaselistInfo);exit;
             $count = DB::table('mt_fabulous')->where('mt_release_id',$mt_release_id)->count();   //点赞个数
+            $mt_commentInfo_count = DB::table('mt_comment')->where('mt_release_id',$mt_release_id)->count();   //评论条数
             $mt_commentInfo = DB::table('mt_comment')
                 ->join('mt_user','mt_comment.uid','=','mt_user.uid')
                 ->where('mt_release_id',$mt_release_id)->orderBy('create_time','desc')->limit(5)->get()->toArray();
@@ -1589,6 +1590,7 @@ class UserController extends Controller
                     'code'=>0,
                     'info'=>$releaselistInfo,
                     'count'=>$count,
+                    'mt_commentInfo_count'=>$mt_commentInfo_count,
                     'mt_commentInfo'=>$mt_commentInfo,
                     'is_fabulousInfo'=>1,
                     'msg'=>'数据请求成功'
@@ -1598,6 +1600,7 @@ class UserController extends Controller
                     'code'=>0,
                     'info'=>$releaselistInfo,
                     'count'=>$count,
+                    'mt_commentInfo_count'=>$mt_commentInfo_count,
                     'mt_commentInfo'=>$mt_commentInfo,
                     'is_fabulousInfo'=>0,
                     'msg'=>'数据请求成功'

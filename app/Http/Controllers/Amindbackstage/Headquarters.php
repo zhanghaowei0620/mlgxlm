@@ -878,7 +878,8 @@ class Headquarters extends Controller
                 're_goods_picture_detail'=>$re_goods_picture_detail,
                 're_production_time'=>$re_production_time,
                 're_expiration_time'=>$re_expiration_time,
-                'shop_id'=>$shop_id
+                'shop_id'=>$shop_id,
+                'create_time'=>time()
             ];
             $re_goodsInsert = DB::table('re_goods')->insertGetId($insert);
 //            var_dump($re_goodsInsert);exit;
