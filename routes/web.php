@@ -26,8 +26,6 @@ Route::get('/coupon_receive', 'Index\IndexController@coupon_receive');
 
 Route::get('/assemble', 'Index\IndexController@assemble');   //拼团
 
-Route::get('/group_buy', 'Goods\GoodsController@group_buy');   //拼团购买
-
 Route::get('/limited_time', 'Index\IndexController@limited_time');    //首页-限时抢
 
 Route::get('/shop_goods', 'Goods\GoodsController@shop_goods');   //根据店铺id 获取店铺下所有商品
@@ -101,6 +99,10 @@ Route::get('/shop_collection_list', 'Goods\GoodsController@shop_collection_list'
 Route::get('/add_order', 'Order\OrderController@add_order');      //生成订单
 
 Route::get('/pt_add', 'Order\OrderController@pt_add');      //生成拼团订单
+
+Route::get('/pt_add_list', 'Order\OrderController@pt_add_list');      //拼团列表
+
+Route::get('/open_order_list', 'Order\OrderController@open_order_list');      //拼团列表
 
 Route::get('/order_list', 'Order\OrderController@order_list');     //订单列表
 

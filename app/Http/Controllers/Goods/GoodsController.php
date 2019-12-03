@@ -164,7 +164,8 @@ class GoodsController extends Controller
 //    }
 
     //点击店铺获取店铺详情信息及店铺下所有的商品
-    public function shop_goods(Request $request){
+    public function shop_goods(Request $request)
+    {
         $shop_id = $request->input('shop_id');
 //        $shop_id = 2;
 //        $shop_goodsInfo = DB::table('mt_goods')
@@ -324,7 +325,7 @@ class GoodsController extends Controller
             ->join('admin_user','mt_shop.shop_id','=','admin_user.shop_id')
             ->join('mt_goods','mt_goods.shop_id','=','mt_shop.shop_id')
             ->where(['mt_goods.goods_id'=>$goods_id])
-            ->get(['shop_name','admin_tel','shop_address_detail','goods_name','goods_effect','goods_duration','goods_process','goods_overdue_time','shop_bus','goods_appointment','goods_use_rule','shop_img','shop_logo','shop_star']);
+            ->get(['shop_name','admin_tel','shop_address_detail','goods_name','goods_effect','goods_duration','goods_process','goods_overdue_time','shop_bus','goods_appointment','goods_use_rule','shop_img','shop_logo','shop_star','mt_goods.prople']);
 //        var_dump($shopsetInfo);die;
 //        $aaa=DB::table('mt_goods')
 //            ->where(['shop_id'=>$data1->shop_id])
@@ -335,12 +336,18 @@ class GoodsController extends Controller
             ->join('mt_shop','mt_shop.shop_id','=','mt_goods.goods_id')
             ->limit(4)
             ->get();
-        $seller = DB::table('mt_goods')
-            ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
-            ->join('mt_user','mt_goods.uid','=','mt_user.uid')
-            ->where(['mt_shop.shop_id'=>$data1->shop_id])
-//            ->limit(2)
-            ->get(['goods_id','goods_name','picture','promotion_price','prople','promotion_prople','wx_name','wx_headimg'])->toArray();
+//        $seller = DB::table('mt_goods')
+//            ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
+//            ->join('mt_user','mt_goods.uid','=','mt_user.uid')
+//            ->where(['mt_shop.shop_id'=>$data1->shop_id])
+////            ->limit(2)
+//            ->get(['goods_id','goods_name','picture','promotion_price','prople','promotion_prople','wx_name','wx_headimg'])->toArray();
+//        var_dump($seller);die;
+        $seller = DB ::table('mt_pt_list')
+            ->join('mt_shop','mt_pt_list.shop_id','=','mt_shop.shop_id')
+            ->join('mt_user','mt_pt_list.uid','=','mt_user.uid')
+            ->where(['pt_state'=>0,'goods_id'=>$goods_id])
+            ->get();
 //        var_dump($seller);die;
         $assesslist=DB::table('mt_assess')
             ->join('mt_user','mt_assess.uid','=','mt_user.uid')
@@ -361,13 +368,10 @@ class GoodsController extends Controller
             ];
             die(json_encode($response,JSON_UNESCAPED_UNICODE));
         }else{
-//            $ip = $_SERVER['SERVER_ADDR'];
-//            $key = 'openid'.$ip;
-//            $openid = Redis::get($key);
             $openid1 = $request->input('openid');
             $key = $openid1;
             $openid = Redis::get($key);
-//            $openid="o9VUc5AOsdEdOBeUAw4TdYg-F-dM";
+            $openid="o9VUc5AOsdEdOBeUAw4TdYg-F-dM";
 //            var_dump($openid);exit;
             $userInfo = DB::table('mt_user')->where('openid',$openid)->first();
 //            var_dump($userInfo);exit;
@@ -554,39 +558,122 @@ class GoodsController extends Controller
     //使用分享币点击购买服务
     public function moneybuy(Request $request)
     {
-//        $ip = $_SERVER['SERVER_ADDR'];
-//        $key = 'openid'.$ip;
-//        $openid = Redis::get($key);
         $openid1 = $request->input('openid');
         $key = $openid1;
         $openid = Redis::get($key);
-//        var_dump($openid);die;
+//        $order_method=$request->input('order_method'); //0为普通购买，1.拼团购买，2.优惠券购买，3限时抢购买，4积分购买，5分销购买
 //        $openid='o9VUc5MWyq5GgW3kF_90NnrQkBH8';
-//        $aa=DB::table('mt_user')
-//            ->where(['openid'=>$openid])
-//            ->get(['uid']);
-//        var_dump($aa);die;
         $order_id=$request->input('order_id');
         $price=$request->input('price');
         $data=DB::table('mt_user')
 //            ->join('mt_order_detail','mt_user.uid','=','mt_order_detail.uid')
             ->where(['openid'=>$openid])
-            ->first(['mt_user.money']);
-//        var_dump($data);die; VB
+            ->first();
         $money=$data->money-$price;
-//        var_dump($money);die;
+
+
+
+        $infos=DB::table('mt_order')
+            ->join('mt_order_detail','mt_order_detail.order_id','=','mt_order.order_id')
+            ->where(['mt_order_detail.order_id'=>$order_id])->first();
+//        var_dump($infos);die;
+        if($infos->order_status!=0){
+
+            $data=[
+                'code'=>0,
+                'msg'=>'此订单已被支付，请勿重新支付'
+            ];
+            $response = [
+                'data'=>$data
+            ];
+            return json_encode($response,JSON_UNESCAPED_UNICODE);
+        }
+
+
+
+
+
+
+
+
         $updates=[
-          'money'=>$money
+          'money'=>$money,
+            'order_status'=>1,
+            'order_pay'=>0
         ];
-        $data1=DB::table('mt_user')
-//            ->join('mt_order_detail','mt_order_detail.uid','=','mt_user.uid')
-            ->where(['openid'=>$openid])
+        $data99=DB::table('mt_user')
+            ->join('mt_order','mt_order.uid','=','mt_user.uid')
+            ->where(['openid'=>$openid,'order_id'=>$order_id,])
             ->update($updates);
 //        var_dump($data1);die;
-        if($data1 > 0){
-//            echo ;die;
+
+        if($data99 > 0){
+
+
+
+            //修改拼团团队信息
+            if($infos->has_pt_id==0){
+                $data_order = [
+                    'goods_id'=> $infos->goods_id,
+                    'shop_id'=> $infos->shop_id,
+                    'uid'=>$data->uid,
+                    'pt_team'=>$data->uid,
+                    'pt_order_id' =>$order_id,
+                    'pt_start_time'=>time(),
+                    'pt_state'=>0,
+                    'pt_sum'=>1,
+                ];
+                $infodata =DB::table('mt_pt_list')->insert($data_order);
+            }else{
+                $data2=DB::table("mt_pt_list")->where("pt_id",$infos->has_pt_id)->first();
+                if($data2){
+                    $data_order = [
+                        'goods_id'=> $infos->goods_id,
+                        'shop_id'=>  $infos->shop_id,
+                        'pt_team'=>$data2->pt_team.','.$data->uid,
+                        'pt_order_id' =>$data2->pt_order_id.','.$order_id,
+                        'pt_start_time'=>time(),
+                        'pt_state'=>0,
+                        'pt_sum'=>$data2->pt_sum+1,
+                    ];
+                    $infodata = DB::table('mt_pt_list')->where('pt_id',$infos->has_pt_id)->update($data_order);
+
+
+                    //判断该订单是否已经完成
+                    $sss = DB::table('mt_pt_list')
+                        ->join('mt_goods','mt_pt_list.goods_id','=','mt_goods.goods_id')
+                        ->where('mt_pt_list.pt_id',$infos->has_pt_id)
+                        ->first(['mt_pt_list.pt_sum','mt_goods.promotion_prople']);
+                    if($sss->pt_sum == $sss->promotion_prople){
+                        $data_up = [
+                            'pt_state'=> 1,
+                        ];
+                        $res = DB::table('mt_pt_list')->where('pt_id',$pt_id)->update($data_up);
+                    }
+                }else{
+                    $data=[
+                        'code'=>'0',
+                        'msg'=>'该团队不存在',
+                        'order_id'=>$order_id,
+                    ];
+                    $response = [
+                        'data'=>$data
+                    ];
+                    return json_encode($response,JSON_UNESCAPED_UNICODE);
+                }
+
+            }
+
+
+
+            $ress=DB::table('mt_goods')->where("goods_id",$infos->goods_id)->first();
+            $ress_inser=[
+              'pt_num_all'=> $ress->pt_num_all+1,
+            ];
+            $ressad=DB::table('mt_goods')->where("goods_id",$infos->goods_id)->update($ress_inser);
+
             $data=[
-                'code'=>'0',
+                'code'=>0,
                 'msg'=>'支付成功'
             ];
             $response = [
@@ -595,7 +682,7 @@ class GoodsController extends Controller
             return json_encode($response,JSON_UNESCAPED_UNICODE);
         }else{
             $data=[
-                'code'=>'1',
+                'code'=>1,
                 'msg'=>'支付失败'
             ];
             $response = [
@@ -1189,14 +1276,6 @@ class GoodsController extends Controller
 //            ->paginate(4);
 //        var_dump($data);die;
 //    }
-
-    //拼团购买
-    public function group_buy(Request $request)
-    {
-        $group_id=$request->input('group_id');
-        
-
-    }
 
 
 
