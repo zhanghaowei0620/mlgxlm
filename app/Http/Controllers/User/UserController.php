@@ -809,6 +809,7 @@ class UserController extends Controller
         $openid1 = $request->input('openid');
         $key = $openid1;
         $openid = Redis::get($key);
+//        $openid='o9VUc5MWyq5GgW3kF_90NnrQkBH8';
         if ($openid) {
             $userInfo = DB::table('mt_user')->where('openid', $openid)->first();
             //var_dump($userInfo);exit;
@@ -838,6 +839,7 @@ class UserController extends Controller
                 ->join('mt_shop', 'mt_coupon.shop_id', '=', 'mt_shop.shop_id')
                 ->where($where)
                 ->get($get)->toArray();
+//            var_dump($coupon);die;
             $where = [
                 'mt_coupon.uid' => $uid,
                 'is_use' => 1
