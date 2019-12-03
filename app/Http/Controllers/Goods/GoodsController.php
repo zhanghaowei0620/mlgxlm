@@ -371,7 +371,7 @@ class GoodsController extends Controller
             $openid1 = $request->input('openid');
             $key = $openid1;
             $openid = Redis::get($key);
-            $openid="o9VUc5AOsdEdOBeUAw4TdYg-F-dM";
+//            $openid="o9VUc5AOsdEdOBeUAw4TdYg-F-dM";
 //            var_dump($openid);exit;
             $userInfo = DB::table('mt_user')->where('openid',$openid)->first();
 //            var_dump($userInfo);exit;
@@ -589,13 +589,6 @@ class GoodsController extends Controller
             return json_encode($response,JSON_UNESCAPED_UNICODE);
         }
 
-
-
-
-
-
-
-
         $updates=[
           'money'=>$money,
             'order_status'=>1,
@@ -608,8 +601,6 @@ class GoodsController extends Controller
 //        var_dump($data1);die;
 
         if($data99 > 0){
-
-
 
             //修改拼团团队信息
             if($infos->has_pt_id==0){

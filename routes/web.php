@@ -100,6 +100,8 @@ Route::get('/add_order', 'Order\OrderController@add_order');      //生成订单
 
 Route::get('/pt_add', 'Order\OrderController@pt_add');      //生成拼团订单
 
+Route::get('/conput_add', 'Order\OrderController@conput_add');      //优惠卷下订单
+
 Route::get('/pt_add_list', 'Order\OrderController@pt_add_list');      //拼团列表
 
 Route::get('/open_order_list', 'Order\OrderController@open_order_list');      //拼团列表
