@@ -326,23 +326,13 @@ class GoodsController extends Controller
             ->join('mt_goods','mt_goods.shop_id','=','mt_shop.shop_id')
             ->where(['mt_goods.goods_id'=>$goods_id])
             ->get(['shop_name','admin_tel','shop_address_detail','goods_name','goods_effect','goods_duration','goods_process','goods_overdue_time','shop_bus','goods_appointment','goods_use_rule','shop_img','shop_logo','shop_star','mt_goods.prople']);
-//        var_dump($shopsetInfo);die;
-//        $aaa=DB::table('mt_goods')
-//            ->where(['shop_id'=>$data1->shop_id])
-//            ->get(['promotion_prople']);
-//        var_dump($aaa);die;
+        $coupon_lists=DB::table('mt_coupon')->where(['uid'=>$uid,'goods_id'=>$goods_id,'coupon_draw'=>3])->first();
         $goods_list=DB::table('mt_goods')
             ->where(['mt_shop.shop_id'=>$data1->shop_id])
             ->join('mt_shop','mt_shop.shop_id','=','mt_goods.goods_id')
             ->limit(4)
             ->get();
-//        $seller = DB::table('mt_goods')
-//            ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
-//            ->join('mt_user','mt_goods.uid','=','mt_user.uid')
-//            ->where(['mt_shop.shop_id'=>$data1->shop_id])
-////            ->limit(2)
-//            ->get(['goods_id','goods_name','picture','promotion_price','prople','promotion_prople','wx_name','wx_headimg'])->toArray();
-//        var_dump($seller);die;
+
         $seller = DB ::table('mt_pt_list')
             ->join('mt_shop','mt_pt_list.shop_id','=','mt_shop.shop_id')
             ->join('mt_user','mt_pt_list.uid','=','mt_user.uid')
@@ -401,6 +391,7 @@ class GoodsController extends Controller
                 'shop_set'=>$shopsetInfo,
                 'goods_list'=>$goods_list,
                 'seller'=>$seller,
+                'coupon_lists'=>$coupon_lists,
                 'assesslist'=>$assesslist,
                 'recommend_shop'=>$reconmend_shop
             ];
@@ -562,7 +553,7 @@ class GoodsController extends Controller
         $key = $openid1;
         $openid = Redis::get($key);
 //        $order_method=$request->input('order_method'); //0为普通购买，1.拼团购买，2.优惠券购买，3限时抢购买，4积分购买，5分销购买
-//        $openid='o9VUc5MWyq5GgW3kF_90NnrQkBH8';
+        $openid='o9VUc5MWyq5GgW3kF_90NnrQkBH8';
         $order_id=$request->input('order_id');
         $price=$request->input('price');
         $data=DB::table('mt_user')
@@ -571,14 +562,11 @@ class GoodsController extends Controller
             ->first();
         $money=$data->money-$price;
 
-
-
         $infos=DB::table('mt_order')
             ->join('mt_order_detail','mt_order_detail.order_id','=','mt_order.order_id')
             ->where(['mt_order_detail.order_id'=>$order_id])->first();
 //        var_dump($infos);die;
         if($infos->order_status!=0){
-
             $data=[
                 'code'=>0,
                 'msg'=>'此订单已被支付，请勿重新支付'
@@ -588,6 +576,16 @@ class GoodsController extends Controller
             ];
             return json_encode($response,JSON_UNESCAPED_UNICODE);
         }
+        if($order_method == 0){
+
+        }else if($order_method == 1){
+
+        }else if ($order_method == 2){
+
+        }else if ($order_method == 3){
+
+        }
+
 
         $updates=[
           'money'=>$money,
@@ -601,7 +599,6 @@ class GoodsController extends Controller
 //        var_dump($data1);die;
 
         if($data99 > 0){
-
             //修改拼团团队信息
             if($infos->has_pt_id==0){
                 $data_order = [
