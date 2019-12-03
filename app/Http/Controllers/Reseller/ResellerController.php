@@ -89,6 +89,17 @@ class ResellerController extends Controller
     public function index_reseller_goodsList(Request $request){
         $shop_id = $request->input('shop_id');
 
+        $re_goodsInfo = DB::table('re_goods')->where('shop_id',$shop_id)->get();
+
+        $data = [
+            'code'=>0,
+            're_goodsInfo'=>$re_goodsInfo,
+            'msg'=>'数据请求成功'
+        ];
+        $response = [
+            'data' => $data
+        ];
+        return json_encode($response, JSON_UNESCAPED_UNICODE);
     }
 
 

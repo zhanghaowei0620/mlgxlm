@@ -161,6 +161,8 @@ Route::post('index_reseller_Apply', 'Reseller\ResellerController@index_reseller_
 
 Route::post('index_rellerList', 'Reseller\ResellerController@index_rellerList');    //分销中心-列表
 
+Route::post('index_reseller_goodsList', 'Reseller\ResellerController@index_reseller_goodsList');
+
 
 
 
