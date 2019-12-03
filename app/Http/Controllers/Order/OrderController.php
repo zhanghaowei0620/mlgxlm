@@ -21,9 +21,6 @@ class OrderController extends Controller
 
         $order_no = date("YmdHis",time()).rand(1000,9999);   //订单号
 //        $buy_num = $request->input('buy_num');    //购买数量
-//        $ip = $_SERVER['SERVER_ADDR'];
-//        $key = 'openid'.$ip;
-//        $openid = Redis::get($key);
         $openid1 = $request->input('openid');
         $key = $openid1;
         $openid = Redis::get($key);
@@ -472,6 +469,9 @@ class OrderController extends Controller
 
 
     }
+
+    //限时抢下订单
+
 
     //拼团列表
     public function pt_add_list(Request $request)

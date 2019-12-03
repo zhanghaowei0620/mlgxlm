@@ -589,13 +589,6 @@ class GoodsController extends Controller
             return json_encode($response,JSON_UNESCAPED_UNICODE);
         }
 
-
-
-
-
-
-
-
         $updates=[
           'money'=>$money,
             'order_status'=>1,
@@ -608,8 +601,6 @@ class GoodsController extends Controller
 //        var_dump($data1);die;
 
         if($data99 > 0){
-
-
 
             //修改拼团团队信息
             if($infos->has_pt_id==0){
