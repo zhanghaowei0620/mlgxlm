@@ -371,7 +371,7 @@ class GoodsController extends Controller
             $openid1 = $request->input('openid');
             $key = $openid1;
             $openid = Redis::get($key);
-            $openid="o9VUc5AOsdEdOBeUAw4TdYg-F-dM";
+//            $openid="o9VUc5AOsdEdOBeUAw4TdYg-F-dM";
 //            var_dump($openid);exit;
             $userInfo = DB::table('mt_user')->where('openid',$openid)->first();
 //            var_dump($userInfo);exit;

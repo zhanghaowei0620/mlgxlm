@@ -314,18 +314,106 @@ class OrderController extends Controller
     //优惠卷下订单
     public function conput_add(Request $request)
     {
-        $is_esz=$request->input('is_esz');  //根据前端传回来的是0还是1，0为优惠卷   1为折扣
+        $coupon_type=$request->input('coupon_type');  //根据前端传回来的是0还是1，0为优惠卷   1为折扣
         $goods_id = $request->input('goods_id');
         $shop_id = $request->input('shop_id');
         $total_price = $request->input('total_price');   //总价
         $openid1 = $request->input('openid');
+        $good_cate=$request->input('good_cate');
         $key = $openid1;
         $openid = Redis::get($key);
-//        $openid='o9VUc5MWyq5GgW3kF_90NnrQkBH8';
+        $openid='o9VUc5MWyq5GgW3kF_90NnrQkBH8';
         $order_no = date("YmdHis",time()).rand(1000,9999);   //订单号
         if($openid){
-            if($is_esz == 0){
+            $userInfo = DB::table('mt_user')->where(['openid'=>$openid])->first();
+            $wx_name=$userInfo->wx_name;
+            $uid = $userInfo->uid;
+            $coupon_add=DB::table('mt_coupon')->where(['uid'=>$uid,'goods_id'=>$goods_id])->first();
+//            var_dump($total_price);die;
+            if($coupon_type == 0){
+                if($total_price >= $coupon_add->coupon_redouction){
+                    $data_order = [
+                        'uid'=>$uid,
+                        'order_no'=>$order_no,
+                        'wx_name' =>$wx_name,
+                        'order_status'=>0,
+                        'order_method'=>2,
+                        'total_price'=>$total_price-$coupon_add->coupon_price,
+                        'create_time'=>time(),
+                        'good_cate'=>$good_cate,
+                    ];
+                    $infodata =DB::table('mt_order')->insert($data_order);
+//                    var_dump($infodata);die;
+                }else{
+                    $data=[
+                        'code'=>1,
+                        'msg'=>'您没有达到优惠标准',
+                    ];
+                    $response = [
+                        'data'=>$data
+                    ];
+                    return json_encode($response,JSON_UNESCAPED_UNICODE);
+                }
 
+            }else{
+                $data_order = [
+                    'uid'=>$uid,
+                    'order_no'=>$order_no,
+                    'wx_name' =>$wx_name,
+                    'order_status'=>0,
+                    'order_method'=>2,
+                    'total_price'=>$total_price*'0.'$coupon_add->discount,
+                    'create_time'=>time(),
+                    'good_cate'=>$good_cate,
+                ];
+                $infodata =DB::table('mt_order')->insert($data_order);
+            }
+
+            $dainfo=DB::table('mt_order')
+                ->where(['order_no'=>$order_no])
+                ->first(['order_id']);
+            $dataData = DB::table('mt_order')->where('order_no',$order_no)->first();
+            $order_id = $dataData->order_id;
+            $num = DB::table('mt_goods')
+                ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
+                ->where('mt_goods.goods_id',$goods_id)
+                ->get();
+//            var_dump($num);die;
+            foreach($num as $k=>$v){
+                $info=[
+                    'uid'=>$uid,
+                    'order_id'=>$order_id,
+                    'order_no'=>$order_no,
+                    'goods_id'=>$v->goods_id,
+                    'goods_name'=>$v->goods_name,
+                    'price'=>$v->price,
+                    'picture'=>$v->picture,
+                    'buy_num'=>1,
+                    'shop_id'=>$v->shop_id,
+                    'shop_name'=>$v->shop_name,
+                    'create_time'=>time(),
+                ];
+                $datailData = DB::table('mt_order_detail')->insert($info);
+            }
+            if($datailData){
+                $data=[
+                    'code'=>0,
+                    'msg'=>'成功',
+                    'data'=>$datailData
+                ];
+                $response = [
+                    'data'=>$data
+                ];
+                return json_encode($response,JSON_UNESCAPED_UNICODE);
+            }else{
+                $data=[
+                    'code'=>1,
+                    'msg'=>'失败',
+                ];
+                $response = [
+                    'data'=>$data
+                ];
+                return json_encode($response,JSON_UNESCAPED_UNICODE);
             }
 
 
@@ -387,12 +475,14 @@ class OrderController extends Controller
             $data=DB::table('mt_order_detail')
                 ->join('mt_order','mt_order.order_id','=','mt_order_detail.order_id')
                 ->join('mt_shop','mt_shop.shop_id','=','mt_order_detail.shop_id')
+                ->join('mt_goods','mt_goods.goods_id','=','mt_order_detail.goods_id')
                 ->where(['mt_order.uid'=>$orderInfo->uid,'good_cate'=>$good_cate])
                 ->select()->paginate(10);
         }else{
             $data=DB::table('mt_order_detail')
                 ->join('mt_order','mt_order.order_id','=','mt_order_detail.order_id')
                 ->join('mt_shop','mt_shop.shop_id','=','mt_order_detail.shop_id')
+                ->join('mt_goods','mt_goods.goods_id','=','mt_order_detail.goods_id')
                 ->where(['mt_order.uid'=>$orderInfo->uid,'good_cate'=>$good_cate,'order_status'=>$order_status])
                 ->select()->paginate(10);
         }
