@@ -321,9 +321,6 @@ class OrderController extends Controller
             $uid = $userInfo->uid;
             $coupon_add=DB::table('mt_coupon')->where(['uid'=>$uid,'goods_id'=>$goods_id])->first();
 //            var_dump($total_price);die;
-            $coupon_lists=DB::table('mt_coupon')->where(['uid'=>$uid,'goods_id'=>$goods_id,'coupon_draw'=>3])->first();
-//            var_dump($coupon_lists);die;
-            if($coupon_lists){
                 if($coupon_type == 0){
                     if($total_price >= $coupon_add->coupon_redouction){
                         $data_order = [
@@ -460,17 +457,6 @@ class OrderController extends Controller
                     }
                 }
 
-            }else{
-                $data=[
-                    'code'=>1,
-                    'msg'=>'不好意思,您还没有优惠卷,赶快去领取吧!',
-                ];
-                $response = [
-                    'data'=>$data
-                ];
-                return json_encode($response,JSON_UNESCAPED_UNICODE);
-            }
-
         }else{
             $response = [
                 'error'=>'1',
@@ -481,6 +467,31 @@ class OrderController extends Controller
     }
 
     //限时抢下订单
+    public function limited_order(Request $request)
+    {
+        $goods_id = $request->input('goods_id');
+        $shop_id = $request->input('shop_id');
+        $total_price = $request->input('total_price');   //总价
+        $openid1 = $request->input('openid');
+        $key = $openid1;
+        $openid = Redis::get($key);
+        $openid='o9VUc5MWyq5GgW3kF_90NnrQkBH8';
+        $order_no = date("YmdHis",time()).rand(1000,9999);   //订单号
+        if($openid){
+            $userInfo = DB::table('mt_user')->where(['openid'=>$openid])->first();
+            $uid = $userInfo->uid;
+            $limited_add=DB::table('mt_goods')->where(['goods_id'=>$goods_id,'limited_buy'=>1])->first(['limited_start_time','limited_stop_time','shop_id']);
+//            var_dump($limited_add);die;
+
+
+        }else{
+            $response = [
+                'error'=>'1',
+                'msg'=>'请先登录'
+            ];
+            return json_encode($response,JSON_UNESCAPED_UNICODE);
+        }
+    }
 
 
     //拼团列表

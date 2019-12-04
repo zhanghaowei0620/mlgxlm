@@ -315,6 +315,14 @@ class GoodsController extends Controller
     //点击商品获取商品详情+店铺详情信息
     public function goodsinfo(Request $request){
         $goods_id = $request->input('goods_id');
+        $openid1 = $request->input('openid');
+        $key = $openid1;
+        $openid = Redis::get($key);
+//        $openid="o9VUc5MWyq5GgW3kF_90NnrQkBH8";
+        $infono=DB::table('mt_user')->where(['openid'=>$openid])->first();
+
+        $uid=$infono->uid;
+//        var_dump($uid);die;
         $data1=DB::table('mt_goods')
             ->join('mt_shop','mt_shop.shop_id','=','mt_goods.shop_id')
 //            ->join('mt_coupon','mt_coupon.goods_id','=','mt_goods.goods_id')
@@ -361,7 +369,7 @@ class GoodsController extends Controller
             $openid1 = $request->input('openid');
             $key = $openid1;
             $openid = Redis::get($key);
-//            $openid="o9VUc5AOsdEdOBeUAw4TdYg-F-dM";
+//            $openid="o9VUc5MWyq5GgW3kF_90NnrQkBH8";
 //            var_dump($openid);exit;
             $userInfo = DB::table('mt_user')->where('openid',$openid)->first();
 //            var_dump($userInfo);exit;

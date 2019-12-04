@@ -42,13 +42,6 @@ class IndexController extends Controller
                     ->get(['mt_shop.shop_id','shop_name','shop_Ename','shop_desc','shop_label','shop_address_provice','shop_address_city','shop_address_area','shop_score'])->toArray();    //本周新店
 //                var_dump($week_newshop_add);die;
             }
-//            $week_newshop = DB::table('mt_shop')
-//                ->join('mt_goods','mt_goods.shop_id','=','mt_shop.shop_id')
-//                ->where(['mt_shop.shop_address_city'=>$shop_address_city])
-//                ->orderBy('shop_add_time')
-//                ->limit(3)
-//                ->get(['mt_shop.shop_id','shop_name','shop_Ename','shop_desc','shop_label','shop_address_provice','shop_address_city','shop_address_area','shop_score'])->toArray();    //本周新店
-
 //            var_dump($week_newshop);exit;
             $recommend = DB::table('mt_goods')
                 ->join('mt_shop','mt_shop.shop_id','=','mt_goods.shop_id')
@@ -74,17 +67,6 @@ class IndexController extends Controller
             //var_dump($response);exit;
             return json_encode($response,JSON_UNESCAPED_UNICODE);
         }else{
-//            $goodsInfo = DB::table('mt_goods')
-//                ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
-//                ->where(['promotion_type'=>1,'mt_shop.shop_address_city'=>$shop_address_city])
-//                ->get(['shop_name','shop_address_provice','shop_address_city','shop_address_area','shop_score','goods_id','goods_name','price','market_price','introduction','picture','promotion_price','prople','shop_label'])->toArray();   //店铺精选   默认为1
-            //var_dump($goodsInfo);exit;
-            //服务精选的店铺
-//            $goodsInfo = DB::table('mt_goods')
-//                ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
-//                ->where(['promotion_type'=>1],['mt_shop.shop_address_city'=>$shop_address_city])
-//                ->get(['shop_name','shop_address_provice','shop_address_city','shop_address_area','shop_score','goods_id','goods_name','price','market_price','introduction','picture','promotion_price','prople','shop_label'])->toArray();
-//            var_dump($goodsInfo);exit;
             $goodsInfo = DB::table('mt_goods')
                 ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
                 ->join('mt_type','mt_goods.t_id','=','mt_type.t_id')
@@ -95,7 +77,7 @@ class IndexController extends Controller
             $discountInfo= DB ::table('mt_goods')
                 ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
                 ->join('mt_type','mt_goods.t_id','=','mt_type.t_id')
-                ->where(['promotion_type'=>2],['mt_shop.shop_address_city'=>$shop_address_city])
+                ->where(['promotion_type'=>2,'is_coupon'=>1],['mt_shop.shop_address_city'=>$shop_address_city])
                 ->limit(6)
                 ->get(['promotion_type','mt_goods.goods_id','goods_name','goods_type','coupon_redouction','coupon_price','price','picture','mt_type.t_name','introduction','star','mt_shop.shop_name','goods_gd_num'])->toArray();
 //            var_dump($discountInfo);die;
@@ -186,16 +168,30 @@ class IndexController extends Controller
 
     //首页优惠券
     public function index_coupon(Request $request){
+//        $openid = $request->input('openid');
+//        $openid = "o9VUc5MWyq5GgW3kF_90NnrQkBH8";
+//        $userInfo = DB::table('mt_user')->where('openid',$openid)->first(['uid']);
+//        $uid = $userInfo->uid;
+//        $couponInfo = DB::table('mt_coupon')->where('uid',$uid)->get(['goods_id'])->toArray();
+////        var_dump($couponInfo);exit;
+//        $last_names = array_column($couponInfo, 'goods_id', 'goods_id');
+//        print_r($last_names);exit;
+        $goodsInfo = DB::table('mt_goods')
+            ->where('is_coupon',1)
+            ->get()->toArray();
+//        var_dump($goodsInfo);exit;
+//        echo time()+86400;exit;
         $couponInfo = DB::table('mt_goods')
             ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
-            ->join('mt_coupon','mt_coupon.goods_id','=','mt_goods.goods_id')
+//            ->join('mt_coupon','mt_coupon.goods_id','=','mt_goods.goods_id')
             ->where('is_coupon',1)
-            ->get(['mt_coupon.coupon_id','mt_goods.goods_id','mt_shop.shop_id','mt_coupon.coupon_draw','mt_shop.shop_name','mt_coupon.discount','mt_shop.shop_id','mt_coupon.coupon_price','mt_coupon.coupon_redouction','mt_coupon.create_time','mt_coupon.expiration','mt_goods.picture','mt_coupon.coupon_type','mt_goods.goods_name','mt_coupon.discount','mt_goods.picture']);
+            ->get(['mt_goods.goods_id','mt_shop.shop_id','mt_shop.shop_name','mt_shop.shop_id','mt_goods.picture','mt_goods.goods_name','mt_goods.picture','coupon_price','coupon_redouction','coupon_start_time','expiration']);
 //        var_dump($couponInfo);
         if($couponInfo){
                 $data = [
                     'code'=>0,
-                    'couponInfo'=>$couponInfo
+                    'couponInfo'=>$couponInfo,
+                    'goodsInfo'=>$goodsInfo
                 ];
                 $response = [
                     'data'=>$data
@@ -462,9 +458,5 @@ class IndexController extends Controller
         //var_dump($response);exit;
         return json_encode($response,JSON_UNESCAPED_UNICODE);
     }
-
-
-
-
 
 }
