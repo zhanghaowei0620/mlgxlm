@@ -221,7 +221,7 @@ class IndexController extends Controller
             $userInfo = DB::table('mt_user')->where('openid',$openid)->first('uid');
             //var_dump($userInfo);
             $uid = $userInfo->uid;
-            $datainfos=DB::table('mt_goods')->where(['goods_id'=>$goods_id])->first(['expiration','coupon_start_time','coupon_price','coupon_redouction','shop_id']);
+            $datainfos=DB::table('mt_goods')->where(['goods_id'=>$goods_id])->first(['expiration','coupon_start_time','coupon_price','coupon_redouction','shop_id','is_member_discount']);
 //            var_dump($datainfos);die;
             $where = [
                 'uid'=>$uid,
