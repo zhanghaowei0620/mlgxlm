@@ -1193,9 +1193,11 @@ class Headquarters extends Controller
 //        var_dump($shopInfo);exit;
             $uid = $shopInfo->uid;
             $teamInfo = DB::table('mt_user')->where('a_id',$uid)->get()->toArray();
+            $total_num = DB::table('mt_user')->where('a_id',$uid)->count();   //总人数
             $response=[
                 'code'=>0,
                 'teamInfo'=>$teamInfo,
+                'total_num'=>$teamInfo,
                 'msg'=>'数据请求成功'
             ];
             return json_encode($response, JSON_UNESCAPED_UNICODE);
