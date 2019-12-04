@@ -534,7 +534,7 @@ class Headquarters extends Controller
         $order_id = $request->input('order_id');
         $orderInfo = DB::table('mt_order_detail')
             ->join('mt_order','mt_order.order_id','=','mt_order_detail.order_id')
-            ->where('order_id',$order_id)->get(['order_id','order_no','goods_id','goods_name','price','picture','buy_num','mt_order.order_status','shop_id','shop_name','create_time'])->toArray();
+            ->where('mt_order_detail.order_id',$order_id)->get(['mt_order_detail.order_id','mt_order_detail.order_no','mt_order_detail.goods_id','mt_order_detail.goods_name','mt_order_detail.price','mt_order_detail.picture','mt_order_detail.buy_num','mt_order.order_status','mt_order_detail.shop_id','mt_order_detail.shop_name','mt_order_detail.create_time'])->toArray();
 //        var_dump($orderInfo);exit;
         if($orderInfo){
             $response = [
