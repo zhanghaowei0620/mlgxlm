@@ -830,7 +830,7 @@ class UserController extends Controller
                 'mt_shop.shop_name'
             ];
             $where = [
-                'mt_coupon.uid' => $uid,
+//                'mt_coupon.uid' => $uid,
                 'is_use' => 0,
                 'coupon_draw' => 3
             ];
@@ -841,7 +841,7 @@ class UserController extends Controller
                 ->get($get)->toArray();
 //            var_dump($coupon);die;
             $where = [
-                'mt_coupon.uid' => $uid,
+//                'mt_coupon.uid' => $uid,
                 'is_use' => 1
             ];
             $coupon1 = DB::table('mt_coupon')
@@ -849,9 +849,8 @@ class UserController extends Controller
                 ->join('mt_shop', 'mt_coupon.shop_id', '=', 'mt_shop.shop_id')
                 ->where($where)
                 ->get($get)->toArray();
-
+//            var_dump($coupon1);die;
             $where = [
-                'mt_coupon.uid' => $uid,
                 'is_use' => 2
             ];
             $coupon2 = DB::table('mt_coupon')
@@ -869,8 +868,6 @@ class UserController extends Controller
                 'data' => $data
             ];
             return json_encode($response, JSON_UNESCAPED_UNICODE);
-
-
         } else {
             $data = [
                 'code' => 2,

@@ -459,8 +459,4 @@ class IndexController extends Controller
         return json_encode($response,JSON_UNESCAPED_UNICODE);
     }
 
-
-
-
-
 }
