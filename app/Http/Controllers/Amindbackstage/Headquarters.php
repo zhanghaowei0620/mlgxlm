@@ -1186,7 +1186,28 @@ class Headquarters extends Controller
 
     //我的团队
     public function admin_my_team(Request $request){
-        $shop_id = $request->input('shop_id');
+        $admin_judge = $request->input('admin_judge');
+        if($admin_judge == 2){
+            $shop_id = $request->input('shop_id');
+            $shopInfo = DB::table('mt_shop')->where('shop_id',$shop_id)->first(['uid']);
+//        var_dump($shopInfo);exit;
+            $uid = $shopInfo->uid;
+            $teamInfo = DB::table('mt_user')->where('a_id',$uid)->get()->toArray();
+            $total_num = DB::table('mt_user')->where('a_id',$uid)->count();   //总人数
+            $response=[
+                'code'=>0,
+                'teamInfo'=>$teamInfo,
+                'total_num'=>$total_num,
+                'msg'=>'数据请求成功'
+            ];
+            return json_encode($response, JSON_UNESCAPED_UNICODE);
+        }else{
+            $response=[
+                'code'=>1,
+                'msg'=>'暂无权限'
+            ];
+            die(json_encode($response, JSON_UNESCAPED_UNICODE));
+        }
     }
 
 
