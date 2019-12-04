@@ -249,7 +249,7 @@ class IndexController extends Controller
                     'create_time' => $datainfos->coupon_start_time,
                     'expiration' => $datainfos->expiration,
                     'discount'=>$datainfos->is_member_discount,
-                    'coupon_create'=>+1
+                    'coupon_create'=>$coupon->coupon_create+1
 
                 ];
 //                var_dump($insert);die;
