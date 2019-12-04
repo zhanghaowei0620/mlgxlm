@@ -173,6 +173,8 @@ Route::post('my_team', 'Reseller\ResellerController@my_team');   //我的团队
 
 Route::post('admin_my_team', 'Amindbackstage\Headquarters@admin_my_team')->middleware('checkLogin');   //我的团队
 
+Route::post('admin_Application_reseller_list', 'Amindbackstage\Headquarters@admin_Application_reseller_list')->middleware('checkLogin');
+
 
 
 

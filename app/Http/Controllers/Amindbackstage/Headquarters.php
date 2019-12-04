@@ -1210,6 +1210,20 @@ class Headquarters extends Controller
         }
     }
 
+    //分销商申请列表
+
+    public function admin_Application_reseller_list(Request $request){
+        $is_distribution = $request->input('is_distribution');   //1为分销代理   2为分销商  3为异业联盟
+        $mt_distributionInfo = DB::table('mt_distribution')->where('is_distribution',$is_distribution)->paginate(7);
+        $response=[
+            'code'=>0,
+            'mt_distributionInfo'=>$mt_distributionInfo,
+            'msg'=>'数据请求成功'
+        ];
+        return json_encode($response, JSON_UNESCAPED_UNICODE);
+    }
+
+
 
 
 
