@@ -532,7 +532,9 @@ class Headquarters extends Controller
     //订单详情-平台
     public function admin_orderDetail(Request $request){
         $order_id = $request->input('order_id');
-        $orderInfo = DB::table('mt_order_detail')->where('order_id',$order_id)->get(['order_id','order_no','goods_id','goods_name','price','picture','buy_num','order_status','shop_id','shop_name','create_time'])->toArray();
+        $orderInfo = DB::table('mt_order_detail')
+            ->join('mt_order','mt_order.order_id','=','mt_order_detail.order_id')
+            ->where('order_id',$order_id)->get(['order_id','order_no','goods_id','goods_name','price','picture','buy_num','mt_order.order_status','shop_id','shop_name','create_time'])->toArray();
 //        var_dump($orderInfo);exit;
         if($orderInfo){
             $response = [
