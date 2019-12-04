@@ -1194,10 +1194,13 @@ class Headquarters extends Controller
             $uid = $shopInfo->uid;
             $teamInfo = DB::table('mt_user')->where('a_id',$uid)->get()->toArray();
             $total_num = DB::table('mt_user')->where('a_id',$uid)->count();   //总人数
-            $response=[
-                'code'=>0,
+            $data = [
                 'teamInfo'=>$teamInfo,
                 'total_num'=>$total_num,
+            ];
+            $response=[
+                'code'=>0,
+                'data'=>$data,
                 'msg'=>'数据请求成功'
             ];
             return json_encode($response, JSON_UNESCAPED_UNICODE);
@@ -1217,7 +1220,7 @@ class Headquarters extends Controller
         $mt_distributionInfo = DB::table('mt_distribution')->where('is_distribution',$is_distribution)->paginate(7);
         $response=[
             'code'=>0,
-            'mt_distributionInfo'=>$mt_distributionInfo,
+            'data'=>$mt_distributionInfo,
             'msg'=>'数据请求成功'
         ];
         return json_encode($response, JSON_UNESCAPED_UNICODE);
