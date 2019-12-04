@@ -1197,7 +1197,7 @@ class Headquarters extends Controller
             $response=[
                 'code'=>0,
                 'teamInfo'=>$teamInfo,
-                'total_num'=>$teamInfo,
+                'total_num'=>$total_num,
                 'msg'=>'数据请求成功'
             ];
             return json_encode($response, JSON_UNESCAPED_UNICODE);
