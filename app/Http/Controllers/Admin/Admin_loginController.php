@@ -1346,7 +1346,7 @@ class Admin_loginController extends Controller
         $coupon_num=$request->input('coupon_num');
         $coupon_redouction=$request->input('coupon_redouction');
         $coupon_price=$request->input('coupon_price');
-        $discount=$request->input('discount');
+        $discount=$request->input('is_member_discount');
         $coupon_type=$request->input('coupon_type');
         $create_time=$request->input('create_time');
         $expiration=$request->input('expiration');
@@ -1360,39 +1360,38 @@ class Admin_loginController extends Controller
             'coupon_type'=>$coupon_type,
             'create_time'=>$create_time,
             'expiration'=>$expiration,
-            'discount'=>$discount,
+            'is_member_discount'=>$discount,
             'shop_id'=>$shop_id,
-            'goods_id'=>$goods_id
+            'goods_id'=>$goods_id,
+            'is_coupon'=>1,
+            'promotion_type'=>2
         ];
         $where=[
-            'goods_id'=>$goods_id
+            'goods_id'=>$goods_id,
         ];
         $is_promotion = DB::table('mt_goods')->where($where)->first(['is_promotion']);     //是否开启拼团   0关闭  1开启
         $limited_buy = DB::table('mt_goods')->where($where)->first(['limited_buy']);    //是否开启抢购 1开启  0关闭
         if($is_promotion->is_promotion == 0 && $limited_buy->limited_buy == 0){
-            $couponInfo = DB::table('mt_coupon')->where($where)->get()->toArray();
-            if($couponInfo){
+            $couponInfo = DB::table('mt_goods')->where($where)->first(['is_coupon']);
+            if($couponInfo->is_coupon==1){
                 $response=[
                     'code'=>2,
-                    'msg'=>'该商品已存在一张优惠券'
+                    'msg'=>'该商品已开启优惠'
                 ];
                 die(json_encode($response, JSON_UNESCAPED_UNICODE));
             }else{
-                $data=DB::table('mt_coupon')->where($where)->insert($det);
+                $data=DB::table('mt_goods')->where($where)->update($det);
                 $aa=[
                     'data'=>$data
                 ];
                 if($data == true){
-                    $updateGoodsInfo = DB::table('mt_goods')->where('goods_id',$goods_id)->update(['is_coupon'=>1,'promotion_type'=>2]);
 //                    var_dump($updateGoodsInfo);exit;
-                    if($updateGoodsInfo >=0){
                         $response=[
                             'code'=>0,
                             'data'=>$aa,
                             'msg'=>'优惠卷添加成功'
                         ];
                         return (json_encode($response, JSON_UNESCAPED_UNICODE));
-                    }
                 }else{
                     $response=[
                         'code'=>3,

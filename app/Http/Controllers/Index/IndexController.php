@@ -247,7 +247,9 @@ class IndexController extends Controller
                     'coupon_price' => $datainfos->coupon_price,
                     'coupon_redouction' => $datainfos->coupon_redouction,
                     'create_time' => $datainfos->coupon_start_time,
-                    'expiration' => $datainfos->expiration
+                    'expiration' => $datainfos->expiration,
+                    'discount'=>$datainfos->is_member_discount,
+
                 ];
 //                var_dump($insert);die;
                 $insertCoupon = DB::table('mt_coupon')->insertGetId($insert);
