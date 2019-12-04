@@ -221,7 +221,7 @@ class IndexController extends Controller
             $userInfo = DB::table('mt_user')->where('openid',$openid)->first('uid');
             //var_dump($userInfo);
             $uid = $userInfo->uid;
-            $datainfos=DB::table('mt_goods')->where(['goods_id'=>$goods_id])->first(['expiration','coupon_start_time','coupon_price','coupon_redouction','shop_id']);
+            $datainfos=DB::table('mt_goods')->where(['goods_id'=>$goods_id])->first(['expiration','coupon_start_time','coupon_price','coupon_redouction','shop_id','is_member_discount']);
 //            var_dump($datainfos);die;
             $where = [
                 'uid'=>$uid,
@@ -229,7 +229,7 @@ class IndexController extends Controller
                 'shop_id'=>$datainfos->shop_id
             ];
             $coupon = DB::table('mt_coupon')->where($where)->get()->toArray();
-
+            $coupon_add=DB::table('mt_coupon')->where(['uid'=>$uid])->first();
             if($coupon){
                 $data = [
                     'code'=>1,
@@ -247,7 +247,10 @@ class IndexController extends Controller
                     'coupon_price' => $datainfos->coupon_price,
                     'coupon_redouction' => $datainfos->coupon_redouction,
                     'create_time' => $datainfos->coupon_start_time,
-                    'expiration' => $datainfos->expiration
+                    'expiration' => $datainfos->expiration,
+                    'discount'=>$datainfos->is_member_discount,
+                    'coupon_create'=>$coupon_add->coupon_create+1
+
                 ];
 //                var_dump($insert);die;
                 $insertCoupon = DB::table('mt_coupon')->insertGetId($insert);

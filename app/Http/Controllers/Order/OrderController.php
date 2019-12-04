@@ -302,6 +302,38 @@ class OrderController extends Controller
             return json_encode($response,JSON_UNESCAPED_UNICODE);
         }
     }
+    //查询当前商品的所有优惠卷
+    public function coupon_list_all(Request $request)
+    {
+        $goods_id=$request->input('goods_id');
+        $openid1 = $request->input('openid');
+        $key = $openid1;
+        $openid = Redis::get($key);
+//        $openid='o9VUc5MWyq5GgW3kF_90NnrQkBH8';
+        $data1=DB::table('mt_user')->where(['openid'=>$openid])->first();
+        $uid=$data1->uid;
+        $data=DB::table('mt_coupon')->where(['uid'=>$uid,'goods_id'=>$goods_id])->get();
+        if($data){
+            $data=[
+              'code'=>0,
+              'data'=>$data,
+              'msg'=>'OK'
+            ];
+            $response=[
+              'data'=>$data
+            ];
+            return json_encode($response,JSON_UNESCAPED_UNICODE);
+        }else{
+            $data=[
+                'code'=>1,
+                'msg'=>'NO'
+            ];
+            $response=[
+                'data'=>$data
+            ];
+            return json_encode($response,JSON_UNESCAPED_UNICODE);
+        }
+    }
     //优惠卷下订单
     public function conput_add(Request $request)
     {
@@ -475,7 +507,7 @@ class OrderController extends Controller
         $openid1 = $request->input('openid');
         $key = $openid1;
         $openid = Redis::get($key);
-        $openid='o9VUc5MWyq5GgW3kF_90NnrQkBH8';
+//        $openid='o9VUc5MWyq5GgW3kF_90NnrQkBH8';
         $order_no = date("YmdHis",time()).rand(1000,9999);   //订单号
         if($openid){
             $userInfo = DB::table('mt_user')->where(['openid'=>$openid])->first();

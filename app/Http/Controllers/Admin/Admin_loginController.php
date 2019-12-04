@@ -1130,10 +1130,10 @@ class Admin_loginController extends Controller
         $shop_id = $request->input('shop_id');
         $admin_judge = $request->input('admin_judge');
         if($admin_judge == 1){
-            $data=DB::table('mt_coupon')
-                ->join('mt_shop','mt_coupon.shop_id','=','mt_shop.shop_id')
-                ->join('mt_goods','mt_coupon.goods_id','=','mt_goods.goods_id')
-                ->select(['mt_goods.goods_name','mt_shop.shop_name','mt_coupon.coupon_id','mt_coupon.coupon_names','mt_coupon.coupon_num','mt_coupon.coupon_type','mt_coupon.coupon_create','mt_coupon.create_time','mt_coupon.coupon_redouction','mt_coupon.discount'])
+            $data=DB::table('mt_goods')
+                ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
+                ->join('mt_coupon','mt_coupon.goods_id','=','mt_goods.goods_id')
+                ->select(['mt_goods.goods_name','mt_shop.shop_name','mt_goods.goods_id','mt_goods.coupon_names','mt_goods.coupon_num','mt_goods.coupon_type','mt_coupon.coupon_create','mt_goods.create_time','mt_goods.coupon_redouction','mt_goods.is_member_discount'])
                 ->paginate(6);
 //        var_dump($data);die;
             if($data){
@@ -1151,11 +1151,11 @@ class Admin_loginController extends Controller
                 return (json_encode($response,JSON_UNESCAPED_UNICODE));
             }
         }elseif($admin_judge == 2){
-            $data=DB::table('mt_coupon')
-                ->join('mt_shop','mt_coupon.shop_id','=','mt_shop.shop_id')
-                ->join('mt_goods','mt_coupon.goods_id','=','mt_goods.goods_id')
-                ->where('mt_coupon.shop_id',$shop_id)
-                ->select(['mt_goods.goods_name','mt_shop.shop_name','mt_coupon.coupon_id','mt_coupon.coupon_names','mt_coupon.coupon_num','mt_coupon.coupon_type','mt_coupon.coupon_create','mt_coupon.create_time','mt_coupon.coupon_redouction','mt_coupon.discount'])
+            $data=DB::table('mt_goods')
+                ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
+                ->join('mt_coupon','mt_coupon.goods_id','=','mt_goods.goods_id')
+                ->where('mt_goods.shop_id',$shop_id)
+                ->select(['mt_goods.goods_name','mt_shop.shop_name','mt_goods.goods_id','mt_goods.coupon_names','mt_goods.coupon_num','mt_goods.coupon_type','mt_coupon.coupon_create','mt_goods.create_time','mt_goods.coupon_redouction','mt_goods.is_member_discount'])
                 ->paginate(6);
 //        var_dump($data);die;
             if($data){
@@ -1172,12 +1172,6 @@ class Admin_loginController extends Controller
                 ];
                 return (json_encode($response,JSON_UNESCAPED_UNICODE));
             }
-        }else{
-            $response=[
-                'code'=>2,
-                'msg'=>'请先登录'
-            ];
-            die(json_encode($response, JSON_UNESCAPED_UNICODE));
         }
 
     }
@@ -1346,7 +1340,7 @@ class Admin_loginController extends Controller
         $coupon_num=$request->input('coupon_num');
         $coupon_redouction=$request->input('coupon_redouction');
         $coupon_price=$request->input('coupon_price');
-        $discount=$request->input('discount');
+        $discount=$request->input('is_member_discount');
         $coupon_type=$request->input('coupon_type');
         $create_time=$request->input('create_time');
         $expiration=$request->input('expiration');
@@ -1360,39 +1354,38 @@ class Admin_loginController extends Controller
             'coupon_type'=>$coupon_type,
             'create_time'=>$create_time,
             'expiration'=>$expiration,
-            'discount'=>$discount,
+            'is_member_discount'=>$discount,
             'shop_id'=>$shop_id,
-            'goods_id'=>$goods_id
+            'goods_id'=>$goods_id,
+            'is_coupon'=>1,
+            'promotion_type'=>2
         ];
         $where=[
-            'goods_id'=>$goods_id
+            'goods_id'=>$goods_id,
         ];
         $is_promotion = DB::table('mt_goods')->where($where)->first(['is_promotion']);     //是否开启拼团   0关闭  1开启
         $limited_buy = DB::table('mt_goods')->where($where)->first(['limited_buy']);    //是否开启抢购 1开启  0关闭
         if($is_promotion->is_promotion == 0 && $limited_buy->limited_buy == 0){
-            $couponInfo = DB::table('mt_coupon')->where($where)->get()->toArray();
-            if($couponInfo){
+            $couponInfo = DB::table('mt_goods')->where($where)->first(['is_coupon']);
+            if($couponInfo->is_coupon==1){
                 $response=[
                     'code'=>2,
-                    'msg'=>'该商品已存在一张优惠券'
+                    'msg'=>'该商品已开启优惠'
                 ];
                 die(json_encode($response, JSON_UNESCAPED_UNICODE));
             }else{
-                $data=DB::table('mt_coupon')->where($where)->insert($det);
+                $data=DB::table('mt_goods')->where($where)->update($det);
                 $aa=[
                     'data'=>$data
                 ];
                 if($data == true){
-                    $updateGoodsInfo = DB::table('mt_goods')->where('goods_id',$goods_id)->update(['is_coupon'=>1,'promotion_type'=>2]);
 //                    var_dump($updateGoodsInfo);exit;
-                    if($updateGoodsInfo >=0){
                         $response=[
                             'code'=>0,
                             'data'=>$aa,
                             'msg'=>'优惠卷添加成功'
                         ];
                         return (json_encode($response, JSON_UNESCAPED_UNICODE));
-                    }
                 }else{
                     $response=[
                         'code'=>3,
@@ -1417,10 +1410,11 @@ class Admin_loginController extends Controller
     public function coupontele(Request $request)
     {
         $coupon_id=$request->input('coupon_id');
+        $goods_id=$request->input('goods_id');
         $where=[
-            'coupon_id'=>$coupon_id
+            'goods_id'=>$goods_id
         ];
-        $data=DB::table('mt_coupon')->where($where)->delete();
+        $data=DB::table('mt_goods')->where($where)->update(['is_coupon'=>2]);
         if($data){
             $response=[
                 'code'=>0,
