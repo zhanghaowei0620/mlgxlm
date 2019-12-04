@@ -1183,6 +1183,11 @@ class Headquarters extends Controller
         }
     }
 
+    //我的团队
+    public function admin_my_team(Request $request){
+
+    }
+
 
 
 
