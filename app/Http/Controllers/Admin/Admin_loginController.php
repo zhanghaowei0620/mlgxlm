@@ -1410,10 +1410,11 @@ class Admin_loginController extends Controller
     public function coupontele(Request $request)
     {
         $coupon_id=$request->input('coupon_id');
+        $goods_id=$request->input('goods_id');
         $where=[
-            'coupon_id'=>$coupon_id
+            'goods_id'=>$goods_id
         ];
-        $data=DB::table('mt_coupon')->where($where)->delete();
+        $data=DB::table('mt_goods')->where($where)->update(['is_coupon'=>2]);
         if($data){
             $response=[
                 'code'=>0,
