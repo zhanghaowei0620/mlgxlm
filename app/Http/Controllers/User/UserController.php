@@ -812,7 +812,6 @@ class UserController extends Controller
 //        $openid='o9VUc5MWyq5GgW3kF_90NnrQkBH8';
         if ($openid) {
             $userInfo = DB::table('mt_user')->where('openid', $openid)->first();
-            //var_dump($userInfo);exit;
             $uid = $userInfo->uid;
 
             $get = [
@@ -830,9 +829,8 @@ class UserController extends Controller
                 'mt_shop.shop_name'
             ];
             $where = [
-//                'mt_coupon.uid' => $uid,
+                'mt_coupon.uid' => $uid,
                 'is_use' => 0,
-                'coupon_draw' => 3
             ];
             $coupon = DB::table('mt_coupon')
                 ->join('mt_goods', 'mt_coupon.goods_id', '=', 'mt_goods.goods_id')
@@ -841,7 +839,7 @@ class UserController extends Controller
                 ->get($get)->toArray();
 //            var_dump($coupon);die;
             $where = [
-//                'mt_coupon.uid' => $uid,
+                'mt_coupon.uid' => $uid,
                 'is_use' => 1
             ];
             $coupon1 = DB::table('mt_coupon')
@@ -849,8 +847,8 @@ class UserController extends Controller
                 ->join('mt_shop', 'mt_coupon.shop_id', '=', 'mt_shop.shop_id')
                 ->where($where)
                 ->get($get)->toArray();
-//            var_dump($coupon1);die;
             $where = [
+                'mt_coupon.uid' => $uid,
                 'is_use' => 2
             ];
             $coupon2 = DB::table('mt_coupon')
