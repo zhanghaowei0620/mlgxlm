@@ -1152,9 +1152,9 @@ class Admin_loginController extends Controller
             }
         }elseif($admin_judge == 2){
             $data=DB::table('mt_goods')
-                ->join('mt_shop','mt_coupon.shop_id','=','mt_shop.shop_id')
+                ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
                 ->join('mt_coupon','mt_coupon.goods_id','=','mt_goods.goods_id')
-                ->where('mt_coupon.shop_id',$shop_id)
+                ->where('mt_goods.shop_id',$shop_id)
                 ->select(['mt_goods.goods_name','mt_shop.shop_name','mt_goods.goods_id','mt_goods.coupon_names','mt_goods.coupon_num','mt_goods.coupon_type','mt_coupon.coupon_create','mt_goods.create_time','mt_goods.coupon_redouction','mt_goods.is_member_discount'])
                 ->paginate(6);
 //        var_dump($data);die;
