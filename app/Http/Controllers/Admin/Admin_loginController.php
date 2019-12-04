@@ -1336,6 +1336,7 @@ class Admin_loginController extends Controller
      */
     public function couponinsert(Request $request)
     {
+        $coupon_user_id=$request->input('coupon_user_id');
         $coupon_names=$request->input('coupon_names');
         $coupon_num=$request->input('coupon_num');
         $coupon_redouction=$request->input('coupon_redouction');
@@ -1354,7 +1355,7 @@ class Admin_loginController extends Controller
             'coupon_type'=>$coupon_type,
             'create_time'=>$create_time,
             'expiration'=>$expiration,
-            'is_member_discount'=>$discount,
+            'discount'=>$discount,
             'shop_id'=>$shop_id,
             'goods_id'=>$goods_id,
             'is_coupon'=>1,
@@ -1366,7 +1367,7 @@ class Admin_loginController extends Controller
         $is_promotion = DB::table('mt_goods')->where($where)->first(['is_promotion']);     //是否开启拼团   0关闭  1开启
         $limited_buy = DB::table('mt_goods')->where($where)->first(['limited_buy']);    //是否开启抢购 1开启  0关闭
         if($is_promotion->is_promotion == 0 && $limited_buy->limited_buy == 0){
-            $couponInfo = DB::table('mt_goods')->where($where)->first(['is_coupon']);
+            $couponInfo = DB::table('mt_coupon_user')->where(['coupon_user_id'=>$coupon_user_id])->first(['is_coupon']);
             if($couponInfo->is_coupon==1){
                 $response=[
                     'code'=>2,
@@ -1374,7 +1375,7 @@ class Admin_loginController extends Controller
                 ];
                 die(json_encode($response, JSON_UNESCAPED_UNICODE));
             }else{
-                $data=DB::table('mt_goods')->where($where)->update($det);
+                $data=DB::table('mt_coupon_user')->where(['coupon_user_id'=>$coupon_user_id])->insert($det);
                 $aa=[
                     'data'=>$data
                 ];
