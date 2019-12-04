@@ -238,40 +238,8 @@ class TestController extends Controller
         $xml_arr = json_decode(json_encode($xml_obj), true);
         file_put_contents('/usr/local/webapp/laravel/storage/logs/wechat.log', 'XML_ARR:' . print_r($xml_arr, 1) . "\r\n", FILE_APPEND);
         if (($xml_arr['return_code'] == 'SUCCESS') && ($xml_arr['result_code'] == 'SUCCESS')) {
-            //判断是否普通人选座
-            $str2 = $xml_arr['out_trade_no'];
-            //dump($str2);die;
-            $str = explode('7883331',$str2);
-            $str3 = $str[1];
-            if($str3=='0'){
-                //修改用户状态
-                $wheres = [
-                    'openid' => $xml_arr['openid'],
-                    //'openid' => 'o2XE_5aSFrlLzfHc15E2_C0xVhtQ',
-                    //'order_id' => $xml_arr['out_trade_no']
-                    //'order_id' => '1592'
-                ];
-                //dump($wheres);die;
-                $dev = DB::table('alluser')->select('openid', 'nickname', 'type_status')->where($wheres)->get();
-
-//                $dev = DB::table('alluser')
-//                    ->join('record', 'alluser.type_status', '=', 'record.type_status')
-//                    ->where(['alluser.openid' => $wheres])->get();
-
-                $op = DB::table('alluser')->where($wheres)->update(['type_status' => 0]);
-            }else {
-
-            }
             //修改订单状态
 
-            $where = [
-                'order_id' => $xml_arr['out_trade_no'],
-                //'order_id' => '75891-1',
-            ];
-//            $list = DB::table('record')->select('openid','type_status','order_id')->where($where)->get();
-//            if($list->type_status == 1){
-            DB::table('record')->where($where)->update(['type_status' => 0]);
-//            }
 
             if ($xml_arr) {
                 $str='<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>';
