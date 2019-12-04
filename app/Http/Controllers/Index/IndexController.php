@@ -229,7 +229,7 @@ class IndexController extends Controller
                 'shop_id'=>$datainfos->shop_id
             ];
             $coupon = DB::table('mt_coupon')->where($where)->get()->toArray();
-            $coupon_add=DB::table('mt_coupon')->where(['uid'=>$uid])->get();
+            $coupon_add=DB::table('mt_coupon')->where(['uid'=>$uid])->first();
             if($coupon){
                 $data = [
                     'code'=>1,
