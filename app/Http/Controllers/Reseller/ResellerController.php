@@ -167,11 +167,14 @@ class ResellerController extends Controller
         $userInfo = DB::table('mt_user')->where('openid',$openid)->first();
         $p_id = $userInfo->p_id;
         $uid = $userInfo->uid;
+        $a_id = $userInfo->a_id;
         if($p_id == 0){
             $son = DB::table('mt_user')->where('p_id',$uid)->get()->toArray();
+            $total_num = DB::table('mt_user')->where('a_id',$a_id)->count();
             $data = [
                 'code'=>0,
                 'son'=>$son,
+                'total_num'=>$total_num,
                 'msg'=>'数据请求成功'
             ];
             $response = [
@@ -182,10 +185,12 @@ class ResellerController extends Controller
             $son = DB::table('mt_user')->where('p_id',$uid)->get()->toArray();    //子类
             $uInfo = DB::table('mt_user')->where('uid',$uid)->first();
             $parent = DB::table('mt_user')->where('uid',$uInfo->p_id)->get()->toArray();   //父类
+            $total_num = DB::table('mt_user')->where('a_id',$a_id)->count();   //总人数
             $data = [
                 'code'=>0,
                 'son'=>$son,
                 'parent'=>$parent,
+                'total_num'=>$total_num,
                 'msg'=>'数据请求成功'
             ];
             $response = [

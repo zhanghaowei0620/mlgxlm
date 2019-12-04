@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Amindbackstage;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redis;
 
 class Headquarters extends Controller
 {
@@ -1185,7 +1186,7 @@ class Headquarters extends Controller
 
     //我的团队
     public function admin_my_team(Request $request){
-
+        $shop_id = $request->input('shop_id');
     }
 
 
