@@ -482,7 +482,15 @@ class OrderController extends Controller
             $uid = $userInfo->uid;
             $limited_add=DB::table('mt_goods')->where(['goods_id'=>$goods_id,'limited_buy'=>1])->first(['limited_start_time','limited_stop_time','shop_id']);
 //            var_dump($limited_add);die;
-
+            $aa=time();
+//            $aaaa=$limited_add->limited_start_time >$aa;
+//            var_dump($aaaa);die;
+            if($limited_add){
+                    $aaaaa=date($limited_add->limited_start_time);
+                    var_dump($aaaaa);die;
+            }else{
+                    echo 2222;
+            }
 
         }else{
             $response = [

@@ -257,7 +257,7 @@ class GoodsController extends Controller
             ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
             ->join('mt_coupon','mt_coupon.goods_id','=','mt_goods.goods_id')
             ->where(['mt_shop.shop_id'=>$shop_id])
-            ->get(['mt_coupon.coupon_id','mt_coupon.coupon_id','mt_goods.goods_id','mt_shop.shop_id','mt_coupon.coupon_draw','mt_shop.shop_name','mt_coupon.discount','mt_shop.shop_id','mt_coupon.coupon_price','mt_coupon.coupon_redouction','mt_coupon.create_time','mt_coupon.expiration','mt_goods.picture','mt_coupon.coupon_type','mt_goods.goods_name','mt_coupon.discount','mt_goods.picture']);
+            ->get(['mt_coupon.coupon_id','mt_coupon.coupon_id','mt_goods.goods_id','mt_shop.shop_id','mt_shop.shop_name','mt_coupon.discount','mt_shop.shop_id','mt_coupon.coupon_price','mt_coupon.coupon_redouction','mt_coupon.create_time','mt_coupon.expiration','mt_goods.picture','mt_coupon.coupon_type','mt_goods.goods_name','mt_coupon.discount','mt_goods.picture']);
 //        var_dump($couponInfo);
         if($couponInfo){
             $data = [
@@ -272,38 +272,6 @@ class GoodsController extends Controller
             $data = [
                 'code'=>1,
                 'msg'=>'暂时没有商品优惠券'
-            ];
-            $response = [
-                'data'=>$data
-            ];
-            die(json_encode($response,JSON_UNESCAPED_UNICODE));
-        }
-    }
-    //点击领取优惠卷
-    public function couponadd(Request $request)
-    {
-        $coupon_id=$request->input('coupon_id');
-        $data=DB::table('mt_coupon')
-            ->where(['coupon_id'=>$coupon_id])
-            ->first();
-//        var_dump($data);die;
-        $info=DB::table('mt_coupon')
-            ->where(['coupon_id'=>$coupon_id])
-            ->update(['coupon_draw'=>3]);
-//        var_dump($info);die;
-        if($info){
-            $data = [
-                'code'=>0,
-                'msg'=>'领取优惠卷成功，快去使用吧!'
-            ];
-            $response = [
-                'data'=>$data
-            ];
-            return json_encode($response,JSON_UNESCAPED_UNICODE);
-        }else{
-            $data = [
-                'code'=>1,
-                'msg'=>'您没有领取上优惠卷'
             ];
             $response = [
                 'data'=>$data
@@ -334,7 +302,7 @@ class GoodsController extends Controller
             ->join('mt_goods','mt_goods.shop_id','=','mt_shop.shop_id')
             ->where(['mt_goods.goods_id'=>$goods_id])
             ->get(['shop_name','admin_tel','shop_address_detail','goods_name','goods_effect','goods_duration','goods_process','goods_overdue_time','shop_bus','goods_appointment','goods_use_rule','shop_img','shop_logo','shop_star','mt_goods.prople']);
-        $coupon_lists=DB::table('mt_coupon')->where(['uid'=>$uid,'goods_id'=>$goods_id,'coupon_draw'=>3])->first();
+        $coupon_lists=DB::table('mt_coupon')->where(['uid'=>$uid,'goods_id'=>$goods_id,])->first();
         $goods_list=DB::table('mt_goods')
             ->where(['mt_shop.shop_id'=>$data1->shop_id])
             ->join('mt_shop','mt_shop.shop_id','=','mt_goods.goods_id')

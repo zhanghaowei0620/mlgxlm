@@ -22,7 +22,7 @@ Route::get('/type_lists', 'Index\IndexController@type_lists');   //更多
 
 Route::get('/index_coupon', 'Index\IndexController@index_coupon');    //首页-优惠券
 
-Route::get('/coupon_receive', 'Index\IndexController@coupon_receive');
+Route::get('/coupon_receive', 'Index\IndexController@coupon_receive'); //点击领取优惠卷
 
 Route::get('/assemble', 'Index\IndexController@assemble');   //拼团
 
@@ -63,8 +63,6 @@ Route::get('/caselist', 'Goods\GoodsController@caselist');     //案例列表
 Route::get('/user_coupon', 'User\UserController@user_coupon');    //个人中心优惠券
 
 Route::get('/couponlist', 'Goods\GoodsController@couponlist');     //优惠卷列表
-
-Route::get('/couponadd', 'Goods\GoodsController@couponadd');        //点击领取优惠卷
 
 Route::get('/goodsInfo', 'Goods\GoodsController@goodsInfo');    //获取商品详情信息
 

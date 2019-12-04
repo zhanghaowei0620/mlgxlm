@@ -847,6 +847,7 @@ class UserController extends Controller
                 ->join('mt_shop', 'mt_coupon.shop_id', '=', 'mt_shop.shop_id')
                 ->where($where)
                 ->get($get)->toArray();
+//            var_dump($coupon1);die;
             $where = [
                 'mt_coupon.uid' => $uid,
                 'is_use' => 2

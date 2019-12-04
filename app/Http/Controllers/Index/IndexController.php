@@ -212,23 +212,17 @@ class IndexController extends Controller
 
     //点击优惠券 领取
     public function coupon_receive(Request $request){
-//        $ip = $_SERVER['SERVER_ADDR'];
-//        $key = 'openid'.$ip;
-//        $openid =  Redis::get($key);
+        $goods_id = $request->input('goods_id');
         $openid1 = $request->input('openid');
         $key = $openid1;
         $openid = Redis::get($key);
+//        $openid='o9VUc5MWyq5GgW3kF_90NnrQkBH8';
         if($openid){
             $userInfo = DB::table('mt_user')->where('openid',$openid)->first('uid');
             //var_dump($userInfo);
             $uid = $userInfo->uid;
-            $goods_id = $request->input('goods_id');
-            $shop_id = $request->input('shop_id');
-            $coupon_redouction = $request->input('coupon_redouction');
-            $coupon_price = $request->input('coupou_price');
-            $coupon_start_time = $request->input('coupon_start_time');
-            $expiration = $request->input('expiration');
-
+            $datainfos=DB::table('mt_goods')->where(['goods_id'=>$goods_id])->first(['expiration','coupon_start_time','coupou_price','coupon_redouction','shop_id']);
+//            var_dump($datainfos);die;
             $where = [
                 'uid'=>$userInfo,
                 'goods_id'=>$goods_id,
@@ -248,12 +242,12 @@ class IndexController extends Controller
             }else{
                 $insert = [
                     'goods_id' => $goods_id,
-                    'shop_id' => $shop_id,
+                    'shop_id' => $datainfos->shop_id,
                     'uid' => $uid,
-                    'coupon_price' => $coupon_price,
-                    'coupon_redouction' => $coupon_redouction,
-                    'coupon_start_time' => $coupon_start_time,
-                    'expiration' => $expiration
+                    'coupon_price' =>$datainfos->coupon_price,
+                    'coupon_redouction' => $datainfos->coupon_redouction,
+                    'coupon_start_time' => $datainfos->coupon_start_time,
+                    'expiration' => $datainfos->expiration
                 ];
                 $insertCoupon = DB::table('mt_coupon')->insertGetId($insert);
                 if($insertCoupon == true){
