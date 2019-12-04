@@ -229,7 +229,7 @@ class IndexController extends Controller
                 'shop_id'=>$datainfos->shop_id
             ];
             $coupon = DB::table('mt_coupon')->where($where)->get()->toArray();
-
+            $coupon_add=DB::table('mt_coupon')->where(['uid'=>$uid])->get();
             if($coupon){
                 $data = [
                     'code'=>1,
@@ -249,7 +249,7 @@ class IndexController extends Controller
                     'create_time' => $datainfos->coupon_start_time,
                     'expiration' => $datainfos->expiration,
                     'discount'=>$datainfos->is_member_discount,
-                    'coupon_create'=>$coupon->coupon_create+1
+                    'coupon_create'=>$coupon_add->coupon_create+1
 
                 ];
 //                var_dump($insert);die;
