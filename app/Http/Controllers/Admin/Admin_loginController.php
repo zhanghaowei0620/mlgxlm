@@ -1367,7 +1367,7 @@ class Admin_loginController extends Controller
         $is_promotion = DB::table('mt_goods')->where($where)->first(['is_promotion']);     //是否开启拼团   0关闭  1开启
         $limited_buy = DB::table('mt_goods')->where($where)->first(['limited_buy']);    //是否开启抢购 1开启  0关闭
         if($is_promotion->is_promotion == 0 && $limited_buy->limited_buy == 0){
-            $couponInfo = DB::table('mt_coupon_user')->where(['coupon_user_id'=>$coupon_user_id])->first(['is_coupon']);
+            $couponInfo = DB::table('mt_coupon_user')->where(['coupon_user_id'=>$coupon_user_id])->first();
             if($couponInfo->is_coupon==1){
                 $response=[
                     'code'=>2,
