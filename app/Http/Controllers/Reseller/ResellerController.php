@@ -161,6 +161,41 @@ class ResellerController extends Controller
         return json_encode($response, JSON_UNESCAPED_UNICODE);
     }
 
+    //我的团队
+    public function my_team(Request $request){
+        $openid = $request->input('openid');
+        $userInfo = DB::table('mt_user')->where('openid',$openid)->first();
+        $p_id = $userInfo->p_id;
+        $uid = $userInfo->uid;
+        if($p_id == 0){
+            $son = DB::table('mt_user')->where('p_id',$uid)->get()->toArray();
+            $data = [
+                'code'=>0,
+                'son'=>$son,
+                'msg'=>'数据请求成功'
+            ];
+            $response = [
+                'data' => $data
+            ];
+            return json_encode($response, JSON_UNESCAPED_UNICODE);
+        }else{
+            $son = DB::table('mt_user')->where('p_id',$uid)->get()->toArray();    //子类
+            $uInfo = DB::table('mt_user')->where('uid',$uid)->first();
+            $parent = DB::table('mt_user')->where('uid',$uInfo->p_id)->get()->toArray();   //父类
+            $data = [
+                'code'=>0,
+                'son'=>$son,
+                'parent'=>$parent,
+                'msg'=>'数据请求成功'
+            ];
+            $response = [
+                'data' => $data
+            ];
+            return json_encode($response, JSON_UNESCAPED_UNICODE);
+        }
+
+    }
+
 
 
 

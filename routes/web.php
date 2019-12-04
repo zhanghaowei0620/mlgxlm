@@ -167,6 +167,9 @@ Route::post('index_reseller_goodsList', 'Reseller\ResellerController@index_resel
 
 Route::post('index_reseller_goodsDetail', 'Reseller\ResellerController@index_reseller_goodsDetail');     //分销中心-商品详情
 
+Route::get('my_team', 'Reseller\ResellerController@my_team');   //我的团队
+
+
 
 
 
