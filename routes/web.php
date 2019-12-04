@@ -253,6 +253,7 @@ Route::any('couponexhibition','Admin\Admin_loginController@couponexhibition')->m
 Route::any('coupontele','Admin\Admin_loginController@coupontele')->middleware('checkLogin');
 //优惠卷搜索
 Route::any('couponsearch','Admin\Admin_loginController@couponsearch')->middleware('checkLogin');
+//Route::any('couponsearch','Admin\Admin_loginController@couponsearch');
 //优惠卷添加
 Route::any('couponinsert','Admin\Admin_loginController@couponinsert')->middleware('checkLogin');
 //店铺管理

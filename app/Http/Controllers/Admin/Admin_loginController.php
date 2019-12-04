@@ -1188,11 +1188,11 @@ class Admin_loginController extends Controller
         $admin_judge = $request->input('admin_judge');
         if($admin_judge == 1){
             if($goods_name){
-                $data=DB::table('mt_coupon')
+                $data=DB::table('mt_goods')
                     ->where('goods_name' , '=' , "$goods_name")
-                    ->join('mt_shop','mt_coupon.shop_id','=','mt_shop.shop_id')
-                    ->join('mt_goods','mt_coupon.goods_id','=','mt_goods.goods_id')
-                    ->get(['mt_goods.goods_name','mt_shop.shop_name','mt_coupon.coupon_id','mt_coupon.coupon_names','mt_coupon.coupon_num','mt_coupon.coupon_type','mt_coupon.coupon_create','mt_coupon.create_time']);
+                    ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
+                    ->join('mt_coupon','mt_coupon.goods_id','=','mt_goods.goods_id')
+                    ->get(['mt_goods.goods_name','mt_shop.shop_name','mt_goods.goods_id','mt_goods.coupon_names','mt_goods.coupon_num','mt_goods.coupon_type','mt_coupon.coupon_create','mt_coupon.create_time']);
 //            var_dump($data);die;
                 $data1=[
                     'data'=>$data
@@ -1203,7 +1203,7 @@ class Admin_loginController extends Controller
                         'data'=>$data1,
                         'msg'=>'查询成功',
                     ];
-                    die(json_encode($response,JSON_UNESCAPED_UNICODE));
+                    return (json_encode($response,JSON_UNESCAPED_UNICODE));
                 }else{
                     $response=[
                         'code'=>1,
@@ -1213,11 +1213,11 @@ class Admin_loginController extends Controller
                 }
             }
             if($shop_name){
-                $data=DB::table('mt_coupon')
+                $data=DB::table('mt_goods')
                     ->where('shop_name' , '=' , "$shop_name")
-                    ->join('mt_shop','mt_coupon.shop_id','=','mt_shop.shop_id')
-                    ->join('mt_goods','mt_coupon.goods_id','=','mt_goods.goods_id')
-                    ->get(['mt_goods.goods_name','mt_shop.shop_name','mt_coupon.coupon_id','mt_coupon.coupon_names','mt_coupon.coupon_num','mt_coupon.coupon_type','mt_coupon.coupon_create','mt_coupon.create_time']);
+                    ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
+                    ->join('mt_coupon','mt_coupon.goods_id','=','mt_goods.goods_id')
+                    ->get(['mt_goods.goods_name','mt_shop.shop_name','mt_goods.goods_id','mt_goods.coupon_names','mt_goods.coupon_num','mt_goods.coupon_type','mt_coupon.coupon_create','mt_coupon.create_time']);
 //            var_dump($data);die;
                 $data1=[
                     'data'=>$data
@@ -1228,7 +1228,7 @@ class Admin_loginController extends Controller
                         'data'=>$data1,
                         'msg'=>'查询成功',
                     ];
-                    die(json_encode($response,JSON_UNESCAPED_UNICODE));
+                    return (json_encode($response,JSON_UNESCAPED_UNICODE));
                 }else{
                     $response=[
                         'code'=>1,
@@ -1239,12 +1239,12 @@ class Admin_loginController extends Controller
             }
         }else{
             if($goods_name){
-                $data=DB::table('mt_coupon')
-                    ->where('mt_coupon.shop_id',$shop_id)
+                $data=DB::table('mt_goods')
+                    ->where('mt_goods.shop_id',$shop_id)
                     ->where('goods_name' , '=' , "$goods_name")
-                    ->join('mt_shop','mt_coupon.shop_id','=','mt_shop.shop_id')
-                    ->join('mt_goods','mt_coupon.goods_id','=','mt_goods.goods_id')
-                    ->get(['mt_goods.goods_name','mt_shop.shop_name','mt_coupon.coupon_id','mt_coupon.coupon_names','mt_coupon.coupon_num','mt_coupon.coupon_type','mt_coupon.coupon_create','mt_coupon.create_time']);
+                    ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
+                    ->join('mt_coupon','mt_coupon.goods_id','=','mt_goods.goods_id')
+                    ->get(['mt_goods.goods_name','mt_shop.shop_name','mt_goods.goods_id','mt_goods.coupon_names','mt_goods.coupon_num','mt_goods.coupon_type','mt_coupon.coupon_create','mt_coupon.create_time']);
 //            var_dump($data);die;
                 $data1=[
                     'data'=>$data
@@ -1255,7 +1255,7 @@ class Admin_loginController extends Controller
                         'data'=>$data1,
                         'msg'=>'查询成功',
                     ];
-                    die(json_encode($response,JSON_UNESCAPED_UNICODE));
+                    return (json_encode($response,JSON_UNESCAPED_UNICODE));
                 }else{
                     $response=[
                         'code'=>1,
@@ -1265,12 +1265,12 @@ class Admin_loginController extends Controller
                 }
             }
             if($shop_name){
-                $data=DB::table('mt_coupon')
-                    ->where('mt_coupon.shop_id',$shop_id)
+                $data=DB::table('mt_goods')
+                    ->where('mt_goods.shop_id',$shop_id)
                     ->where('shop_name' , '=' , "$shop_name")
-                    ->join('mt_shop','mt_coupon.shop_id','=','mt_shop.shop_id')
-                    ->join('mt_goods','mt_coupon.goods_id','=','mt_goods.goods_id')
-                    ->get(['mt_goods.goods_name','mt_shop.shop_name','mt_coupon.coupon_id','mt_coupon.coupon_names','mt_coupon.coupon_num','mt_coupon.coupon_type','mt_coupon.coupon_create','mt_coupon.create_time']);
+                    ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
+                    ->join('mt_coupon','mt_coupon.goods_id','=','mt_goods.goods_id')
+                    ->get(['mt_goods.goods_name','mt_shop.shop_name','mt_goods.coupon_id','mt_goods.coupon_names','mt_goods.coupon_num','mt_goods.coupon_type','mt_coupon.coupon_create','mt_coupon.create_time']);
 //            var_dump($data);die;
                 $data1=[
                     'data'=>$data
@@ -1281,7 +1281,7 @@ class Admin_loginController extends Controller
                         'data'=>$data1,
                         'msg'=>'查询成功',
                     ];
-                    die(json_encode($response,JSON_UNESCAPED_UNICODE));
+                    return (json_encode($response,JSON_UNESCAPED_UNICODE));
                 }else{
                     $response=[
                         'code'=>1,
