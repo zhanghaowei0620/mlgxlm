@@ -528,8 +528,8 @@ class GoodsController extends Controller
         $openid1 = $request->input('openid');
         $key = $openid1;
         $openid = Redis::get($key);
-//        $order_method=$request->input('order_method'); //0为普通购买，1.拼团购买，2.优惠券购买，3限时抢购买，4积分购买，5分销购买
-        $openid='o9VUc5MWyq5GgW3kF_90NnrQkBH8';
+        $method_type=$request->input('method_type'); //1为普通购买，2.拼团购买，3.优惠券购买，4限时抢购买
+//        $openid='o9VUc5MWyq5GgW3kF_90NnrQkBH8';
         $order_id=$request->input('order_id');
         $price=$request->input('price');
         $data=DB::table('mt_user')
@@ -552,89 +552,93 @@ class GoodsController extends Controller
             ];
             return json_encode($response,JSON_UNESCAPED_UNICODE);
         }
-        if($order_method == 0){
+        if($method_type == 1){
 
-        }else if($order_method == 1){
 
-        }else if ($order_method == 2){
 
-        }else if ($order_method == 3){
+        }else if($method_type == 2){
+
+            $updates=[
+                'money'=>$money,
+                'order_status'=>1,
+                'order_pay'=>0
+            ];
+            $data99=DB::table('mt_user')
+                ->join('mt_order','mt_order.uid','=','mt_user.uid')
+                ->where(['openid'=>$openid,'order_id'=>$order_id,])
+                ->update($updates);
+//        var_dump($data1);die;
+
+            if($data99 > 0){
+                //修改拼团团队信息
+                if($infos->has_pt_id==0){
+                    $data_order = [
+                        'goods_id'=> $infos->goods_id,
+                        'shop_id'=> $infos->shop_id,
+                        'uid'=>$data->uid,
+                        'pt_team'=>$data->uid,
+                        'pt_order_id' =>$order_id,
+                        'pt_start_time'=>time(),
+                        'pt_state'=>0,
+                        'pt_sum'=>1,
+                    ];
+                    $infodata =DB::table('mt_pt_list')->insert($data_order);
+                }else{
+                    $data2=DB::table("mt_pt_list")->where("pt_id",$infos->has_pt_id)->first();
+                    if($data2){
+                        $data_order = [
+                            'goods_id'=> $infos->goods_id,
+                            'shop_id'=>  $infos->shop_id,
+                            'pt_team'=>$data2->pt_team.','.$data->uid,
+                            'pt_order_id' =>$data2->pt_order_id.','.$order_id,
+                            'pt_start_time'=>time(),
+                            'pt_state'=>0,
+                            'pt_sum'=>$data2->pt_sum+1,
+                        ];
+                        $infodata = DB::table('mt_pt_list')->where('pt_id',$infos->has_pt_id)->update($data_order);
+
+
+                        //判断该订单是否已经完成
+                        $sss = DB::table('mt_pt_list')
+                            ->join('mt_goods','mt_pt_list.goods_id','=','mt_goods.goods_id')
+                            ->where('mt_pt_list.pt_id',$infos->has_pt_id)
+                            ->first(['mt_pt_list.pt_sum','mt_goods.promotion_prople']);
+                        if($sss->pt_sum == $sss->promotion_prople){
+                            $data_up = [
+                                'pt_state'=> 1,
+                            ];
+                            $res = DB::table('mt_pt_list')->where('pt_id',$pt_id)->update($data_up);
+                        }
+                    }else{
+                        $data=[
+                            'code'=>'0',
+                            'msg'=>'该团队不存在',
+                            'order_id'=>$order_id,
+                        ];
+                        $response = [
+                            'data'=>$data
+                        ];
+                        return json_encode($response,JSON_UNESCAPED_UNICODE);
+                    }
+
+                }
+
+
+
+                $ress=DB::table('mt_goods')->where("goods_id",$infos->goods_id)->first();
+                $ress_inser=[
+                    'pt_num_all'=> $ress->pt_num_all+1,
+                ];
+                $ressad=DB::table('mt_goods')->where("goods_id",$infos->goods_id)->update($ress_inser);
+
+        }else if ($method_type == 3){
+
+        }else if ($method_type == 4){
 
         }
 
 
-        $updates=[
-          'money'=>$money,
-            'order_status'=>1,
-            'order_pay'=>0
-        ];
-        $data99=DB::table('mt_user')
-            ->join('mt_order','mt_order.uid','=','mt_user.uid')
-            ->where(['openid'=>$openid,'order_id'=>$order_id,])
-            ->update($updates);
-//        var_dump($data1);die;
 
-        if($data99 > 0){
-            //修改拼团团队信息
-            if($infos->has_pt_id==0){
-                $data_order = [
-                    'goods_id'=> $infos->goods_id,
-                    'shop_id'=> $infos->shop_id,
-                    'uid'=>$data->uid,
-                    'pt_team'=>$data->uid,
-                    'pt_order_id' =>$order_id,
-                    'pt_start_time'=>time(),
-                    'pt_state'=>0,
-                    'pt_sum'=>1,
-                ];
-                $infodata =DB::table('mt_pt_list')->insert($data_order);
-            }else{
-                $data2=DB::table("mt_pt_list")->where("pt_id",$infos->has_pt_id)->first();
-                if($data2){
-                    $data_order = [
-                        'goods_id'=> $infos->goods_id,
-                        'shop_id'=>  $infos->shop_id,
-                        'pt_team'=>$data2->pt_team.','.$data->uid,
-                        'pt_order_id' =>$data2->pt_order_id.','.$order_id,
-                        'pt_start_time'=>time(),
-                        'pt_state'=>0,
-                        'pt_sum'=>$data2->pt_sum+1,
-                    ];
-                    $infodata = DB::table('mt_pt_list')->where('pt_id',$infos->has_pt_id)->update($data_order);
-
-
-                    //判断该订单是否已经完成
-                    $sss = DB::table('mt_pt_list')
-                        ->join('mt_goods','mt_pt_list.goods_id','=','mt_goods.goods_id')
-                        ->where('mt_pt_list.pt_id',$infos->has_pt_id)
-                        ->first(['mt_pt_list.pt_sum','mt_goods.promotion_prople']);
-                    if($sss->pt_sum == $sss->promotion_prople){
-                        $data_up = [
-                            'pt_state'=> 1,
-                        ];
-                        $res = DB::table('mt_pt_list')->where('pt_id',$pt_id)->update($data_up);
-                    }
-                }else{
-                    $data=[
-                        'code'=>'0',
-                        'msg'=>'该团队不存在',
-                        'order_id'=>$order_id,
-                    ];
-                    $response = [
-                        'data'=>$data
-                    ];
-                    return json_encode($response,JSON_UNESCAPED_UNICODE);
-                }
-
-            }
-
-
-
-            $ress=DB::table('mt_goods')->where("goods_id",$infos->goods_id)->first();
-            $ress_inser=[
-              'pt_num_all'=> $ress->pt_num_all+1,
-            ];
-            $ressad=DB::table('mt_goods')->where("goods_id",$infos->goods_id)->update($ress_inser);
 
             $data=[
                 'code'=>0,
