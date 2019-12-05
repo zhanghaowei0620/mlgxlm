@@ -18,6 +18,7 @@ class OrderController extends Controller
         $buy_num = $request->input('buy_num'); //数量
         $total_price = $request->input('total_price');   //总价
         $pt_id = $request->input('pt_id'); //拼团的团队id
+        $good_cate=$request->input('good_cate'); //0是服务1是商品
         $coupon_type=$request->input('coupon_type');  //根据前端传回来的是0还是1，0为优惠卷   1为折扣
         $order_no = date("YmdHis",time()).rand(1000,9999);   //订单号
         $openid1 = $request->input('openid');
