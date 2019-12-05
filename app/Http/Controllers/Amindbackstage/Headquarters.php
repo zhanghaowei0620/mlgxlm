@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Str;
 
 class Headquarters extends Controller
 {
@@ -768,14 +769,67 @@ class Headquarters extends Controller
         }
     }
 
+    //获取access_Token
+    public function admin_accessToken1(){
+        $access = Cache('access');
+        if (empty($access)) {
+            $url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" . env('WX_APP_ID') . "&secret=" . env('WX_KEY') . "";
+            $info = file_get_contents($url);
+            $arrInfo = json_decode($info, true);
+            $key = "access";
+            $access = $arrInfo['access_token'];
+            $time = $arrInfo['expires_in'];
+
+            cache([$key => $access], $time);
+        }
+        return $access;
+    }
+
+    public function curl_post($url='',$postdata='',$options=array()){
+        $ch=curl_init($url);
+        curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
+        curl_setopt($ch,CURLOPT_POST,1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $postdata);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
+        if(!empty($options)){
+            curl_setopt_array($ch, $options);
+        }
+        $data=curl_exec($ch);
+        curl_close($ch);
+        return $data;
+    }
+
+    public function data_uri($contents, $mime)
+    {
+        $base64   = base64_encode($contents);
+        return ('data:' . $mime . ';base64,' . $base64);
+    }
+
     //审核
     public function admin_reseller_examine(Request $request){
+        $accessToken = $this->admin_accessToken1();
         $shop_id = $request->input('shop_id');
         $admin_judge = $request->input('admin_judge');
         if($admin_judge == 1){
             $shopUpdate = DB::table('mt_shop')->where('shop_id',$shop_id)->update(['shop_reseller'=>1]);
             $admin_userUpdate = DB::table('admin_user')->where('shop_id',$shop_id)->update(['shop_reseller'=>1]);
             if($shopUpdate >0 && $admin_userUpdate > 0){
+                $scene = mt_rand(1111,9999) . Str::random(6);
+                //var_dump($scene);exit;
+                $url = "https://api.weixin.qq.com/wxa/getwxacodeunlimit?access_token=$accessToken";
+                $postdata = [
+                    "page" => "/pages/index/index",
+                    "scene" => $scene,
+                ];
+                $res = $this->curl_post($url,json_encode($postdata),$options=array());
+                $img = './images/'.time().'.jpg';
+                //var_dump($img);exit;
+                $r = file_put_contents($img,$res);
+
+                DB::table('mt_shop')->where('shop_id',$shop_id)->update(['shop_rand'=>$img,'shop_random_str'=>$scene]);
+
 //                echo 111;exit;
                 $response=[
                     'code'=>0,
@@ -1216,7 +1270,6 @@ class Headquarters extends Controller
     }
 
     //分销商申请列表
-
     public function admin_Application_reseller_list(Request $request){
         $is_distribution = $request->input('is_distribution');   //1为分销代理   2为分销商  3为异业联盟
         $mt_distributionInfo = DB::table('mt_distribution')->where('is_distribution',$is_distribution)->paginate(7);
@@ -1227,6 +1280,10 @@ class Headquarters extends Controller
         ];
         return json_encode($response, JSON_UNESCAPED_UNICODE);
     }
+
+
+
+
 
 
 

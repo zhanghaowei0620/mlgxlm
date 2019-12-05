@@ -177,6 +177,8 @@ Route::post('admin_my_team', 'Amindbackstage\Headquarters@admin_my_team')->middl
 
 Route::post('admin_Application_reseller_list', 'Amindbackstage\Headquarters@admin_Application_reseller_list')->middleware('checkLogin');
 
+Route::get('admin_accessToken1', 'Amindbackstage\Headquarters@admin_accessToken1')->middleware('checkLogin');
+
 
 
 
