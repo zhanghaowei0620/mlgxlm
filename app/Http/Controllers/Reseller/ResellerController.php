@@ -228,8 +228,21 @@ class ResellerController extends Controller
     //添加分销员
     public function my_team_Add(Request $request){
         $openid = $request->input('openid');
+        $shop_resellerInfo = DB::table('mt_user')->where('openid',$openid)->first(['p_id','a_id','shop_rand','shop_random_str']);
+        $p_id = $shop_resellerInfo->p_id;
+        $a_id = $shop_resellerInfo->a_id;
+        $shop_rand = $shop_resellerInfo->shop_rand;
+        $shop_random_str = $shop_resellerInfo->shop_random_str;
+        if($p_id == NULL && $a_id == NULL && $shop_rand == NULL && $shop_random_str == NULL){
+            echo 111;exit;
+        }else{
+            echo 222;exit;
+        }
+        var_dump($shop_resellerInfo);exit;
         $invite_code = $request->input('invite_code');
-        $userInfo = DB::table('mt_user')->where('shop_random_str',$invite_code)->first(['uid','aid']);
+        $userInfo = DB::table('mt_user')->where('shop_random_str',$invite_code)->first(['uid','a_id']);
+        $uid = $userInfo->uid;
+        $a_id = $userInfo->a_id;
         var_dump($userInfo);exit;
     }
 
