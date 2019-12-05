@@ -543,11 +543,10 @@ class Admin_loginController extends Controller
     {
         $shop_id=$request->input('shop_id');
         $where=[
-          'mt_goods.shop_id'=>$shop_id
+          'shop_id'=>$shop_id,
         ];
-        $data=DB::table('mt_shop')
-            ->join('mt_goods','mt_goods.shop_id','=','mt_shop.shop_id')
-            ->where($where)->delete();
+        $data=DB::table('mt_shop')->where($where)->delete();
+        $info=DB::table('mt_goods')->where(['shop_id'=>$shop_id])->delete();
         if($data){
             $response=[
                 'code'=>0,
