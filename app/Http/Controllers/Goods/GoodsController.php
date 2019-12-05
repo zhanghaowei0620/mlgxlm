@@ -287,7 +287,7 @@ class GoodsController extends Controller
         $openid1 = $request->input('openid');
         $key = $openid1;
         $openid = Redis::get($key);
-        $openid="o9VUc5MWyq5GgW3kF_90NnrQkBH8";
+//        $openid="o9VUc5MWyq5GgW3kF_90NnrQkBH8";
         $infono=DB::table('mt_user')->where(['openid'=>$openid])->first();
 
         $uid=$infono->uid;
