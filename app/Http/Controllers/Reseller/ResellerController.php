@@ -224,6 +224,11 @@ class ResellerController extends Controller
 
     }
 
+    //添加分销员
+    public function my_team_Add(Request $request){
+        $invite_code = $request->input('invite_code');
+    }
+
 
 
 

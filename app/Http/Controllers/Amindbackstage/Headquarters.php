@@ -827,8 +827,10 @@ class Headquarters extends Controller
                 $img = './images/'.time().'.jpg';
                 //var_dump($img);exit;
                 $r = file_put_contents($img,$res);
+                $shopInfo = DB::table('mt_shop')->where('shop_id',$shop_id)->first(['uid']);
+                $uid = $shopInfo->uid;
 
-                DB::table('mt_shop')->where('shop_id',$shop_id)->update(['shop_rand'=>$img,'shop_random_str'=>$scene]);
+                DB::table('mt_user')->where('uid',$uid)->update(['shop_rand'=>$img,'shop_random_str'=>$scene]);
 
 //                echo 111;exit;
                 $response=[
