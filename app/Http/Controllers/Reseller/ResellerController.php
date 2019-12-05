@@ -73,10 +73,11 @@ class ResellerController extends Controller
             $userInfo = DB::table('mt_user')->where('openid',$openid)->first(['mt_reseller']);
             $mt_reseller = $userInfo->mt_reseller;
 
-            $shop_resellerInfo = DB::table('re_goods')
-                ->join('mt_shop','re_goods.shop_id','=','mt_shop.shop_id')
+            $shop_resellerInfo = DB::table('mt_shop')
+                ->join('re_goods','re_goods.shop_id','=','mt_shop.shop_id')
+                ->join('mt_user','mt_shop.uid','=','mt_user.uid')
                 ->where('mt_shop.shop_reseller',1)
-                ->get(['mt_shop.shop_id','mt_shop.shop_name','mt_shop.shop_img','re_goods.re_goods_id','re_goods.re_goods_name','re_goods.re_goods_price','re_goods.re_goods_picture','re_goods.re_goods_volume'])->toArray();
+                ->get(['mt_shop.shop_id','mt_shop.shop_name','mt_shop.shop_img','re_goods.re_goods_id','re_goods.re_goods_name','re_goods.re_goods_price','re_goods.re_goods_picture','re_goods.re_goods_volume','mt_user.shop_random_str'])->toArray();
 //        var_dump($shop_resellerInfo);exit;
             $data = [
                 'code'=>0,
@@ -226,7 +227,9 @@ class ResellerController extends Controller
 
     //添加分销员
     public function my_team_Add(Request $request){
+        $openid = $request->input('openid');
         $invite_code = $request->input('invite_code');
+        var_dump($invite_code);exit;
     }
 
 
