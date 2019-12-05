@@ -106,7 +106,7 @@ class IndexController extends Controller
             $week_newshop = DB::table('mt_shop')
                 ->join('mt_goods','mt_goods.shop_id','=','mt_shop.shop_id')
 //                ->where(['mt_shop.shop_address_city'=>$shop_address_city])
-                    ->where('shop_status'=>2)
+                    ->where('mt_shop.shop_status'=>2)
                 ->orderBy('shop_add_time')
                 ->limit(3)
                 ->get(['mt_shop.shop_id','shop_name','shop_Ename','shop_desc','shop_label','shop_address_provice','shop_address_city','shop_address_area','shop_score'])->toArray();    //本周新店
