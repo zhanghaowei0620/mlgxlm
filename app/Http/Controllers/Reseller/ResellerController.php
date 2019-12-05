@@ -68,21 +68,44 @@ class ResellerController extends Controller
 
     //分销中心列表
     public function index_rellerList(Request $request){
+        $openid = $request->input('openid');
+        if($openid){
+            $userInfo = DB::table('mt_user')->where('openid',$openid)->first(['mt_reseller']);
+            $mt_reseller = $userInfo->mt_reseller;
 
-        $shop_resellerInfo = DB::table('re_goods')
-            ->join('mt_shop','re_goods.shop_id','=','mt_shop.shop_id')
-            ->where('mt_shop.shop_reseller',1)
-            ->get(['mt_shop.shop_id','mt_shop.shop_name','mt_shop.shop_img','re_goods.re_goods_id','re_goods.re_goods_name','re_goods.re_goods_price','re_goods.re_goods_picture','re_goods.re_goods_volume'])->toArray();
+            $shop_resellerInfo = DB::table('re_goods')
+                ->join('mt_shop','re_goods.shop_id','=','mt_shop.shop_id')
+                ->where('mt_shop.shop_reseller',1)
+                ->get(['mt_shop.shop_id','mt_shop.shop_name','mt_shop.shop_img','re_goods.re_goods_id','re_goods.re_goods_name','re_goods.re_goods_price','re_goods.re_goods_picture','re_goods.re_goods_volume'])->toArray();
 //        var_dump($shop_resellerInfo);exit;
-        $data = [
-            'code'=>0,
-            'shop_resellerInfo'=>$shop_resellerInfo,
-            'msg'=>'数据请求成功'
-        ];
-        $response = [
-            'data' => $data
-        ];
-        return json_encode($response, JSON_UNESCAPED_UNICODE);
+            $data = [
+                'code'=>0,
+                'shop_resellerInfo'=>$shop_resellerInfo,
+                'mt_reseller'=>$mt_reseller,
+                'msg'=>'数据请求成功'
+            ];
+            $response = [
+                'data' => $data
+            ];
+            return json_encode($response, JSON_UNESCAPED_UNICODE);
+        }else{
+            $shop_resellerInfo = DB::table('re_goods')
+                ->join('mt_shop','re_goods.shop_id','=','mt_shop.shop_id')
+                ->where('mt_shop.shop_reseller',1)
+                ->get(['mt_shop.shop_id','mt_shop.shop_name','mt_shop.shop_img','re_goods.re_goods_id','re_goods.re_goods_name','re_goods.re_goods_price','re_goods.re_goods_picture','re_goods.re_goods_volume'])->toArray();
+//        var_dump($shop_resellerInfo);exit;
+            $data = [
+                'code'=>0,
+                'shop_resellerInfo'=>$shop_resellerInfo,
+                'mt_reseller'=>0,
+                'msg'=>'数据请求成功'
+            ];
+            $response = [
+                'data' => $data
+            ];
+            return json_encode($response, JSON_UNESCAPED_UNICODE);
+        }
+
     }
 
     // 分销商品列表
