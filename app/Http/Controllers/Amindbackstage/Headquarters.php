@@ -830,7 +830,7 @@ class Headquarters extends Controller
                 $shopInfo = DB::table('mt_shop')->where('shop_id',$shop_id)->first(['uid']);
                 $uid = $shopInfo->uid;
 
-                DB::table('mt_user')->where('uid',$uid)->update(['shop_rand'=>$img,'shop_random_str'=>$scene,'p_id'=>0,'a_id'=>$uid]);
+                DB::table('mt_user')->where('uid',$uid)->update(['shop_rand'=>$img,'shop_random_str'=>$scene,'p_id'=>0,'a_id'=>$uid,'mt_reseller'=>1]);
 
 //                echo 111;exit;
                 $response=[
