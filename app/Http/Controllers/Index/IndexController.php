@@ -37,6 +37,7 @@ class IndexController extends Controller
             if($shop_address_city == NULL){
                 $week_newshop_add = DB :: table('mt_shop')
                     ->join('mt_goods','mt_goods.shop_id','=','mt_shop.shop_id')
+                    ->where(['mt_shop.shop_status'=>2])
                     ->orderBy('shop_add_time')
                     ->limit(3)
                     ->get(['mt_shop.shop_id','shop_name','shop_Ename','shop_desc','shop_label','shop_address_provice','shop_address_city','shop_address_area','shop_score'])->toArray();    //本周新店
@@ -168,22 +169,12 @@ class IndexController extends Controller
 
     //首页优惠券
     public function index_coupon(Request $request){
-//        $openid = $request->input('openid');
-//        $openid = "o9VUc5MWyq5GgW3kF_90NnrQkBH8";
-//        $userInfo = DB::table('mt_user')->where('openid',$openid)->first(['uid']);
-//        $uid = $userInfo->uid;
-//        $couponInfo = DB::table('mt_coupon')->where('uid',$uid)->get(['goods_id'])->toArray();
-////        var_dump($couponInfo);exit;
-//        $last_names = array_column($couponInfo, 'goods_id', 'goods_id');
-//        print_r($last_names);exit;
         $goodsInfo = DB::table('mt_goods')
             ->where('is_coupon',1)
             ->get()->toArray();
-//        var_dump($goodsInfo);exit;
-//        echo time()+86400;exit;
+
         $couponInfo = DB::table('mt_goods')
             ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
-//            ->join('mt_coupon','mt_coupon.goods_id','=','mt_goods.goods_id')
             ->where('is_coupon',1)
             ->get(['mt_goods.goods_id','mt_shop.shop_id','mt_shop.shop_name','mt_shop.shop_id','mt_goods.picture','mt_goods.goods_name','mt_goods.picture','coupon_price','coupon_redouction','coupon_start_time','expiration']);
 //        var_dump($couponInfo);

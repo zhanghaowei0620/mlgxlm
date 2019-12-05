@@ -543,11 +543,15 @@ class Admin_loginController extends Controller
     {
         $shop_id=$request->input('shop_id');
         $where=[
-          'mt_goods.shop_id'=>$shop_id
+          'shop_id'=>$shop_id,
         ];
-        $data=DB::table('mt_shop')
-            ->join('mt_goods','mt_goods.shop_id','=','mt_shop.shop_id')
-            ->where($where)->delete();
+        $data=DB::table('mt_shop')->where($where)->delete();
+        $info=DB::table('mt_goods')->where(['shop_id'=>$shop_id])->delete();
+        $info1=DB::table('mt_case')->where(['shop_id'=>$shop_id])->delete();
+        $info2=DB::table('mt_collection_goods')->where(['shop_id'=>$shop_id])->delete();
+        $info3=DB::table('mt_coupon')->where(['shop_id'=>$shop_id])->delete();
+        $info4=DB::table('mt_release')->where(['shop_id'=>$shop_id])->delete();
+        $info5=DB::table('mt_shop_collection')->where(['shop_id'=>$shop_id])->delete();
         if($data){
             $response=[
                 'code'=>0,
