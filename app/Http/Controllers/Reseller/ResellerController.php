@@ -229,7 +229,8 @@ class ResellerController extends Controller
     public function my_team_Add(Request $request){
         $openid = $request->input('openid');
         $invite_code = $request->input('invite_code');
-        var_dump($invite_code);exit;
+        $userInfo = DB::table('mt_user')->where('shop_random_str',$invite_code)->first(['uid','aid']);
+        var_dump($userInfo);exit;
     }
 
 
