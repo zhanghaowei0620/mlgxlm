@@ -283,10 +283,11 @@ class GoodsController extends Controller
     //点击商品获取商品详情+店铺详情信息
     public function goodsinfo(Request $request){
         $goods_id = $request->input('goods_id');
+//        var_dump($goods_id);die;
         $openid1 = $request->input('openid');
         $key = $openid1;
         $openid = Redis::get($key);
-//        $openid="o9VUc5MWyq5GgW3kF_90NnrQkBH8";
+        $openid="o9VUc5MWyq5GgW3kF_90NnrQkBH8";
         $infono=DB::table('mt_user')->where(['openid'=>$openid])->first();
 
         $uid=$infono->uid;
@@ -312,8 +313,9 @@ class GoodsController extends Controller
         $seller = DB ::table('mt_pt_list')
             ->join('mt_shop','mt_pt_list.shop_id','=','mt_shop.shop_id')
             ->join('mt_user','mt_pt_list.uid','=','mt_user.uid')
-            ->where(['pt_state'=>0,'goods_id'=>$goods_id])
-            ->get();
+            ->where(['pt_state'=>0],['goods_id'=>$goods_id])
+            ->get()
+            ->toArray();
 //        var_dump($seller);die;
         $assesslist=DB::table('mt_assess')
             ->join('mt_user','mt_assess.uid','=','mt_user.uid')
