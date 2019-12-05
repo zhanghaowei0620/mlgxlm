@@ -225,25 +225,109 @@ class ResellerController extends Controller
 
     }
 
+    //获取access_Token
+    public function admin_accessToken2(){
+        $access = Cache('access');
+        if (empty($access)) {
+            $url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" . env('WX_APP_ID') . "&secret=" . env('WX_KEY') . "";
+            $info = file_get_contents($url);
+            $arrInfo = json_decode($info, true);
+            $key = "access";
+            $access = $arrInfo['access_token'];
+            $time = $arrInfo['expires_in'];
+
+            cache([$key => $access], $time);
+        }
+        return $access;
+    }
+
+    public function curl_post($url='',$postdata='',$options=array()){
+        $ch=curl_init($url);
+        curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
+        curl_setopt($ch,CURLOPT_POST,1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $postdata);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
+        if(!empty($options)){
+            curl_setopt_array($ch, $options);
+        }
+        $data=curl_exec($ch);
+        curl_close($ch);
+        return $data;
+    }
+
+    public function data_uri($contents, $mime)
+    {
+        $base64   = base64_encode($contents);
+        return ('data:' . $mime . ';base64,' . $base64);
+    }
+
     //添加分销员
     public function my_team_Add(Request $request){
+        $accessToken = $this->admin_accessToken2();
         $openid = $request->input('openid');
+        $invite_code = $request->input('invite_code');
         $shop_resellerInfo = DB::table('mt_user')->where('openid',$openid)->first(['p_id','a_id','shop_rand','shop_random_str']);
         $p_id = $shop_resellerInfo->p_id;
         $a_id = $shop_resellerInfo->a_id;
         $shop_rand = $shop_resellerInfo->shop_rand;
         $shop_random_str = $shop_resellerInfo->shop_random_str;
         if($p_id == NULL && $a_id == NULL && $shop_rand == NULL && $shop_random_str == NULL){
-            echo 111;exit;
+            $scene = mt_rand(1111,9999) . Str::random(6);
+            //var_dump($scene);exit;
+            $url = "https://api.weixin.qq.com/wxa/getwxacodeunlimit?access_token=$accessToken";
+            $postdata = [
+                "page" => "/pages/index/index",
+                "scene" => $scene,
+            ];
+            $res = $this->curl_post($url,json_encode($postdata),$options=array());
+            $img = './images/'.time().'.jpg';
+            //var_dump($img);exit;
+            $r = file_put_contents($img,$res);
+
+            $userInfo = DB::table('mt_user')->where('shop_random_str',$invite_code)->first(['uid','a_id']);
+            $uid = $userInfo->uid;
+            $a_id = $userInfo->a_id;
+
+            $update = [
+                'p_id'=>$uid,
+                'a_id'=>$a_id,
+                'mt_reseller'=>1,
+                'shop_rand'=>$img,
+                'shop_random_str'=>$scene
+            ];
+            $updateUserInfo = DB::table('mt_user')->where('openid',$openid)->update($update);
+            if($updateUserInfo >=0){
+                $data = [
+                    'code'=>0,
+                    'msg'=>'申请成功'
+                ];
+                $response = [
+                    'data' => $data
+                ];
+                return json_encode($response, JSON_UNESCAPED_UNICODE);
+            }else{
+                $data = [
+                    'code'=>2,
+                    'msg'=>'暂无资格成为分销员'
+                ];
+                $response = [
+                    'data' => $data
+                ];
+                die(json_encode($response, JSON_UNESCAPED_UNICODE));
+            }
         }else{
-            echo 222;exit;
+            $data = [
+                'code'=>1,
+                'msg'=>'系统出现错误。请重试'
+            ];
+            $response = [
+                'data' => $data
+            ];
+            die(json_encode($response, JSON_UNESCAPED_UNICODE));
         }
-        var_dump($shop_resellerInfo);exit;
-        $invite_code = $request->input('invite_code');
-        $userInfo = DB::table('mt_user')->where('shop_random_str',$invite_code)->first(['uid','a_id']);
-        $uid = $userInfo->uid;
-        $a_id = $userInfo->a_id;
-        var_dump($userInfo);exit;
+
     }
 
 

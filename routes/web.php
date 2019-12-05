@@ -175,6 +175,8 @@ Route::post('my_team', 'Reseller\ResellerController@my_team');   //我的团队
 
 Route::get('my_team_Add', 'Reseller\ResellerController@my_team_Add');   //根据邀请码添加分销员
 
+Route::get('admin_accessToken2', 'Reseller\ResellerController@admin_accessToken2');
+
 Route::post('admin_my_team', 'Amindbackstage\Headquarters@admin_my_team')->middleware('checkLogin');   //我的团队
 
 Route::post('admin_Application_reseller_list', 'Amindbackstage\Headquarters@admin_Application_reseller_list')->middleware('checkLogin');
