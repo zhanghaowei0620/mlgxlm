@@ -183,7 +183,7 @@ class OrderController extends Controller
                             $data=[
                                 'code'=>0,
                                 'msg'=>'拼团成功',
-                                'data'=>$dainfo
+                                'order_id'=>$order_id
                             ];
                             $response = [
                                 'data'=>$data
@@ -253,7 +253,7 @@ class OrderController extends Controller
                             $data=[
                                 'code'=>0,
                                 'msg'=>'成功',
-                                'data'=>$dainfo
+                                'order_id'=>$order_id
                             ];
                             $response = [
                                 'data'=>$data
@@ -319,7 +319,7 @@ class OrderController extends Controller
                             $data=[
                                 'code'=>0,
                                 'msg'=>'成功',
-                                'data'=>$dainfo
+                                'order_id'=>$order_id
                             ];
                             $response = [
                                 'data'=>$data
@@ -393,7 +393,7 @@ class OrderController extends Controller
                         $data=[
                             'code'=>0,
                             'msg'=>'成功',
-                            'data'=>$dainfo
+                            'order_id'=>$order_id
                         ];
                         $response = [
                             'data'=>$data
@@ -461,7 +461,7 @@ class OrderController extends Controller
                         $data=[
                             'code'=>0,
                             'msg'=>'成功',
-                            'data'=>$dainfo
+                            'order_id'=>$order_id
                         ];
                         $response = [
                             'data'=>$data
