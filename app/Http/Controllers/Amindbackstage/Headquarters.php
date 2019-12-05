@@ -816,7 +816,7 @@ class Headquarters extends Controller
             $shopUpdate = DB::table('mt_shop')->where('shop_id',$shop_id)->update(['shop_reseller'=>1]);
             $admin_userUpdate = DB::table('admin_user')->where('shop_id',$shop_id)->update(['shop_reseller'=>1]);
             if($shopUpdate >0 && $admin_userUpdate > 0){
-                $scene = mt_rand(1111,9999) . Str::random(6) . time();
+                $scene = mt_rand(1111,9999) . Str::random(6);
                 //var_dump($scene);exit;
                 $url = "https://api.weixin.qq.com/wxa/getwxacodeunlimit?access_token=$accessToken";
                 $postdata = [
