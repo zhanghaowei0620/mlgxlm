@@ -31,14 +31,14 @@ class IndexController extends Controller
             $week_newshop = DB::table('mt_shop')
                 ->join('mt_goods','mt_goods.shop_id','=','mt_shop.shop_id')
                 ->where(['mt_shop.shop_address_city'=>$shop_address_city])
-                ->orderBy('shop_add_time')
+//                ->orderBy('shop_add_time')
                 ->limit(3)
                 ->get(['mt_shop.shop_id','shop_name','shop_Ename','shop_desc','shop_label','shop_address_provice','shop_address_city','shop_address_area','shop_score'])->toArray();    //本周新店
             if($shop_address_city == NULL){
                 $week_newshop_add = DB :: table('mt_shop')
                     ->join('mt_goods','mt_goods.shop_id','=','mt_shop.shop_id')
                     ->where(['mt_shop.shop_status'=>2])
-                    ->orderBy('shop_add_time')
+//                    ->orderBy('shop_add_time')
                     ->limit(3)
                     ->get(['mt_shop.shop_id','shop_name','shop_Ename','shop_desc','shop_label','shop_address_provice','shop_address_city','shop_address_area','shop_score'])->toArray();    //本周新店
 //                var_dump($week_newshop_add);die;
@@ -107,7 +107,7 @@ class IndexController extends Controller
                 ->join('mt_goods','mt_goods.shop_id','=','mt_shop.shop_id')
 //                ->where(['mt_shop.shop_address_city'=>$shop_address_city])
                     ->where('mt_shop.shop_status'=>2)
-                ->orderBy('shop_add_time')
+//                ->orderBy('shop_add_time')
                 ->limit(3)
                 ->get(['mt_shop.shop_id','shop_name','shop_Ename','shop_desc','shop_label','shop_address_provice','shop_address_city','shop_address_area','shop_score'])->toArray();    //本周新店
 //            var_dump($week_newshop);exit;
