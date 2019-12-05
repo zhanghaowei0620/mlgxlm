@@ -313,7 +313,7 @@ class GoodsController extends Controller
         $seller = DB ::table('mt_pt_list')
             ->join('mt_shop','mt_pt_list.shop_id','=','mt_shop.shop_id')
             ->join('mt_user','mt_pt_list.uid','=','mt_user.uid')
-            ->where(['pt_state'=>0],['goods_id'=>$goods_id])
+            ->where(['pt_state'=>0,'goods_id'=>$goods_id])
             ->get()
             ->toArray();
 //        var_dump($seller);die;

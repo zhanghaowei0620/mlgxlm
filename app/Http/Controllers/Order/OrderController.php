@@ -24,7 +24,7 @@ class OrderController extends Controller
         $openid1 = $request->input('openid');
         $key = $openid1;
         $openid = Redis::get($key);
-//        $openid='o9VUc5MWyq5GgW3kF_90NnrQkBH8';
+        $openid='o9VUc5MWyq5GgW3kF_90NnrQkBH8';
         $userInfo = DB::table('mt_user')->where('openid',$openid)->first();
 //            var_dump($userInfo);die;
         $wx_name = $userInfo->wx_name;
@@ -150,11 +150,18 @@ class OrderController extends Controller
                             'has_pt_id'=>$pt_id
                         ];
                         $infodata =DB::table('mt_order')->insert($data_order);
+                        $ptinsert=[
+                            'uid'=>$uid,
+                            'goods_id'=>$goods_id,
+                            'shop_id'=>
+                        ];
+                        $infosdate=DB::table('mt_pt_list')->insert();
+
+
 
                         $dainfo=DB::table('mt_order')
                             ->where(['order_no'=>$order_no])
                             ->first(['order_id']);
-
                         $dataData = DB::table('mt_order')->where('order_no',$order_no)->first();
                         $order_id = $dataData->order_id;
                         $num = DB::table('mt_goods')
@@ -1104,8 +1111,9 @@ class OrderController extends Controller
         $data=DB::table('mt_pt_list')
             ->join('mt_user','mt_user.uid','=','mt_pt_list.uid')
             ->join('mt_goods','mt_goods.goods_id','=','mt_pt_list.goods_id')
-            ->where(['mt_pt_list.goods_id'=>$goods_id,'pt_state'=>0])
+            ->where(['pt_state'=>0],['mt_pt_list.goods_id'=>$goods_id])
             ->get(['mt_pt_list.pt_id','mt_pt_list.uid','mt_user.wx_name','mt_user.wx_headimg','mt_pt_list.pt_team','mt_pt_list.pt_sum','mt_goods.promotion_prople']);
+//        var_dump($data);die;
         if($data){
             $data=[
                 'code'=>0,
