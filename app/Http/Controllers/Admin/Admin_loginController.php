@@ -545,7 +545,9 @@ class Admin_loginController extends Controller
         $where=[
           'shop_id'=>$shop_id
         ];
-        $data=DB::table('mt_shop')->where($where)->delete();
+        $data=DB::table('mt_shop')
+            ->join('mt_goods','mt_goods.shop_id','=','mt_shop.shop_id')
+            ->where($where)->delete();
         if($data){
             $response=[
                 'code'=>0,
