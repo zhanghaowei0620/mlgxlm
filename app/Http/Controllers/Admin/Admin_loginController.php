@@ -543,7 +543,7 @@ class Admin_loginController extends Controller
     {
         $shop_id=$request->input('shop_id');
         $where=[
-          'mt_shop.shop_id'=>$shop_id
+          'mt_goods.shop_id'=>$shop_id
         ];
         $data=DB::table('mt_shop')
             ->join('mt_goods','mt_goods.shop_id','=','mt_shop.shop_id')
