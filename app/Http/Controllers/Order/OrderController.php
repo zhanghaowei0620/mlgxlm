@@ -23,12 +23,14 @@ class OrderController extends Controller
         $openid1 = $request->input('openid');
         $key = $openid1;
         $openid = Redis::get($key);
+        $openid='o9VUc5MWyq5GgW3kF_90NnrQkBH8';
         $userInfo = DB::table('mt_user')->where('openid',$openid)->first();
 //            var_dump($userInfo);die;
         $wx_name = $userInfo->wx_name;
+//        var_dump($wx_name);die;
         $uid = $userInfo->uid;
         if($openid){
-            if($method == 1){
+            if($method_type == 1){
                 $data_order = [
                     'uid'=>$uid,
                     'order_no'=>$order_no,
@@ -49,14 +51,14 @@ class OrderController extends Controller
                     'update_time'=>time()
                 ];
 //            var_dump($cartUpdate);die;
-                $res = DB::table('mt_cart')->where('uid',$uid)->whereIn('goods_id',$goods_id)->update($cartUpdate);
+                $res = DB::table('mt_cart')->where('uid',$uid)->where('goods_id',$goods_id)->update($cartUpdate);
 //            var_dump($res);exit;
                 //添加订单详情表
                 if($is_cart == 1){
                     $num = DB::table('mt_goods')
                         ->join('mt_cart','mt_goods.goods_id','=','mt_cart.goods_id')
                         ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
-                        ->whereIn('mt_goods.goods_id',$goods_id)
+                        ->where('mt_goods.goods_id',$goods_id)
                         ->get();
 //                            var_dump($num);exit;
                     foreach($num as $k=>$v){
@@ -75,12 +77,13 @@ class OrderController extends Controller
                             'create_time'=>time()
                         ];
                         $datailData = DB::table('mt_order_detail')->insert($info);
+
                     }
                 }else{
                     $num = DB::table('mt_goods')
 //                    ->join('mt_cart','mt_goods.goods_id','=','mt_cart.goods_id')
                         ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
-                        ->whereIn('mt_goods.goods_id',$goods_id)
+                        ->where('mt_goods.goods_id',$goods_id)
                         ->get();
 //                            var_dump($num);exit;
                     foreach($num as $k=>$v){
@@ -106,7 +109,7 @@ class OrderController extends Controller
                     'buy_num'=>0,
                     'update_time'=>time()
                 ];
-                $res = DB::table('mt_cart')->where('uid',$uid)->whereIn('goods_id',['goods_id'=>$goods_id])->update($UpdateNum);
+                $res = DB::table('mt_cart')->where('uid',$uid)->where('goods_id',['goods_id'=>$goods_id])->update($UpdateNum);
 //            var_dump($res);die;
                 if($res>=0){
                     $data=[
@@ -119,7 +122,7 @@ class OrderController extends Controller
                     ];
                     return json_encode($response,JSON_UNESCAPED_UNICODE);
                 }
-            }else if($method == 2){
+            }else if($method_type == 2){
                 if($pt_id){
                     $dataData = DB::table('mt_pt_list')->where('pt_id',$pt_id)->first(['pt_state']);
                     if($dataData->pt_state == 1){
@@ -266,7 +269,7 @@ class OrderController extends Controller
                         }
                     }
                 }
-            }else if($method == 3){
+            }else if($method_type == 3){
                 $coupon_add=DB::table('mt_coupon')->where(['uid'=>$uid,'goods_id'=>$goods_id])->first();
 //            var_dump($total_price);die;
                 if($coupon_type == 0){
@@ -405,7 +408,7 @@ class OrderController extends Controller
                         return json_encode($response,JSON_UNESCAPED_UNICODE);
                     }
                 }
-            }else if($method == 4){
+            }else if($method_type == 4){
 
                 $limited_add=DB::table('mt_goods')->where(['goods_id'=>$goods_id,'limited_buy'=>1])->first(['limited_start_time','limited_stop_time','shop_id']);
 //            var_dump($limited_add);die;
@@ -497,10 +500,6 @@ class OrderController extends Controller
 
 
 
-
-
-
-
     //生成订单
     public function add_order(Request $request){
         $goods_id = $request->input('goods_id');    //商品id
@@ -542,14 +541,14 @@ class OrderController extends Controller
                 'update_time'=>time()
             ];
 //            var_dump($cartUpdate);die;
-            $res = DB::table('mt_cart')->where('uid',$uid)->whereIn('goods_id',$goods_id)->update($cartUpdate);
+            $res = DB::table('mt_cart')->where('uid',$uid)->where('goods_id',$goods_id)->update($cartUpdate);
 //            var_dump($res);exit;
             //添加订单详情表
             if($is_cart == 1){
                 $num = DB::table('mt_goods')
                     ->join('mt_cart','mt_goods.goods_id','=','mt_cart.goods_id')
                     ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
-                    ->whereIn('mt_goods.goods_id',$goods_id)
+                    ->where('mt_goods.goods_id',$goods_id)
                     ->get();
 //                            var_dump($num);exit;
                 foreach($num as $k=>$v){
@@ -573,7 +572,7 @@ class OrderController extends Controller
                 $num = DB::table('mt_goods')
 //                    ->join('mt_cart','mt_goods.goods_id','=','mt_cart.goods_id')
                     ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
-                    ->whereIn('mt_goods.goods_id',$goods_id)
+                    ->where('mt_goods.goods_id',$goods_id)
                     ->get();
 //                            var_dump($num);exit;
                 foreach($num as $k=>$v){
@@ -599,7 +598,7 @@ class OrderController extends Controller
                 'buy_num'=>0,
                 'update_time'=>time()
             ];
-            $res = DB::table('mt_cart')->where('uid',$uid)->whereIn('goods_id',['goods_id'=>$goods_id])->update($UpdateNum);
+            $res = DB::table('mt_cart')->where('uid',$uid)->where('goods_id',['goods_id'=>$goods_id])->update($UpdateNum);
 //            var_dump($res);die;
             if($res>=0){
                 $data=[
