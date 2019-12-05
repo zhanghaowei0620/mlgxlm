@@ -502,7 +502,7 @@ class OrderController extends Controller
             return json_encode($response,JSON_UNESCAPED_UNICODE);
         }
     }
-
+//开始时间小于当前时间
     //限时抢下订单
     public function limited_order(Request $request)
     {
@@ -510,6 +510,7 @@ class OrderController extends Controller
         $shop_id = $request->input('shop_id');
         $total_price = $request->input('total_price');   //总价
         $openid1 = $request->input('openid');
+        $good_cate= $request->input('good_cate');
         $key = $openid1;
         $openid = Redis::get($key);
 //        $openid='o9VUc5MWyq5GgW3kF_90NnrQkBH8';
@@ -517,16 +518,81 @@ class OrderController extends Controller
         if($openid){
             $userInfo = DB::table('mt_user')->where(['openid'=>$openid])->first();
             $uid = $userInfo->uid;
+            $wx_name=$userInfo->wx_name;
             $limited_add=DB::table('mt_goods')->where(['goods_id'=>$goods_id,'limited_buy'=>1])->first(['limited_start_time','limited_stop_time','shop_id']);
 //            var_dump($limited_add);die;
             $aa=time();
-//            $aaaa=$limited_add->limited_start_time >$aa;
-//            var_dump($aaaa);die;
-            if($limited_add){
-                    $aaaaa=date($limited_add->limited_start_time);
-                    var_dump($aaaaa);die;
+            if($aa >$limited_add->limited_start_time){
+                $infos=[
+                        'uid'=>$uid,
+                        'order_no'=>$order_no,
+                        'wx_name' =>$wx_name,
+                        'order_status'=>0,
+                        'order_method'=>3,
+                        'total_price'=>$total_price,
+                        'good_cate'=>$good_cate,
+                        'create_time'=>time(),
+                ];
+                $insertinto=DB::table('mt_order')->insert($infos);
+                $dainfo=DB::table('mt_order')
+                    ->where(['order_no'=>$order_no])
+                    ->first(['order_id']);
+                $dataData = DB::table('mt_order')->where('order_no',$order_no)->first();
+                $order_id = $dataData->order_id;
+                $num = DB::table('mt_goods')
+                    ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
+                    ->where('mt_goods.goods_id',$goods_id)
+                    ->get();
+//            var_dump($num);die;
+                foreach($num as $k=>$v){
+                    $info=[
+                        'uid'=>$uid,
+                        'order_id'=>$order_id,
+                        'order_no'=>$order_no,
+                        'goods_id'=>$v->goods_id,
+                        'goods_name'=>$v->goods_name,
+                        'price'=>$v->price,
+                        'picture'=>$v->picture,
+                        'buy_num'=>1,
+                        'order_status'=>0,
+                        'shop_id'=>$v->shop_id,
+                        'shop_name'=>$v->shop_name,
+                        'create_time'=>time(),
+                    ];
+                    $datailData = DB::table('mt_order_detail')->insert($info);
+                }
+                $dainfo=DB::table('mt_order')
+                    ->where(['order_no'=>$order_no])
+                    ->first();
+                if($dainfo){
+                    $data=[
+                        'code'=>0,
+                        'msg'=>'成功',
+                        'data'=>$dainfo
+                    ];
+                    $response = [
+                        'data'=>$data
+                    ];
+                    return json_encode($response,JSON_UNESCAPED_UNICODE);
+                }else{
+                    $data=[
+                        'code'=>1,
+                        'msg'=>'失败',
+                    ];
+                    $response = [
+                        'data'=>$data
+                    ];
+                    return json_encode($response,JSON_UNESCAPED_UNICODE);
+                }
             }else{
-                    echo 2222;
+                $data=[
+                  'code'=>1,
+                  'msg'=>'此商品没有开启限时抢,请仔细查看'
+                ];
+                $response = [
+                    'data'=>$data
+                ];
+                return json_encode($response,JSON_UNESCAPED_UNICODE);
             }
 
         }else{

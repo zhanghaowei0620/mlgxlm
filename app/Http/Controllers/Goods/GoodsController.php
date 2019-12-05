@@ -529,7 +529,7 @@ class GoodsController extends Controller
         $key = $openid1;
         $openid = Redis::get($key);
 //        $order_method=$request->input('order_method'); //0为普通购买，1.拼团购买，2.优惠券购买，3限时抢购买，4积分购买，5分销购买
-        $openid='o9VUc5MWyq5GgW3kF_90NnrQkBH8';
+//        $openid='o9VUc5MWyq5GgW3kF_90NnrQkBH8';
         $order_id=$request->input('order_id');
         $price=$request->input('price');
         $data=DB::table('mt_user')
