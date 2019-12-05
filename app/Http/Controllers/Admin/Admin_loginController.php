@@ -802,28 +802,14 @@ class Admin_loginController extends Controller
      */
     public function examine(Request $request)
     {
-        $accessToken = $this->admin_accessToken();
-//        var_dump($accessToken);exit;
         $shop_id=$request->input('shop_id');
-        $scene = mt_rand(1111,9999) . Str::random(6);
-        //var_dump($scene);exit;
-        $url = "https://api.weixin.qq.com/wxa/getwxacodeunlimit?access_token=$accessToken";
-        $postdata = [
-            "page" => "/pages/index/index",
-            "scene" => $scene,
-        ];
-        $res = $this->curl_post($url,json_encode($postdata),$options=array());
-        $img = './images/'.time().'.jpg';
-        //var_dump($img);exit;
-        $r = file_put_contents($img,$res);
+
         //var_dump($r);exit;
         $where=[
           'shop_id'=>$shop_id
         ];
         $data1=[
             'shop_status'=>2,
-            'shop_rand'=>$img,
-            'shop_random_str'=>$scene
         ];
         $data=DB::table('mt_shop')->where($where)->update($data1);
 //        var_dump($data);die;
