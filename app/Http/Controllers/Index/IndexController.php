@@ -37,6 +37,26 @@ class IndexController extends Controller
                     ->where(['limited_buy'=>1])
                     ->limit(6)
                     ->get(['mt_goods.goods_id','goods_name','goods_type','limited_price','price','picture','mt_type.t_name','star','mt_shop.shop_name','limited_prople','limited_ready_prople'])->toArray();
+                //首页销量
+                $salesInfo= DB ::table('mt_goods')
+                    ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
+                    ->join('mt_type','mt_goods.t_id','=','mt_type.t_id')
+                    ->orderBy('goods_gd_num','desc')
+                    ->limit(6)
+                    ->get(['mt_goods.goods_id','goods_name','goods_type','coupon_redouction','coupon_price','market_price','price','picture','mt_type.t_name','introduction','star','mt_shop.shop_name','goods_gd_num','promotion_price','promotion_prople','limited_ready_prople','limited_prople'])->toArray();
+                //首页优惠
+                $discountInfo= DB ::table('mt_goods')
+                    ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
+                    ->join('mt_type','mt_goods.t_id','=','mt_type.t_id')
+                    ->where(['is_coupon'=>1])
+                    ->limit(6)
+                    ->get(['mt_goods.goods_id','goods_name','goods_type','coupon_redouction','coupon_price','price','picture','mt_type.t_name','introduction','star','mt_shop.shop_name','goods_gd_num'])->toArray();
+               //推荐
+                $recommend = DB::table('mt_goods')
+                    ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
+                    ->where(['is_recommend'=>1])
+                    ->limit(6)
+                    ->get(['goods_id','goods_name','price','picture']);
                 }else{
                 $goodsInfo = DB::table('mt_goods')
                     ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
@@ -50,21 +70,24 @@ class IndexController extends Controller
                     ->where(['mt_shop.shop_address_city'=>$shop_address_city])
                     ->limit(6)
                     ->get(['mt_goods.goods_id','goods_name','goods_type','limited_price','price','picture','mt_type.t_name','star','mt_shop.shop_name','limited_prople','limited_ready_prople'])->toArray();
+                $salesInfo= DB ::table('mt_goods')
+                    ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
+                    ->join('mt_type','mt_goods.t_id','=','mt_type.t_id')
+                    ->orderBy('goods_gd_num','desc')
+                    ->limit(6)
+                    ->get(['mt_goods.goods_id','goods_name','goods_type','coupon_redouction','coupon_price','market_price','price','picture','mt_type.t_name','introduction','star','mt_shop.shop_name','goods_gd_num','promotion_price','promotion_prople','limited_ready_prople','limited_prople'])->toArray();
+                $discountInfo= DB ::table('mt_goods')
+                    ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
+                    ->join('mt_type','mt_goods.t_id','=','mt_type.t_id')
+                    ->where(['is_coupon'=>1],['mt_shop.shop_address_city'=>$shop_address_city])
+                    ->limit(6)
+                    ->get(['mt_goods.goods_id','goods_name','goods_type','coupon_redouction','coupon_price','price','picture','mt_type.t_name','introduction','star','mt_shop.shop_name','goods_gd_num'])->toArray();
+                $recommend = DB::table('mt_goods')
+                    ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
+                    ->where(['is_recommend'=>1],['shop_address_city'=>$shop_address_city])
+                    ->limit(6)
+                    ->get(['goods_id','goods_name','price','picture']);
             }
-//        var_dump($goodsInfo);die;
-            $discountInfo= DB ::table('mt_goods')
-                ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
-                ->join('mt_type','mt_goods.t_id','=','mt_type.t_id')
-                ->where(['is_coupon'=>1],['mt_shop.shop_address_city'=>$shop_address_city])
-                ->limit(6)
-                ->get(['mt_goods.goods_id','goods_name','goods_type','coupon_redouction','coupon_price','price','picture','mt_type.t_name','introduction','star','mt_shop.shop_name','goods_gd_num'])->toArray();
-//            var_dump($discountInfo);die;
-            $salesInfo= DB ::table('mt_goods')
-                ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
-                ->join('mt_type','mt_goods.t_id','=','mt_type.t_id')
-                ->orderBy('goods_gd_num','desc')
-                ->limit(6)
-                ->get(['mt_goods.goods_id','goods_name','goods_type','coupon_redouction','coupon_price','market_price','price','picture','mt_type.t_name','introduction','star','mt_shop.shop_name','goods_gd_num','promotion_price','promotion_prople','limited_ready_prople','limited_prople'])->toArray();
             $shop_id = DB::table('mt_shop')
                 ->join('mt_goods','mt_goods.shop_id','=','mt_shop.shop_id')
 //                ->where(['mt_shop.shop_address_city'=>$shop_address_city])
@@ -73,16 +96,10 @@ class IndexController extends Controller
                 ->get('mt_shop.shop_id');
 //            var_dump($shop_id);exit;
             $week_newshop = DB::table('mt_shop')
-//                ->join('mt_goods','mt_goods.shop_id','=','mt_shop.shop_id')
                     ->where(['mt_shop.shop_status'=>2])
                 ->orderBy('shop_add_time')
                 ->limit(3)
                 ->get(['mt_shop.shop_id','shop_name','shop_Ename','shop_desc','shop_label','shop_address_provice','shop_address_city','shop_address_area','shop_score'])->toArray();    //本周新店
-            $recommend = DB::table('mt_goods')
-                ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
-                ->where(['is_recommend'=>1],['shop_address_city'=>$shop_address_city])
-                ->limit(6)
-                ->get(['goods_id','goods_name','price','picture']);       //推荐
 //            var_dump($shop_set);exit;
 //            var_dump($type_lists);die;
 //        var_dump($goodsInfo);die;
