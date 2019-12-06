@@ -1335,7 +1335,7 @@ class Admin_loginController extends Controller
         $coupon_num=$request->input('coupon_num');
         $coupon_redouction=$request->input('coupon_redouction');
         $coupon_price=$request->input('coupon_price');
-        $discount=$request->input('is_member_discount');
+        $is_member_discount=$request->input('is_member_discount');
         $coupon_type=$request->input('coupon_type');
         $expiration=$request->input('expiration');
         $goods_id=$request->input('goods_id');
@@ -1348,7 +1348,7 @@ class Admin_loginController extends Controller
             'coupon_type'=>$coupon_type,
             'coupon_start_time'=>time(),
             'expiration'=>$expiration,
-            'is_member_discount'=>$discount,
+            'is_member_discount'=>$is_member_discount,
             'shop_id'=>$shop_id,
             'goods_id'=>$goods_id,
             'is_coupon'=>1,
