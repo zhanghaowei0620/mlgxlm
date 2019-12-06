@@ -175,7 +175,9 @@ Route::post('my_team', 'Reseller\ResellerController@my_team');   //我的团队
 
 Route::post('my_team_Add', 'Reseller\ResellerController@my_team_Add');   //根据邀请码添加分销员
 
-Route::post('user_reseller_List', 'Reseller\ResellerController@user_reseller_List');
+Route::post('user_reseller_List', 'Reseller\ResellerController@user_reseller_List');   //个人中心-分销中心
+
+Route::post('reseller_my_Profit', 'Reseller\ResellerController@reseller_my_Profit');   //分销排行
 
 Route::get('admin_accessToken2', 'Reseller\ResellerController@admin_accessToken2');
 

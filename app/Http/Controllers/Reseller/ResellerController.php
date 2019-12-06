@@ -347,6 +347,26 @@ class ResellerController extends Controller
 
     }
 
+    //分销排行
+    public function reseller_my_Profit(Request $request){
+        $openid1 = $request->input('openid');
+        $key = $openid1;
+        $openid = Redis::get($key);
+        $userInfo = DB::table('mt_user')->where('openid',$openid)->first(['uid']);
+        $uid = $userInfo->uid;
+        $my_Profit = DB::table('mt_user')->where('p_id',$uid)->orderBy('my_p_profit','desc')->get(['uid','wx_name','my_p_profit'])->toArray();
+        $data = [
+            'code'=>0,
+            'my_Profit'=>$my_Profit,
+            'msg'=>'数据请求成功'
+        ];
+        $response = [
+            'data' => $data
+        ];
+        return json_encode($response, JSON_UNESCAPED_UNICODE);
+
+    }
+
 
 
 
