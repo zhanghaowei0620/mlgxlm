@@ -21,14 +21,21 @@ class IndexController extends Controller
         $s_type3 = DB::table('mt_type')->where(['p_id'=>3])->get()->toArray();         //子集分类 第二行
         $s_type4 = DB::table('mt_type')->where(['p_id'=>4])->get()->toArray();          //子集分类 第二行
         //var_dump($s_type4);
+            if($shop_address_city ==NULL){
+                $goodsInfo = DB::table('mt_goods')
+                    ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
+                    ->join('mt_type','mt_goods.t_id','=','mt_type.t_id')
+                    ->where(['mt_goods.is_promotion'=>1])
+                    ->limit(6)
+                    ->get(['mt_goods.goods_id','goods_name','goods_type','market_price','mt_goods.price','picture','description','mt_shop.shop_name','mt_goods.prople','promotion_price','mt_type.t_name','star','mt_goods.pt_num_all','mt_goods.goods_effect'])->toArray();
+                }
+        $goodsInfo = DB::table('mt_goods')
+            ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
+            ->join('mt_type','mt_goods.t_id','=','mt_type.t_id')
+            ->where(['mt_shop.shop_address_city'=>$shop_address_city,'mt_goods.is_promotion'=>1])
+            ->limit(6)
+            ->get(['mt_goods.goods_id','goods_name','goods_type','market_price','mt_goods.price','picture','description','mt_shop.shop_name','mt_goods.prople','promotion_price','mt_type.t_name','star','mt_goods.pt_num_all','mt_goods.goods_effect'])->toArray();
 
-            $goodsInfo = DB::table('mt_goods')
-                ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
-                ->join('mt_type','mt_goods.t_id','=','mt_type.t_id')
-                ->where(['mt_shop.shop_address_city'=>$shop_address_city])
-                ->limit(6)
-                ->get(['mt_goods.goods_id','goods_name','goods_type','market_price','mt_goods.price','picture','description','mt_shop.shop_name','mt_goods.prople','promotion_price','mt_type.t_name','star','mt_goods.pt_num_all','mt_goods.goods_effect'])->toArray();
-//            var_dump($goodsInfo);exit;
             $discountInfo= DB ::table('mt_goods')
                 ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
                 ->join('mt_type','mt_goods.t_id','=','mt_type.t_id')
@@ -57,22 +64,14 @@ class IndexController extends Controller
                 ->limit(3)
                 ->get('mt_shop.shop_id');
 //            var_dump($shop_id);exit;
+        $team=DB::table('mt_goods')->where(['is_promotion'=>1])->get();
+//        var_dump($team);die;
             $week_newshop = DB::table('mt_shop')
 //                ->join('mt_goods','mt_goods.shop_id','=','mt_shop.shop_id')
                     ->where(['mt_shop.shop_status'=>2])
                 ->orderBy('shop_add_time')
                 ->limit(3)
                 ->get(['mt_shop.shop_id','shop_name','shop_Ename','shop_desc','shop_label','shop_address_provice','shop_address_city','shop_address_area','shop_score'])->toArray();    //本周新店
-                    if($shop_address_city == NULL){
-                $week_newshop_add = DB :: table('mt_shop')
-                    ->join('mt_goods','mt_goods.shop_id','=','mt_shop.shop_id')
-                    ->where(['mt_shop.shop_status'=>2])
-//                    ->orderBy('shop_add_time')
-                    ->limit(3)
-                    ->get(['mt_shop.shop_id','shop_name','shop_Ename','shop_desc','shop_label','shop_address_provice','shop_address_city','shop_address_area','shop_score'])->toArray();    //本周新店
-//                var_dump($week_newshop_add);die;
-            }
-//            var_dump($week_newshop);exit;
             $recommend = DB::table('mt_goods')
                 ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
                 ->where(['is_recommend'=>1],['shop_address_city'=>$shop_address_city])
@@ -89,7 +88,6 @@ class IndexController extends Controller
                 's_type4'      =>  $s_type4,
                 'goodsInfo'     =>  $goodsInfo,
                 'week_newshop'  =>  $week_newshop,
-                'week_newshop_add'=>$week_newshop_add,
                 'recommend'     =>  $recommend,
                 'discountInfo' => $discountInfo,
                 'salesInfo'   => $salesInfo,

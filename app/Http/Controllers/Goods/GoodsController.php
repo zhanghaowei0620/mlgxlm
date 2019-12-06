@@ -531,30 +531,36 @@ class GoodsController extends Controller
         $key = $openid1;
         $openid = Redis::get($key);
         $method_type=$request->input('method_type'); //1为普通购买，2.拼团购买，3.优惠券购买，4限时抢购买
-//        $openid='o9VUc5MWyq5GgW3kF_90NnrQkBH8';
+        $openid='o9VUc5MWyq5GgW3kF_90NnrQkBH8';
         $order_id=$request->input('order_id');
         $price=$request->input('price');
         $data=DB::table('mt_user')
 //            ->join('mt_order_detail','mt_user.uid','=','mt_order_detail.uid')
             ->where(['openid'=>$openid])
             ->first();
+        $uid=$data->uid;
         $money=$data->money-$price;
 
         $infos=DB::table('mt_order')
             ->join('mt_order_detail','mt_order_detail.order_id','=','mt_order.order_id')
             ->where(['mt_order_detail.order_id'=>$order_id])->first();
-//        var_dump($infos);die;
-        if($infos->order_status!=0){
-            $data=[
-                'code'=>0,
-                'msg'=>'此订单已被支付，请勿重新支付'
-            ];
-            $response = [
-                'data'=>$data
-            ];
-            return json_encode($response,JSON_UNESCAPED_UNICODE);
-        }
+        var_dump($infos);die;
+//        if($infos->order_status!=0){
+//            $data=[
+//                'code'=>0,
+//                'msg'=>'此订单已被支付，请勿重新支付'
+//            ];
+//            $response = [
+//                'data'=>$data
+//            ];
+//            return json_encode($response,JSON_UNESCAPED_UNICODE);
+//        }
         if($method_type == 1){
+            $infoadd=DB::table('mt_order')->where(['uid'=>$uid,'goods_id'=>$infos->goods_id])->first();
+            $money=$data->money-$infoadd->total_price;
+            var_dump($infoadd);die;
+
+
 
 
 
@@ -625,13 +631,29 @@ class GoodsController extends Controller
 
                 }
 
-
-
                 $ress=DB::table('mt_goods')->where("goods_id",$infos->goods_id)->first();
                 $ress_inser=[
                     'pt_num_all'=> $ress->pt_num_all+1,
                 ];
                 $ressad=DB::table('mt_goods')->where("goods_id",$infos->goods_id)->update($ress_inser);
+                $data=[
+                    'code'=>0,
+                    'msg'=>'支付成功,并完成拼团'
+                ];
+                $response = [
+                    'data'=>$data
+                ];
+                return json_encode($response,JSON_UNESCAPED_UNICODE);
+            }else{
+                $data=[
+                    'code'=>1,
+                    'msg'=>'支付失败'
+                ];
+                $response = [
+                    'data'=>$data
+                ];
+                return json_encode($response,JSON_UNESCAPED_UNICODE);
+            }
 
         }else if ($method_type == 3){
 
@@ -642,24 +664,7 @@ class GoodsController extends Controller
 
 
 
-            $data=[
-                'code'=>0,
-                'msg'=>'支付成功'
-            ];
-            $response = [
-                'data'=>$data
-            ];
-            return json_encode($response,JSON_UNESCAPED_UNICODE);
-        }else{
-            $data=[
-                'code'=>1,
-                'msg'=>'支付失败'
-            ];
-            $response = [
-                'data'=>$data
-            ];
-            return json_encode($response,JSON_UNESCAPED_UNICODE);
-        }
+
     }
 
     //购物车删除
