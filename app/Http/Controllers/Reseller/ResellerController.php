@@ -70,7 +70,7 @@ class ResellerController extends Controller
     public function index_rellerList(Request $request){
         $openid = $request->input('openid');
         if($openid){
-            $userInfo = DB::table('mt_user')->where('openid',$openid)->first(['mt_reseller']);
+            $userInfo = DB::table('mt_user')->where('openid',$openid)->first(['mt_reseller','uid']);
             $mt_reseller = $userInfo->mt_reseller;
 
             $shop_resellerInfo = DB::table('mt_shop')
@@ -78,6 +78,7 @@ class ResellerController extends Controller
                 ->join('mt_user','mt_shop.uid','=','mt_user.uid')
                 ->where('mt_shop.shop_reseller',1)
                 ->get(['mt_shop.shop_id','mt_shop.shop_name','mt_shop.shop_img','re_goods.re_goods_id','re_goods.re_goods_name','re_goods.re_goods_price','re_goods.re_goods_picture','re_goods.re_goods_volume','mt_user.shop_random_str'])->toArray();
+
 //        var_dump($shop_resellerInfo);exit;
             $data = [
                 'code'=>0,
@@ -195,10 +196,15 @@ class ResellerController extends Controller
         if($p_id == 0){
             $son = DB::table('mt_user')->where('p_id',$uid)->get()->toArray();
             $total_num = DB::table('mt_user')->where('a_id',$a_id)->count();
+
+            $start_time=strtotime(date("Y-m-d",time()));    //求今天开始时间
+            $tomorrow = $start_time+86400;    //明日开始时间
+            $today_new_num = DB::table('mt_user')->where('reseller','>',$start_time)->where('reseller','<',$tomorrow)->where('p_id',$uid)->count();
             $data = [
                 'code'=>0,
                 'son'=>$son,
                 'total_num'=>$total_num,
+                'today_new_num'=>$today_new_num,
                 'msg'=>'数据请求成功'
             ];
             $response = [
@@ -210,11 +216,15 @@ class ResellerController extends Controller
             $uInfo = DB::table('mt_user')->where('uid',$uid)->first();
             $parent = DB::table('mt_user')->where('uid',$uInfo->p_id)->get()->toArray();   //父类
             $total_num = DB::table('mt_user')->where('a_id',$a_id)->count();   //总人数
+            $start_time=strtotime(date("Y-m-d",time()));    //求今天开始时间
+            $tomorrow = $start_time+86400;    //明日开始时间
+            $today_new_num = DB::table('mt_user')->where('reseller','>',$start_time)->where('reseller','<',$tomorrow)->where('p_id',$uid)->count();
             $data = [
                 'code'=>0,
                 'son'=>$son,
                 'parent'=>$parent,
                 'total_num'=>$total_num,
+                'today_new_num'=>$today_new_num,
                 'msg'=>'数据请求成功'
             ];
             $response = [
