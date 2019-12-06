@@ -333,7 +333,7 @@ class ResellerController extends Controller
     //个人中心-分销中心
     public function user_reseller_List(Request $request){
         $openid = $request->input('openid');
-        $userInfo = DB::table('mt_user')->where('openid',$openid)->first(['wx_headimg','wx_name','uid','shop_random_str','withdrawals_money','withdrawable_money','withdrawable_money']);
+        $userInfo = DB::table('mt_user')->where('openid',$openid)->first(['wx_headimg','wx_name','uid','shop_random_str','withdrawals_money','withdrawable_money','not_acquired_money']);
 
         $data = [
             'code'=>0,
