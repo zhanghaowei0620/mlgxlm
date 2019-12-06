@@ -544,26 +544,53 @@ class GoodsController extends Controller
         $infos=DB::table('mt_order')
             ->join('mt_order_detail','mt_order_detail.order_id','=','mt_order.order_id')
             ->where(['mt_order_detail.order_id'=>$order_id])->first();
-        var_dump($infos);die;
-//        if($infos->order_status!=0){
-//            $data=[
-//                'code'=>0,
-//                'msg'=>'此订单已被支付，请勿重新支付'
-//            ];
-//            $response = [
-//                'data'=>$data
-//            ];
-//            return json_encode($response,JSON_UNESCAPED_UNICODE);
-//        }
+//        var_dump($infos);die;
+        if($infos->order_status!=0){
+            $data=[
+                'code'=>0,
+                'msg'=>'此订单已被支付，请勿重新支付'
+            ];
+            $response = [
+                'data'=>$data
+            ];
+            return json_encode($response,JSON_UNESCAPED_UNICODE);
+        }
         if($method_type == 1){
-            $infoadd=DB::table('mt_order')->where(['uid'=>$uid,'goods_id'=>$infos->goods_id])->first();
+            $mt_order_detail_add=DB::table('mt_order_detail')->where(['order_id'=>$order_id])->first();
+            $infoadd=DB::table('mt_order')
+                ->join('mt_order_detail','mt_order_detail.order_id','=','mt_order.order_id')
+                ->where(['mt_order.uid'=>$uid,'goods_id'=>$mt_order_detail_add->goods_id])->first();
             $money=$data->money-$infoadd->total_price;
-            var_dump($infoadd);die;
-
-
-
-
-
+            $updates_info=[
+                'money'=>$money,
+                'mt_order.order_status'=>1,
+                'mt_order_detail.order_status'=>1,
+                'order_pay'=>0
+            ];
+            $update_order=DB::table('mt_user')
+                ->join('mt_order','mt_order.uid','=','mt_user.uid')
+                ->join('mt_order_detail','mt_order_detail.uid','=','mt_user.uid')
+                ->where(['mt_user.uid'=>$uid,'mt_order.order_id'=>$order_id])
+                ->update($updates_info);
+            if($update_order){
+                $data=[
+                    'code'=>0,
+                    'msg'=>'您已普通支付成功'
+                ];
+                $response=[
+                    'data'=>$data
+                ];
+                return json_encode($response,JSON_UNESCAPED_UNICODE);
+            }else{
+                $data=[
+                    'code'=>1,
+                    'msg'=>'支付失败,请重试'
+                ];
+                $response=[
+                    'data'=>$data
+                ];
+                return json_encode($response,JSON_UNESCAPED_UNICODE);
+            }
         }else if($method_type == 2){
 
             $updates=[
@@ -656,6 +683,7 @@ class GoodsController extends Controller
             }
 
         }else if ($method_type == 3){
+
 
         }else if ($method_type == 4){
 
