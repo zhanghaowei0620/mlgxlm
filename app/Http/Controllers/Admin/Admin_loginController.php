@@ -1346,7 +1346,7 @@ class Admin_loginController extends Controller
             'coupon_names'=>$coupon_names,
             'coupon_num'=>$coupon_num,
             'coupon_type'=>$coupon_type,
-            'coupon_create_time'=>time(),
+            'coupon_start_time'=>time(),
             'expiration'=>$expiration,
             'is_member_discount'=>$discount,
             'shop_id'=>$shop_id,
