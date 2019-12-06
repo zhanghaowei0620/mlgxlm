@@ -24,7 +24,7 @@ class OrderController extends Controller
         $openid1 = $request->input('openid');
         $key = $openid1;
         $openid = Redis::get($key);
-        $openid='o9VUc5MWyq5GgW3kF_90NnrQkBH8';
+//        $openid='o9VUc5MWyq5GgW3kF_90NnrQkBH8';
         $userInfo = DB::table('mt_user')->where('openid',$openid)->first();
 //            var_dump($userInfo);die;
         $wx_name = $userInfo->wx_name;
@@ -272,7 +272,7 @@ class OrderController extends Controller
                 }
             }else if($method_type == 3){            //$coupon_type：0,满减   1，折扣
                 $coupon_add=DB::table('mt_coupon')->where(['uid'=>$uid,'goods_id'=>$goods_id])->first();
-//            var_dump($total_price);die;
+//            var_dump($coupon_add);die;
                 if($coupon_type == 0){
                     if($total_price >= $coupon_add->coupon_redouction){
                         $data_order = [
