@@ -1128,7 +1128,7 @@ class Admin_loginController extends Controller
             $data=DB::table('mt_goods')
                 ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
                 ->where(['is_coupon'=>1])
-                ->select(['mt_goods.goods_name','mt_shop.shop_name','mt_goods.goods_id','mt_goods.coupon_names','mt_goods.coupon_num','mt_goods.coupon_type','mt_goods.coupon_inser','mt_goods.coupon_create_time','mt_goods.coupon_redouction','mt_goods.is_member_discount'])
+                ->select(['mt_goods.goods_name','mt_shop.shop_name','mt_goods.goods_id','mt_goods.coupon_names','mt_goods.coupon_num','mt_goods.coupon_type','mt_goods.coupon_inser','mt_goods.coupon_start_time','mt_goods.coupon_redouction','mt_goods.is_member_discount'])
                 ->paginate(6);
 //        var_dump($data);die;
             if($data){
@@ -1150,7 +1150,7 @@ class Admin_loginController extends Controller
                 ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
 //                ->join('mt_coupon','mt_coupon.goods_id','=','mt_goods.goods_id')
                 ->where(['mt_goods.shop_id'=>$shop_id,'is_coupon'=>1])
-                ->select(['mt_goods.goods_name','mt_shop.shop_name','mt_goods.goods_id','mt_goods.coupon_names','mt_goods.coupon_num','mt_goods.coupon_type','mt_goods.coupon_inser','mt_goods.coupon_create_time','mt_goods.coupon_redouction','mt_goods.is_member_discount'])
+                ->select(['mt_goods.goods_name','mt_shop.shop_name','mt_goods.goods_id','mt_goods.coupon_names','mt_goods.coupon_num','mt_goods.coupon_type','mt_goods.coupon_inser','mt_goods.coupon_start_time','mt_goods.coupon_redouction','mt_goods.is_member_discount'])
                 ->paginate(6);
 //        var_dump($data);die;
             if($data){
@@ -1187,7 +1187,7 @@ class Admin_loginController extends Controller
                     ->where('goods_name' , '=' , "$goods_name")
                     ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
                     ->join('mt_coupon','mt_coupon.goods_id','=','mt_goods.goods_id')
-                    ->get(['mt_goods.goods_name','mt_shop.shop_name','mt_goods.goods_id','mt_goods.coupon_names','mt_goods.coupon_num','mt_goods.coupon_type','mt_coupon.coupon_create','mt_goods.coupon_create_time']);
+                    ->get(['mt_goods.goods_name','mt_shop.shop_name','mt_goods.goods_id','mt_goods.coupon_names','mt_goods.coupon_num','mt_goods.coupon_type','mt_coupon.coupon_create','mt_goods.coupon_start_time']);
 //            var_dump($data);die;
                 $data1=[
                     'data'=>$data
@@ -1212,7 +1212,7 @@ class Admin_loginController extends Controller
                     ->where('shop_name' , '=' , "$shop_name")
                     ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
                     ->join('mt_coupon','mt_coupon.goods_id','=','mt_goods.goods_id')
-                    ->get(['mt_goods.goods_name','mt_shop.shop_name','mt_goods.goods_id','mt_goods.coupon_names','mt_goods.coupon_num','mt_goods.coupon_type','mt_coupon.coupon_create','mt_goods.coupon_create_time']);
+                    ->get(['mt_goods.goods_name','mt_shop.shop_name','mt_goods.goods_id','mt_goods.coupon_names','mt_goods.coupon_num','mt_goods.coupon_type','mt_coupon.coupon_create','mt_goods.coupon_start_time']);
 //            var_dump($data);die;
                 $data1=[
                     'data'=>$data
@@ -1239,7 +1239,7 @@ class Admin_loginController extends Controller
                     ->where('goods_name' , '=' , "$goods_name")
                     ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
                     ->join('mt_coupon','mt_coupon.goods_id','=','mt_goods.goods_id')
-                    ->get(['mt_goods.goods_name','mt_shop.shop_name','mt_goods.goods_id','mt_goods.coupon_names','mt_goods.coupon_num','mt_goods.coupon_type','mt_coupon.coupon_create','mt_goods.coupon_create_time']);
+                    ->get(['mt_goods.goods_name','mt_shop.shop_name','mt_goods.goods_id','mt_goods.coupon_names','mt_goods.coupon_num','mt_goods.coupon_type','mt_coupon.coupon_create','mt_goods.coupon_start_time']);
 //            var_dump($data);die;
                 $data1=[
                     'data'=>$data
@@ -1265,7 +1265,7 @@ class Admin_loginController extends Controller
                     ->where('shop_name' , '=' , "$shop_name")
                     ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
                     ->join('mt_coupon','mt_coupon.goods_id','=','mt_goods.goods_id')
-                    ->get(['mt_goods.goods_name','mt_shop.shop_name','mt_goods.coupon_id','mt_goods.coupon_names','mt_goods.coupon_num','mt_goods.coupon_type','mt_coupon.coupon_create','mt_goods.coupon_create_time']);
+                    ->get(['mt_goods.goods_name','mt_shop.shop_name','mt_goods.coupon_id','mt_goods.coupon_names','mt_goods.coupon_num','mt_goods.coupon_type','mt_coupon.coupon_create','mt_goods.coupon_start_time']);
 //            var_dump($data);die;
                 $data1=[
                     'data'=>$data
