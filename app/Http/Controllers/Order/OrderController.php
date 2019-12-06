@@ -150,14 +150,6 @@ class OrderController extends Controller
                             'has_pt_id'=>$pt_id
                         ];
                         $infodata =DB::table('mt_order')->insert($data_order);
-                        $ptinsert=[
-                            'uid'=>$uid,
-                            'goods_id'=>$goods_id,
-                            'shop_id'=>
-                        ];
-                        $infosdate=DB::table('mt_pt_list')->insert();
-
-
 
                         $dainfo=DB::table('mt_order')
                             ->where(['order_no'=>$order_no])
