@@ -809,13 +809,17 @@ class Admin_loginController extends Controller
     public function examine(Request $request)
     {
         $shop_id=$request->input('shop_id');
-
+        $latitude_longitude = $request->input('latitude_longitude');
+        $lat = $latitude_longitude->lat;
+        $lng = $latitude_longitude->lng;
         //var_dump($r);exit;
         $where=[
           'shop_id'=>$shop_id
         ];
         $data1=[
             'shop_status'=>2,
+            'lat'=>$lat,
+            'lng'=>$lng
         ];
         $data=DB::table('mt_shop')->where($where)->update($data1);
 //        var_dump($data);die;
