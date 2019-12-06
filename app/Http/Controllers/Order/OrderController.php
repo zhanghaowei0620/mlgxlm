@@ -24,7 +24,7 @@ class OrderController extends Controller
         $openid1 = $request->input('openid');
         $key = $openid1;
         $openid = Redis::get($key);
-//        $openid='o9VUc5MWyq5GgW3kF_90NnrQkBH8';
+        $openid='o9VUc5KN78P_jViUQnGjica4GIQs';
         $userInfo = DB::table('mt_user')->where('openid',$openid)->first();
 //            var_dump($userInfo);die;
         $wx_name = $userInfo->wx_name;
@@ -286,6 +286,7 @@ class OrderController extends Controller
                             'good_cate'=>$good_cate,
                         ];
                         $infodata =DB::table('mt_order')->insert($data_order);
+                        $coupon_add=DB::table('mt_coupon')->where(['uid'=>$uid,'goods_id'=>$goods_id])->update(['is_use'=>1]);
 //                    var_dump($infodata);die;
                         $dainfo=DB::table('mt_order')
                             ->where(['order_no'=>$order_no])
@@ -350,6 +351,7 @@ class OrderController extends Controller
                         'order_no'=>$order_no,
                         'wx_name' =>$wx_name,
                         'order_status'=>0,
+                        'is_use'=>1,
                         'order_method'=>2,
                         'total_price'=>$total_price*($coupon_add->discount/10),
                         'create_time'=>time(),
@@ -357,7 +359,7 @@ class OrderController extends Controller
                     ];
 //                var_dump($data_order);die;
                     $infodata =DB::table('mt_order')->insert($data_order);
-
+                    $coupon_add=DB::table('mt_coupon')->where(['uid'=>$uid,'goods_id'=>$goods_id])->update(['is_use'=>1]);
                     $dainfo=DB::table('mt_order')
                         ->where(['order_no'=>$order_no])
                         ->first(['order_id']);
