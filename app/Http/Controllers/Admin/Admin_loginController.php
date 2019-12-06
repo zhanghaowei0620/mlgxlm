@@ -1127,9 +1127,8 @@ class Admin_loginController extends Controller
         if($admin_judge == 1){
             $data=DB::table('mt_goods')
                 ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
-                ->join('mt_coupon','mt_coupon.goods_id','=','mt_goods.goods_id')
                 ->where(['is_coupon'=>1])
-                ->select(['mt_goods.goods_name','mt_shop.shop_name','mt_goods.goods_id','mt_goods.coupon_names','mt_goods.coupon_num','mt_goods.coupon_type','mt_coupon.coupon_create','mt_goods.coupon_create_time','mt_goods.coupon_redouction','mt_goods.is_member_discount'])
+                ->select(['mt_goods.goods_name','mt_shop.shop_name','mt_goods.goods_id','mt_goods.coupon_names','mt_goods.coupon_num','mt_goods.coupon_type','mt_goods.coupon_inser','mt_goods.coupon_create_time','mt_goods.coupon_redouction','mt_goods.is_member_discount'])
                 ->paginate(6);
 //        var_dump($data);die;
             if($data){
@@ -1149,9 +1148,9 @@ class Admin_loginController extends Controller
         }elseif($admin_judge == 2){
             $data=DB::table('mt_goods')
                 ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
-                ->join('mt_coupon','mt_coupon.goods_id','=','mt_goods.goods_id')
-                ->where('mt_goods.shop_id',$shop_id)
-                ->select(['mt_goods.goods_name','mt_shop.shop_name','mt_goods.goods_id','mt_goods.coupon_names','mt_goods.coupon_num','mt_goods.coupon_type','mt_coupon.coupon_create','mt_goods.coupon_create_time','mt_goods.coupon_redouction','mt_goods.is_member_discount'])
+//                ->join('mt_coupon','mt_coupon.goods_id','=','mt_goods.goods_id')
+                ->where(['mt_goods.shop_id'=>$shop_id,'is_coupon'=>1])
+                ->select(['mt_goods.goods_name','mt_shop.shop_name','mt_goods.goods_id','mt_goods.coupon_names','mt_goods.coupon_num','mt_goods.coupon_type','mt_goods.coupon_inser','mt_goods.coupon_create_time','mt_goods.coupon_redouction','mt_goods.is_member_discount'])
                 ->paginate(6);
 //        var_dump($data);die;
             if($data){
@@ -1347,13 +1346,13 @@ class Admin_loginController extends Controller
             'coupon_names'=>$coupon_names,
             'coupon_num'=>$coupon_num,
             'coupon_type'=>$coupon_type,
-            'coupon_create_time'=>time(),
+            'coupon_start_time'=>time(),
             'expiration'=>$expiration,
             'is_member_discount'=>$discount,
             'shop_id'=>$shop_id,
             'goods_id'=>$goods_id,
             'is_coupon'=>1,
-            'promotion_type'=>2
+            'promotion_type'=>2,
         ];
         $where=[
             'goods_id'=>$goods_id,

@@ -162,8 +162,8 @@ class IndexController extends Controller
         $couponInfo = DB::table('mt_goods')
             ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
             ->where('is_coupon',1)
-            ->get(['mt_goods.goods_id','mt_shop.shop_id','mt_shop.shop_name','mt_shop.shop_id','mt_goods.picture','mt_goods.goods_name','mt_goods.picture','coupon_price','coupon_redouction','coupon_start_time','expiration']);
-//        var_dump($couponInfo);
+            ->get(['mt_goods.goods_id','mt_shop.shop_id','mt_shop.shop_name','mt_shop.shop_id','mt_goods.picture','mt_goods.goods_name','mt_goods.is_member_discount','mt_goods.picture','coupon_price','coupon_redouction','coupon_start_time','expiration','mt_goods.coupon_type']);
+//        var_dump($couponInfo);die;
         if($couponInfo){
                 $data = [
                     'code'=>0,
@@ -231,6 +231,10 @@ class IndexController extends Controller
                 ];
 //                var_dump($insert);die;
                 $insertCoupon = DB::table('mt_coupon')->insertGetId($insert);
+                $datainfosadd=[
+                    'coupon_inser'=>$insertCoupon+1
+                ];
+                $datainfos=DB::table('mt_goods')->where(['uid'=>$uid])->update($datainfosadd);
                 if($insertCoupon == true){
                     $data = [
                         'code'=>0,

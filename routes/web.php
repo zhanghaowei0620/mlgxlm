@@ -262,7 +262,8 @@ Route::any('yesorno','Admin\Admin_loginController@yesorno')->middleware('checkLo
 //优惠卷商品和id添加
 Route::any('coupon','Admin\Admin_loginController@coupon')->middleware('checkLogin');
 //优惠卷展示
-Route::any('couponexhibition','Admin\Admin_loginController@couponexhibition')->middleware('checkLogin');
+Route::any('couponexhibition','Admin\Admin_loginController@couponexhibition');
+//->middleware('checkLogin')
 //优惠卷删除
 Route::any('coupontele','Admin\Admin_loginController@coupontele')->middleware('checkLogin');
 //优惠卷搜索
