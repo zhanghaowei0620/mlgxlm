@@ -199,7 +199,7 @@ class ResellerController extends Controller
 
             $start_time=strtotime(date("Y-m-d",time()));    //求今天开始时间
             $tomorrow = $start_time+86400;    //明日开始时间
-            $today_new_num = DB::table('mt_user')->where('reseller_time','>',$start_time)->where('reseller','<',$tomorrow)->where('p_id',$uid)->count();
+            $today_new_num = DB::table('mt_user')->where('reseller_time','>',$start_time)->where('reseller_time','<',$tomorrow)->where('p_id',$uid)->count();
             $data = [
                 'code'=>0,
                 'son'=>$son,
@@ -218,7 +218,7 @@ class ResellerController extends Controller
             $total_num = DB::table('mt_user')->where('a_id',$a_id)->count();   //总人数
             $start_time=strtotime(date("Y-m-d",time()));    //求今天开始时间
             $tomorrow = $start_time+86400;    //明日开始时间
-            $today_new_num = DB::table('mt_user')->where('reseller_time','>',$start_time)->where('reseller','<',$tomorrow)->where('p_id',$uid)->count();
+            $today_new_num = DB::table('mt_user')->where('reseller_time','>',$start_time)->where('reseller_time','<',$tomorrow)->where('p_id',$uid)->count();
             $data = [
                 'code'=>0,
                 'son'=>$son,
