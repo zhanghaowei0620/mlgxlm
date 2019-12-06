@@ -1338,6 +1338,7 @@ class Admin_loginController extends Controller
         $is_member_discount=$request->input('is_member_discount');
         $coupon_type=$request->input('coupon_type');
         $expiration=$request->input('expiration');
+        var_dump($expiration);die;
         $goods_id=$request->input('goods_id');
         $shop_id=$request->input('shop_id');
         $det=[
