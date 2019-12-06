@@ -335,7 +335,15 @@ class ResellerController extends Controller
         $openid = $request->input('openid');
         $userInfo = DB::table('mt_user')->where('openid',$openid)->first(['wx_headimg','wx_name','uid','shop_random_str','withdrawals_money','withdrawable_money','withdrawable_money']);
 
-
+        $data = [
+            'code'=>0,
+            'userInfo'=>$userInfo,
+            'msg'=>'数据请求成功'
+        ];
+        $response = [
+            'data' => $data
+        ];
+        return json_encode($response, JSON_UNESCAPED_UNICODE);
 
     }
 
