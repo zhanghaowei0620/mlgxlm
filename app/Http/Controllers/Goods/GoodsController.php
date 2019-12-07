@@ -526,7 +526,7 @@ class GoodsController extends Controller
         $key = $openid1;
         $openid = Redis::get($key);
 //        $method_type=$request->input('method_type'); //1为普通购买，2.拼团购买，3.优惠券购买，4限时抢购买
-        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
+//        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
         $order_id=$request->input('order_id');
         $price=$request->input('price');
         $data=DB::table('mt_user')
@@ -595,20 +595,14 @@ class GoodsController extends Controller
                 return json_encode($response,JSON_UNESCAPED_UNICODE);
             }
         }else if($a == 1){
-
-            $updates=[
-                'money'=>$money,
-                'order_status'=>1,
-                'order_pay'=>0
-            ];
-            $data99=DB::table('mt_user')
-                ->join('mt_order','mt_order.uid','=','mt_user.uid')
-                ->where(['openid'=>$openid,'order_id'=>$order_id,])
-                ->update($updates);
-//        var_dump($data99);die;
-
-            if($data99 > 0){
-                //修改拼团团队信息
+//            $mt_order_detail_add=DB::table('mt_order_detail')->where(['uid'=>$uid,'order_id'=>$order_id])->first();
+//            $goods_price=DB::table('mt_goods')->where(['goods_id'=>$mt_order_detail_add->goods_id])->first();
+//                $moey_infos=$data->money - $goods_price->promotion_price;
+//                $money_upup=[
+//                  'money'=> $moey_infos
+//                ];
+//                $updateinfos=DB::table('mt_user')->where(['uid'=>$uid])->update($money_upup);
+                //添加拼团团队信息
                 if($infos->has_pt_id==0){
                     $data_order = [
                         'goods_id'=> $infos->goods_id,
@@ -634,8 +628,6 @@ class GoodsController extends Controller
                             'pt_sum'=>$data2->pt_sum+1,
                         ];
                         $infodata = DB::table('mt_pt_list')->where('pt_id',$infos->has_pt_id)->update($data_order);
-
-
                         //判断该订单是否已经完成
                         $sss = DB::table('mt_pt_list')
                             ->join('mt_goods','mt_pt_list.goods_id','=','mt_goods.goods_id')
@@ -674,17 +666,6 @@ class GoodsController extends Controller
                     'data'=>$data
                 ];
                 return json_encode($response,JSON_UNESCAPED_UNICODE);
-            }else{
-                $data=[
-                    'code'=>1,
-                    'msg'=>'支付失败'
-                ];
-                $response = [
-                    'data'=>$data
-                ];
-                return json_encode($response,JSON_UNESCAPED_UNICODE);
-            }
-
         }else if ($a == 2){
             $coupon_lists=DB::table('mt_coupon')->where(['uid'=>$uid])->first();
             $mt_order_detail_add=DB::table('mt_order_detail')->where(['uid'=>$uid])->first();
@@ -692,6 +673,12 @@ class GoodsController extends Controller
             if($coupon_lists->coupon_type ==0){                 //coupon_type判断0为满减   1 为折扣
                 if($coupon_lists->coupon_redouction  >  $goods_price->price){
                     $money_lists=$mt_order_detail_add->price - $coupon_lists->coupon_price;
+                    $moenfo=$data->money - $money_lists;
+//                    var_dump($moenfo);die;
+                    $user_money_add=[
+                        'money'=>$moenfo
+                    ];
+                    $user_money=DB::table('mt_user')->where(['uid'=>$uid])->update($user_money_add);
                     $updateinfo=[
                       'pay_price'=>$money_lists,
                         'order_status'=>1
@@ -723,11 +710,16 @@ class GoodsController extends Controller
                     }
                 }
             }else if ($coupon_lists->coupon_type == 1){
-                    $address=$goods_price->price*($coupon_lists->discount/10);
-                    $address1=[
+                $address=$goods_price->price*($coupon_lists->discount/10);
+                $address1=[
                         'pay_price'=> $address,
                         'order_status'=>1
                     ];
+                $moenfo=$mt_order_detail_add->price - $address;
+                $user_money_add=[
+                    'money'=>$moenfo
+                ];
+                $user_money=DB::table('mt_user')->where(['uid'=>$uid])->update($user_money_add);
                 $sqlupdate1=DB::table('mt_order')->where(['uid'=>$uid])->update($updateinfo);
                 $update_info1=[
                     'order_status'=>1,
