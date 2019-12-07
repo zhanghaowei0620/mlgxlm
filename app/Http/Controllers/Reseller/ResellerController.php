@@ -363,7 +363,7 @@ class ResellerController extends Controller
     //用户默认收货地址
     public function reseller_user_address(Request $request){
         $openid = $request->input('openid');
-        $userInfo = DB::table('mt_user')->where('openod',$openid)->first(['uid']);
+        $userInfo = DB::table('mt_user')->where('openid',$openid)->first(['uid']);
         $uid = $userInfo->uid;
         $user_addressInfo = DB::table('mt_address')->where(['uid'=>$uid,'is_default'=>1])->first();
         $data = [
@@ -376,6 +376,8 @@ class ResellerController extends Controller
         ];
         return json_encode($response, JSON_UNESCAPED_UNICODE);
     }
+
+
 
 
 
