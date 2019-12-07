@@ -482,10 +482,6 @@ class GoodsController extends Controller
 
     //获取购物车列表
     public function cartList(Request $request){
-////        $ip = $_SERVER['SERVER_ADDR'];
-////        $key = 'openid'.$ip;
-////        $openid = Redis::get($key);
-//        $openid="o9VUc5AOsdEdOBeUAw4TdYg-F-dM";
         $openid1 = $request->input('openid');
         $key = $openid1;
         $openid = Redis::get($key);
@@ -493,12 +489,10 @@ class GoodsController extends Controller
             'mt_cart.openid'=>$openid,
 //            'collection_cart'=>0
         ];
-//        $info=DB::table('')
-//        var_dump($where);die;
         $cartInfo = DB::table('mt_cart')
             ->where($where)
             ->get()->toArray();
-//        var_dump($cartInfo);exit;
+
         if($cartInfo){
             $data=[
                 'code'=>'0',
@@ -528,10 +522,11 @@ class GoodsController extends Controller
     public function moneybuy(Request $request)
     {
         $openid1 = $request->input('openid');
+        $pt_id=$request->input('pt_id');
         $key = $openid1;
         $openid = Redis::get($key);
         $method_type=$request->input('method_type'); //1为普通购买，2.拼团购买，3.优惠券购买，4限时抢购买
-        $openid='o9VUc5KN78P_jViUQnGjica4GIQs';
+//        $openid='o9VUc5KN78P_jViUQnGjica4GIQs';
         $order_id=$request->input('order_id');
         $price=$request->input('price');
         $data=DB::table('mt_user')
@@ -540,12 +535,10 @@ class GoodsController extends Controller
             ->first();
         $uid=$data->uid;
         $money=$data->money-$price;
-
         $infos=DB::table('mt_order')
             ->join('mt_order_detail','mt_order_detail.order_id','=','mt_order.order_id')
             ->where(['mt_order_detail.order_id'=>$order_id])->first();
-        $order_pays=DB::table('mt_order')->where(['uid'=>$uid])->first();
-        $order_id=$order_pays->order_id;
+//        var_dump($infos);die;
         $order_info_add=DB::table('mt_order')
             ->where(['order_id'=>$order_id])->first();
 //        var_dump($order_info_add);die;
@@ -561,31 +554,22 @@ class GoodsController extends Controller
         }
         if($method_type == 1){
             $mt_order_detail_add=DB::table('mt_order_detail')->where(['order_id'=>$order_id])->first();
-
             $infoadd=DB::table('mt_order')
                 ->join('mt_order_detail','mt_order_detail.order_id','=','mt_order.order_id')
                 ->where(['mt_order.uid'=>$uid,'goods_id'=>$mt_order_detail_add->goods_id])->first();
-//            var_dump($infoadd);die;
             $money=$data->money-$infoadd->total_price;
-//            var_dump($money);die;
             $updates_info=[
                 'money'=>$money,
-//                'mt_order.order_status'=>1,
-//                'mt_order_detail.order_status'=>1,
-//                'order_pay'=>0
             ];
             $update_order=DB::table('mt_user')
-//                ->join('mt_order','mt_order.uid','=','mt_user.uid')
-//                ->join('mt_order_detail','mt_order_detail.uid','=','mt_user.uid')
                 ->where(['mt_user.uid'=>$uid])
                 ->update($updates_info);
-            $aa=[
+            $infosaa=[
                 'order_status'=>1,
                 'order_pay'=>0
             ];
-            $update_orders=DB::table('mt_order')->where(['uid'=>$uid,'order_id'=>$order_id])->update($aa);
+            $inerttofo=DB::table('mt_order')->where(['uid'=>$uid,'order_id'=>$order_id])->update($infosaa);
             $update_orderss=DB::table('mt_order_detail')->where(['uid'=>$uid,'order_id'=>$order_id])->update(['order_status'=>1]);
-            var_dump($update_orders);die;
             if($update_order){
                 $data=[
                     'code'=>0,
@@ -616,7 +600,7 @@ class GoodsController extends Controller
                 ->join('mt_order','mt_order.uid','=','mt_user.uid')
                 ->where(['openid'=>$openid,'order_id'=>$order_id,])
                 ->update($updates);
-//        var_dump($data1);die;
+        var_dump($data99);die;
 
             if($data99 > 0){
                 //修改拼团团队信息
@@ -697,6 +681,12 @@ class GoodsController extends Controller
             }
 
         }else if ($method_type == 3){
+
+//            $coupon_lists=DB::table('mt_coupon')->where(['uid'=>$uid,'is_use'=>0])->first();
+//            if($coupon_lists->coupon_type ==0){                 //coupon_type判断0为满减   1 为折扣
+//                    if($coupon_lists->coupon_redouction => )
+//            }
+
 
 
         }else if ($method_type == 4){
