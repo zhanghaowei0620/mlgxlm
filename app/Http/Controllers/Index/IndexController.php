@@ -15,6 +15,7 @@ class IndexController extends Controller
     public function index(Request $request){
 //        $promotion_type = $request->input('promotion_type');
         $shop_address_city=$request->input('shop_address_city');
+        $time=time();
         $type = DB::table('mt_type')->where(['p_id'=>0])->get()->toArray();  //父级分类
         $s_type1 = DB::table('mt_type')->where(['p_id'=>1])->get()->toArray();          //子集分类 第一行
         $s_type2 = DB::table('mt_type')->where(['p_id'=>2])->get()->toArray();         //子集分类 第二行
@@ -35,8 +36,10 @@ class IndexController extends Controller
                     ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
                     ->join('mt_type','mt_goods.t_id','=','mt_type.t_id')
                     ->where(['limited_buy'=>1])
+                    ->where('limited_stop_time','>',$time)
                     ->limit(6)
                     ->get(['mt_goods.goods_id','goods_name','goods_type','limited_price','price','picture','mt_type.t_name','star','mt_shop.shop_name','limited_prople','limited_ready_prople'])->toArray();
+//                var_dump($limitedInfo);die;
                 //首页销量
                 $salesInfo= DB ::table('mt_goods')
                     ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
@@ -68,8 +71,10 @@ class IndexController extends Controller
                     ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
                     ->join('mt_type','mt_goods.t_id','=','mt_type.t_id')
                     ->where(['mt_shop.shop_address_city'=>$shop_address_city])
+                    ->where('limited_stop_time','>',$time)
                     ->limit(6)
                     ->get(['mt_goods.goods_id','goods_name','goods_type','limited_price','price','picture','mt_type.t_name','star','mt_shop.shop_name','limited_prople','limited_ready_prople'])->toArray();
+//                var_dump($limitedInfo);die;
                 $salesInfo= DB ::table('mt_goods')
                     ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
                     ->join('mt_type','mt_goods.t_id','=','mt_type.t_id')
