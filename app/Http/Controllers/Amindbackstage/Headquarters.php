@@ -399,10 +399,12 @@ class Headquarters extends Controller
 
     //定时任务 -定时查找过期限时抢数据 修改状态
     public function admin_Limited_list_update_status(Request $request){
-        $goodsInfo = DB::table('mt_goods')->where('limited_stop_time','<',time())->first(['goods_id']);
-        $goods_id = $goodsInfo->goods_id;
-//        var_dump($goods_id);exit;
-        DB::table('mt_goods')->where('goods_id',$goods_id)->update(['limited_buy'=>2,'limited_stop_time'=>NULL,'limited_start_time'=>NULL]);
+        $goodsInfo = DB::table('mt_goods')->where('limited_stop_time','<',time())->get(['goods_id'])->toArray();
+//        var_dump($goodsInfo);exit;
+        foreach ($goodsInfo as $k => $v) {
+            DB::table('mt_goods')->where('goods_id',$v->goods_id)->update(['limited_buy'=>2,'limited_stop_time'=>NULL,'limited_start_time'=>NULL]);
+        }
+
     }
 
 
