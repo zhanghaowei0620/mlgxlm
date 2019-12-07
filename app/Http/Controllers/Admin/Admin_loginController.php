@@ -1335,9 +1335,11 @@ class Admin_loginController extends Controller
         $coupon_num=$request->input('coupon_num');
         $coupon_redouction=$request->input('coupon_redouction');
         $coupon_price=$request->input('coupon_price');
-        $discount=$request->input('is_member_discount');
+        $is_member_discount=$request->input('is_member_discount');
         $coupon_type=$request->input('coupon_type');
         $expiration=$request->input('expiration');
+        $coupon_start_time=$request->input('coupon_start_time');
+//        var_dump($expiration);die;
         $goods_id=$request->input('goods_id');
         $shop_id=$request->input('shop_id');
         $det=[
@@ -1346,9 +1348,9 @@ class Admin_loginController extends Controller
             'coupon_names'=>$coupon_names,
             'coupon_num'=>$coupon_num,
             'coupon_type'=>$coupon_type,
-            'coupon_start_time'=>time(),
+            'coupon_start_time'=>$coupon_start_time,
             'expiration'=>$expiration,
-            'is_member_discount'=>$discount,
+            'is_member_discount'=>$is_member_discount,
             'shop_id'=>$shop_id,
             'goods_id'=>$goods_id,
             'is_coupon'=>1,

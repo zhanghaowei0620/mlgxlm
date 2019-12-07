@@ -226,15 +226,14 @@ class IndexController extends Controller
                     'create_time' => $datainfos->coupon_start_time,
                     'expiration' => $datainfos->expiration,
                     'discount'=>$datainfos->is_member_discount,
-                    'coupon_create'=>$coupon_add->coupon_create+1
 
                 ];
 //                var_dump($insert);die;
                 $insertCoupon = DB::table('mt_coupon')->insertGetId($insert);
                 $datainfosadd=[
-                    'coupon_inser'=>$insertCoupon+1
+                    'coupon_inser'=>$insertCoupon,
                 ];
-                $datainfos=DB::table('mt_goods')->where(['uid'=>$uid])->update($datainfosadd);
+                $datainfos=DB::table('mt_goods')->where(['goods_id'=>$goods_id])->update($datainfosadd);
                 if($insertCoupon == true){
                     $data = [
                         'code'=>0,
