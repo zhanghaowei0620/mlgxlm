@@ -189,7 +189,7 @@ Route::post('admin_Application_reseller_list', 'Amindbackstage\Headquarters@admi
 
 Route::get('admin_accessToken1', 'Amindbackstage\Headquarters@admin_accessToken1')->middleware('checkLogin');
 
-Route::get('admin_Limited_list_update_status', 'Amindbackstage\Headquarters@admin_Limited_list_update_status')->middleware('checkLogin');
+Route::get('admin_Limited_list_update_status', 'Amindbackstage\Headquarters@admin_Limited_list_update_status');
 
 
 
