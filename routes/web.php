@@ -179,6 +179,8 @@ Route::post('user_reseller_List', 'Reseller\ResellerController@user_reseller_Lis
 
 Route::post('reseller_my_Profit', 'Reseller\ResellerController@reseller_my_Profit');   //分销排行
 
+Route::post('reseller_user_address', 'Reseller\ResellerController@reseller_user_address');    //获取用户默认地址
+
 Route::get('admin_accessToken2', 'Reseller\ResellerController@admin_accessToken2');
 
 Route::post('admin_my_team', 'Amindbackstage\Headquarters@admin_my_team')->middleware('checkLogin');   //我的团队
