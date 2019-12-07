@@ -531,7 +531,7 @@ class GoodsController extends Controller
         $key = $openid1;
         $openid = Redis::get($key);
         $method_type=$request->input('method_type'); //1为普通购买，2.拼团购买，3.优惠券购买，4限时抢购买
-        $openid='o9VUc5MWyq5GgW3kF_90NnrQkBH8';
+        $openid='o9VUc5KN78P_jViUQnGjica4GIQs';
         $order_id=$request->input('order_id');
         $price=$request->input('price');
         $data=DB::table('mt_user')
@@ -544,7 +544,11 @@ class GoodsController extends Controller
         $infos=DB::table('mt_order')
             ->join('mt_order_detail','mt_order_detail.order_id','=','mt_order.order_id')
             ->where(['mt_order_detail.order_id'=>$order_id])->first();
-//        var_dump($infos);die;
+        $order_pays=DB::table('mt_order')->where(['uid'=>$uid])->first();
+        $order_id=$order_pays->order_id;
+        $order_info_add=DB::table('mt_order')
+            ->where(['order_id'=>$order_id])->first();
+//        var_dump($order_info_add);die;
         if($infos->order_status!=0){
             $data=[
                 'code'=>0,
@@ -557,21 +561,31 @@ class GoodsController extends Controller
         }
         if($method_type == 1){
             $mt_order_detail_add=DB::table('mt_order_detail')->where(['order_id'=>$order_id])->first();
+
             $infoadd=DB::table('mt_order')
                 ->join('mt_order_detail','mt_order_detail.order_id','=','mt_order.order_id')
                 ->where(['mt_order.uid'=>$uid,'goods_id'=>$mt_order_detail_add->goods_id])->first();
+//            var_dump($infoadd);die;
             $money=$data->money-$infoadd->total_price;
+//            var_dump($money);die;
             $updates_info=[
                 'money'=>$money,
-                'mt_order.order_status'=>1,
-                'mt_order_detail.order_status'=>1,
-                'order_pay'=>0
+//                'mt_order.order_status'=>1,
+//                'mt_order_detail.order_status'=>1,
+//                'order_pay'=>0
             ];
             $update_order=DB::table('mt_user')
-                ->join('mt_order','mt_order.uid','=','mt_user.uid')
-                ->join('mt_order_detail','mt_order_detail.uid','=','mt_user.uid')
-                ->where(['mt_user.uid'=>$uid,'mt_order.order_id'=>$order_id])
+//                ->join('mt_order','mt_order.uid','=','mt_user.uid')
+//                ->join('mt_order_detail','mt_order_detail.uid','=','mt_user.uid')
+                ->where(['mt_user.uid'=>$uid])
                 ->update($updates_info);
+            $aa=[
+                'order_status'=>1,
+                'order_pay'=>0
+            ];
+            $update_orders=DB::table('mt_order')->where(['uid'=>$uid,'order_id'=>$order_id])->update($aa);
+            $update_orderss=DB::table('mt_order_detail')->where(['uid'=>$uid,'order_id'=>$order_id])->update(['order_status'=>1]);
+            var_dump($update_orders);die;
             if($update_order){
                 $data=[
                     'code'=>0,
