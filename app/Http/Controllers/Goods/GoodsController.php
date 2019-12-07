@@ -525,8 +525,8 @@ class GoodsController extends Controller
         $pt_id=$request->input('pt_id');
         $key = $openid1;
         $openid = Redis::get($key);
-        $method_type=$request->input('method_type'); //1为普通购买，2.拼团购买，3.优惠券购买，4限时抢购买
-//        $openid='o9VUc5KN78P_jViUQnGjica4GIQs';
+//        $method_type=$request->input('method_type'); //1为普通购买，2.拼团购买，3.优惠券购买，4限时抢购买
+        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
         $order_id=$request->input('order_id');
         $price=$request->input('price');
         $data=DB::table('mt_user')
@@ -535,6 +535,7 @@ class GoodsController extends Controller
             ->first();
         $uid=$data->uid;
         $money=$data->money-$price;
+
         $infos=DB::table('mt_order')
             ->join('mt_order_detail','mt_order_detail.order_id','=','mt_order.order_id')
             ->where(['mt_order_detail.order_id'=>$order_id])->first();
@@ -552,7 +553,11 @@ class GoodsController extends Controller
             ];
             return json_encode($response,JSON_UNESCAPED_UNICODE);
         }
-        if($method_type == 1){
+        $inerdb=DB::table('mt_order')->where(['order_id'=>$order_id])->first();
+        $a=$inerdb->order_method;  //0为普通购买，1.拼团购买，2.优惠券购买，3限时抢购买
+//        var_dump($a);die;
+        if($a ==0){
+//            echo 1111;die;
             $mt_order_detail_add=DB::table('mt_order_detail')->where(['order_id'=>$order_id])->first();
             $infoadd=DB::table('mt_order')
                 ->join('mt_order_detail','mt_order_detail.order_id','=','mt_order.order_id')
@@ -589,7 +594,7 @@ class GoodsController extends Controller
                 ];
                 return json_encode($response,JSON_UNESCAPED_UNICODE);
             }
-        }else if($method_type == 2){
+        }else if($a == 1){
 
             $updates=[
                 'money'=>$money,
@@ -600,7 +605,7 @@ class GoodsController extends Controller
                 ->join('mt_order','mt_order.uid','=','mt_user.uid')
                 ->where(['openid'=>$openid,'order_id'=>$order_id,])
                 ->update($updates);
-        var_dump($data99);die;
+//        var_dump($data99);die;
 
             if($data99 > 0){
                 //修改拼团团队信息
@@ -680,16 +685,81 @@ class GoodsController extends Controller
                 return json_encode($response,JSON_UNESCAPED_UNICODE);
             }
 
-        }else if ($method_type == 3){
+        }else if ($a == 2){
+            $coupon_lists=DB::table('mt_coupon')->where(['uid'=>$uid])->first();
+            $mt_order_detail_add=DB::table('mt_order_detail')->where(['uid'=>$uid])->first();
+            $goods_price=DB::table('mt_goods')->where(['goods_id'=>$mt_order_detail_add->goods_id])->first();
+            if($coupon_lists->coupon_type ==0){                 //coupon_type判断0为满减   1 为折扣
+                if($coupon_lists->coupon_redouction  >  $goods_price->price){
+                    $money_lists=$mt_order_detail_add->price - $coupon_lists->coupon_price;
+                    $updateinfo=[
+                      'pay_price'=>$money_lists,
+                        'order_status'=>1
+                    ];
+                    $sqlupdate=DB::table('mt_order')->where(['uid'=>$uid])->update($updateinfo);
+                    $update_info=[
+                      'order_status'=>1,
+                      'price'=>$money_lists
+                    ];
+                    $detail_order=DB::table('mt_order_detail')->where(['uid'=>$uid])->update($update_info);
+                    if($detail_order){
+                        $data=[
+                            'code'=>0,
+                            'msg'=>'优惠卷支付成功'
+                        ];
+                        $response = [
+                            'data'=>$data
+                        ];
+                        return json_encode($response,JSON_UNESCAPED_UNICODE);
+                    }else{
+                        $data=[
+                            'code'=>1,
+                            'msg'=>'优惠支付失败'
+                        ];
+                        $response = [
+                            'data'=>$data
+                        ];
+                        return json_encode($response,JSON_UNESCAPED_UNICODE);
+                    }
+                }
+            }else if ($coupon_lists->coupon_type == 1){
+                    $address=$goods_price->price*($coupon_lists->discount/10);
+                    $address1=[
+                        'pay_price'=> $address,
+                        'order_status'=>1
+                    ];
+                $sqlupdate1=DB::table('mt_order')->where(['uid'=>$uid])->update($updateinfo);
+                $update_info1=[
+                    'order_status'=>1,
+                    'price'=>$address
+                ];
+                $detail_order1=DB::table('mt_order_detail')->where(['uid'=>$uid])->update($update_info);
+                if($detail_order1){
+                    $data=[
+                        'code'=>0,
+                        'msg'=>'优惠卷支付成功'
+                    ];
+                    $response = [
+                        'data'=>$data
+                    ];
+                    return json_encode($response,JSON_UNESCAPED_UNICODE);
+                }else{
+                    $data=[
+                        'code'=>1,
+                        'msg'=>'优惠支付失败'
+                    ];
+                    $response = [
+                        'data'=>$data
+                    ];
+                    return json_encode($response,JSON_UNESCAPED_UNICODE);
+                }
+            }
 
-//            $coupon_lists=DB::table('mt_coupon')->where(['uid'=>$uid,'is_use'=>0])->first();
-//            if($coupon_lists->coupon_type ==0){                 //coupon_type判断0为满减   1 为折扣
-//                    if($coupon_lists->coupon_redouction => )
-//            }
 
 
+        }else if ($a == 3){
 
-        }else if ($method_type == 4){
+        }else if ($a == 4){
 
         }
 

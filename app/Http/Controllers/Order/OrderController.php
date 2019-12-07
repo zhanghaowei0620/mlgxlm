@@ -26,7 +26,7 @@ class OrderController extends Controller
         $key = $openid1;
         $openid = Redis::get($key);
         $order_no = date("YmdHis",time()).rand(1000,9999);   //订单号
-//        $openid='o9VUc5KN78P_jViUQnGjica4GIQs';
+//        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
         $userInfo = DB::table('mt_user')->where('openid',$openid)->first();
 //            var_dump($userInfo);die;
         $wx_name = $userInfo->wx_name;
@@ -283,7 +283,8 @@ class OrderController extends Controller
                             'wx_name' =>$wx_name,
                             'order_status'=>0,
                             'order_method'=>2,
-                            'total_price'=>$total_price-$coupon_add->coupon_price,
+                            'total_price'=>$total_price,
+//                        $total_price-$coupon_add->coupon_price
                             'create_time'=>time(),
                             'good_cate'=>$good_cate,
                         ];
@@ -355,7 +356,8 @@ class OrderController extends Controller
                         'order_status'=>0,
                         'is_use'=>1,
                         'order_method'=>2,
-                        'total_price'=>$total_price*($coupon_add->discount/10),
+                        'total_price'=>$total_price,
+//                        $total_price*($coupon_add->discount/10)
                         'create_time'=>time(),
                         'good_cate'=>$good_cate,
                     ];
