@@ -14,8 +14,8 @@ class InviteController extends Controller
         $userInfo = DB::table('mt_user')->where('openid',$openid)->first(['uid','wx_headimg','is_team']);
         $uid = $userInfo->uid;
         $is_team = $userInfo->is_team;
+        $teamInfo = DB::table('mt_invitation')->where('uid',$uid)->first();
         if($is_team == 0){
-            $teamInfo = DB::table('mt_invitation')->where('uid',$uid)->first();
             if(!$teamInfo){
                 $insert = [
                     'uid'=>$uid,
@@ -48,24 +48,34 @@ class InviteController extends Controller
                     die(json_encode($response, JSON_UNESCAPED_UNICODE));
                 }
             }else{
+                $arrayInfo = DB::table('mt_invitation')
+                    ->join('mt_user','mt_invitation.uid','=','mt_user.uid')
+                    ->where('mt_invitation.f_uid',$teamInfo->f_uid)->get(['mt_user.wx_headimg','mt_user.uid','mt_user.openid'])->toArray();
+
                 $data = [
-                    'code'=>1,
-                    'msg'=>'您已处于其他团队当中，不可再次成团'
+                    'code'=>0,
+                    'arrayInfo'=>$arrayInfo,
+                    'msg'=>'数据请求成功'
                 ];
                 $response = [
                     'data' => $data
                 ];
-                die(json_encode($response, JSON_UNESCAPED_UNICODE));
+                return json_encode($response, JSON_UNESCAPED_UNICODE);
+
             }
         }else{
+            $arrayInfo = DB::table('mt_invitation')
+                ->join('mt_user','mt_invitation.uid','=','mt_user.uid')
+                ->where('mt_invitation.f_uid',$teamInfo->f_uid)->get(['mt_user.wx_headimg','mt_user.uid','mt_user.openid'])->toArray();
             $data = [
-                'code'=>1,
-                'msg'=>'您已处于其他团队当中，不可再次成团'
+                'code'=>0,
+                'arrayInfo'=>$arrayInfo,
+                'msg'=>'数据请求成功'
             ];
             $response = [
                 'data' => $data
             ];
-            die(json_encode($response, JSON_UNESCAPED_UNICODE));
+            return json_encode($response, JSON_UNESCAPED_UNICODE);
         }
 
     }
