@@ -272,7 +272,7 @@ Route::any('coupon','Admin\Admin_loginController@coupon')->middleware('checkLogi
 Route::any('couponexhibition','Admin\Admin_loginController@couponexhibition');
 //->middleware('checkLogin')
 //优惠卷删除
-Route::any('coupontele','Admin\Admin_loginController@coupontele')->middleware('checkLogin');
+Route::any('coupontele','Admin\Admin_loginController@coupontele');
 //优惠卷搜索
 Route::any('couponsearch','Admin\Admin_loginController@couponsearch')->middleware('checkLogin');
 //Route::any('couponsearch','Admin\Admin_loginController@couponsearch');
