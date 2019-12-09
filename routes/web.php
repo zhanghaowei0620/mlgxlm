@@ -191,6 +191,9 @@ Route::get('admin_accessToken1', 'Amindbackstage\Headquarters@admin_accessToken1
 
 Route::get('admin_Limited_list_update_status', 'Amindbackstage\Headquarters@admin_Limited_list_update_status');
 
+Route::post('invite_userInfo', 'Invite\InviteController@invite_userInfo');
+
+Route::post('invite_friend', 'Invite\InviteController@invite_friend');
 
 
 
