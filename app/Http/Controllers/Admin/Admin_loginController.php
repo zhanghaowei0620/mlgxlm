@@ -1405,7 +1405,7 @@ class Admin_loginController extends Controller
      */
     public function coupontele(Request $request)
     {
-        $goodsInfo = DB::table('mt_goods')->where(time(),'>',expiration)->get(['goods_id'])->toArray();
+        $goodsInfo = DB::table('mt_goods')->where(time(),'>','expiration')->get(['goods_id'])->toArray();
         foreach ($goodsInfo as $k => $v) {
             DB::table('mt_goods')->where('goods_id',$v->goods_id)->update(['is_coupon'=>2,'coupon_start_time'=>NULL,'expiration'=>NULL]);
         }
