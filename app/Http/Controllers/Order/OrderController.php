@@ -1291,7 +1291,7 @@ class OrderController extends Controller
         $order_id = $request->input('order_id');
 //        $order_id = 1;
         $order_detailInfo = DB::table('mt_order')
-            ->join('mt_goods','mt_order.order_id','=','mt_order_detail.order_id')
+            ->join('mt_order_detail','mt_order.order_id','=','mt_order_detail.order_id')
             ->where('mt_order_detail.order_id',$order_id)->get();
         //var_dump($order_detailInfo);exit;
         if($order_detailInfo){
