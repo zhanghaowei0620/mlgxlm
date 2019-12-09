@@ -303,12 +303,19 @@ class GoodsController extends Controller
             ->where(['mt_goods.goods_id'=>$goods_id])
             ->get(['shop_name','admin_tel','shop_address_detail','goods_name','goods_effect','goods_duration','goods_process','goods_overdue_time','shop_bus','goods_appointment','goods_use_rule','shop_img','shop_logo','shop_star','mt_goods.prople']);
         $coupon_lists=DB::table('mt_goods')->where(['goods_id'=>$goods_id,])->first(['coupon_type','coupon_redouction','coupon_price','is_member_discount']);
-//        var_dump($coupon_lists);die;
         $goods_list=DB::table('mt_goods')
             ->where(['mt_shop.shop_id'=>$data1->shop_id])
             ->join('mt_shop','mt_shop.shop_id','=','mt_goods.goods_id')
             ->limit(4)
             ->get();
+
+        $seller = DB ::table('mt_pt_list')
+            ->join('mt_shop','mt_pt_list.shop_id','=','mt_shop.shop_id')
+            ->join('mt_user','mt_pt_list.uid','=','mt_user.uid')
+            ->where(['pt_state'=>0,'goods_id'=>$goods_id])
+            ->get()
+            ->toArray();
+//        var_dump($seller);die;
         $assesslist=DB::table('mt_assess')
             ->join('mt_user','mt_assess.uid','=','mt_user.uid')
             ->where(['goods_id'=>$goods_id])
@@ -360,6 +367,7 @@ class GoodsController extends Controller
                 'goodsInfo'=>$data1,
                 'shop_set'=>$shopsetInfo,
                 'goods_list'=>$goods_list,
+                'seller'=>$seller,
                 'coupon_lists'=>$coupon_lists,
                 'assesslist'=>$assesslist,
                 'recommend_shop'=>$reconmend_shop
