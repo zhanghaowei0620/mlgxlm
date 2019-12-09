@@ -440,6 +440,32 @@ class OrderController extends Controller
                         ->first(['order_id']);
                     $dataData = DB::table('mt_order')->where('order_no',$order_no)->first();
                     $order_id = $dataData->order_id;
+
+                    $num = DB::table('mt_goods')
+                        ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
+                        ->where('mt_goods.goods_id',$goods_id)
+                        ->get();
+//            var_dump($num);die;
+                    foreach($num as $k=>$v){
+                        $info=[
+                            'uid'=>$uid,
+                            'order_id'=>$order_id,
+                            'order_no'=>$order_no,
+                            'goods_id'=>$v->goods_id,
+                            'goods_name'=>$v->goods_name,
+                            'price'=>$v->price,
+                            'picture'=>$v->picture,
+                            'buy_num'=>1,
+                            'order_status'=>0,
+                            'shop_id'=>$v->shop_id,
+                            'shop_name'=>$v->shop_name,
+                            'create_time'=>time(),
+                        ];
+                        $datailData = DB::table('mt_order_detail')->insert($info);
+                    }
+
+
+
                     $dainfo=DB::table('mt_order')
                         ->where(['order_no'=>$order_no])
                         ->first();
@@ -1264,8 +1290,8 @@ class OrderController extends Controller
     public function order_detail(Request $request){
         $order_id = $request->input('order_id');
 //        $order_id = 1;
-        $order_detailInfo = DB::table('mt_order_detail')
-            ->join('mt_order','mt_order.order_id','=','mt_order_detail.order_id')
+        $order_detailInfo = DB::table('mt_order')
+            ->join('mt_goods','mt_order.order_id','=','mt_order_detail.order_id')
             ->where('mt_order_detail.order_id',$order_id)->get();
         //var_dump($order_detailInfo);exit;
         if($order_detailInfo){
