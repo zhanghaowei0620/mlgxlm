@@ -535,7 +535,6 @@ class GoodsController extends Controller
             ->first();
         $uid=$data->uid;
         $money=$data->money-$price;
-
         $infos=DB::table('mt_order')
             ->join('mt_order_detail','mt_order_detail.order_id','=','mt_order.order_id')
             ->where(['mt_order_detail.order_id'=>$order_id])->first();

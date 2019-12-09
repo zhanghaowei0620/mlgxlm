@@ -1304,7 +1304,7 @@ class Admin_loginController extends Controller
         $data=DB::table('mt_shop')
             ->where($where)
             ->join('mt_goods','mt_goods.shop_id','=','mt_shop.shop_id')
-            ->select(['goods_name','mt_goods.goods_id'])
+            ->select(['goods_name','mt_goods.goods_id','mt_goods.price'])
             ->get();
         $data1=[
             'data'=>$data
