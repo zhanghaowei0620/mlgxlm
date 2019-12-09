@@ -26,7 +26,7 @@ class OrderController extends Controller
         $key = $openid1;
         $openid = Redis::get($key);
         $order_no = date("YmdHis", time()) . rand(1000, 9999);   //订单号
-//        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
+//        $openid='o9VUc5KN78P_jViUQnGjica4GIQs';
         $userInfo = DB::table('mt_user')->where('openid', $openid)->first();
 //            var_dump($userInfo);die;
         $wx_name = $userInfo->wx_name;
@@ -138,8 +138,9 @@ class OrderController extends Controller
 //                        ];
 //                        return json_encode($response,JSON_UNESCAPED_UNICODE);
 //                    }
-                $data_pt = DB::table('mt_coupon')->where(['uid' => $uid, 'goods_id' => $goods_id])->first();
-                if ($data_pt) {
+//                $data_pt = DB::table('mt_coupon')->where(['uid' => $uid, 'goods_id' => $goods_id])->first();
+
+//                if ($data_pt) {
                     $data_order = [
                         'uid' => $uid,
                         'order_no' => $order_no,
@@ -155,8 +156,9 @@ class OrderController extends Controller
                     $dainfo = DB::table('mt_order')
                         ->where(['order_no' => $order_no])
                         ->first(['order_id']);
-                    $dataData = DB::table('mt_order')->where('order_no', $order_no)->first();
-                    $order_id = $dataData->order_id;
+                $dataData = DB::table('mt_order')->where('order_no', $order_no)->first();
+//                    var_dump($dataData);die;
+                $order_id = $dataData->order_id;
                     $num = DB::table('mt_goods')
                         ->join('mt_shop', 'mt_goods.shop_id', '=', 'mt_shop.shop_id')
                         ->where('mt_goods.goods_id', $goods_id)
@@ -199,18 +201,18 @@ class OrderController extends Controller
                         ];
                         return json_encode($response, JSON_UNESCAPED_UNICODE);
                     }
-                } else {
-                    $data = [
-                        'code' => '0',
-                        'msg' => '该订单不存在',
-                        'order_id' => $order_id,
-                    ];
-                    $response = [
-                        'data' => $data
-                    ];
-                    return json_encode($response, JSON_UNESCAPED_UNICODE);
-                }
-            
+//                } else {
+//                    $data = [
+//                        'code' => '0',
+//                        'msg' => '该订单不存在',
+//                        'order_id' => $order_id,
+//                    ];
+//                    $response = [
+//                        'data' => $data
+//                    ];
+//                    return json_encode($response, JSON_UNESCAPED_UNICODE);
+//                }
+
 //                else{
 //                    $data_order = [
 //                        'uid'=>$uid,
