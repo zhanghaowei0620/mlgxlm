@@ -30,7 +30,7 @@ class InviteController extends Controller
                     $userInfo1 = DB::table('mt_user')->where('openid',$openid)->get(['uid','wx_headimg'])->toArray();
                     $data = [
                         'code'=>0,
-                        'userInfo'=>$userInfo1,
+                        'arrayInfo'=>$userInfo1,
                         'msg'=>'数据请求成功'
                     ];
                     $response = [
