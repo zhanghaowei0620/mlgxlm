@@ -44,14 +44,16 @@ class IndexController extends Controller
                 $salesInfo= DB ::table('mt_goods')
                     ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
                     ->join('mt_type','mt_goods.t_id','=','mt_type.t_id')
+                    ->where(['mt_goods.promotion_type'=>3])
                     ->orderBy('goods_gd_num','desc')
                     ->limit(6)
                     ->get(['mt_goods.goods_id','goods_name','goods_type','coupon_redouction','coupon_price','market_price','price','picture','mt_type.t_name','introduction','star','mt_shop.shop_name','goods_gd_num','promotion_price','promotion_prople','limited_ready_prople','limited_prople'])->toArray();
+//                var_dump($salesInfo);die;
                 //首页优惠
                 $discountInfo= DB ::table('mt_goods')
                     ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
                     ->join('mt_type','mt_goods.t_id','=','mt_type.t_id')
-                    ->where(['is_coupon'=>1])
+                    ->where(['is_coupon' =>1])
                     ->limit(6)
                     ->get(['mt_goods.goods_id','goods_name','goods_type','coupon_redouction','coupon_price','price','picture','mt_type.t_name','introduction','star','mt_shop.shop_name','goods_gd_num'])->toArray();
                //推荐
@@ -78,6 +80,7 @@ class IndexController extends Controller
                 $salesInfo= DB ::table('mt_goods')
                     ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
                     ->join('mt_type','mt_goods.t_id','=','mt_type.t_id')
+                    ->where(['mt_goods.promotion_type'=>3])
                     ->orderBy('goods_gd_num','desc')
                     ->limit(6)
                     ->get(['mt_goods.goods_id','goods_name','goods_type','coupon_redouction','coupon_price','market_price','price','picture','mt_type.t_name','introduction','star','mt_shop.shop_name','goods_gd_num','promotion_price','promotion_prople','limited_ready_prople','limited_prople'])->toArray();
