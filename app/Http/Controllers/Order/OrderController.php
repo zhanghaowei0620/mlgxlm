@@ -26,7 +26,7 @@ class OrderController extends Controller
         $key = $openid1;
         $openid = Redis::get($key);
         $order_no = date("YmdHis", time()) . rand(1000, 9999);   //订单号
-        $openid='o9VUc5KN78P_jViUQnGjica4GIQs';
+//        $openid='o9VUc5KN78P_jViUQnGjica4GIQs';
         $userInfo = DB::table('mt_user')->where('openid', $openid)->first();
 //            var_dump($userInfo);die;
         $wx_name = $userInfo->wx_name;
@@ -420,7 +420,7 @@ class OrderController extends Controller
                 }
             }else if($method_type == 4){    //限时抢
 
-                $limited_add=DB::table('mt_goods')->where(['goods_id'=>$goods_id,'limited_buy'=>1])->first(['limited_start_time','limited_stop_time','shop_id']);
+                $limited_add=DB::table('mt_goods')->where(['goods_id'=>$goods_id,'limited_buy'=>1])->first(['limited_start_time','limited_stop_time','shop_id','limited_price']);
 //            var_dump($limited_add);die;
                 $aa=time();
                 if($aa >$limited_add->limited_start_time){
@@ -430,7 +430,7 @@ class OrderController extends Controller
                         'wx_name' =>$wx_name,
                         'order_status'=>0,
                         'order_method'=>3,
-                        'total_price'=>$total_price,
+                        'total_price'=>$limited_add->limited_price,
                         'good_cate'=>$good_cate,
                         'create_time'=>time(),
                     ];
@@ -440,28 +440,6 @@ class OrderController extends Controller
                         ->first(['order_id']);
                     $dataData = DB::table('mt_order')->where('order_no',$order_no)->first();
                     $order_id = $dataData->order_id;
-                    $num = DB::table('mt_goods')
-                        ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
-                        ->where('mt_goods.goods_id',$goods_id)
-                        ->get();
-//            var_dump($num);die;
-                    foreach($num as $k=>$v){
-                        $info=[
-                            'uid'=>$uid,
-                            'order_id'=>$order_id,
-                            'order_no'=>$order_no,
-                            'goods_id'=>$v->goods_id,
-                            'goods_name'=>$v->goods_name,
-                            'price'=>$v->price,
-                            'picture'=>$v->picture,
-                            'buy_num'=>1,
-                            'order_status'=>0,
-                            'shop_id'=>$v->shop_id,
-                            'shop_name'=>$v->shop_name,
-                            'create_time'=>time(),
-                        ];
-                        $datailData = DB::table('mt_order_detail')->insert($info);
-                    }
                     $dainfo=DB::table('mt_order')
                         ->where(['order_no'=>$order_no])
                         ->first();
@@ -501,7 +479,7 @@ class OrderController extends Controller
                     'order_no'=>$order_no,
                     'wx_name' =>$wx_name,
                     'order_status'=>0,
-                    'total_price'=>$total_price,
+                    'total_price'=>$limited_add->limited_price,
                     'create_time'=>time(),
                 ];
 //            var_dump($data_order);die;

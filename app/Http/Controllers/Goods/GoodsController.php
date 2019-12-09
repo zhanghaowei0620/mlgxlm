@@ -535,8 +535,8 @@ class GoodsController extends Controller
         $uid=$data->uid;
         $money=$data->money-$price;
         $infos=DB::table('mt_order')
-            ->join('mt_order_detail','mt_order_detail.order_id','=','mt_order.order_id')
-            ->where(['mt_order_detail.order_id'=>$order_id])->first();
+//            ->join('mt_order_detail','mt_order_detail.order_id','=','mt_order.order_id')
+            ->where(['mt_order.order_id'=>$order_id])->first();
 //        var_dump($infos);die;
         $order_info_add=DB::table('mt_order')
             ->where(['order_id'=>$order_id])->first();
@@ -561,6 +561,7 @@ class GoodsController extends Controller
                 ->join('mt_order_detail','mt_order_detail.order_id','=','mt_order.order_id')
                 ->where(['mt_order.uid'=>$uid,'goods_id'=>$mt_order_detail_add->goods_id])->first();
             $money=$data->money-$infoadd->total_price;
+            $pay1=$data->money -$money;
             $updates_info=[
                 'money'=>$money,
             ];
@@ -569,7 +570,7 @@ class GoodsController extends Controller
                 ->update($updates_info);
             $infosaa=[
                 'order_status'=>1,
-                'order_pay'=>0
+                'order_pay'=>$pay1
             ];
             $inerttofo=DB::table('mt_order')->where(['uid'=>$uid,'order_id'=>$order_id])->update($infosaa);
             $update_orderss=DB::table('mt_order_detail')->where(['uid'=>$uid,'order_id'=>$order_id])->update(['order_status'=>1]);
@@ -672,6 +673,7 @@ class GoodsController extends Controller
                 $mt_goods_detail=DB::table('mt_goods')->where(['goods_id'=>$mt_order_detail_add1->goods_id])->first();
 //                var_dump($mt_goods_detail);die;
                 $money_add_op=$data->money - $mt_goods_detail->promotion_price;
+                $pay2=$data->money -$money_add_op;
                 $updas_add=[
                     'money'=>$money_add_op
                 ];
@@ -683,7 +685,7 @@ class GoodsController extends Controller
                 $sqlupdate1=DB::table('mt_order')->where(['order_id'=>$order_id])->update($updateinfo1);
                 $update_info1=[
                     'order_status'=>1,
-                    'price'=>$mt_goods_detail->promotion_price
+                    'price'=>$pay2
                 ];
                 $detail_order1=DB::table('mt_order_detail')->where(['order_id'=>$order_id])->update($update_info1);
                 if($user_money_add){
@@ -717,30 +719,30 @@ class GoodsController extends Controller
             }
         }else if ($a == 2){
             $coupon_lists=DB::table('mt_coupon')->where(['uid'=>$uid])->first();
-            $aaa=DB::table('mt_order_detail')->where(['order_id'=>$order_id])->get(['goods_id']);
+//            $aaa=DB::table('mt_order_detail')->where(['order_id'=>$order_id])->get(['goods_id']);
 //            var_dump($aaa);die;
-            $mt_order_detail_add=DB::table('mt_order_detail')->where(['uid'=>$uid])->first();
-            $goods_price=DB::table('mt_goods')->where(['goods_id'=>$mt_order_detail_add->goods_id])->first();
+//            $mt_order_detail_add=DB::table('mt_order_detail')->where(['uid'=>$uid])->first();
+//            $goods_price=DB::table('mt_goods')->where(['goods_id'=>$mt_order_detail_add->goods_id])->first();
             if($coupon_lists->coupon_type ==0){                 //coupon_type判断0为满减   1 为折扣
                 if($coupon_lists->coupon_redouction  >  $goods_price->price){
-                    $money_lists=$mt_order_detail_add->price - $coupon_lists->coupon_price;
+                    $money_lists=$data->money - $coupon_lists->coupon_price;
                     $moenfo=$data->money - $money_lists;
 //                    var_dump($moenfo);die;
                     $user_money_add=[
-                        'money'=>$moenfo
+                        'money'=>$money_lists
                     ];
                     $user_money=DB::table('mt_user')->where(['uid'=>$uid])->update($user_money_add);
                     $updateinfo=[
-                      'pay_price'=>$money_lists,
+                      'pay_price'=>$moenfo,
                         'order_status'=>1
                     ];
                     $sqlupdate=DB::table('mt_order')->where(['order_id'=>$order_id])->update($updateinfo);
-                    $update_info=[
-                      'order_status'=>1,
-                      'price'=>$money_lists
-                    ];
-                    $detail_order=DB::table('mt_order_detail')->where(['order_id'=>$order_id])->update($update_info);
-                    if($detail_order){
+//                    $update_info=[
+//                      'order_status'=>1,
+//                      'price'=>$money_lists
+//                    ];
+//                    $detail_order=DB::table('mt_order_detail')->where(['order_id'=>$order_id])->update($update_info);
+                    if($sqlupdate){
                         $data=[
                             'code'=>0,
                             'msg'=>'优惠卷支付成功'
@@ -766,18 +768,18 @@ class GoodsController extends Controller
                         'pay_price'=> $address,
                         'order_status'=>1
                     ];
-                $moenfo=$mt_order_detail_add->price - $address;
+                $moenfo=$data->money - $address;
                 $user_money_add=[
                     'money'=>$moenfo
                 ];
                 $user_money=DB::table('mt_user')->where(['uid'=>$uid])->update($user_money_add);
                 $sqlupdate1=DB::table('mt_order')->where(['uid'=>$uid])->update($updateinfo);
-                $update_info1=[
-                    'order_status'=>1,
-                    'price'=>$address
-                ];
-                $detail_order1=DB::table('mt_order_detail')->where(['uid'=>$uid])->update($update_info);
-                if($detail_order1){
+//                $update_info1=[
+//                    'order_status'=>1,
+//                    'price'=>$address
+//                ];
+//                $detail_order1=DB::table('mt_order_detail')->where(['uid'=>$uid])->update($update_info);
+                if($user_money_add){
                     $data=[
                         'code'=>0,
                         'msg'=>'优惠卷支付成功'
@@ -797,11 +799,38 @@ class GoodsController extends Controller
                     return json_encode($response,JSON_UNESCAPED_UNICODE);
                 }
             }
-
-
-
-        }else if ($a == 3){
-
+        }else if ($a == 3){             //限时抢
+            $datainfos=DB::table('mt_order')->where(['order_id'=>$order_id,'order_method'=>3])->first();
+            $infos_add=$data->money - $datainfos->total_price;
+            $pay=$data->money - $infos_add;
+            $user_update_add=[
+              'money'=>  $infos_add
+            ];
+            $info_update=DB::table('mt_user')->where(['uid'=>$uid])->update($user_update_add);
+            $user_update_add1=[
+              'order_status'=>1,
+                'pay_price'=>$pay
+            ];
+            $order_update=DB::table('mt_order')->where(['order'=>$order_id])->update();
+            if($order_update){
+                $data=[
+                    'code'=>0,
+                    'msg'=>'限时抢支付成功'
+                ];
+                $response = [
+                    'data'=>$data
+                ];
+                return json_encode($response,JSON_UNESCAPED_UNICODE);
+            }else{
+                $data=[
+                    'code'=>1,
+                    'msg'=>'限时抢支付失败'
+                ];
+                $response = [
+                    'data'=>$data
+                ];
+                return json_encode($response,JSON_UNESCAPED_UNICODE);
+            }
         }else if ($a == 4){
 
         }
