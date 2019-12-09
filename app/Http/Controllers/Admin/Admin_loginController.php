@@ -1405,25 +1405,9 @@ class Admin_loginController extends Controller
      */
     public function coupontele(Request $request)
     {
-        $coupon_id=$request->input('coupon_id');
-        $goods_id=$request->input('goods_id');
-        $where=[
-            'goods_id'=>$goods_id
-        ];
-        $data=DB::table('mt_goods')->where($where)->update(['is_coupon'=>2]);
-        if($data){
-            $response=[
-                'code'=>0,
-                'data'=>$data,
-                'msg'=>'优惠卷删除成功'
-            ];
-                return (json_encode($response, JSON_UNESCAPED_UNICODE));
-        }else{
-            $response=[
-                'code'=>1,
-                'msg'=>'优惠卷删除失败'
-            ];
-            die(json_encode($response, JSON_UNESCAPED_UNICODE));
+        $goodsInfo = DB::table('mt_goods')->where(time(),'>',expiration)->get(['goods_id'])->toArray();
+        foreach ($goodsInfo as $k => $v) {
+            DB::table('mt_goods')->where('goods_id',$v->goods_id)->update(['is_coupon'=>2,'coupon_start_time'=>NULL,'expiration'=>NULL]);
         }
     }
 
