@@ -811,7 +811,7 @@ class GoodsController extends Controller
               'order_status'=>1,
                 'pay_price'=>$pay
             ];
-            $order_update=DB::table('mt_order')->where(['order'=>$order_id])->update();
+            $order_update=DB::table('mt_order')->where(['order_id'=>$order_id])->update($user_update_add1);
             if($order_update){
                 $data=[
                     'code'=>0,
