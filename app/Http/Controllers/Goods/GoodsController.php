@@ -288,15 +288,14 @@ class GoodsController extends Controller
         $key = $openid1;
         $openid = Redis::get($key);
 //        $openid="o9VUc5KN78P_jViUQnGjica4GIQs";
-        $infono=DB::table('mt_user')->where(['openid'=>$openid])->first();
-        $uid=$infono->uid;
-//        var_dump($uid);die;
+        if($openid !=NULL){
+            $infono=DB::table('mt_user')->where(['openid'=>$openid])->first();
+            $uid=$infono->uid;
+        }
         $data1=DB::table('mt_goods')
             ->join('mt_shop','mt_shop.shop_id','=','mt_goods.shop_id')
-//            ->join('mt_coupon','mt_coupon.goods_id','=','mt_goods.goods_id')
             ->where(['mt_goods.goods_id'=>$goods_id])
             ->first();
-//        var_dump($data1);exit;
         $shopsetInfo=DB::table('mt_shop')
             ->join('admin_user','mt_shop.shop_id','=','admin_user.shop_id')
             ->join('mt_goods','mt_goods.shop_id','=','mt_shop.shop_id')
@@ -308,26 +307,16 @@ class GoodsController extends Controller
             ->join('mt_shop','mt_shop.shop_id','=','mt_goods.goods_id')
             ->limit(4)
             ->get();
-
-        $seller = DB ::table('mt_pt_list')
-            ->join('mt_shop','mt_pt_list.shop_id','=','mt_shop.shop_id')
-            ->join('mt_user','mt_pt_list.uid','=','mt_user.uid')
-            ->where(['pt_state'=>0,'goods_id'=>$goods_id])
-            ->get()
-            ->toArray();
-//        var_dump($seller);die;
         $assesslist=DB::table('mt_assess')
             ->join('mt_user','mt_assess.uid','=','mt_user.uid')
             ->where(['goods_id'=>$goods_id])
             ->limit(2)
             ->get(['assess_text','mt_user.wx_name','mt_user.wx_headimg']);
-//        var_dump($assesslist);die;
         $reconmend_shop = DB::table('mt_goods')
             ->where(['mt_shop.shop_id'=>$data1->shop_id,'p_id'=>2])
             ->join('mt_type','mt_goods.t_id','=','mt_type.t_id')
             ->join('mt_shop','mt_shop.shop_id','=','mt_goods.shop_id')
             ->limit(4)->get(['t_name','goods_name','picture','goods_gd_num','price','shop_address_provice','shop_address_city','shop_address_area','goods_id','shop_name','limited_price','promotion_price','promotion_type']);
-//        var_dump($reconmend_shop);exit;
         if($data1==NULL){
             $response = [
                 'code'=>'1',
@@ -335,40 +324,31 @@ class GoodsController extends Controller
             ];
             die(json_encode($response,JSON_UNESCAPED_UNICODE));
         }else{
-//            $openid1 = $request->input('openid');
-//            $key = $openid1;
-//            $openid = Redis::get($key);
-////            $openid="o9VUc5MWyq5GgW3kF_90NnrQkBH8";
-//            $openid="o9VUc5KN78P_jViUQnGjica4GIQs";
-//            var_dump($openid);exit;
-//            $userInfo = DB::table('mt_user')->where('openid',$openid)->first();
-////            var_dump($userInfo);exit;
-//            $uid = $userInfo->uid;
-            $where = [
-                'uid'=>$uid,
-                'goods_id'=>$goods_id
-            ];
-            $historyInfo = DB::table('mt_history')->where($where)->get()->toArray();
-            //var_dump($historyInfo);exit;
-            if($historyInfo){
-                $update = [
-                    'create_time'=>time()
-                ];
-                $updateInfo = DB::table('mt_history')->update($update);
-            }else{
-                $data = [
+            if($openid != NULL){
+                $where = [
                     'uid'=>$uid,
-                    'goods_id'=>$goods_id,
-                    'create_time'=>time()
+                    'goods_id'=>$goods_id
                 ];
-                DB::table('mt_history')->insertGetId($data);
+                $historyInfo = DB::table('mt_history')->where($where)->get()->toArray();
+                if($historyInfo){
+                    $update = [
+                        'create_time'=>time()
+                    ];
+                    $updateInfo = DB::table('mt_history')->update($update);
+                }else{
+                    $data = [
+                        'uid'=>$uid,
+                        'goods_id'=>$goods_id,
+                        'create_time'=>time()
+                    ];
+                    DB::table('mt_history')->insertGetId($data);
+                }
             }
             $data2=[
                 'code'=>'0',
                 'goodsInfo'=>$data1,
                 'shop_set'=>$shopsetInfo,
                 'goods_list'=>$goods_list,
-                'seller'=>$seller,
                 'coupon_lists'=>$coupon_lists,
                 'assesslist'=>$assesslist,
                 'recommend_shop'=>$reconmend_shop
