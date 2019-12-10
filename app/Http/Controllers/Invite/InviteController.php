@@ -170,7 +170,7 @@ class InviteController extends Controller
 
     }
     public function open_red_packet(Request $request){
-        $openid = $request->input('openid');
+        $openid = $request->input('openid3');
         $userInfo = DB::table('mt_user')->where('openid',$openid)->first(['uid']);
         $uid = $userInfo->uid;
         $mt_invitationInfo = DB::table('mt_invitation')->where('f_uid',$uid)->get(['uid','money','team_num'])->toArray();
