@@ -484,18 +484,15 @@ class GoodsController extends Controller
         $openid1 = $request->input('openid');
         $key = $openid1;
         $openid = Redis::get($key);
-        $where = [
-            'mt_cart.openid'=>$openid,
-//            'collection_cart'=>0
-        ];
-        $cartInfo = DB::table('mt_cart')
-            ->where($where)
+//        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
+        $cartAdd=DB::table('mt_cart')
+            ->join('mt_goods','mt_goods.goods_id','=','mt_cart.goods_id')
+            ->where(['mt_cart.openid'=>$openid])
             ->get()->toArray();
-
-        if($cartInfo){
+        if($cartAdd){
             $data=[
-                'code'=>'0',
-                'cartInfo'=>$cartInfo
+                'code'=>0,
+                'cartInfo'=>$cartAdd
             ];
             $response = [
                 'data'=>$data
@@ -506,7 +503,7 @@ class GoodsController extends Controller
 
             ];
             $data=[
-                'code'=>0,
+                'code'=>1,
                 'msg'=>'购物车暂无数据，快去添加商品吧',
                 'cartInfo'=>$datainfo
             ];
