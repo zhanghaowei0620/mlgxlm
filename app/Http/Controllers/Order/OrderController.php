@@ -28,7 +28,7 @@ class OrderController extends Controller
         $key = $openid1;
         $openid = Redis::get($key);
         $order_no = date("YmdHis", time()) . rand(1000, 9999);   //订单号
-//        $openid='o9VUc5KN78P_jViUQnGjica4GIQs';
+//        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
         $userInfo = DB::table('mt_user')->where('openid', $openid)->first();
 //            var_dump($userInfo);die;
         $wx_name = $userInfo->wx_name;
@@ -155,13 +155,12 @@ class OrderController extends Controller
 
                     foreach($goods_id as &$value){
 //                        var_dump($value);
-                        $num = DB::table('mt_goods')
+                         $num = DB::table('mt_goods')
                             ->join('mt_cart','mt_goods.goods_id','=','mt_cart.goods_id')
                             ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
                             ->where('mt_cart.goods_id',$value)
                             ->first();
 //                            var_dump($num);
-
                             $info=[
                                 'uid'=>$uid,
                                 'order_id'=>$order_id,
@@ -177,6 +176,11 @@ class OrderController extends Controller
                                 'create_time'=>time()
                             ];
                             $datailData = DB::table('mt_order_detail')->insert($info);
+                            $aa=[
+                                'goods_id'=>$num->goods_id,
+                                'openid'=>$openid
+                            ];
+                            $datailData123456 = DB::table('mt_cart')->where($aa)->delete();
                         }
                 }else{
                     $num = DB::table('mt_goods')
