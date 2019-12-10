@@ -1407,7 +1407,7 @@ class Admin_loginController extends Controller
     {
         $goodsInfo = DB::table('mt_goods')->where('expiration','<',time())->get(['goods_id'])->toArray();
         foreach ($goodsInfo as $k => $v) {
-            DB::table('mt_goods')->where('goods_id',$v->goods_id)->update(['promotion_type'=>3,'is_coupon'=>2,'coupon_start_time'=>NULL,'expiration'=>NULL]);
+            DB::table('mt_goods')->where('goods_id',$v->goods_id)->update(['promotion_type'=>0,'is_coupon'=>2,'coupon_start_time'=>NULL,'expiration'=>NULL]);
         }
     }
 

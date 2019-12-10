@@ -402,7 +402,7 @@ class Headquarters extends Controller
         $goodsInfo = DB::table('mt_goods')->where('limited_stop_time','<',time())->get(['goods_id'])->toArray();
 //        var_dump($goodsInfo);exit;
         foreach ($goodsInfo as $k => $v) {
-            DB::table('mt_goods')->where('goods_id',$v->goods_id)->update(['promotion_type'=>3,'limited_buy'=>0,'limited_stop_time'=>NULL,'limited_start_time'=>NULL]);
+            DB::table('mt_goods')->where('goods_id',$v->goods_id)->update(['promotion_type'=>0,'limited_buy'=>0,'limited_stop_time'=>NULL,'limited_start_time'=>NULL]);
         }
 
     }
