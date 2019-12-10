@@ -154,7 +154,7 @@ class OrderController extends Controller
                 if($is_cart == 1){
 
                     foreach($goods_id as &$value){
-                        var_dump($value);
+//                        var_dump($value);
                         $num = DB::table('mt_goods')
                             ->join('mt_cart','mt_goods.goods_id','=','mt_cart.goods_id')
                             ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
