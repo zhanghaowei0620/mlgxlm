@@ -1039,7 +1039,8 @@ class OrderController extends Controller
     //删除订单
     public function delete_order(Request $request){
         $order_id = $request->input('order_id');
-        $delete_order = DB::table('mt_order')->where('id',$order_id)->delete();
+        $delete_order = DB::table('mt_order')->where('order_id',$order_id)->delete();
+        $delete_deteail=DB::table('mt_order_detail')->where('order_id',$order_id)-delete();
         //var_dump($delete_address);exit;
         if($delete_order == true){
             $response = [

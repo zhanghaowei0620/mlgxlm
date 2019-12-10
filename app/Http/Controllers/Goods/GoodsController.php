@@ -281,13 +281,13 @@ class GoodsController extends Controller
     }
 
     //点击商品获取商品详情+店铺详情信息
-    public function goodsinfo(Request $request){
+    public function goodsInfo(Request $request){
         $goods_id = $request->input('goods_id');
 //        var_dump($goods_id);die;
         $openid1 = $request->input('openid');
         $key = $openid1;
         $openid = Redis::get($key);
-//        $openid="o9VUc5MWyq5GgW3kF_90NnrQkBH8";
+//        $openid="o9VUc5KN78P_jViUQnGjica4GIQs";
         $infono=DB::table('mt_user')->where(['openid'=>$openid])->first();
         $uid=$infono->uid;
 //        var_dump($uid);die;
@@ -335,14 +335,15 @@ class GoodsController extends Controller
             ];
             die(json_encode($response,JSON_UNESCAPED_UNICODE));
         }else{
-            $openid1 = $request->input('openid');
-            $key = $openid1;
-            $openid = Redis::get($key);
-//            $openid="o9VUc5MWyq5GgW3kF_90NnrQkBH8";
+//            $openid1 = $request->input('openid');
+//            $key = $openid1;
+//            $openid = Redis::get($key);
+////            $openid="o9VUc5MWyq5GgW3kF_90NnrQkBH8";
+//            $openid="o9VUc5KN78P_jViUQnGjica4GIQs";
 //            var_dump($openid);exit;
-            $userInfo = DB::table('mt_user')->where('openid',$openid)->first();
-//            var_dump($userInfo);exit;
-            $uid = $userInfo->uid;
+//            $userInfo = DB::table('mt_user')->where('openid',$openid)->first();
+////            var_dump($userInfo);exit;
+//            $uid = $userInfo->uid;
             $where = [
                 'uid'=>$uid,
                 'goods_id'=>$goods_id
