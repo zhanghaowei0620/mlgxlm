@@ -15,6 +15,7 @@ class OrderController extends Controller
         $method_type = $request->input('method_type');  //接收 普通订单为1  拼团订单为2  优惠卷订单为3   限时抢订单为4
         $goods_id = $request->input('goods_id');  //商品id
         $goods_id = explode(',',$goods_id);
+//        var_dump($goods_id);die;
         $order_address = $request->input('order_address');   //分销商品的收货地址
         $re_goods_id = $request->input('re_goods_id');  //分销商品id
         $is_cart = $request->input('is_cart');  //0为否 1为是
@@ -27,7 +28,7 @@ class OrderController extends Controller
         $key = $openid1;
         $openid = Redis::get($key);
         $order_no = date("YmdHis", time()) . rand(1000, 9999);   //订单号
-//        $openid='o9VUc5KN78P_jViUQnGjica4GIQs';
+        $openid='o9VUc5KN78P_jViUQnGjica4GIQs';
         $userInfo = DB::table('mt_user')->where('openid', $openid)->first();
 //            var_dump($userInfo);die;
         $wx_name = $userInfo->wx_name;
@@ -151,29 +152,32 @@ class OrderController extends Controller
 //            var_dump($res);exit;
                 //添加订单详情表
                 if($is_cart == 1){
-                    $num = DB::table('mt_goods')
-                        ->join('mt_cart','mt_goods.goods_id','=','mt_cart.goods_id')
-                        ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
-                        ->where('mt_goods.goods_id',$goods_id)
-                        ->get();
-//                            var_dump($num);exit;
-                    foreach($num as $k=>$v){
-                        $info=[
-                            'uid'=>$uid,
-                            'order_id'=>$order_id,
-                            'order_no'=>$order_no,
-                            'goods_id'=>$v->goods_id,
-                            'goods_name'=>$v->goods_name,
-                            'price'=>$v->price,
-                            'picture'=>$v->picture,
-                            'buy_num'=>$v->buy_num,
-                            'order_status'=>0,
-                            'shop_id'=>$v->shop_id,
-                            'shop_name'=>$v->shop_name,
-                            'create_time'=>time()
-                        ];
-                        $datailData = DB::table('mt_order_detail')->insert($info);
-                    }
+
+                    foreach($goods_id as &$value){
+                        var_dump($value);
+                        $num = DB::table('mt_goods')
+                            ->join('mt_cart','mt_goods.goods_id','=','mt_cart.goods_id')
+                            ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
+                            ->where('mt_cart.goods_id',$value)
+                            ->first();
+//                            var_dump($num);
+
+                            $info=[
+                                'uid'=>$uid,
+                                'order_id'=>$order_id,
+                                'order_no'=>$order_no,
+                                'goods_id'=>$num->goods_id,
+                                'goods_name'=>$num->goods_name,
+                                'price'=>$num->price,
+                                'picture'=>$num->picture,
+                                'buy_num'=>$num->buy_num,
+                                'order_status'=>0,
+                                'shop_id'=>$num->shop_id,
+                                'shop_name'=>$num->shop_name,
+                                'create_time'=>time()
+                            ];
+                            $datailData = DB::table('mt_order_detail')->insert($info);
+                        }
                 }else{
                     $num = DB::table('mt_goods')
 //                    ->join('mt_cart','mt_goods.goods_id','=','mt_cart.goods_id')
@@ -199,6 +203,7 @@ class OrderController extends Controller
                         $datailData = DB::table('mt_order_detail')->insert($info);
                     }
                 }
+//                die;
                 $UpdateNum=[
                     // 'is_del'=>2,
                     'buy_num'=>0,
