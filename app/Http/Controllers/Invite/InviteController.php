@@ -27,7 +27,7 @@ class InviteController extends Controller
                 $insert_team = DB::table('mt_invitation')->insert($insert);
                 if($insert_team){
                     DB::table('mt_user')->where('uid',$uid)->update(['is_team'=>1]);
-                    $userInfo1 = DB::table('mt_user')->where('openid',$openid)->get(['uid','wx_headimg'])->toArray();
+                    $userInfo1 = DB::table('mt_user')->where('openid',$openid)->get(['uid','wx_headimg','openid'])->toArray();
                     $data = [
                         'code'=>0,
                         'arrayInfo'=>$userInfo1,
@@ -167,6 +167,9 @@ class InviteController extends Controller
         }
 
 
+
+    }
+    public function open_red_packet(Request $request){
 
     }
 
