@@ -19,7 +19,7 @@ class InviteController extends Controller
             if(!$teamInfo){
                 $insert = [
                     'uid'=>$uid,
-                    'money'=>100,
+                    'money'=>120,
                     'current_num'=>1,
                     'f_uid'=>$uid,
                     'create_time'=>time()
@@ -95,7 +95,7 @@ class InviteController extends Controller
                     if(!$arrInfo){
                         $insert = [
                             'uid'=>$uid1,
-                            'money'=>100,
+                            'money'=>120,
                             'current_num'=>$inviteInfo->current_num+1,
                             'f_uid'=>$inviteInfo->f_uid,
                             'create_time'=>time()
@@ -135,7 +135,7 @@ class InviteController extends Controller
                     }
                 }else{
                     $data = [
-                        'code'=>2,
+                        'code'=>1,
                         'msg'=>'当前团队已满员'
                     ];
                     $response = [
@@ -170,7 +170,31 @@ class InviteController extends Controller
 
     }
     public function open_red_packet(Request $request){
+        $openid = $request->input('openid');
+        $userInfo = DB::table('mt_user')->where('openid',$openid)->first(['uid']);
+        $uid = $userInfo->uid;
+        $mt_invitationInfo = DB::table('mt_invitation')->where('f_uid',$uid)->get(['uid','money','team_num'])->toArray();
+        $mt_invitation = DB::table('mt_invitation')->where('uid',$uid)->first(['uid','money','team_num']);
+        $everyBody = $mt_invitation->money/$mt_invitation->team_num;
+//        var_dump($everyBody);exit;
+        foreach ($mt_invitationInfo as $k=>$v){
+            $userArray = DB::table('mt_user')->where('uid',$v->uid)->first();
+            $update = [
+                'money'=>$userArray->money+$everyBody
+            ];
+            DB::table('mt_user')->where('uid',$v->uid)->update($update);
+            DB::table('mt_user')->where('uid',$uid)->update(['is_team'=>0]);
+            DB::table('mt_invitation')->where('f_uid',$uid)->delete();
+        }
 
+        $data = [
+            'code'=>0,
+            'msg'=>'红包拆除成功，请去个人中心中查看分享币余额'
+        ];
+        $response = [
+            'data' => $data
+        ];
+        return json_encode($response, JSON_UNESCAPED_UNICODE);
     }
 
 }

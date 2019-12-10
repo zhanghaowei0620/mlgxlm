@@ -195,6 +195,8 @@ Route::post('invite_userInfo', 'Invite\InviteController@invite_userInfo');
 
 Route::post('invite_friend', 'Invite\InviteController@invite_friend');
 
+Route::post('open_red_packet', 'Invite\InviteController@open_red_packet');
+
 
 
 
