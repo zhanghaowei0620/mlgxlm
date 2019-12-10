@@ -157,7 +157,7 @@ class InviteController extends Controller
 
         }else{
             $data = [
-                'code'=>1,
+                'code'=>0,
                 'msg'=>'您邀请的用户不存在或者已被邀请过'
             ];
             $response = [
