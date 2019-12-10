@@ -281,7 +281,7 @@ class GoodsController extends Controller
     }
 
     //点击商品获取商品详情+店铺详情信息
-    public function goodsinfo(Request $request){
+    public function goodsInfo(Request $request){
         $goods_id = $request->input('goods_id');
 //        var_dump($goods_id);die;
         $openid1 = $request->input('openid');
