@@ -927,13 +927,36 @@ class OrderController extends Controller
     //修改用户订单状态              订单状态 0->未支付，1->已付款，3->确认收货,4->已完成,5->已关闭
     public function up_status_add(Request $request)
     {
-        $order_id=$reqeust->input('order_id');
+        $order_id=$request->input('order_id');
         $openid1 = $request->input('openid');
         $key = $openid1;
         $openid = Redis::get($key);
+//        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
+        $datainfo=DB::table('mt_user')->where(['openid'=>$openid])->first();
+        $uid=$datainfo->uid;
         if($openid){
-            
-
+//            $data_infos=DB::table('mt_order')->where(['uid'=>$uid,'order_id'=>$order_id,'order_status'=>1])->first();
+            $up_status=DB::table('mt_order')->where(['uid'=>$uid,'order_id'=>$order_id,'order_status'=>1])->update(['order_status'=>3]);
+            $up_detail=DB::table('mt_order_detail')->where(['uid'=>$uid,'order_id'=>$order_id,'order_status'=>1])->update(['order_status'=>3]);
+            if($up_status && $up_detail){
+                $data=[
+                    'code'=>0,
+                    'msg'=>'确认收货成功'
+                ];
+                $response = [
+                    'data'=>$data
+                ];
+                return (json_encode($response,JSON_UNESCAPED_UNICODE));
+            }else{
+                $data=[
+                    'code'=>1,
+                    'msg'=>'确认收货失败,请重试'
+                ];
+                $response = [
+                    'data'=>$data
+                ];
+                return (json_encode($response,JSON_UNESCAPED_UNICODE));
+            }
         }else{
             $response = [
                 'code'=>1,
