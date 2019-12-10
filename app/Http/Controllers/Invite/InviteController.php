@@ -80,7 +80,7 @@ class InviteController extends Controller
 
     }
     public function invite_friend(Request $request){
-        $openid = $request->input('openid');   //拉取用户的人的openid
+        $openid = $request->input('openid2');   //拉取用户的人的openid
         $openid1 = $request->input('openid1');  //被拉取用户的openid
         $userInfo = DB::table('mt_user')->where('openid',$openid)->first();  //拉取用户的人的用户信息
         $uid = $userInfo->uid;
