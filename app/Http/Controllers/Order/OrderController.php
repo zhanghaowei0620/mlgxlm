@@ -929,7 +929,7 @@ class OrderController extends Controller
         $good_cate=$request->input('good_cate');
         $key = $openid1;
         $openid = Redis::get($key);
-//        $openid='o9VUc5MWyq5GgW3kF_90NnrQkBH8';
+//        $openid='o9VUc5KN78P_jViUQnGjica4GIQs';
         $orderInfo = DB::table('mt_user')
 //            ->join('mt_order','mt_user.uid','=','mt_order.uid')
             ->where('openid',$openid)
@@ -946,7 +946,7 @@ class OrderController extends Controller
                 ->join('mt_order','mt_order.order_id','=','mt_order_detail.order_id')
                 ->join('mt_shop','mt_shop.shop_id','=','mt_order_detail.shop_id')
 //                ->join('mt_goods','mt_goods.goods_id','=','mt_order_detail.goods_id')
-                ->where(['mt_order.uid'=>$orderInfo->uid,'good_cate'=>$good_cate,'order_status'=>$order_status])
+                ->where(['mt_order.uid'=>$orderInfo->uid,'good_cate'=>$good_cate,'mt_order.order_status'=>$order_status])
                 ->select()->paginate(10);
         }
         if($data){
