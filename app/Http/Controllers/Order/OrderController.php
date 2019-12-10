@@ -13,7 +13,7 @@ class OrderController extends Controller
     public function order_insert(Request $request)
     {
         $method_type = $request->input('method_type');  //接收 普通订单为1  拼团订单为2  优惠卷订单为3   限时抢订单为4
-//        $goods_id = $request->input('goods_id');  //商品id
+        $goods_id = $request->input('goods_id');  //商品id
         $goods_id = explode(',',$goods_id);
         $order_address = $request->input('order_address');   //分销商品的收货地址
         $re_goods_id = $request->input('re_goods_id');  //分销商品id
