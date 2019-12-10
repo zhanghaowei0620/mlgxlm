@@ -1137,27 +1137,6 @@ class OrderController extends Controller
         }
     }
 
-    //删除订单
-    public function delete_order(Request $request){
-        $order_id = $request->input('order_id');
-        $delete_order = DB::table('mt_order')->where('order_id',$order_id)->delete();
-//        var_dump($delete_order);die;
-        $delete_deteail=DB::table('mt_order_detail')->where('order_id',$order_id)->delete();
-        //var_dump($delete_address);exit;
-        if($delete_order == true){
-            $response = [
-                'error'=>'0',
-                'msg'=>'删除成功'
-            ];
-            return json_encode($response,JSON_UNESCAPED_UNICODE);
-        }else{
-            $response = [
-                'error'=>'1',
-                'msg'=>'修改失败'
-            ];
-            die(json_encode($response,JSON_UNESCAPED_UNICODE));
-        }
-    }
 
     //根据订单状态查找订单信息
     public function order_status_list(Request $request){
@@ -1199,6 +1178,37 @@ class OrderController extends Controller
                 'msg'=>'请先去登陆'
             ];
             die(json_encode($response,JSON_UNESCAPED_UNICODE));
+        }
+    }
+
+    public function update_static_del(Request $request){
+        $openid1 = $request->input('openid');
+        $key = $openid1;
+        $openid = Redis::get($key);
+        $order_id=$request->input("order_id");
+//        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
+        if($openid){
+            $user=DB::table("mt_user")->where("openid",$openid)->first();
+
+            $info=[
+                'order_id'=>$order_id,
+                'uid'=>$user->uid
+            ];
+            $data = DB::table('mt_order')->where($info)->delete();
+            $data1 = DB::table('mt_order_detail')->where($info)->delete();
+            if($data && $data1){
+                $response = [
+                    'code'=>0,
+                    'msg'=>'订单删除成功'
+                ];
+                return (json_encode($response,JSON_UNESCAPED_UNICODE));
+            }
+        }else{
+            $response = [
+                'code'=>1,
+                'msg'=>'请先去登陆'
+            ];
+            return (json_encode($response,JSON_UNESCAPED_UNICODE));
         }
     }
 

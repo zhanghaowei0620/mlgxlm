@@ -106,13 +106,13 @@ Route::get('/limited_order', 'Order\OrderController@limited_order');      //限�
 
 Route::get('/pt_add_list', 'Order\OrderController@pt_add_list');      //拼团列表
 
+Route::get('update_static_del', 'Order\OrderController@update_static_del');  //删除订单
+
 Route::get('/order_insert', 'Order\OrderController@order_insert');      //普通订单  拼团订单  优惠卷订单  限时抢订单
 
 Route::get('/open_order_list', 'Order\OrderController@open_order_list');      //拼团列表
 
 Route::get('/order_list', 'Order\OrderController@order_list');     //订单列表
-
-Route::get('/delete_order', 'Order\OrderController@delete_order');     //删除订单
 
 Route::get('/order_status_list', 'Order\OrderController@order_status_list');     //根据订单状态获取订单信息
 
@@ -198,6 +198,8 @@ Route::post('invite_userInfo', 'Invite\InviteController@invite_userInfo');
 Route::post('invite_friend', 'Invite\InviteController@invite_friend');
 
 Route::post('open_red_packet', 'Invite\InviteController@open_red_packet');
+
+
 
 
 
