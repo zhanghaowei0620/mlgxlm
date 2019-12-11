@@ -14,6 +14,8 @@ class OrderController extends Controller
     {
         $method_type = $request->input('method_type');  //接收 普通订单为1  拼团订单为2  优惠卷订单为3   限时抢订单为4
         $goods_id = $request->input('goods_id');  //商品id
+        $goods_id = explode(',',$goods_id);
+//        var_dump($goods_id);die;
         $order_address = $request->input('order_address');   //分销商品的收货地址
         $re_goods_id = $request->input('re_goods_id');  //分销商品id
         $is_cart = $request->input('is_cart');  //0为否 1为是
@@ -26,7 +28,7 @@ class OrderController extends Controller
         $key = $openid1;
         $openid = Redis::get($key);
         $order_no = date("YmdHis", time()) . rand(1000, 9999);   //订单号
-//        $openid='o9VUc5KN78P_jViUQnGjica4GIQs';
+//        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
         $userInfo = DB::table('mt_user')->where('openid', $openid)->first();
 //            var_dump($userInfo);die;
         $wx_name = $userInfo->wx_name;
@@ -34,96 +36,195 @@ class OrderController extends Controller
         $uid = $userInfo->uid;
         if ($openid) {
             if ($method_type == 1) {
+//                $data_order = [
+//                    'uid' => $uid,
+//                    'order_no' => $order_no,
+//                    'wx_name' => $wx_name,
+//                    'order_status' => 0,
+//                    'total_price' => $total_price,
+//                    'create_time' => time()
+//                ];
+////            var_dump($data_order);die;
+//                $infodata = DB::table('mt_order')->insert($data_order);
+//                $dataData = DB::table('mt_order')->where('order_no', $order_no)->first();
+////            var_dump($dataData);exit;
+//                $order_id = $dataData->order_id;
+//                session(['order_id' => $order_id]);
+//
+//                $cartUpdate = [
+//                    'buy_num' => 0,
+//                    'update_time' => time()
+//                ];
+////            var_dump($cartUpdate);die;
+//                $res = DB::table('mt_cart')->where('uid', $uid)->where('goods_id', $goods_id)->update($cartUpdate);
+////            var_dump($res);exit;
+//                //添加订单详情表
+//                if ($is_cart == 1) {
+//                    $num = DB::table('mt_goods')
+//                        ->join('mt_cart', 'mt_goods.goods_id', '=', 'mt_cart.goods_id')
+//                        ->join('mt_shop', 'mt_goods.shop_id', '=', 'mt_shop.shop_id')
+//                        ->where('mt_goods.goods_id', $goods_id)
+//                        ->get();
+////                            var_dump($num);exit;
+//                    foreach ($num as $k => $v) {
+//                        $info = [
+//                            'uid' => $uid,
+//                            'order_id' => $order_id,
+//                            'order_no' => $order_no,
+//                            'goods_id' => $v->goods_id,
+//                            'goods_name' => $v->goods_name,
+//                            'price' => $v->price,
+//                            'picture' => $v->picture,
+//                            'buy_num' => $v->buy_num,
+//                            'order_status' => 0,
+//                            'shop_id' => $v->shop_id,
+//                            'shop_name' => $v->shop_name,
+//                            'create_time' => time()
+//                        ];
+//                        $datailData = DB::table('mt_order_detail')->insert($info);
+//
+//                    }
+//                } else {
+//                    $num = DB::table('mt_goods')
+////                    ->join('mt_cart','mt_goods.goods_id','=','mt_cart.goods_id')
+//                        ->join('mt_shop', 'mt_goods.shop_id', '=', 'mt_shop.shop_id')
+//                        ->where('mt_goods.goods_id', $goods_id)
+//                        ->get();
+////                            var_dump($num);exit;
+//                    foreach ($num as $k => $v) {
+//                        $info = [
+//                            'uid' => $uid,
+//                            'order_id' => $order_id,
+//                            'order_no' => $order_no,
+//                            'goods_id' => $v->goods_id,
+//                            'goods_name' => $v->goods_name,
+//                            'price' => $v->price,
+//                            'picture' => $v->picture,
+//                            'buy_num' => $buy_num,
+//                            'order_status' => 0,
+//                            'shop_id' => $v->shop_id,
+//                            'shop_name' => $v->shop_name,
+//                            'create_time' => time()
+//                        ];
+//                        $datailData = DB::table('mt_order_detail')->insert($info);
+//                    }
+//                }
+//                $UpdateNum = [
+//                    // 'is_del'=>2,
+//                    'buy_num' => 0,
+//                    'update_time' => time()
+//                ];
+//                $res = DB::table('mt_cart')->where('uid', $uid)->where('goods_id', ['goods_id' => $goods_id])->update($UpdateNum);
+////            var_dump($res);die;
+//                if ($res >= 0) {
+//                    $data = [
+//                        'code' => '0',
+//                        'msg' => '生成订单成功',
+//                        'order_id' => $order_id,
+//                    ];
+//                    $response = [
+//                        'data' => $data
+//                    ];
+//                    return json_encode($response, JSON_UNESCAPED_UNICODE);
+//                }
+
                 $data_order = [
-                    'uid' => $uid,
-                    'order_no' => $order_no,
-                    'wx_name' => $wx_name,
-                    'order_status' => 0,
-                    'total_price' => $total_price,
-                    'create_time' => time()
+                    'uid'=>$uid,
+                    'order_no'=>$order_no,
+                    'wx_name' =>$wx_name,
+                    'order_status'=>0,
+                    'total_price'=>$total_price,
+                    'create_time'=>time()
                 ];
 //            var_dump($data_order);die;
-                $infodata = DB::table('mt_order')->insert($data_order);
-                $dataData = DB::table('mt_order')->where('order_no', $order_no)->first();
+                $infodata =DB::table('mt_order')->insert($data_order);
+                $dataData = DB::table('mt_order')->where('order_no',$order_no)->first();
 //            var_dump($dataData);exit;
                 $order_id = $dataData->order_id;
-                session(['order_id' => $order_id]);
+                session(['order_id'=>$order_id]);
 
-                $cartUpdate = [
-                    'buy_num' => 0,
-                    'update_time' => time()
+                $cartUpdate=[
+                    'buy_num'=>0,
+                    'update_time'=>time()
                 ];
 //            var_dump($cartUpdate);die;
-                $res = DB::table('mt_cart')->where('uid', $uid)->where('goods_id', $goods_id)->update($cartUpdate);
+                $res = DB::table('mt_cart')->where('uid',$uid)->where('goods_id',$goods_id)->update($cartUpdate);
 //            var_dump($res);exit;
                 //添加订单详情表
-                if ($is_cart == 1) {
-                    $num = DB::table('mt_goods')
-                        ->join('mt_cart', 'mt_goods.goods_id', '=', 'mt_cart.goods_id')
-                        ->join('mt_shop', 'mt_goods.shop_id', '=', 'mt_shop.shop_id')
-                        ->where('mt_goods.goods_id', $goods_id)
-                        ->get();
-//                            var_dump($num);exit;
-                    foreach ($num as $k => $v) {
-                        $info = [
-                            'uid' => $uid,
-                            'order_id' => $order_id,
-                            'order_no' => $order_no,
-                            'goods_id' => $v->goods_id,
-                            'goods_name' => $v->goods_name,
-                            'price' => $v->price,
-                            'picture' => $v->picture,
-                            'buy_num' => $v->buy_num,
-                            'order_status' => 0,
-                            'shop_id' => $v->shop_id,
-                            'shop_name' => $v->shop_name,
-                            'create_time' => time()
-                        ];
-                        $datailData = DB::table('mt_order_detail')->insert($info);
+                if($is_cart == 1){
 
-                    }
-                } else {
+                    foreach($goods_id as &$value){
+//                        var_dump($value);
+                         $num = DB::table('mt_goods')
+                            ->join('mt_cart','mt_goods.goods_id','=','mt_cart.goods_id')
+                            ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
+                            ->where('mt_cart.goods_id',$value)
+                            ->first();
+//                            var_dump($num);
+                            $info=[
+                                'uid'=>$uid,
+                                'order_id'=>$order_id,
+                                'order_no'=>$order_no,
+                                'goods_id'=>$num->goods_id,
+                                'goods_name'=>$num->goods_name,
+                                'price'=>$num->price,
+                                'picture'=>$num->picture,
+                                'buy_num'=>$num->buy_num,
+                                'order_status'=>0,
+                                'shop_id'=>$num->shop_id,
+                                'shop_name'=>$num->shop_name,
+                                'create_time'=>time()
+                            ];
+                            $datailData = DB::table('mt_order_detail')->insert($info);
+                            $aa=[
+                                'goods_id'=>$num->goods_id,
+                                'openid'=>$openid
+                            ];
+                            $datailData123456 = DB::table('mt_cart')->where($aa)->delete();
+                        }
+                }else{
                     $num = DB::table('mt_goods')
 //                    ->join('mt_cart','mt_goods.goods_id','=','mt_cart.goods_id')
-                        ->join('mt_shop', 'mt_goods.shop_id', '=', 'mt_shop.shop_id')
-                        ->where('mt_goods.goods_id', $goods_id)
+                        ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
+                        ->where('mt_goods.goods_id',$goods_id)
                         ->get();
 //                            var_dump($num);exit;
-                    foreach ($num as $k => $v) {
-                        $info = [
-                            'uid' => $uid,
-                            'order_id' => $order_id,
-                            'order_no' => $order_no,
-                            'goods_id' => $v->goods_id,
-                            'goods_name' => $v->goods_name,
-                            'price' => $v->price,
-                            'picture' => $v->picture,
-                            'buy_num' => $buy_num,
-                            'order_status' => 0,
-                            'shop_id' => $v->shop_id,
-                            'shop_name' => $v->shop_name,
-                            'create_time' => time()
+                    foreach($num as $k=>$v){
+                        $info=[
+                            'uid'=>$uid,
+                            'order_id'=>$order_id,
+                            'order_no'=>$order_no,
+                            'goods_id'=>$v->goods_id,
+                            'goods_name'=>$v->goods_name,
+                            'price'=>$v->price,
+                            'picture'=>$v->picture,
+                            'buy_num'=>$buy_num,
+                            'order_status'=>0,
+                            'shop_id'=>$v->shop_id,
+                            'shop_name'=>$v->shop_name,
+                            'create_time'=>time()
                         ];
                         $datailData = DB::table('mt_order_detail')->insert($info);
                     }
                 }
-                $UpdateNum = [
+//                die;
+                $UpdateNum=[
                     // 'is_del'=>2,
-                    'buy_num' => 0,
-                    'update_time' => time()
+                    'buy_num'=>0,
+                    'update_time'=>time()
                 ];
-                $res = DB::table('mt_cart')->where('uid', $uid)->where('goods_id', ['goods_id' => $goods_id])->update($UpdateNum);
+                $res = DB::table('mt_cart')->where('uid',$uid)->where('goods_id',['goods_id'=>$goods_id])->update($UpdateNum);
 //            var_dump($res);die;
-                if ($res >= 0) {
-                    $data = [
-                        'code' => '0',
-                        'msg' => '生成订单成功',
-                        'order_id' => $order_id,
+                if($res>=0){
+                    $data=[
+                        'code'=>'0',
+                        'msg'=>'生成订单成功',
+                        'order_id'=>$order_id,
                     ];
                     $response = [
-                        'data' => $data
+                        'data'=>$data
                     ];
-                    return json_encode($response, JSON_UNESCAPED_UNICODE);
+                    return json_encode($response,JSON_UNESCAPED_UNICODE);
                 }
             } else if ($method_type == 2) {
 //                if($pt_id){
@@ -568,131 +669,6 @@ class OrderController extends Controller
             return json_encode($response,JSON_UNESCAPED_UNICODE);
         }
     }
-
-
-
-
-
-
-    //生成订单
-    public function add_order(Request $request){
-        $goods_id = $request->input('goods_id');    //商品id
-        $is_cart = $request->input('is_cart');  //0为否 1为是
-        $buy_num = $request->input('buy_num');
-        $goods_id = explode(',',$goods_id);
-//                var_dump($count);exit;
-        $total_price = $request->input('total_price');   //总价
-        $order_no = date("YmdHis",time()).rand(1000,9999);   //订单号
-//        $buy_num = $request->input('buy_num');    //购买数量
-        $openid1 = $request->input('openid');
-        $key = $openid1;
-        $openid = Redis::get($key);
-//        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
-        if($openid){
-            $userInfo = DB::table('mt_user')->where('openid',$openid)->first();
-//            var_dump($userInfo);die;
-            $wx_name = $userInfo->wx_name;
-            $uid = $userInfo->uid;
-//            var_dump($uid);die;
-
-            $data_order = [
-                'uid'=>$uid,
-                'order_no'=>$order_no,
-                'wx_name' =>$wx_name,
-                'order_status'=>0,
-                'total_price'=>$total_price,
-                'create_time'=>time()
-            ];
-//            var_dump($data_order);die;
-            $infodata =DB::table('mt_order')->insert($data_order);
-            $dataData = DB::table('mt_order')->where('order_no',$order_no)->first();
-//            var_dump($dataData);exit;
-            $order_id = $dataData->order_id;
-            session(['order_id'=>$order_id]);
-
-            $cartUpdate=[
-                'buy_num'=>0,
-                'update_time'=>time()
-            ];
-//            var_dump($cartUpdate);die;
-            $res = DB::table('mt_cart')->where('uid',$uid)->where('goods_id',$goods_id)->update($cartUpdate);
-//            var_dump($res);exit;
-            //添加订单详情表
-            if($is_cart == 1){
-                $num = DB::table('mt_goods')
-                    ->join('mt_cart','mt_goods.goods_id','=','mt_cart.goods_id')
-                    ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
-                    ->where('mt_goods.goods_id',$goods_id)
-                    ->get();
-//                            var_dump($num);exit;
-                foreach($num as $k=>$v){
-                    $info=[
-                        'uid'=>$uid,
-                        'order_id'=>$order_id,
-                        'order_no'=>$order_no,
-                        'goods_id'=>$v->goods_id,
-                        'goods_name'=>$v->goods_name,
-                        'price'=>$v->price,
-                        'picture'=>$v->picture,
-                        'buy_num'=>$v->buy_num,
-                        'order_status'=>0,
-                        'shop_id'=>$v->shop_id,
-                        'shop_name'=>$v->shop_name,
-                        'create_time'=>time()
-                    ];
-                    $datailData = DB::table('mt_order_detail')->insert($info);
-                }
-            }else{
-                $num = DB::table('mt_goods')
-//                    ->join('mt_cart','mt_goods.goods_id','=','mt_cart.goods_id')
-                    ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
-                    ->where('mt_goods.goods_id',$goods_id)
-                    ->get();
-//                            var_dump($num);exit;
-                foreach($num as $k=>$v){
-                    $info=[
-                        'uid'=>$uid,
-                        'order_id'=>$order_id,
-                        'order_no'=>$order_no,
-                        'goods_id'=>$v->goods_id,
-                        'goods_name'=>$v->goods_name,
-                        'price'=>$v->price,
-                        'picture'=>$v->picture,
-                        'buy_num'=>$buy_num,
-                        'order_status'=>0,
-                        'shop_id'=>$v->shop_id,
-                        'shop_name'=>$v->shop_name,
-                        'create_time'=>time()
-                    ];
-                    $datailData = DB::table('mt_order_detail')->insert($info);
-                }
-            }
-            $UpdateNum=[
-                // 'is_del'=>2,
-                'buy_num'=>0,
-                'update_time'=>time()
-            ];
-            $res = DB::table('mt_cart')->where('uid',$uid)->where('goods_id',['goods_id'=>$goods_id])->update($UpdateNum);
-//            var_dump($res);die;
-            if($res>=0){
-                $data=[
-                    'code'=>'0',
-                    'msg'=>'生成订单成功',
-                    'order_id'=>$order_id,
-                ];
-                $response = [
-                    'data'=>$data
-                ];
-                return json_encode($response,JSON_UNESCAPED_UNICODE);
-            }
-        }else{
-            $response = [
-                'error'=>'1',
-                'msg'=>'请先登录'
-            ];
-            return json_encode($response,JSON_UNESCAPED_UNICODE);
-        }
-    }
     //查询当前商品的所有优惠卷
     public function coupon_list_all(Request $request)
     {
@@ -721,171 +697,6 @@ class OrderController extends Controller
             ];
             $response=[
                 'data'=>$data
-            ];
-            return json_encode($response,JSON_UNESCAPED_UNICODE);
-        }
-    }
-    //优惠卷下订单
-    public function conput_add(Request $request)
-    {
-        $coupon_type=$request->input('coupon_type');  //根据前端传回来的是0还是1，0为优惠卷   1为折扣
-        $goods_id = $request->input('goods_id');
-        $shop_id = $request->input('shop_id');
-        $total_price = $request->input('total_price');   //总价
-        $openid1 = $request->input('openid');
-        $good_cate=$request->input('good_cate');
-        $key = $openid1;
-        $openid = Redis::get($key);
-//        $openid='o9VUc5MWyq5GgW3kF_90NnrQkBH8';
-        $order_no = date("YmdHis",time()).rand(1000,9999);   //订单号
-        if($openid){
-            $userInfo = DB::table('mt_user')->where(['openid'=>$openid])->first();
-            $wx_name=$userInfo->wx_name;
-            $uid = $userInfo->uid;
-            $coupon_add=DB::table('mt_coupon')->where(['uid'=>$uid,'goods_id'=>$goods_id])->first();
-//            var_dump($total_price);die;
-                if($coupon_type == 0){
-                    if($total_price >= $coupon_add->coupon_redouction){
-                        $data_order = [
-                            'uid'=>$uid,
-                            'order_no'=>$order_no,
-                            'wx_name' =>$wx_name,
-                            'order_status'=>0,
-                            'order_method'=>2,
-                            'total_price'=>$total_price-$coupon_add->coupon_price,
-                            'create_time'=>time(),
-                            'good_cate'=>$good_cate,
-                        ];
-                        $infodata =DB::table('mt_order')->insert($data_order);
-//                    var_dump($infodata);die;
-                        $dainfo=DB::table('mt_order')
-                            ->where(['order_no'=>$order_no])
-                            ->first(['order_id']);
-                        $dataData = DB::table('mt_order')->where('order_no',$order_no)->first();
-                        $order_id = $dataData->order_id;
-                        $num = DB::table('mt_goods')
-                            ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
-                            ->where('mt_goods.goods_id',$goods_id)
-                            ->get();
-//            var_dump($num);die;
-                        foreach($num as $k=>$v){
-                            $info=[
-                                'uid'=>$uid,
-                                'order_id'=>$order_id,
-                                'order_no'=>$order_no,
-                                'goods_id'=>$v->goods_id,
-                                'goods_name'=>$v->goods_name,
-                                'price'=>$v->price,
-                                'picture'=>$v->picture,
-                                'buy_num'=>1,
-                                'order_status'=>0,
-                                'shop_id'=>$v->shop_id,
-                                'shop_name'=>$v->shop_name,
-                                'create_time'=>time(),
-                            ];
-                            $datailData = DB::table('mt_order_detail')->insert($info);
-                        }
-                        if($infodata){
-                            $data=[
-                                'code'=>0,
-                                'msg'=>'成功',
-                                'data'=>$dainfo
-                            ];
-                            $response = [
-                                'data'=>$data
-                            ];
-                            return json_encode($response,JSON_UNESCAPED_UNICODE);
-                        }else{
-                            $data=[
-                                'code'=>1,
-                                'msg'=>'失败',
-                            ];
-                            $response = [
-                                'data'=>$data
-                            ];
-                            return json_encode($response,JSON_UNESCAPED_UNICODE);
-                        }
-                    }else{
-                        $data=[
-                            'code'=>1,
-                            'msg'=>'您没有达到优惠标准',
-                        ];
-                        $response = [
-                            'data'=>$data
-                        ];
-                        return json_encode($response,JSON_UNESCAPED_UNICODE);
-                    }
-
-                }else{
-                    $data_order = [
-                        'uid'=>$uid,
-                        'order_no'=>$order_no,
-                        'wx_name' =>$wx_name,
-                        'order_status'=>0,
-                        'order_method'=>2,
-                        'total_price'=>$total_price*($coupon_add->discount/10),
-                        'create_time'=>time(),
-                        'good_cate'=>$good_cate,
-                    ];
-//                var_dump($data_order);die;
-                    $infodata =DB::table('mt_order')->insert($data_order);
-
-                    $dainfo=DB::table('mt_order')
-                        ->where(['order_no'=>$order_no])
-                        ->first(['order_id']);
-                    $dataData = DB::table('mt_order')->where('order_no',$order_no)->first();
-                    $order_id = $dataData->order_id;
-                    $num = DB::table('mt_goods')
-                        ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
-                        ->where('mt_goods.goods_id',$goods_id)
-                        ->get();
-//            var_dump($num);die;
-                    foreach($num as $k=>$v){
-                        $info=[
-                            'uid'=>$uid,
-                            'order_id'=>$order_id,
-                            'order_no'=>$order_no,
-                            'goods_id'=>$v->goods_id,
-                            'goods_name'=>$v->goods_name,
-                            'price'=>$v->price,
-                            'picture'=>$v->picture,
-                            'buy_num'=>1,
-                            'order_status'=>0,
-                            'shop_id'=>$v->shop_id,
-                            'shop_name'=>$v->shop_name,
-                            'create_time'=>time(),
-                        ];
-                        $datailData = DB::table('mt_order_detail')->insert($info);
-                    }
-                    $dainfo=DB::table('mt_order')
-                        ->where(['order_no'=>$order_no])
-                        ->first();
-                    if($dainfo){
-                        $data=[
-                            'code'=>0,
-                            'msg'=>'成功',
-                            'data'=>$dainfo
-                        ];
-                        $response = [
-                            'data'=>$data
-                        ];
-                        return json_encode($response,JSON_UNESCAPED_UNICODE);
-                    }else{
-                        $data=[
-                            'code'=>1,
-                            'msg'=>'失败',
-                        ];
-                        $response = [
-                            'data'=>$data
-                        ];
-                        return json_encode($response,JSON_UNESCAPED_UNICODE);
-                    }
-                }
-
-        }else{
-            $response = [
-                'error'=>'1',
-                'msg'=>'请先登录'
             ];
             return json_encode($response,JSON_UNESCAPED_UNICODE);
         }
@@ -924,12 +735,12 @@ class OrderController extends Controller
     //用户下所有的订单
     public function open_order_list(Request $request)
     {
-        $order_status=$request->input('order_status'); // 订单状态 0->未支付，1->已付款 待发货，2->已发货，3->确认收货,4->已完成,5->已关闭6->链上处理中
+        $order_status=$request->input('order_status'); // 订单状态 0->未支付，1->已付款 待发货，3->确认收货,4->已完成,5->已关闭
         $openid1 = $request->input('openid');
         $good_cate=$request->input('good_cate');
         $key = $openid1;
         $openid = Redis::get($key);
-//        $openid='o9VUc5MWyq5GgW3kF_90NnrQkBH8';
+//        $openid='o9VUc5KN78P_jViUQnGjica4GIQs';
         $orderInfo = DB::table('mt_user')
 //            ->join('mt_order','mt_user.uid','=','mt_order.uid')
             ->where('openid',$openid)
@@ -946,7 +757,7 @@ class OrderController extends Controller
                 ->join('mt_order','mt_order.order_id','=','mt_order_detail.order_id')
                 ->join('mt_shop','mt_shop.shop_id','=','mt_order_detail.shop_id')
 //                ->join('mt_goods','mt_goods.goods_id','=','mt_order_detail.goods_id')
-                ->where(['mt_order.uid'=>$orderInfo->uid,'good_cate'=>$good_cate,'order_status'=>$order_status])
+                ->where(['mt_order.uid'=>$orderInfo->uid,'good_cate'=>$good_cate,'mt_order.order_status'=>$order_status])
                 ->select()->paginate(10);
         }
         if($data){
@@ -1036,26 +847,6 @@ class OrderController extends Controller
         }
     }
 
-    //删除订单
-    public function delete_order(Request $request){
-        $order_id = $request->input('order_id');
-        $delete_order = DB::table('mt_order')->where('order_id',$order_id)->delete();
-        $delete_deteail=DB::table('mt_order_detail')->where('order_id',$order_id)-delete();
-        //var_dump($delete_address);exit;
-        if($delete_order == true){
-            $response = [
-                'error'=>'0',
-                'msg'=>'删除成功'
-            ];
-            return json_encode($response,JSON_UNESCAPED_UNICODE);
-        }else{
-            $response = [
-                'error'=>'1',
-                'msg'=>'修改失败'
-            ];
-            die(json_encode($response,JSON_UNESCAPED_UNICODE));
-        }
-    }
 
     //根据订单状态查找订单信息
     public function order_status_list(Request $request){
@@ -1097,6 +888,140 @@ class OrderController extends Controller
                 'msg'=>'请先去登陆'
             ];
             die(json_encode($response,JSON_UNESCAPED_UNICODE));
+        }
+    }
+    //订单删除
+    public function update_static_del(Request $request){
+        $openid1 = $request->input('openid');
+        $key = $openid1;
+        $openid = Redis::get($key);
+        $order_id=$request->input("order_id");
+//        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
+        if($openid){
+            $user=DB::table("mt_user")->where("openid",$openid)->first();
+
+            $info=[
+                'order_id'=>$order_id,
+                'uid'=>$user->uid
+            ];
+            $data = DB::table('mt_order')->where($info)->delete();
+            $data1 = DB::table('mt_order_detail')->where($info)->delete();
+            if($data && $data1){
+                $data=[
+                    'code'=>0,
+                    'msg'=>'订单删除成功'
+                ];
+                $response = [
+                    'data'=>$data
+                ];
+                return (json_encode($response,JSON_UNESCAPED_UNICODE));
+            }
+        }else{
+            $response = [
+                'code'=>1,
+                'msg'=>'请先去登陆'
+            ];
+            return (json_encode($response,JSON_UNESCAPED_UNICODE));
+        }
+    }
+    //修改用户订单状态              订单状态 0->未支付，1->已付款，3->确认收货,4->已完成,5->已关闭
+    public function up_status_add(Request $request)
+    {
+        $order_id=$request->input('order_id');
+        $openid1 = $request->input('openid');
+        $key = $openid1;
+        $openid = Redis::get($key);
+//        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
+        $datainfo=DB::table('mt_user')->where(['openid'=>$openid])->first();
+        $uid=$datainfo->uid;
+        if($openid){
+//            $data_infos=DB::table('mt_order')->where(['uid'=>$uid,'order_id'=>$order_id,'order_status'=>1])->first();
+            $up_status=DB::table('mt_order')->where(['uid'=>$uid,'order_id'=>$order_id,'order_status'=>1])->update(['order_status'=>3]);
+            $up_detail=DB::table('mt_order_detail')->where(['uid'=>$uid,'order_id'=>$order_id,'order_status'=>1])->update(['order_status'=>3]);
+            if($up_status && $up_detail){
+                $data=[
+                    'code'=>0,
+                    'msg'=>'确认收货成功'
+                ];
+                $response = [
+                    'data'=>$data
+                ];
+                return (json_encode($response,JSON_UNESCAPED_UNICODE));
+            }else{
+                $data=[
+                    'code'=>1,
+                    'msg'=>'确认收货失败,请重试'
+                ];
+                $response = [
+                    'data'=>$data
+                ];
+                return (json_encode($response,JSON_UNESCAPED_UNICODE));
+            }
+        }else{
+            $response = [
+                'code'=>1,
+                'msg'=>'请先去登陆'
+            ];
+            return (json_encode($response,JSON_UNESCAPED_UNICODE));
+        }
+    }
+
+    //退款申请
+    public function refund_add(Request $request)
+    {
+        $order_id=$request->input('order_id');
+        $is_refund=$request->input('is_refund');   // 0为提交后台审核  1为审核通过
+        $openid1 = $request->input('openid');
+        $key = $openid1;
+        $openid = Redis::get($key);
+//        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
+        $datainfo=DB::table('mt_user')->where(['openid'=>$openid])->first();
+        $uid=$datainfo->uid;
+        if($openid){
+            if($is_refund == 0){
+                $data=[
+                    'code'=>1,
+                    'msg'=>'退款已提交,请耐心等待审核'
+                ];
+                $response = [
+                    'data'=>$data
+                ];
+                return (json_encode($response,JSON_UNESCAPED_UNICODE));
+            }else{
+                $data_info=DB::table('mt_order')->where(['uid'=>$uid,'order_id'=>$order_id])->first(['pay_price']);
+                $update_info=[
+                    'money'=>$datainfo->money + $data_info->pay_price
+                ];
+                $user_refund=DB::table('mt_user')->where(['uid'=>$uid])->update($update_info);
+                $order_up=DB::table('mt_order')->where(['order_id'=>$order_id])->delete();
+                $order_deteil=DB::table('mt_order_detail')->where(['order_id'=>$order_id])->delete();
+                if($user_refund){
+                    $data=[
+                        'code'=>0,
+                        'msg'=>'退款成功'
+                    ];
+                    $response = [
+                        'data'=>$data
+                    ];
+                    return (json_encode($response,JSON_UNESCAPED_UNICODE));
+                }else{
+                    $data=[
+                        'code'=>1,
+                        'msg'=>'退款失败,请重新退款'
+                    ];
+                    $response = [
+                        'data'=>$data
+                    ];
+                    return (json_encode($response,JSON_UNESCAPED_UNICODE));
+                }
+            }
+
+        }else{
+            $response = [
+                'code'=>1,
+                'msg'=>'请先去登陆'
+            ];
+            return (json_encode($response,JSON_UNESCAPED_UNICODE));
         }
     }
 

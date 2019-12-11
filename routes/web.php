@@ -94,17 +94,13 @@ Route::get('/shop_collection', 'Goods\GoodsController@shop_collection');      //
 
 Route::get('/shop_collection_list', 'Goods\GoodsController@shop_collection_list');       //店铺收藏列表
 
-Route::get('/add_order', 'Order\OrderController@add_order');      //生成订单
-
-Route::get('/pt_add', 'Order\OrderController@pt_add');      //生成拼团订单
-
-Route::get('/conput_add', 'Order\OrderController@conput_add');      //优惠卷下订单
-
 Route::get('/coupon_list_all', 'Order\OrderController@coupon_list_all');      //查询商品下所有的优惠卷
 
-Route::get('/limited_order', 'Order\OrderController@limited_order');      //限时抢下订单
+Route::get('/refund_add', 'Order\OrderController@refund_add');      //分享币退款
 
-Route::get('/pt_add_list', 'Order\OrderController@pt_add_list');      //拼团列表
+Route::get('update_static_del', 'Order\OrderController@update_static_del');  //删除订单
+
+Route::post('/up_status_add', 'Order\OrderController@up_status_add');      //修改用户订单状态
 
 Route::get('/order_insert', 'Order\OrderController@order_insert');      //普通订单  拼团订单  优惠卷订单  限时抢订单
 
@@ -196,6 +192,8 @@ Route::post('invite_userInfo', 'Invite\InviteController@invite_userInfo');
 Route::post('invite_friend', 'Invite\InviteController@invite_friend');
 
 Route::post('open_red_packet', 'Invite\InviteController@open_red_packet');
+
+
 
 
 
