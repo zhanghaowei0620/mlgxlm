@@ -611,10 +611,8 @@ class UserController extends Controller
         $key = $openid1;
         $openid = Redis::get($key);
 //        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
-        //var_dump($openid);exit;
         if ($openid) {
             $userInfo = DB::table('mt_user')->where('openid', $openid)->first();
-//            var_dump($userInfo);exit;
             $uid = $userInfo->uid;
             $historyInfo = DB::table('mt_history')
                 ->join('mt_goods', 'mt_history.goods_id', '=', 'mt_goods.goods_id')
@@ -651,6 +649,9 @@ class UserController extends Controller
         }
 
     }
+
+    //定时删除我的足迹
+
 
     //主营项目
     public function shop_type(){
