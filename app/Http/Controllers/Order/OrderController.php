@@ -603,9 +603,10 @@ class OrderController extends Controller
         $openid1 = $request->input('openid');
         $key = $openid1;
         $openid = Redis::get($key);
+//        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
         if($openid){
-            $data1=DB::table('mt_refund')->where(['id'=$id])->first();
-            if($data){
+            $data1=DB::table('mt_refund')->where(['id'=>$id])->first();
+            if($data1){
                 $data=[
                     'code'=>0,
                     'msg'=>'OK',
