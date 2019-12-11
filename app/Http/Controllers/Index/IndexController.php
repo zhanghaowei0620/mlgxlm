@@ -465,7 +465,7 @@ class IndexController extends Controller
         ];
 
         $response = [
-            'data'=>$data
+            'data'=>$result
         ];
         return json_encode($response,JSON_UNESCAPED_UNICODE);
     }
@@ -482,14 +482,14 @@ class IndexController extends Controller
                     ->orwhere('t_name','like',"%$key%");
             })
             ->get(['shop_name','shop_img','shop_score','t_name','shop_volume','shop_address_provice','shop_address_city','shop_address_area']);
-        $result = [
-            'salesInfo'=>$data,
-            'code' => 0
-        ];
-
-        $response = [
-            'data'=>$data
-        ];
-        return json_encode($response,JSON_UNESCAPED_UNICODE);
-    }
+        if($data){
+            $data1=[
+                'code'=>0,
+                'salesInfo'=>$data,
+            ];
+            $response = [
+                'data'=>$data1
+            ];
+            return (json_encode($response,JSON_UNESCAPED_UNICODE));
+        }
 }
