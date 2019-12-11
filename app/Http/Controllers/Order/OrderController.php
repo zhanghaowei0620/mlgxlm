@@ -845,7 +845,8 @@ class OrderController extends Controller
             if($inser_add){
                 $data=[
                     'code'=>0,
-                    'msg'=>'审核已提交,请耐心等待审核'
+                    'msg'=>'审核已提交,请耐心等待审核',
+                    'data'=>$dainfo_add->pay_price
                 ];
                 $response = [
                     'data'=>$data
