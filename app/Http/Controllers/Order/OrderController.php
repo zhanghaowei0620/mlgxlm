@@ -709,26 +709,66 @@ class OrderController extends Controller
         $openid1 = $request->input('openid');
         $key = $openid1;
         $openid = Redis::get($key);
-        $order_id=$request->input("order_id");
+        $id=$request->input("id");
 //        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
         if($openid){
             $user=DB::table("mt_user")->where("openid",$openid)->first();
-
+            $uid=$user->uid;
             $info=[
-                'order_id'=>$order_id,
-                'uid'=>$user->uid
+                'id'=>$id,
+                'uid'=>$uid
             ];
-            $data = DB::table('mt_order')->where($info)->delete();
-            $data1 = DB::table('mt_order_detail')->where($info)->delete();
-            if($data && $data1){
-                $data=[
-                    'code'=>0,
-                    'msg'=>'订单删除成功'
-                ];
-                $response = [
-                    'data'=>$data
-                ];
-                return (json_encode($response,JSON_UNESCAPED_UNICODE));
+            $data1 = DB::table('mt_order_detail')->where($info)->first();
+//            var_dump($data1);die;
+            if($data1){
+                $datainfo=DB::table('mt_order_detail')->where(['order_id'=>$data1->order_id])->get();
+//                var_dump (count($datainfo));die;
+                if( (count($datainfo)) >1){
+//
+                    $data2=DB::table('mt_order_detail')->where(['id'=>$id])->delete();
+                    if($data2){
+                        $data=[
+                            'code'=>0,
+                            'msg'=>'订单删除成功'
+                        ];
+                        $response = [
+                            'data'=>$data
+                        ];
+                        return (json_encode($response,JSON_UNESCAPED_UNICODE));
+                    }else{
+                        $data=[
+                            'code'=>1,
+                            'msg'=>'订单删除失败'
+                        ];
+                        $response = [
+                            'data'=>$data
+                        ];
+                        return (json_encode($response,JSON_UNESCAPED_UNICODE));
+                    }
+
+                }else{
+                    $data2=DB::table('mt_order_detail')->where(['id'=>$id])->delete();
+                    $data3=DB::table('mt_order')->where(['order_id'=>$data1->order_id,'uid'=>$uid])->delete();
+                    if($data2 && $data3){
+                        $data=[
+                            'code'=>0,
+                            'msg'=>'订单删除成功'
+                        ];
+                        $response = [
+                            'data'=>$data
+                        ];
+                        return (json_encode($response,JSON_UNESCAPED_UNICODE));
+                    }else{
+                        $data=[
+                            'code'=>1,
+                            'msg'=>'订单删除失败'
+                        ];
+                        $response = [
+                            'data'=>$data
+                        ];
+                        return (json_encode($response,JSON_UNESCAPED_UNICODE));
+                    }
+                }
             }
         }else{
             $response = [
