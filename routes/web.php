@@ -20,6 +20,10 @@ Route::get('/index', 'Index\IndexController@index');   //首页
 
 Route::get('/type_lists', 'Index\IndexController@type_lists');   //更多
 
+Route::get('/search_goods', 'Index\IndexController@search_goods');   //搜索商品
+
+Route::get('/search_shop', 'Index\IndexController@search_shop');   //搜索店铺
+
 Route::get('/index_coupon', 'Index\IndexController@index_coupon');    //首页-优惠券
 
 Route::get('/coupon_receive', 'Index\IndexController@coupon_receive'); //点击领取优惠卷
