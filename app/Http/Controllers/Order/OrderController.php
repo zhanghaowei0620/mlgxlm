@@ -824,44 +824,41 @@ class OrderController extends Controller
     public function refund_add(Request $request)
     {
         $id=$request->input('id');
+        $refund_text_id=$request->input('refund_text_id');
+        $refund_msg=$request->input('refund_msg');
         $openid1 = $request->input('openid');
         $key = $openid1;
         $openid = Redis::get($key);
-        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
+//        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
         $datainfo=DB::table('mt_user')->where(['openid'=>$openid])->first();
         $uid=$datainfo->uid;
         if($openid){
-
-                $data_info=DB::table('mt_order_detail')->where(['uid'=>$uid,'id'=>$id])->first(['pay_price']);
-//                var_dump($data_info);die;
-                $update_info=[
-                    'money'=>$datainfo->money + $data_info->pay_price
+            $inser_refund=[
+                'status_refund'=>1,
+                'id'=>$id,
+                'refund_text_id'=>$refund_text_id,
+                'refund_msg'=>$refund_msg
+            ];
+            $inser_add=DB::table('mt_refund')->insert($inser_refund);
+            if($inser_add){
+                $data=[
+                    'code'=>0,
+                    'msg'=>'审核已提交,请耐心等待审核'
                 ];
-            var_dump($update_info);die;
-                $user_refund=DB::table('mt_user')->where(['uid'=>$uid])->update($update_info);
-                $order_up=DB::table('mt_order')->where(['order_id'=>$order_id])->delete();
-                $order_deteil=DB::table('mt_order_detail')->where(['order_id'=>$order_id])->delete();
-                if($user_refund){
-                    $data=[
-                        'code'=>0,
-                        'msg'=>'退款成功'
-                    ];
-                    $response = [
-                        'data'=>$data
-                    ];
-                    return (json_encode($response,JSON_UNESCAPED_UNICODE));
-                }else{
-                    $data=[
-                        'code'=>1,
-                        'msg'=>'退款失败,请重新退款'
-                    ];
-                    $response = [
-                        'data'=>$data
-                    ];
-                    return (json_encode($response,JSON_UNESCAPED_UNICODE));
-                }
-
-
+                $response = [
+                    'data'=>$data
+                ];
+                return (json_encode($response,JSON_UNESCAPED_UNICODE));
+            }else{
+                $data=[
+                    'code'=>1,
+                    'msg'=>'提交失败,请重新尝试退款'
+                ];
+                $response = [
+                    'data'=>$data
+                ];
+                return (json_encode($response,JSON_UNESCAPED_UNICODE));
+            }
         }else{
             $response = [
                 'code'=>1,
