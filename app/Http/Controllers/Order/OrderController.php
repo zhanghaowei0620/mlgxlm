@@ -966,4 +966,63 @@ class OrderController extends Controller
         }
     }
 
+    //退款申请
+    public function refund_add(Request $request)
+    {
+        $order_id=$request->input('order_id');
+        $is_refund=$request->input('is_refund');   // 0为提交后台审核  1为审核通过
+        $openid1 = $request->input('openid');
+        $key = $openid1;
+        $openid = Redis::get($key);
+//        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
+        $datainfo=DB::table('mt_user')->where(['openid'=>$openid])->first();
+        $uid=$datainfo->uid;
+        if($openid){
+            if($is_refund == 0){
+                $data=[
+                    'code'=>1,
+                    'msg'=>'退款已提交,请耐心等待审核'
+                ];
+                $response = [
+                    'data'=>$data
+                ];
+                return (json_encode($response,JSON_UNESCAPED_UNICODE));
+            }else{
+                $data_info=DB::table('mt_order')->where(['uid'=>$uid,'order_id'=>$order_id])->first(['pay_price']);
+                $update_info=[
+                    'money'=>$datainfo->money + $data_info->pay_price
+                ];
+                $user_refund=DB::table('mt_user')->where(['uid'=>$uid])->update($update_info);
+                $order_up=DB::table('mt_order')->where(['order_id'=>$order_id])->delete();
+                $order_deteil=DB::table('mt_order_detail')->where(['order_id'=>$order_id])->delete();
+                if($user_refund){
+                    $data=[
+                        'code'=>0,
+                        'msg'=>'退款成功'
+                    ];
+                    $response = [
+                        'data'=>$data
+                    ];
+                    return (json_encode($response,JSON_UNESCAPED_UNICODE));
+                }else{
+                    $data=[
+                        'code'=>1,
+                        'msg'=>'退款失败,请重新退款'
+                    ];
+                    $response = [
+                        'data'=>$data
+                    ];
+                    return (json_encode($response,JSON_UNESCAPED_UNICODE));
+                }
+            }
+
+        }else{
+            $response = [
+                'code'=>1,
+                'msg'=>'请先去登陆'
+            ];
+            return (json_encode($response,JSON_UNESCAPED_UNICODE));
+        }
+    }
+
 }

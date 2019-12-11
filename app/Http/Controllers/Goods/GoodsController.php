@@ -551,7 +551,7 @@ class GoodsController extends Controller
                 'order_pay'=>$pay1
             ];
             $inerttofo=DB::table('mt_order')->where(['uid'=>$uid,'order_id'=>$order_id])->update($infosaa);
-            $update_orderss=DB::table('mt_order_detail')->where(['uid'=>$uid,'order_id'=>$order_id])->update(['order_status'=>1]);
+            $update_orderss=DB::table('mt_order_detail')->where(['uid'=>$uid,'order_id'=>$order_id])->update($infosaa);
             if($update_order){
                 $data=[
                     'code'=>0,
@@ -572,78 +572,6 @@ class GoodsController extends Controller
                 return json_encode($response,JSON_UNESCAPED_UNICODE);
             }
         }else if($a == 1){
-//            $mt_order_detail_add=DB::table('mt_order_detail')->where(['uid'=>$uid,'order_id'=>$order_id])->first();
-//            $goods_price=DB::table('mt_goods')->where(['goods_id'=>$mt_order_detail_add->goods_id])->first();
-//                $moey_infos=$data->money - $goods_price->promotion_price;
-//                $money_upup=[
-//                  'money'=> $moey_infos
-//                ];
-//                $updateinfos=DB::table('mt_user')->where(['uid'=>$uid])->update($money_upup);
-                //添加拼团团队信息
-//                if($infos->has_pt_id==0){
-//                    $data_order = [
-//                        'goods_id'=> $infos->goods_id,
-//                        'shop_id'=> $infos->shop_id,
-//                        'uid'=>$data->uid,
-//                        'pt_team'=>$data->uid,
-//                        'pt_order_id' =>$order_id,
-//                        'pt_start_time'=>time(),
-//                        'pt_state'=>0,
-//                        'pt_sum'=>1,
-//                    ];
-//                    $infodata =DB::table('mt_pt_list')->insert($data_order);
-//                }else{
-//                    $data2=DB::table("mt_pt_list")->where("pt_id",$infos->has_pt_id)->first();
-//                    if($data2){
-//                        $data_order = [
-//                            'goods_id'=> $infos->goods_id,
-//                            'shop_id'=>  $infos->shop_id,
-//                            'pt_team'=>$data2->pt_team.','.$data->uid,
-//                            'pt_order_id' =>$data2->pt_order_id.','.$order_id,
-//                            'pt_start_time'=>time(),
-//                            'pt_state'=>0,
-//                            'pt_sum'=>$data2->pt_sum+1,
-//                        ];
-//                        $infodata = DB::table('mt_pt_list')->where('pt_id',$infos->has_pt_id)->update($data_order);
-//                        //判断该订单是否已经完成
-//                        $sss = DB::table('mt_pt_list')
-//                            ->join('mt_goods','mt_pt_list.goods_id','=','mt_goods.goods_id')
-//                            ->where('mt_pt_list.pt_id',$infos->has_pt_id)
-//                            ->first(['mt_pt_list.pt_sum','mt_goods.promotion_prople']);
-//                        if($sss->pt_sum == $sss->promotion_prople){
-//                            $data_up = [
-//                                'pt_state'=> 1,
-//                            ];
-//                            $res = DB::table('mt_pt_list')->where('pt_id',$pt_id)->update($data_up);
-//                        }
-//                    }else{
-//                        $data=[
-//                            'code'=>'0',
-//                            'msg'=>'该团队不存在',
-//                            'order_id'=>$order_id,
-//                        ];
-//                        $response = [
-//                            'data'=>$data
-//                        ];
-//                        return json_encode($response,JSON_UNESCAPED_UNICODE);
-//                    }
-//
-//                }
-//
-//                $ress=DB::table('mt_goods')->where("goods_id",$infos->goods_id)->first();
-//                $ress_inser=[
-//                    'pt_num_all'=> $ress->pt_num_all+1,
-//                ];
-//                $ressad=DB::table('mt_goods')->where("goods_id",$infos->goods_id)->update($ress_inser);
-//                $data=[
-//                    'code'=>0,
-//                    'msg'=>'支付成功,并完成拼团'
-//                ];
-//                $response = [
-//                    'data'=>$data
-//                ];
-//                return json_encode($response,JSON_UNESCAPED_UNICODE);
-
             //伪拼团
             $mt_order_detail_add1=DB::table('mt_order_detail')->where(['order_id'=>$order_id])->first();
 //            var_dump($mt_order_detail_add1);die;
@@ -657,7 +585,7 @@ class GoodsController extends Controller
                 ];
                 $user_money_add=DB::table('mt_user')->where(['uid'=>$uid])->update($updas_add);
                 $updateinfo1=[
-                    'pay_price'=>$mt_goods_detail->promotion_price,
+                    'pay_price'=>$pay2,
                     'order_status'=>1
                 ];
                 $sqlupdate1=DB::table('mt_order')->where(['order_id'=>$order_id])->update($updateinfo1);
@@ -697,10 +625,6 @@ class GoodsController extends Controller
             }
         }else if ($a == 2){
             $coupon_lists=DB::table('mt_coupon')->where(['uid'=>$uid])->first();
-//            $aaa=DB::table('mt_order_detail')->where(['order_id'=>$order_id])->get(['goods_id']);
-//            var_dump($aaa);die;
-//            $mt_order_detail_add=DB::table('mt_order_detail')->where(['uid'=>$uid])->first();
-//            $goods_price=DB::table('mt_goods')->where(['goods_id'=>$mt_order_detail_add->goods_id])->first();
             if($coupon_lists->coupon_type ==0){                 //coupon_type判断0为满减   1 为折扣
                 if($coupon_lists->coupon_redouction  >  $goods_price->price){
                     $money_lists=$data->money - $coupon_lists->coupon_price;
@@ -715,12 +639,8 @@ class GoodsController extends Controller
                         'order_status'=>1
                     ];
                     $sqlupdate=DB::table('mt_order')->where(['order_id'=>$order_id])->update($updateinfo);
-//                    $update_info=[
-//                      'order_status'=>1,
-//                      'price'=>$money_lists
-//                    ];
-//                    $detail_order=DB::table('mt_order_detail')->where(['order_id'=>$order_id])->update($update_info);
-                    if($sqlupdate){
+                    $detail_order=DB::table('mt_order_detail')->where(['order_id'=>$order_id])->update($updateinfo);
+                    if($sqlupdate && $detail_order){
                         $data=[
                             'code'=>0,
                             'msg'=>'优惠卷支付成功'
@@ -747,16 +667,17 @@ class GoodsController extends Controller
                         'order_status'=>1
                     ];
                 $moenfo=$data->money - $address;
+                $money_add=$data->money - $address1;
                 $user_money_add=[
                     'money'=>$moenfo
                 ];
                 $user_money=DB::table('mt_user')->where(['uid'=>$uid])->update($user_money_add);
+                $update_info1=[
+                    'order_status'=>1,
+                    'pay_price'=>$address
+                ];
                 $sqlupdate1=DB::table('mt_order')->where(['uid'=>$uid])->update($updateinfo);
-//                $update_info1=[
-//                    'order_status'=>1,
-//                    'price'=>$address
-//                ];
-//                $detail_order1=DB::table('mt_order_detail')->where(['uid'=>$uid])->update($update_info);
+                $detail_order1=DB::table('mt_order_detail')->where(['order_id'=>$order_id])->update($update_info1);
                 if($user_money_add){
                     $data=[
                         'code'=>0,
@@ -790,6 +711,7 @@ class GoodsController extends Controller
                 'pay_price'=>$pay
             ];
             $order_update=DB::table('mt_order')->where(['order_id'=>$order_id])->update($user_update_add1);
+            $detail_order1=DB::table('mt_order_detail')->where(['order_id'=>$order_id])->update($user_update_add1);
             if($order_update){
                 $data=[
                     'code'=>0,
@@ -809,8 +731,6 @@ class GoodsController extends Controller
                 ];
                 return json_encode($response,JSON_UNESCAPED_UNICODE);
             }
-        }else if ($a == 4){
-
         }
 
 
