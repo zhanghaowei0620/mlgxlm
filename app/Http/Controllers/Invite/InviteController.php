@@ -183,6 +183,7 @@ class InviteController extends Controller
                 'money'=>$userArray->money+$everyBody
             ];
             DB::table('mt_user')->where('uid',$v->uid)->update($update);
+
             DB::table('mt_user')->where('uid',$uid)->update(['is_team'=>0]);
             DB::table('mt_invitation')->where('f_uid',$uid)->delete();
         }
@@ -196,5 +197,7 @@ class InviteController extends Controller
         ];
         return json_encode($response, JSON_UNESCAPED_UNICODE);
     }
+
+
 
 }

@@ -584,6 +584,7 @@ class Admin_loginController extends Controller
         $data=DB::table('mt_shop')->where($where)->update($data1);
 //        var_dump($data);die;
         if($data){
+            DB::table('mt_goods')->where('shop_id',$shop_id)->update(['goods_status'=>2]);
             $response=[
                 'code'=>0,
                 'data'=>$data,
@@ -644,6 +645,7 @@ class Admin_loginController extends Controller
         ];
         $data=DB::table('mt_shop')->where($where)->update($data1);
         if($data){
+            DB::table('mt_goods')->where('shop_id',$shop_id)->update(['goods_status'=>1]);
             $response=[
                 'code'=>0,
                 'data'=>$data,
