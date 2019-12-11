@@ -610,15 +610,16 @@ class UserController extends Controller
         $openid1 = $request->input('openid');
         $key = $openid1;
         $openid = Redis::get($key);
+//        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
         //var_dump($openid);exit;
         if ($openid) {
             $userInfo = DB::table('mt_user')->where('openid', $openid)->first();
-            //var_dump($userInfo);exit;
+//            var_dump($userInfo);exit;
             $uid = $userInfo->uid;
             $historyInfo = DB::table('mt_history')
                 ->join('mt_goods', 'mt_history.goods_id', '=', 'mt_goods.goods_id')
-                ->where('uid', $uid)->get();
-            //var_dump($historyInfo);exit;
+                ->where('mt_history.uid',$uid)->get();
+//            var_dump($historyInfo);exit;
             if ($historyInfo) {
                 $data = [
                     'code' => 0,
