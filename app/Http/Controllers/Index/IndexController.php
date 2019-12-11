@@ -471,25 +471,27 @@ class IndexController extends Controller
     }
 
     //搜索店铺
-    public function search_shop(Request $request){
+    public function search_shop(Request $request)
+    {
         $key = $request->input('keyword');
-        $data=DB::table('mt_shop')
-            ->join('mt_type','mt_shop.t_id','=','mt_type.t_id')
-            ->where('shop_status','=',2)
-            ->where(function($q) use ($key){
-                $q ->where('shop_name','like',"%$key%")
-                    ->orwhere('shop_desc','like',"%$key%")
-                    ->orwhere('t_name','like',"%$key%");
+        $data = DB::table('mt_shop')
+            ->join('mt_type', 'mt_shop.t_id', '=', 'mt_type.t_id')
+            ->where('shop_status', '=', 2)
+            ->where(function ($q) use ($key) {
+                $q->where('shop_name', 'like', "%$key%")
+                    ->orwhere('shop_desc', 'like', "%$key%")
+                    ->orwhere('t_name', 'like', "%$key%");
             })
-            ->get(['shop_name','shop_img','shop_score','t_name','shop_volume','shop_address_provice','shop_address_city','shop_address_area']);
-        if($data){
-            $data1=[
-                'code'=>0,
-                'salesInfo'=>$data,
+            ->get(['shop_name', 'shop_img', 'shop_score', 't_name', 'shop_volume', 'shop_address_provice', 'shop_address_city', 'shop_address_area']);
+        if ($data) {
+            $data1 = [
+                'code' => 0,
+                'salesInfo' => $data,
             ];
             $response = [
-                'data'=>$data1
+                'data' => $data1
             ];
-            return (json_encode($response,JSON_UNESCAPED_UNICODE));
+            return (json_encode($response, JSON_UNESCAPED_UNICODE));
         }
+    }
 }
