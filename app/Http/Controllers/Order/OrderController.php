@@ -824,19 +824,19 @@ class OrderController extends Controller
     public function refund_add(Request $request)
     {
         $id=$request->input('id');
-        $goods_id=$request->input('goods_id');
         $refund_text_id=$request->input('refund_text_id');
         $refund_msg=$request->input('refund_msg');
         $openid1 = $request->input('openid');
         $key = $openid1;
         $openid = Redis::get($key);
 //        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
+        $dainfo_add=DB::table('mt_order_detail')->where(['id'=>$id])->first();
         $datainfo=DB::table('mt_user')->where(['openid'=>$openid])->first();
         $uid=$datainfo->uid;
         if($openid){
             $inser_refund=[
                 'status_refund'=>1,
-                'goods_id'=>$goods_id,
+                'goods_id'=>$dainfo_add->goods_id,
                 'id'=>$id,
                 'refund_text_id'=>$refund_text_id,
                 'refund_msg'=>$refund_msg
