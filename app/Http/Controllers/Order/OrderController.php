@@ -554,24 +554,25 @@ class OrderController extends Controller
         $good_cate=$request->input('good_cate');
         $key = $openid1;
         $openid = Redis::get($key);
-//        $openid='o9VUc5KN78P_jViUQnGjica4GIQs';
+//        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
         $orderInfo = DB::table('mt_user')
 //            ->join('mt_order','mt_user.uid','=','mt_order.uid')
             ->where('openid',$openid)
             ->first();
+//        $datainfo=DB::table('mt_refund')->where([''])
         if($order_status == 99){
             $data=DB::table('mt_order_detail')
                 ->join('mt_order','mt_order.order_id','=','mt_order_detail.order_id')
                 ->join('mt_shop','mt_shop.shop_id','=','mt_order_detail.shop_id')
-//                ->join('mt_goods','mt_goods.goods_id','=','mt_order_detail.goods_id')
-                ->where(['mt_order.uid'=>$orderInfo->uid,'good_cate'=>$good_cate])
+//                    ->join('mt_refund','mt_refund.id','=','mt_order_detail.id')
+                ->where(['mt_order_detail.uid'=>$orderInfo->uid,'good_cate'=>$good_cate])
                 ->select()->paginate(10);
         }else{
             $data=DB::table('mt_order_detail')
                 ->join('mt_order','mt_order.order_id','=','mt_order_detail.order_id')
                 ->join('mt_shop','mt_shop.shop_id','=','mt_order_detail.shop_id')
-//                ->join('mt_goods','mt_goods.goods_id','=','mt_order_detail.goods_id')
-                ->where(['mt_order.uid'=>$orderInfo->uid,'good_cate'=>$good_cate,'mt_order.order_status'=>$order_status])
+//                ->join('mt_refund','mt_refund.id','=','mt_order_detail.id')
+                ->where(['mt_order_detail.uid'=>$orderInfo->uid,'good_cate'=>$good_cate,'mt_order.order_status'=>$order_status])
                 ->select()->paginate(10);
         }
         if($data){
@@ -596,6 +597,46 @@ class OrderController extends Controller
         }
 
     }
+    //退款的
+    public function re_refund_add(Request $request){
+        $id=$request->input('id');
+        $openid1 = $request->input('openid');
+        $key = $openid1;
+        $openid = Redis::get($key);
+        if($openid){
+            $data1=DB::table('mt_refund')->where(['id'=$id])->first();
+            if($data){
+                $data=[
+                    'code'=>0,
+                    'msg'=>'OK',
+                    'data'=>$data1
+                ];
+                $response = [
+                    'data'=>$data
+                ];
+                return (json_encode($response,JSON_UNESCAPED_UNICODE));
+            }else{
+                $data=[
+                    'code'=>1,
+                    'msg'=>'NO'
+                ];
+                $response = [
+                    'data'=>$data
+                ];
+                die(json_encode($response,JSON_UNESCAPED_UNICODE));
+            }
+        }else{
+            $data=[
+                'code'=>1,
+                'msg'=>'请先去登陆'
+            ];
+            $response = [
+                'data'=>$data
+            ];
+            die(json_encode($response,JSON_UNESCAPED_UNICODE));
+        }
+    }
+
 
 
     //订单列表

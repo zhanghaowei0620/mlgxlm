@@ -112,6 +112,8 @@ Route::get('/open_order_list', 'Order\OrderController@open_order_list');      //
 
 Route::get('/order_list', 'Order\OrderController@order_list');     //订单列表
 
+Route::get('/re_refund_add', 'Order\OrderController@re_refund_add');
+
 Route::get('/order_status_list', 'Order\OrderController@order_status_list');     //根据订单状态获取订单信息
 
 Route::get('/order_detail', 'Order\OrderController@order_detail');     //订单详情
