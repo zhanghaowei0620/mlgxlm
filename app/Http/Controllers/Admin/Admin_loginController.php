@@ -863,7 +863,7 @@ class Admin_loginController extends Controller
      * 后台图片上传
      */
     public function advertis_img(Request $request){
-        $rotation_net_id=$request->input('rotation_net_id');
+//        $rotation_net_id=$request->input('rotation_net_id');
         $rotation_id=$request->input('rotation_id');
         $imgarr=$_FILES;
         $imgurl=$imgarr['file']['tmp_name'];
@@ -955,7 +955,7 @@ class Admin_loginController extends Controller
         $rotation_net_id=$request->input('rotation_net_id');
         $rotation_rou=$request->input('rotation_rou');
         $data=DB::table('mt_recommend')
-            ->select(['rotation_id','rotation_img'])
+            ->select(['rotation_id','rotation_img','rotation_rou','rotation_net_id'])
             ->paginate(4);
         $data1=[
           'data'=>$data
