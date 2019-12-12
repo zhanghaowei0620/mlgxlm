@@ -617,8 +617,7 @@ class OrderController extends Controller
             }else{
                 $data=[
                     'code'=>1,
-                    'msg'=>'无此退款',
-                    'status_refund'=>0
+                    'data'=>0
                 ];
                 $response = [
                     'data'=>$data
