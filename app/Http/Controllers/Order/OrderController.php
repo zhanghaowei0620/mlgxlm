@@ -964,6 +964,28 @@ class OrderController extends Controller
         }
     }
 
+//    //商品评价
+//    public function goods_evaluate(Request $request)
+//    {
+//        $id=$request->input('id');
+//        $openid1 = $request->input('openid');
+//        $key = $openid1;
+//        $openid = Redis::get($key);
+//        //$openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
+//        $uid=$datainfo->uid;
+//        if($openid){
+//
+//
+//        }else{
+//            $response = [
+//                'code'=>1,
+//                'msg'=>'请先去登陆'
+//            ];
+//            return (json_encode($response,JSON_UNESCAPED_UNICODE));
+//        }
+//
+//    }
+
 
 
 }

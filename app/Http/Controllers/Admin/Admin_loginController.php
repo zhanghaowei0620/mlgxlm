@@ -1012,7 +1012,8 @@ class Admin_loginController extends Controller
     public function recommendrou(Request $request)
     {
         $data1=[
-            'shop_status'=>0
+            'shop_status'=>2,
+            'mt_goods.is_recommend'=>1
         ];
         $data=DB::table('mt_goods')
             ->where($data1)
