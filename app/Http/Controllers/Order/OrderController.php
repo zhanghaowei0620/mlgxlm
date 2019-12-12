@@ -841,10 +841,11 @@ class OrderController extends Controller
 //            var_dump($datainfos1);die;
             if($id == NULL){
                 $up_status=DB::table('mt_order')->where(['uid'=>$uid,'order_id'=>$order_id,'order_status'=>1])->update(['order_status'=>3]);
-                if($up_status){
+                $up_detail=DB::table('mt_order_detail')->where(['uid'=>$uid,'id'=>$id,'order_status'=>1])->update(['order_status'=>3]);
+                if($up_status && $up_detail){
                     $data=[
                         'code'=>0,
-                        'msg'=>'大订单确认收货'
+                        'msg'=>'确认收货'
                     ];
                     $response = [
                         'data'=>$data
@@ -853,7 +854,7 @@ class OrderController extends Controller
                 }else{
                     $data=[
                         'code'=>1,
-                        'msg'=>'大订单确认收货失败,请重试'
+                        'msg'=>'确认收货失败,请重试'
                     ];
                     $response = [
                         'data'=>$data
@@ -871,27 +872,6 @@ class OrderController extends Controller
                         'data'=>$data
                     ];
                     return (json_encode($response,JSON_UNESCAPED_UNICODE));
-                }else{
-                    $up_detail=DB::table('mt_order_detail')->where(['uid'=>$uid,'id'=>$id,'order_status'=>1])->update(['order_status'=>3]);
-                    if($up_detail){
-                        $data=[
-                            'code'=>0,
-                            'msg'=>'确认收货成功'
-                        ];
-                        $response = [
-                            'data'=>$data
-                        ];
-                        return (json_encode($response,JSON_UNESCAPED_UNICODE));
-                    }else{
-                        $data=[
-                            'code'=>1,
-                            'msg'=>'确认收货失败,请重试'
-                        ];
-                        $response = [
-                            'data'=>$data
-                        ];
-                        return (json_encode($response,JSON_UNESCAPED_UNICODE));
-                    }
                 }
 
             }
