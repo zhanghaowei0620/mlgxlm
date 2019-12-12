@@ -847,6 +847,7 @@ class OrderController extends Controller
                 if($up_status && $up_detail){
                     $data=[
                         'code'=>0,
+                        'data'=>1,
                         'msg'=>'确认收货'
                     ];
                     $response = [
