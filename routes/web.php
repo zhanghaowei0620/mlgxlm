@@ -366,7 +366,11 @@ Route::post('admin_reseller_goods_update','Amindbackstage\Headquarters@admin_res
 
 Route::post('admin_reseller_goods_delete','Amindbackstage\Headquarters@admin_reseller_goods_delete')->middleware('checkLogin');   //分销商品删除
 
-Route::post('admin_rule_Add','Amindbackstage\Headquarters@admin_rule_Add')->middleware('checkLogin');   //分销商品删除
+Route::post('admin_rule_Add','Amindbackstage\Headquarters@admin_rule_Add')->middleware('checkLogin');   //协议添加
+
+Route::post('admin_rule_Update','Amindbackstage\Headquarters@admin_rule_Update')->middleware('checkLogin');   //协议修改
+
+Route::post('admin_rule_Delete','Amindbackstage\Headquarters@admin_rule_Delete')->middleware('checkLogin');   //协议删除
 
 
 
