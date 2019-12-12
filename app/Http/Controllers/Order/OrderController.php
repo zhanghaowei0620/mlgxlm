@@ -556,10 +556,8 @@ class OrderController extends Controller
         $openid = Redis::get($key);
 //        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
         $orderInfo = DB::table('mt_user')
-//            ->join('mt_order','mt_user.uid','=','mt_order.uid')
             ->where('openid',$openid)
             ->first();
-//        $datainfo=DB::table('mt_refund')->where([''])
         if($order_status == 99){
             $data=DB::table('mt_order_detail')
                 ->join('mt_order','mt_order.order_id','=','mt_order_detail.order_id')
@@ -609,7 +607,7 @@ class OrderController extends Controller
             if($data1){
                 $data=[
                     'code'=>0,
-                    'msg'=>'OK',
+                    'msg'=>'退款OK',
                     'data'=>$data1
                 ];
                 $response = [
@@ -619,7 +617,8 @@ class OrderController extends Controller
             }else{
                 $data=[
                     'code'=>1,
-                    'msg'=>'NO'
+                    'msg'=>'无此退款',
+                    'status_refund'=>0
                 ];
                 $response = [
                     'data'=>$data
