@@ -867,7 +867,7 @@ class OrderController extends Controller
             }else{
                 if($datainfos1->status_refund == 1){
                     $data=[
-                        'code'=>0,
+                        'code'=>1,
                         'msg'=>'您正在退款,无法确认收货'
                     ];
                     $response = [
