@@ -844,6 +844,7 @@ class OrderController extends Controller
 //                var_dump($up_status);die;
                 $up_detail=DB::table('mt_order_detail')->where(['uid'=>$uid,'id'=>$id,'order_status'=>1])->update(['order_status'=>3]);
                 $aa=['data'=>1];
+                $aa2=['data'=>2];
                 if($up_status && $up_detail){
                     $data=[
                         'code'=>0,
@@ -857,6 +858,7 @@ class OrderController extends Controller
                 }else{
                     $data=[
                         'code'=>1,
+                        'data'=>$aa2,
                         'msg'=>'确认收货失败,请重试'
                     ];
                     $response = [
