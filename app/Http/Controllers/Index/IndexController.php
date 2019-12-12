@@ -66,7 +66,8 @@ class IndexController extends Controller
                 //轮播图
                 $datainfos=DB::table('mt_recommend')
                     ->select(['rotation_img'])
-                    ->limit(4);
+                    ->paginate(4);
+//                var_dump($datainfos);die;
                 }else{
                 $goodsInfo = DB::table('mt_goods')
                     ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
