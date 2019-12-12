@@ -1295,6 +1295,14 @@ class Headquarters extends Controller
         return json_encode($response, JSON_UNESCAPED_UNICODE);
     }
 
+    //协议添加
+    public function admin_rule_Add(Request $request){
+        $rule_title = $request->input('rule_title');
+        $rule_con = $request->input('rule_con');
+        var_dump($rule_title);echo "</br>";
+        var_dump($rule_con);
+    }
+
 
 
 

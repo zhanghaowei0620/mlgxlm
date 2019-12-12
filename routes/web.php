@@ -199,6 +199,8 @@ Route::post('invite_friend', 'Invite\InviteController@invite_friend');
 
 Route::post('open_red_packet', 'Invite\InviteController@open_red_packet');
 
+Route::get('test', 'Invite\InviteController@test');
+
 
 
 
@@ -213,6 +215,10 @@ Route::post('open_red_packet', 'Invite\InviteController@open_red_packet');
  */
 //登录接口
 Route::any('user','Admin\Admin_loginController@user');
+
+Route::get('admin_forgetPwd','Admin\Admin_loginController@admin_forgetPwd');   //忘记密码-发送短信
+
+Route::get('admin_message','Admin\Admin_loginController@admin_message');    //查看短信详情
 //用户列表
 Route::any('userlist','Admin\Admin_loginController@userlist')->middleware('checkLogin');
 
@@ -359,6 +365,9 @@ Route::post('admin_reseller_order','Amindbackstage\Headquarters@admin_reseller_o
 Route::post('admin_reseller_goods_update','Amindbackstage\Headquarters@admin_reseller_goods_update')->middleware('checkLogin');   //分销商品修改
 
 Route::post('admin_reseller_goods_delete','Amindbackstage\Headquarters@admin_reseller_goods_delete')->middleware('checkLogin');   //分销商品删除
+
+Route::post('admin_rule_Add','Amindbackstage\Headquarters@admin_rule_Add')->middleware('checkLogin');   //分销商品删除
+
 
 
 Route::post('test','Test\TestController@test')->middleware('checkLogin');          //微信支付

@@ -9,6 +9,9 @@ use Illuminate\Support\Facades\Redis;
 use Storage;
 use Illuminate\Support\Str;
 use GuzzleHttp\Client;
+use AlibabaCloud\Client\AlibabaCloud;
+use AlibabaCloud\Client\Exception\ClientException;
+use AlibabaCloud\Client\Exception\ServerException;
 
 class Admin_loginController extends Controller
 {
@@ -1476,9 +1479,49 @@ class Admin_loginController extends Controller
         }
     }
 
-    //忘记密码
+    //忘记密码-发送短信
     public function admin_forgetPwd(Request $request){
+        $phone_num = '16634019620';
+        //echo $time;exit;
+        $code = mt_rand(111111,999999);
+        $code = "{\"code\":$code}";
+//        var_dump($code);exit;
+        $a = AlibabaCloud::accessKeyClient('LTAI4Fg1rz6e6xsRu1k3tbT1', 'VlTglNdH9AthF5AK8JHPhWI9mMPH5N')
+            ->regionId('cn-hangzhou')
+            ->asDefaultClient();
+//        var_dump($a);exit;
 
+        try {
+            $result = AlibabaCloud::rpc()
+                ->product('Dysmsapi')
+                // ->scheme('https') // https | http
+                ->version('2017-05-25')
+                ->action('SendSms')
+                ->method('POST')
+                ->host('dysmsapi.aliyuncs.com')
+                ->options([
+                    'query' => [
+                        'RegionId' => "cn-hangzhou",
+                        'PhoneNumbers' => $phone_num,
+                        'SignName' => "美丽共享联盟",
+                        'TemplateCode' => "SMS_177435278",
+                        'TemplateParam' => "$code",
+                    ],
+                ])
+                ->request();
+            print_r($result->toArray());
+            Redis::set($phone_num,$code);
+            Redis::expire($phone_num,900);
+        } catch (ClientException $e) {
+            echo $e->getErrorMessage() . PHP_EOL;
+        } catch (ServerException $e) {
+            echo $e->getErrorMessage() . PHP_EOL;
+        }
+    }
+
+    public function admin_message(){
+        $key = '16634019620';
+        $code = Redis::get($key);
     }
 
 

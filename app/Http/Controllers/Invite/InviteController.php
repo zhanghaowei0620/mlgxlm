@@ -199,5 +199,21 @@ class InviteController extends Controller
     }
 
 
+    public function test(Request $request){
+        $key = $request->input('key');
+        $users = DB::table('mt_goods')
+            ->join('mt_type','mt_goods.t_id','=','mt_type.t_id')
+            ->where('goods_status', '=', 1)
+            ->where(function ($query) use ($key) {
+            $query->where('goods_name', 'LIKE', "%$key%")
+                ->orWhere('goods_effect', 'LIKE', "%$key%")
+                ->orWhere('t_name', 'LIKE', "%$key%");
+            })
+            ->get(['goods_id']);
+        var_dump($users);exit;
+
+
+    }
+
 
 }
