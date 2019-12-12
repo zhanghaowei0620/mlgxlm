@@ -59,9 +59,10 @@ class IndexController extends Controller
                //推荐
                 $recommend = DB::table('mt_goods')
                     ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
-                    ->where(['is_recommend'=>1])
+                    ->where(['mt_goods.is_recommend'=>1])
                     ->limit(6)
-                    ->get(['goods_id','goods_name','price','picture']);
+                    ->get(['mt_goods.goods_id','mt_goods.goods_name','mt_goods.price','mt_goods.picture']);
+//                var_dump($recommend);die;
                 }else{
                 $goodsInfo = DB::table('mt_goods')
                     ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
@@ -445,4 +446,53 @@ class IndexController extends Controller
         return json_encode($response,JSON_UNESCAPED_UNICODE);
     }
 
+
+    //搜索商品
+    public function search_goods(Request $request){
+        $key = $request->input('keyword');
+        $data=DB::table('mt_goods')
+            ->join('mt_type','mt_goods.t_id','=','mt_type.t_id')
+            ->join('mt_shop','mt_goods.shop_id','=','mt_shop.t_id')
+            ->where('goods_status','=',1)
+            ->where(function($q) use ($key){
+                    $q ->where('goods_name','like',"%$key%")
+                            ->orwhere('goods_effect','like',"%$key%")
+                            ->orwhere('t_name','like',"%$key%");
+            })
+            ->get(['goods_id','goods_name','picture','shop_name','star','t_name','price','description','goods_gd_num']);
+        $result = [
+            'salesInfo'=>$data,
+            'code' => 0
+        ];
+
+        $response = [
+            'data'=>$result
+        ];
+        return json_encode($response,JSON_UNESCAPED_UNICODE);
+    }
+
+    //搜索店铺
+    public function search_shop(Request $request)
+    {
+        $key = $request->input('keyword');
+        $data = DB::table('mt_shop')
+            ->join('mt_type', 'mt_shop.t_id', '=', 'mt_type.t_id')
+            ->where('shop_status', '=', 2)
+            ->where(function ($q) use ($key) {
+                $q->where('shop_name', 'like', "%$key%")
+                    ->orwhere('shop_desc', 'like', "%$key%")
+                    ->orwhere('t_name', 'like', "%$key%");
+            })
+            ->get(['shop_name', 'shop_img', 'shop_score', 't_name', 'shop_volume', 'shop_address_provice', 'shop_address_city', 'shop_address_area']);
+        if ($data) {
+            $data1 = [
+                'code' => 0,
+                'salesInfo' => $data,
+            ];
+            $response = [
+                'data' => $data1
+            ];
+            return (json_encode($response, JSON_UNESCAPED_UNICODE));
+        }
+    }
 }

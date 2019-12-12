@@ -20,6 +20,10 @@ Route::get('/index', 'Index\IndexController@index');   //首页
 
 Route::get('/type_lists', 'Index\IndexController@type_lists');   //更多
 
+Route::get('/search_goods', 'Index\IndexController@search_goods');   //搜索商品
+
+Route::get('/search_shop', 'Index\IndexController@search_shop');   //搜索店铺
+
 Route::get('/index_coupon', 'Index\IndexController@index_coupon');    //首页-优惠券
 
 Route::get('/coupon_receive', 'Index\IndexController@coupon_receive'); //点击领取优惠卷
@@ -107,6 +111,8 @@ Route::get('/order_insert', 'Order\OrderController@order_insert');      //普通
 Route::get('/open_order_list', 'Order\OrderController@open_order_list');      //拼团列表
 
 Route::get('/order_list', 'Order\OrderController@order_list');     //订单列表
+
+Route::get('/re_refund_add', 'Order\OrderController@re_refund_add');
 
 Route::get('/order_status_list', 'Order\OrderController@order_status_list');     //根据订单状态获取订单信息
 
