@@ -1299,8 +1299,118 @@ class Headquarters extends Controller
     public function admin_rule_Add(Request $request){
         $rule_title = $request->input('rule_title');
         $rule_con = $request->input('rule_con');
-        var_dump($rule_title);echo "</br>";
-        var_dump($rule_con);
+        $admin_judge = $request->input('admin_judge');
+        if($admin_judge == 1){
+            $insert = [
+                'rule_title'=>$rule_title,
+                'rule_con'=>$rule_con,
+                'rule_time'=>time()
+            ];
+            $insertInfo = DB::table('mt_rules')->insert($insert);
+            if($insertInfo){
+                $response=[
+                    'code'=>0,
+                    'msg'=>'添加成功'
+                ];
+                return json_encode($response, JSON_UNESCAPED_UNICODE);
+            }else{
+                $response=[
+                    'code'=>1,
+                    'msg'=>'系统出现错误,请重试'
+                ];
+                die(json_encode($response, JSON_UNESCAPED_UNICODE));
+            }
+        }else{
+            $response=[
+                'code'=>2,
+                'msg'=>'暂无权限'
+            ];
+            die(json_encode($response, JSON_UNESCAPED_UNICODE));
+        }
+    }
+
+    //协议列表
+    public function admin_rule_List(Request $request){
+        $admin_judge = $request->input('admin_judge');
+        if($admin_judge == 1){
+            $rulesInfo = DB::table('mt_rules')->get()->toArray();
+            $response=[
+                'code'=>0,
+                'data'=>$rulesInfo,
+                'msg'=>'数据请求成功'
+            ];
+            return json_encode($response, JSON_UNESCAPED_UNICODE);
+        }else{
+            $response=[
+                'code'=>2,
+                'msg'=>'暂无权限'
+            ];
+            die(json_encode($response, JSON_UNESCAPED_UNICODE));
+        }
+    }
+
+
+    //权限修改
+    public function admin_rule_Update(Request $request){
+        $rule_id = $request->input('rule_id');
+        $rule_title = $request->input('rule_title');
+        $rule_con = $request->input('rule_con');
+        $admin_judge = $request->input('admin_judge');
+        if($admin_judge == 1){
+            $update = [
+                'rule_title'=>$rule_title,
+                'rule_con'=>$rule_con,
+            ];
+            $updateInfo = DB::table('mt_rules')->where('rule_id',$rule_id)->update($update);
+            if($updateInfo > 0){
+                $response=[
+                    'code'=>0,
+                    'msg'=>'修改成功'
+                ];
+                return json_encode($response, JSON_UNESCAPED_UNICODE);
+            }else{
+                $response=[
+                    'code'=>1,
+                    'msg'=>'系统出现错误,请重试'
+                ];
+                die(json_encode($response, JSON_UNESCAPED_UNICODE));
+            }
+        }else{
+            $response=[
+                'code'=>2,
+                'msg'=>'暂无权限'
+            ];
+            die(json_encode($response, JSON_UNESCAPED_UNICODE));
+        }
+
+    }
+
+    //权限管理
+    public function admin_rule_Delete(Request $request){
+        $rule_id = $request->input('rule_id');
+        $admin_judge = $request->input('admin_judge');
+        if($admin_judge == 1){
+            $deleteInfo = DB::table('mt_rules')->where('rule_id',$rule_id)->delete();
+            if($deleteInfo){
+                $response=[
+                    'code'=>0,
+                    'msg'=>'删除成功'
+                ];
+                return json_encode($response, JSON_UNESCAPED_UNICODE);
+            }else{
+                $response=[
+                    'code'=>1,
+                    'msg'=>'系统出现错误,请重试'
+                ];
+                die(json_encode($response, JSON_UNESCAPED_UNICODE));
+            }
+        }else{
+            $response=[
+                'code'=>2,
+                'msg'=>'暂无权限'
+            ];
+            die(json_encode($response, JSON_UNESCAPED_UNICODE));
+        }
     }
 
 
