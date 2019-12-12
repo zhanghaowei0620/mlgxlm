@@ -602,8 +602,10 @@ class OrderController extends Controller
         $key = $openid1;
         $openid = Redis::get($key);
 //        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
+        $datainfo=DB::table('mt_user')->where(['openid'=>$openid])->first();
+        $uid=$datainfo->uid;
         if($openid){
-            $data1=DB::table('mt_refund')->where(['id'=>$id])->first();
+            $data1=DB::table('mt_refund')->where(['id'=>$id,'uid'=>$uid])->first();
             $data2=['status_refund'=>0];
             if($data1){
                 $data=[
@@ -823,6 +825,7 @@ class OrderController extends Controller
     public function up_status_add(Request $request)
     {
         $order_id=$request->input('order_id');
+        $id=$request->input('id');
         $openid1 = $request->input('openid');
         $key = $openid1;
         $openid = Redis::get($key);
@@ -830,28 +833,89 @@ class OrderController extends Controller
         $datainfo=DB::table('mt_user')->where(['openid'=>$openid])->first();
         $uid=$datainfo->uid;
         if($openid){
+
 //            $data_infos=DB::table('mt_order')->where(['uid'=>$uid,'order_id'=>$order_id,'order_status'=>1])->first();
-            $up_status=DB::table('mt_order')->where(['uid'=>$uid,'order_id'=>$order_id,'order_status'=>1])->update(['order_status'=>3]);
-            $up_detail=DB::table('mt_order_detail')->where(['uid'=>$uid,'order_id'=>$order_id,'order_status'=>1])->update(['order_status'=>3]);
-            if($up_status && $up_detail){
-                $data=[
-                    'code'=>0,
-                    'msg'=>'确认收货成功'
-                ];
-                $response = [
-                    'data'=>$data
-                ];
-                return (json_encode($response,JSON_UNESCAPED_UNICODE));
+//            $up_status=DB::table('mt_order')->where(['uid'=>$uid,'order_id'=>$order_id,'order_status'=>1])->update(['order_status'=>3]);
+
+            $datainfos1=DB::table('mt_refund')->where(['uid'=>$uid,'id'=>$id])->first();
+//            var_dump($datainfos1);die;
+            if($id == NULL){
+                $up_status=DB::table('mt_order')->where(['uid'=>$uid,'order_id'=>$order_id,'order_status'=>1])->update(['order_status'=>3]);
+                if($up_status){
+                    $data=[
+                        'code'=>0,
+                        'msg'=>'大订单确认收货'
+                    ];
+                    $response = [
+                        'data'=>$data
+                    ];
+                    return (json_encode($response,JSON_UNESCAPED_UNICODE));
+                }else{
+                    $data=[
+                        'code'=>1,
+                        'msg'=>'大订单确认收货失败,请重试'
+                    ];
+                    $response = [
+                        'data'=>$data
+                    ];
+                    return (json_encode($response,JSON_UNESCAPED_UNICODE));
+                }
+
             }else{
-                $data=[
-                    'code'=>1,
-                    'msg'=>'确认收货失败,请重试'
-                ];
-                $response = [
-                    'data'=>$data
-                ];
-                return (json_encode($response,JSON_UNESCAPED_UNICODE));
+                if($datainfos1->status_refund == 1){
+                    $data=[
+                        'code'=>0,
+                        'msg'=>'您正在退款,无法确认收货'
+                    ];
+                    $response = [
+                        'data'=>$data
+                    ];
+                    return (json_encode($response,JSON_UNESCAPED_UNICODE));
+                }else{
+                    $up_detail=DB::table('mt_order_detail')->where(['uid'=>$uid,'id'=>$id,'order_status'=>1])->update(['order_status'=>3]);
+                    if($up_detail){
+                        $data=[
+                            'code'=>0,
+                            'msg'=>'确认收货成功'
+                        ];
+                        $response = [
+                            'data'=>$data
+                        ];
+                        return (json_encode($response,JSON_UNESCAPED_UNICODE));
+                    }else{
+                        $data=[
+                            'code'=>1,
+                            'msg'=>'确认收货失败,请重试'
+                        ];
+                        $response = [
+                            'data'=>$data
+                        ];
+                        return (json_encode($response,JSON_UNESCAPED_UNICODE));
+                    }
+                }
+
             }
+//
+//
+//            if($up_status && $up_detail){
+//                $data=[
+//                    'code'=>0,
+//                    'msg'=>'确认收货成功'
+//                ];
+//                $response = [
+//                    'data'=>$data
+//                ];
+//                return (json_encode($response,JSON_UNESCAPED_UNICODE));
+//            }else{
+//                $data=[
+//                    'code'=>1,
+//                    'msg'=>'确认收货失败,请重试'
+//                ];
+//                $response = [
+//                    'data'=>$data
+//                ];
+//                return (json_encode($response,JSON_UNESCAPED_UNICODE));
+//            }
         }else{
             $response = [
                 'code'=>1,
@@ -880,7 +944,8 @@ class OrderController extends Controller
                 'goods_id'=>$dainfo_add->goods_id,
                 'id'=>$id,
                 'refund_text_id'=>$refund_text_id,
-                'refund_msg'=>$refund_msg
+                'refund_msg'=>$refund_msg,
+                'uid'=>$uid
             ];
             $inser_add=DB::table('mt_refund')->insert($inser_refund);
             if($inser_add){
