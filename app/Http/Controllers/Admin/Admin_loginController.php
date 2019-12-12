@@ -1090,12 +1090,12 @@ class Admin_loginController extends Controller
     {
         $goods_id=$request->input('goods_id');
         $mt_goods_id=$request->input('mt_goods_id');
-        $bb=[
-            'is_recommend'=>0
-        ];
-        $arr=DB::table('mt_goods')
-            ->where('goods_id',$mt_goods_id)
-            ->update($bb);
+//        $bb=[
+//            'is_recommend'=>0
+//        ];
+//        $arr=DB::table('mt_goods')
+//            ->where('goods_id',$mt_goods_id)
+//            ->update($bb);
 //        var_dump($arr);die;
         $cc=[
            'is_recommend'=>1

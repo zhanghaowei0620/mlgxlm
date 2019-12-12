@@ -59,9 +59,10 @@ class IndexController extends Controller
                //推荐
                 $recommend = DB::table('mt_goods')
                     ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
-                    ->where(['is_recommend'=>1])
+                    ->where(['mt_goods.is_recommend'=>1])
                     ->limit(6)
-                    ->get(['goods_id','goods_name','price','picture']);
+                    ->get(['mt_goods.goods_id','mt_goods.goods_name','mt_goods.price','mt_goods.picture']);
+//                var_dump($recommend);die;
                 }else{
                 $goodsInfo = DB::table('mt_goods')
                     ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
