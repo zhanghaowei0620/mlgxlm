@@ -839,9 +839,11 @@ class OrderController extends Controller
 
             $datainfos1=DB::table('mt_refund')->where(['uid'=>$uid,'id'=>$id])->first();
 //            var_dump($datainfos1);die;
-            if($id == NULL){
+            if($datainfos1 == NULL){
                 $up_status=DB::table('mt_order')->where(['uid'=>$uid,'order_id'=>$order_id,'order_status'=>1])->update(['order_status'=>3]);
+//                var_dump($up_status);die;
                 $up_detail=DB::table('mt_order_detail')->where(['uid'=>$uid,'id'=>$id,'order_status'=>1])->update(['order_status'=>3]);
+
                 if($up_status && $up_detail){
                     $data=[
                         'code'=>0,
