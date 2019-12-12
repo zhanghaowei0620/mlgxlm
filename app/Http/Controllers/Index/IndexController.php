@@ -63,6 +63,10 @@ class IndexController extends Controller
                     ->limit(6)
                     ->get(['mt_goods.goods_id','mt_goods.goods_name','mt_goods.price','mt_goods.picture']);
 //                var_dump($recommend);die;
+                //轮播图
+                $datainfos=DB::table('mt_recommend')
+                    ->select(['rotation_img'])
+                    ->limit(4);
                 }else{
                 $goodsInfo = DB::table('mt_goods')
                     ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
@@ -96,6 +100,9 @@ class IndexController extends Controller
                     ->where(['is_recommend'=>1],['shop_address_city'=>$shop_address_city])
                     ->limit(6)
                     ->get(['goods_id','goods_name','price','picture']);
+                $datainfos=DB::table('mt_recommend')
+                    ->select(['rotation_img'])
+                    ->limit(4);
             }
             $shop_id = DB::table('mt_shop')
                 ->join('mt_goods','mt_goods.shop_id','=','mt_shop.shop_id')
@@ -123,6 +130,7 @@ class IndexController extends Controller
                 'recommend'     =>  $recommend,
                 'discountInfo' => $discountInfo,
                 'salesInfo'   => $salesInfo,
+                'datainfos'  =>$datainfos,
                 'limitedInfo'=>$limitedInfo,
                 'code'         =>  0,
             ];
