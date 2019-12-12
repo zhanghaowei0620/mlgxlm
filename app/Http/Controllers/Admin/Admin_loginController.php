@@ -870,7 +870,7 @@ class Admin_loginController extends Controller
         $imgname=$imgarr['file']['name'];
         $time=time();
         $rand=rand(1000,9999)+$time;
-        $address="/imgadvertis/$rand$imgname";
+        $address="/images/$rand$imgname";
 //        var_dump($address);die;
         $add=[
           'rotation_img'=>$address,
@@ -878,7 +878,7 @@ class Admin_loginController extends Controller
 //        var_dump($add);die;
         $data=DB::table('mt_recommend')->insert($add);
 //        var_dump($datea);die;
-        if (!is_dir(public_path() . '/imgadvertis')) mkdir(public_path() . '/imgadvertis', 0777, true);
+        if (!is_dir(public_path() . '/images')) mkdir(public_path() . '/images', 0777, true);
         $uploaded = move_uploaded_file($imgurl, public_path() . $address);
 
         //var_dump($uploaded);exit;
@@ -907,7 +907,7 @@ class Admin_loginController extends Controller
         $imgname=$imgarr['file']['name'];
         $time=time();
         $rand=rand(1000,9999)+$time;
-        $address="/imgadvertis/$rand$imgname";
+        $address="/images/$rand$imgname";
 //        var_dump($address);die;
         $add=[
             'rotation_img'=>$address,
@@ -924,7 +924,7 @@ class Admin_loginController extends Controller
         //此处地址根据项目而定，唯一注意的就是图片命名，这里难得去获取后缀，随便写了个png
 //        $http_type = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')) ? 'https://' : 'http://';
 //        $website = $http_type . $_SERVER['HTTP_HOST'];
-        if (!is_dir(public_path() . '/imgadvertis')) mkdir(public_path() . '/imgadvertis', 0777, true);
+        if (!is_dir(public_path() . '/images')) mkdir(public_path() . '/images', 0777, true);
         $uploaded = move_uploaded_file($imgurl, public_path() . $address);
 
         //var_dump($uploaded);exit;
@@ -949,13 +949,13 @@ class Admin_loginController extends Controller
     public function recommend(Request $request)
     {
 //        $rotation_img=$request->input('rotation_img');
-        $data1=[
-            'shop_status'=>0
-        ];
+//        $data1=[
+//            'shop_status'=>0
+//        ];
         $rotation_net_id=$request->input('rotation_net_id');
         $rotation_rou=$request->input('rotation_rou');
         $data=DB::table('mt_recommend')
-            ->select(['rotation_id','rotation_img','rotation_net_id','rotation_rou'])
+            ->select(['rotation_id','rotation_img'])
             ->paginate(4);
         $data1=[
           'data'=>$data
