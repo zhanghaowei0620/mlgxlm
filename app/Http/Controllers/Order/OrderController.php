@@ -604,6 +604,7 @@ class OrderController extends Controller
 //        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
         if($openid){
             $data1=DB::table('mt_refund')->where(['id'=>$id])->first();
+            $data2=['status_refund'=>0];
             if($data1){
                 $data=[
                     'code'=>0,
@@ -617,7 +618,7 @@ class OrderController extends Controller
             }else{
                 $data=[
                     'code'=>1,
-                    'data'=>0
+                    'data'=>$data2
                 ];
                 $response = [
                     'data'=>$data

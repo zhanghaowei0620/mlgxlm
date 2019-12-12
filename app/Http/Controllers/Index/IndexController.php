@@ -18,7 +18,6 @@ class IndexController extends Controller
         $time=time();
         $type = DB::table('mt_type')->where(['p_id'=>0])->get()->toArray();  //父级分类
         $s_type1 = DB::table('mt_type')->where(['p_id'=>1])->get()->toArray();          //子集分类 第一行
-        var_dump($s_type1);die;
         $s_type2 = DB::table('mt_type')->where(['p_id'=>2])->get()->toArray();         //子集分类 第二行
         $s_type3 = DB::table('mt_type')->where(['p_id'=>3])->get()->toArray();         //子集分类 第二行
         $s_type4 = DB::table('mt_type')->where(['p_id'=>4])->get()->toArray();          //子集分类 第二行
