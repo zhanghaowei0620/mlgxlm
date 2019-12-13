@@ -964,6 +964,44 @@ class OrderController extends Controller
         }
     }
 
+    //评价入口商家信息
+    public function goods_list_evaluate(Request $request)
+    {
+        $id=$request->input('id');
+        $openid1 = $request->input('openid');
+        $key = $openid1;
+        $openid = Redis::get($key);
+        if($openid){
+            $data=DB::table('mt_order_detail')->where(['id'=>$id])->first();
+            if($data){
+                $data=[
+                    'code'=>0,
+                    'msg'=>'数据提交成功',
+                    'data'=>$data
+                ];
+                $response = [
+                    'data'=>$data
+                ];
+                return (json_encode($response,JSON_UNESCAPED_UNICODE));
+            }else{
+                $data=[
+                    'code'=>1,
+                    'msg'=>'数据提交失败'
+                ];
+                $response = [
+                    'data'=>$data
+                ];
+                return (json_encode($response,JSON_UNESCAPED_UNICODE));
+            }
+        }else{
+            $response = [
+                'code'=>1,
+                'msg'=>'请先去登陆'
+            ];
+            return (json_encode($response,JSON_UNESCAPED_UNICODE));
+        }
+    }
+
     //商品评价
     public function goods_evaluate(Request $request)
     {
