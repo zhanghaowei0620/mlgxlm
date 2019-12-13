@@ -216,6 +216,8 @@ Route::get('test', 'Invite\InviteController@test');
 //登录接口
 Route::any('user','Admin\Admin_loginController@user');
 
+Route::get('admin_index','Amindbackstage\Headquarters@admin_index')->middleware('checkLogin');   //后台首页
+
 Route::get('admin_forgetPwd','Admin\Admin_loginController@admin_forgetPwd');   //忘记密码-发送短信
 
 Route::get('admin_message','Admin\Admin_loginController@admin_message');    //查看短信详情

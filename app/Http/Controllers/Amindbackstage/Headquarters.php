@@ -1350,7 +1350,7 @@ class Headquarters extends Controller
     }
 
 
-    //权限修改
+    //协议修改
     public function admin_rule_Update(Request $request){
         $rule_id = $request->input('rule_id');
         $rule_title = $request->input('rule_title');
@@ -1412,6 +1412,8 @@ class Headquarters extends Controller
             die(json_encode($response, JSON_UNESCAPED_UNICODE));
         }
     }
+
+    //
 
 
 
