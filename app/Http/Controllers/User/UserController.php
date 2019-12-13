@@ -159,30 +159,24 @@ class UserController extends Controller
         $key = $openid1;
         $openid = Redis::get($key);
 //        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
-        $data=DB::table('mt_user')
-            ->where(['openid'=>$openid])
-            ->get(['wx_user_login']);
+        $threedays_time = time()-72*3600;
+        $userInfo = DB::table('mt_user')->where('openid',$openid)->where('wx_user_login','>',$threedays_time)->where('is_new_people',0)->first();
 //        var_dump($data);die;
-        if($data){
+        if($userInfo){
             $data1=[
                 'code' => '0',
                 'msg' => '',
-                'data' => $data
             ];
-            $response = [
-                'data' => $data1
-            ];
-            return json_encode($response, JSON_UNESCAPED_UNICODE);
         }else{
             $data1=[
                 'code' => '1',
                 'msg' => 'x'
             ];
-            $response = [
-                'data' => $data1
-            ];
-            return json_encode($response, JSON_UNESCAPED_UNICODE);
         }
+        $response = [
+            'data' => $data1
+        ];
+        return json_encode($response, JSON_UNESCAPED_UNICODE);
     }
 
 

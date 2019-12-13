@@ -5,9 +5,21 @@ namespace App\Http\Controllers\Invite;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redis;
 
 class InviteController extends Controller
 {
+//    //新人有礼
+//    public function new_people(Request $request){
+//        $openid1 = $request->input('openid');
+//        $key = $openid1;
+//        $openid = Redis::get($key);
+//        if($openid){
+//            $threedays_time = time()-72*3600;
+//            $userInfo = DB::table('mt_user')->where('openid',$openid)->where('wx_user_login','>',$threedays_time)->first();
+//        }
+//    }
+
     //邀请朋友拆红包
     public function invite_userInfo(Request $request){
         $openid =$request->input('openid');

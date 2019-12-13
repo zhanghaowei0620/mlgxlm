@@ -1647,6 +1647,50 @@ class Admin_loginController extends Controller
         }
     }
 
+    //分销商设置返利比例
+    public function admin_set_rebate(Request $request){
+        $shop_id = $request->input('shop_id');
+        $admin_judge = $request->input('admin_judge');
+        $up_rebate = $request->input('up_rebate');   //上级返利
+        $indirect_up_rebate = $request->input('indirect_up_rebate');   //间接上级返利
+        if($admin_judge == 2){
+            $shopInfo = DB::table('mt_shop')->where('shop_id',$shop_id)->first(['shop_reseller']);
+            $shop_reseller = $shopInfo->shop_reseller;
+            if($shop_reseller == 1){
+                $update = [
+                    'up_rebate'=>$up_rebate,
+                    'indirect_up_rebate'=>$indirect_up_rebate
+                ];
+                $updateshopInfo = DB::table('mt_shop')->where('shop_id',$shop_id)->update($update);
+                if($updateshopInfo >0){
+                    $response=[
+                        'code'=>0,
+                        'msg'=>'设置成功'
+                    ];
+                    return json_encode($response, JSON_UNESCAPED_UNICODE);
+                }else{
+                    $response=[
+                        'code'=>3,
+                        'msg'=>'您并未修改任何数据'
+                    ];
+                    return json_encode($response, JSON_UNESCAPED_UNICODE);
+                }
+            }else{
+                $response=[
+                    'code'=>2,
+                    'msg'=>'请先申请成为分销商'
+                ];
+                die(json_encode($response, JSON_UNESCAPED_UNICODE));
+            }
+        }else{
+            $response=[
+                'code'=>1,
+                'msg'=>'只有分销商才有权限设置'
+            ];
+            die(json_encode($response, JSON_UNESCAPED_UNICODE));
+        }
+    }
+
 
 
 

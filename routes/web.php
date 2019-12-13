@@ -201,9 +201,10 @@ Route::get('admin_Limited_list_update_status', 'Amindbackstage\Headquarters@admi
 
 Route::post('invite_userInfo', 'Invite\InviteController@invite_userInfo');
 
-Route::post('invite_friend', 'Invite\InviteController@invite_friend');
+Route::post('invite_friend', 'Invite\InviteController@invite_friend');   //邀请好友
 
-Route::post('open_red_packet', 'Invite\InviteController@open_red_packet');
+Route::post('open_red_packet', 'Invite\InviteController@open_red_packet');   //拆红包
+
 
 Route::get('test', 'Invite\InviteController@test');
 
@@ -227,6 +228,8 @@ Route::post('admin_forgetPwd','Admin\Admin_loginController@admin_forgetPwd');   
 Route::post('admin_message_check','Admin\Admin_loginController@admin_message_check');    //验证短信是否正确
 
 Route::post('admin_passwordUpdate','Admin\Admin_loginController@admin_passwordUpdate');  //忘记密码-修改密码
+
+Route::post('admin_set_rebate','Admin\Admin_loginController@admin_set_rebate');  //分销商设置返利比例
 
 //用户列表
 Route::any('userlist','Admin\Admin_loginController@userlist')->middleware('checkLogin');
