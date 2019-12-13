@@ -149,93 +149,16 @@ class IndexController extends Controller
     //首页四大分类  美容美发0     身体护理1    问题皮肤2   瑜伽瘦身3
     public function mt_sort(Request $request)
     {
-        $sort_type=$request->input('sort_type');    //美容美发0     身体护理1    问题皮肤2   瑜伽瘦身3
-        if($sort_type == 0){
-            $data1=DB::table('mt_type')->where(['p_id'=>1])->get();
-            if($data1){
+            $t_id=$request->input('t_id');    //美容美发0     身体护理1    问题皮肤2   瑜伽瘦身3
+            $data1=DB::table('mt_type')->where(['p_id'=>$t_id])->get();
                 $data=[
                     'code'=>0,
-                    'data'=>$data1
+                    'data'=>$data1,
                 ];
                 $response=[
                     'data'=>$data
                 ];
                 return json_encode($response,JSON_UNESCAPED_UNICODE);
-            }else{
-                $data=[
-                    'code'=>1,
-                    'msg'=>'数据请求失败'
-                ];
-                $response=[
-                    'data'=>$data
-                ];
-                return json_encode($response,JSON_UNESCAPED_UNICODE);
-            }
-        }else if($sort_type == 1){
-            $data2=DB::table('mt_type')->where(['p_id'=>2])->get();
-            if($data2){
-                $data=[
-                    'code'=>0,
-                    'data'=>$data2
-                ];
-                $response=[
-                    'data'=>$data
-                ];
-                return json_encode($response,JSON_UNESCAPED_UNICODE);
-            }else{
-                $data=[
-                    'code'=>1,
-                    'msg'=>'数据请求失败'
-                ];
-                $response=[
-                    'data'=>$data
-                ];
-                return json_encode($response,JSON_UNESCAPED_UNICODE);
-            }
-        }else if($sort_type == 2){
-            $data3=DB::table('mt_type')->where(['p_id'=>3])->get();
-            if($data3){
-                $data=[
-                    'code'=>0,
-                    'data'=>$data3
-                ];
-                $response=[
-                    'data'=>$data
-                ];
-                return json_encode($response,JSON_UNESCAPED_UNICODE);
-            }else{
-                $data=[
-                    'code'=>1,
-                    'msg'=>'数据请求失败'
-                ];
-                $response=[
-                    'data'=>$data
-                ];
-                return json_encode($response,JSON_UNESCAPED_UNICODE);
-            }
-        }else if($sort_type == 3){
-            $data4=DB::table('mt_type')->where(['p_id'=>4])->get();
-            if($data4){
-                $data=[
-                    'code'=>0,
-                    'data'=>$data4
-                ];
-                $response=[
-                    'data'=>$data
-                ];
-                return json_encode($response,JSON_UNESCAPED_UNICODE);
-            }else{
-                $data=[
-                    'code'=>1,
-                    'msg'=>'数据请求失败'
-                ];
-                $response=[
-                    'data'=>$data
-                ];
-                return json_encode($response,JSON_UNESCAPED_UNICODE);
-            }
-        }
-
     }
 
     //更多
