@@ -545,8 +545,13 @@ class GoodsController extends Controller
                 'order_status'=>1,
                 'pay_price'=>$pay1
             ];
+            $infosaa1=[
+                'order_status'=>1,
+                'pay_price'=>$pay1,
+                'pay_time'=>time()
+            ];
             $inerttofo=DB::table('mt_order')->where(['order_id'=>$order_id])->update($infosaa);
-            $update_orderss=DB::table('mt_order_detail')->where(['uid'=>$uid,'order_id'=>$order_id])->update($infosaa);
+            $update_orderss=DB::table('mt_order_detail')->where(['uid'=>$uid,'order_id'=>$order_id])->update($infosaa1);
             if($update_order){
                 $data=[
                     'code'=>0,
@@ -583,8 +588,13 @@ class GoodsController extends Controller
                     'pay_price'=>$pay2,
                     'order_status'=>1
                 ];
+                $updateinfo2=[
+                    'pay_price'=>$pay2,
+                    'order_status'=>1,
+                    'pay_time'=>time()
+                ];
                 $sqlupdate1=DB::table('mt_order')->where(['order_id'=>$order_id])->update($updateinfo1);
-                $detail_order1=DB::table('mt_order_detail')->where(['order_id'=>$order_id])->update($updateinfo1);
+                $detail_order1=DB::table('mt_order_detail')->where(['order_id'=>$order_id])->update($updateinfo2);
                 if($user_money_add){
                     $data=[
                         'code'=>0,
@@ -629,8 +639,13 @@ class GoodsController extends Controller
                          'pay_price'=>$moenfo,
                         'order_status'=>1
                     ];
+                    $updateinfo1=[
+                        'pay_price'=>$moenfo,
+                        'order_status'=>1,
+                        'pay_time'=>time()
+                    ];
                     $sqlupdate=DB::table('mt_order')->where(['order_id'=>$order_id])->update($updateinfo);
-                    $detail_order=DB::table('mt_order_detail')->where(['order_id'=>$order_id])->update($updateinfo);
+                    $detail_order=DB::table('mt_order_detail')->where(['order_id'=>$order_id])->update($updateinfo1);
                     if($sqlupdate && $detail_order){
                         $data=[
                             'code'=>0,
@@ -667,8 +682,13 @@ class GoodsController extends Controller
                     'order_status'=>1,
                     'pay_price'=>$address
                 ];
+                $update_info2=[
+                    'order_status'=>1,
+                    'pay_price'=>$address,
+                    'pay_time'=>time()
+                ];
                 $sqlupdate1=DB::table('mt_order')->where(['uid'=>$uid])->update($updateinfo);
-                $detail_order1=DB::table('mt_order_detail')->where(['order_id'=>$order_id])->update($update_info1);
+                $detail_order1=DB::table('mt_order_detail')->where(['order_id'=>$order_id])->update($update_info2);
                 if($user_money_add){
                     $data=[
                         'code'=>0,
@@ -701,8 +721,13 @@ class GoodsController extends Controller
               'order_status'=>1,
                 'pay_price'=>$pay
             ];
+            $user_update_add2=[
+                'order_status'=>1,
+                'pay_price'=>$pay,
+                'pay_time'=>time()
+            ];
             $order_update=DB::table('mt_order')->where(['order_id'=>$order_id])->update($user_update_add1);
-            $detail_order1=DB::table('mt_order_detail')->where(['order_id'=>$order_id])->update($user_update_add1);
+            $detail_order1=DB::table('mt_order_detail')->where(['order_id'=>$order_id])->update($user_update_add2);
             if($order_update){
                 $data=[
                     'code'=>0,

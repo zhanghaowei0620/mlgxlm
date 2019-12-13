@@ -65,7 +65,7 @@ class IndexController extends Controller
 //                var_dump($recommend);die;
                 //轮播图
                 $datainfos=DB::table('mt_recommend')
-                    ->select(['rotation_img'])
+                    ->select()
                     ->paginate(4);
 //                var_dump($datainfos);die;
                 }else{
@@ -102,7 +102,7 @@ class IndexController extends Controller
                     ->limit(6)
                     ->get(['goods_id','goods_name','price','picture']);
                 $datainfos=DB::table('mt_recommend')
-                    ->select(['rotation_img'])
+                    ->select()
                     ->limit(4);
             }
             $shop_id = DB::table('mt_shop')

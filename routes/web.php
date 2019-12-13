@@ -118,6 +118,12 @@ Route::get('/order_status_list', 'Order\OrderController@order_status_list');    
 
 Route::get('/order_detail', 'Order\OrderController@order_detail');     //订单详情
 
+Route::get('/goods_evaluate', 'Order\OrderController@goods_evaluate'); //订单商品评价
+
+Route::get('/goods_evaluate_list', 'Order\OrderController@goods_evaluate_list'); //订单商品评价列表
+
+Route::get('/goods_list_evaluate', 'Order\OrderController@goods_list_evaluate'); //订单商品评价入口信息
+
 Route::get('/user_Address', 'User\UserController@user_Address');      //添加用户地址
 
 Route::get('/user_Address_list', 'User\UserController@user_Address_list');    //地址列表
