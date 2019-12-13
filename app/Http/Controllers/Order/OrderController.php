@@ -964,27 +964,60 @@ class OrderController extends Controller
         }
     }
 
-//    //商品评价
-//    public function goods_evaluate(Request $request)
-//    {
-//        $id=$request->input('id');
-//        $openid1 = $request->input('openid');
-//        $key = $openid1;
-//        $openid = Redis::get($key);
-//        //$openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
-//        $uid=$datainfo->uid;
-//        if($openid){
-//
-//
-//        }else{
-//            $response = [
-//                'code'=>1,
-//                'msg'=>'请先去登陆'
-//            ];
-//            return (json_encode($response,JSON_UNESCAPED_UNICODE));
-//        }
-//
-//    }
+    //商品评价
+    public function goods_evaluate(Request $request)
+    {
+        $id=$request->input('id');
+        $effect_start=$request->input('effect_start');  //服务效果
+        $skill_start=$request->input('skill_start');    //服务技术
+        $attitude_start=$request->input('attitude_start');  //服务态度
+        $ambient=$request->input('ambient');                //店铺环境
+        $evaluate_text=$request->input('evaluate_text');    //评价内容
+        $openid1 = $request->input('openid');
+        $key = $openid1;
+        $openid = Redis::get($key);
+        //$openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
+        $uid=$datainfo->uid;
+        $data_detail=DB::table('mt_order_detail')->where(['id'=>$id,'uid'=>$uid])->first();
+        if($openid){
+            $inser_into=[
+                'goods_id'=>$data_detail->goods_id,
+                'shop_id'=>$data_detail->shop_id,
+                'effect_start'=>$effect_start,
+                'skill_start'=>$skill_start,
+                'attitude_start'=>$attitude_start,
+                'ambient'=>$ambient,
+                'evaluate_text'=>$evaluate_text
+            ];
+            $data_info=DB::table('mt_goods_evaluate')->insert($inser_into);
+            if($data_info){
+                $data=[
+                    'code'=>1,
+                    'msg'=>'评价数据提交成功'
+                ];
+                $response = [
+                    'data'=>$data
+                ];
+                return (json_encode($response,JSON_UNESCAPED_UNICODE));
+            }else{
+                $data=[
+                    'code'=>1,
+                    'msg'=>'评价数据提交失败,请重试'
+                ];
+                $response = [
+                    'data'=>$data
+                ];
+                return (json_encode($response,JSON_UNESCAPED_UNICODE));
+            }
+        }else{
+            $response = [
+                'code'=>1,
+                'msg'=>'请先去登陆'
+            ];
+            return (json_encode($response,JSON_UNESCAPED_UNICODE));
+        }
+
+    }
 
 
 
