@@ -1481,14 +1481,14 @@ class Admin_loginController extends Controller
 
             $data = [
                 'shopInfo'=>$shopInfo,
-                'sixdays_total_num'=>$sixdays_total_num,
-                'fivedays_total_num'=>$fivedays_total_num,
-                'fourdays_total_num'=>$fourdays_total_num,
-                'threedays_total_num'=>$threedays_total_num,
-                'before_yesterdays_total_num'=>$before_yesterdays_total_num,
-                'yesterdays_total_num'=>$yesterdays_total_num,
-                'todays_total_num'=>$todays_total_num,
-                'total_num'=>$total_num,
+                'sixdays_total_num'=>$sixdays_total_num,     //六天前
+                'fivedays_total_num'=>$fivedays_total_num,    //五天前
+                'fourdays_total_num'=>$fourdays_total_num,     //四天前
+                'threedays_total_num'=>$threedays_total_num,      //三天前
+                'before_yesterdays_total_num'=>$before_yesterdays_total_num,   //两天前
+                'yesterdays_total_num'=>$yesterdays_total_num,     //一天前
+                'todays_total_num'=>$todays_total_num,     //今天
+                'total_num'=>$total_num,        //总营业额
             ];
             $response=[
                 'code'=>0,
@@ -1539,53 +1539,112 @@ class Admin_loginController extends Controller
                 'code'=>1,
                 'msg'=>'亲,您并未修改任何信息'
             ];
-            return json_encode($response, JSON_UNESCAPED_UNICODE);
+            die(json_encode($response, JSON_UNESCAPED_UNICODE));
         }
     }
 
     //忘记密码-发送短信
     public function admin_forgetPwd(Request $request){
-        $phone_num = '16634019620';
-        //echo $time;exit;
-        $code = mt_rand(111111,999999);
-        $code = "{\"code\":$code}";
+        $phone_num = $request->input('phone_num');
+        $adminInfo = DB::table('admin_user')->where('admin_user',$phone_num)->first();
+        if($adminInfo){
+            $code = mt_rand(111111,999999);
+            $code = "{\"code\":$code}";
 //        var_dump($code);exit;
-        $a = AlibabaCloud::accessKeyClient('LTAI4Fg1rz6e6xsRu1k3tbT1', 'VlTglNdH9AthF5AK8JHPhWI9mMPH5N')
-            ->regionId('cn-hangzhou')
-            ->asDefaultClient();
+            $a = AlibabaCloud::accessKeyClient('LTAI4Fg1rz6e6xsRu1k3tbT1', 'VlTglNdH9AthF5AK8JHPhWI9mMPH5N')
+                ->regionId('cn-hangzhou')
+                ->asDefaultClient();
 //        var_dump($a);exit;
 
-        try {
-            $result = AlibabaCloud::rpc()
-                ->product('Dysmsapi')
-                // ->scheme('https') // https | http
-                ->version('2017-05-25')
-                ->action('SendSms')
-                ->method('POST')
-                ->host('dysmsapi.aliyuncs.com')
-                ->options([
-                    'query' => [
-                        'RegionId' => "cn-hangzhou",
-                        'PhoneNumbers' => $phone_num,
-                        'SignName' => "美丽共享联盟",
-                        'TemplateCode' => "SMS_177435278",
-                        'TemplateParam' => "$code",
-                    ],
-                ])
-                ->request();
-            print_r($result->toArray());
-            Redis::set($phone_num,$code);
-            Redis::expire($phone_num,900);
-        } catch (ClientException $e) {
-            echo $e->getErrorMessage() . PHP_EOL;
-        } catch (ServerException $e) {
-            echo $e->getErrorMessage() . PHP_EOL;
+            try {
+                $result = AlibabaCloud::rpc()
+                    ->product('Dysmsapi')
+                    // ->scheme('https') // https | http
+                    ->version('2017-05-25')
+                    ->action('SendSms')
+                    ->method('POST')
+                    ->host('dysmsapi.aliyuncs.com')
+                    ->options([
+                        'query' => [
+                            'RegionId' => "cn-hangzhou",
+                            'PhoneNumbers' => $phone_num,
+                            'SignName' => "美丽共享联盟",
+                            'TemplateCode' => "SMS_177435278",
+                            'TemplateParam' => "$code",
+                        ],
+                    ])
+                    ->request();
+                print_r($result->toArray());
+                Redis::set($phone_num,$code);
+                Redis::expire($phone_num,900);
+            } catch (ClientException $e) {
+                echo $e->getErrorMessage() . PHP_EOL;
+            } catch (ServerException $e) {
+                echo $e->getErrorMessage() . PHP_EOL;
+            }
+        }else{
+            $response=[
+                'code'=>1,
+                'msg'=>'此手机号在本平台不存在,请输入店铺绑定的手机号'
+            ];
+            die(json_encode($response, JSON_UNESCAPED_UNICODE));
         }
     }
+    //验证验证码是否正确
+    public function admin_message_check(Request $request){
+        $phone_num = $request->input('phone_num');
+        $code = $request->input('code');
 
-    public function admin_message(){
-        $key = '16634019620';
-        $code = Redis::get($key);
+        $key = $phone_num;
+        $code1 = Redis::get($key);
+        if($code1){
+            if($code == $code1){
+                $response=[
+                    'code'=>0,
+                    'msg'=>'身份验证成功'
+                ];
+                return json_encode($response, JSON_UNESCAPED_UNICODE);
+            }else{
+                $response=[
+                    'code'=>1,
+                    'msg'=>'验证码错误'
+                ];
+                die(json_encode($response, JSON_UNESCAPED_UNICODE));
+            }
+        }else{
+            $response=[
+                'code'=>2,
+                'msg'=>'系统出现错误,请确认是否发送验证码,如果没有请重试'
+            ];
+            die(json_encode($response, JSON_UNESCAPED_UNICODE));
+        }
+    }
+    //修改密码
+    public function admin_passwordUpdate(Request $request){
+        $phone_num = $request->input('phone_num');
+        $update_admin_pwd = $request->input('update_admin_pwd');    //要修改的密码
+        $update_admin_pwd = password_hash($update_admin_pwd, PASSWORD_BCRYPT);
+        $u_admin_pwd = DB::table('admin_user')->where('admin_user',$phone_num)->update(['admin_pwd'=>$update_admin_pwd]);
+        if($u_admin_pwd>=0){
+            $ip = $_SERVER['SERVER_ADDR'];
+            $key = 'H:userlogin_id'.$ip;
+            redis::del($key);
+            $data = [
+                'code'=>0
+            ];
+            $response=[
+                'code'=>0,
+                'data'=>$data,
+                'msg'=>'修改成功,请重新登录'
+            ];
+            return json_encode($response,JSON_UNESCAPED_UNICODE);
+        }else{
+            $response=[
+                'code'=>1,
+                'msg'=>'系统出现错误,请重试'
+            ];
+            die(json_encode($response, JSON_UNESCAPED_UNICODE));
+        }
     }
 
 
