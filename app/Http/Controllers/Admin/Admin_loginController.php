@@ -1422,13 +1422,77 @@ class Admin_loginController extends Controller
         $shop_id = $request->input('shop_id');
         $admin_judge = $request->input('admin_judge');
         if($admin_judge == 2){
+            $orderInfo = DB::table('mt_order_detail')->where(['shop_id'=>$shop_id,'order_status'=>1])->get(['pay_price','buy_num'])->toArray();
+            $total_num = 0;    //总营业额
+            foreach ($orderInfo as $k=>$v) {
+                $total_num = $total_num+$v->pay_price*$v->buy_num;
+            }
+            $today_start_time=strtotime(date("Y-m-d",time()));    //求今天开始时间
+            $today_stop_time = $today_start_time+86400;    //今天结束的时间
+            $yesterday_start_time = $today_start_time-86400;   //一天前 开始时间
+            $before_yesterday_start_time = $yesterday_start_time-86400;   //两天前 开始时间
+            $threedays_ago_start_time = $before_yesterday_start_time-86400;   //三天前 开始时间
+            $fourdays_ago_start_time = $threedays_ago_start_time-86400;   //四天前 开始时间
+            $fivedays_ago_start_time = $fourdays_ago_start_time-86400;   //五天前 开始时间
+            $sixdays_ago_start_time = $fivedays_ago_start_time-86400;   //六天前 开始时间
+
+            $sixdays_ago_Info =  DB::table('mt_order_detail')->where(['shop_id'=>$shop_id])->where('order_status','>=',1)->where('pay_time','>',$sixdays_ago_start_time)->where('pay_time','<',$fivedays_ago_start_time)->get(['pay_price','buy_num'])->toArray();
+            $sixdays_total_num = 0;  //六天前
+            foreach ($sixdays_ago_Info as $k=>$v) {
+                $sixdays_total_num = $sixdays_total_num+$v->pay_price*$v->buy_num;
+            }
+            $fivedays_ago_Info =  DB::table('mt_order_detail')->where(['shop_id'=>$shop_id])->where('order_status','>=',1)->where('pay_time','>',$fivedays_ago_start_time)->where('pay_time','<',$fourdays_ago_start_time)->get(['pay_price','buy_num'])->toArray();
+            $fivedays_total_num = 0;  //五天前
+            foreach ($fivedays_ago_Info as $k=>$v) {
+                $fivedays_total_num = $fivedays_total_num+$v->pay_price*$v->buy_num;
+            }
+            $fourdays_ago_Info =  DB::table('mt_order_detail')->where(['shop_id'=>$shop_id])->where('order_status','>=',1)->where('pay_time','>',$fourdays_ago_start_time)->where('pay_time','<',$threedays_ago_start_time)->get(['pay_price','buy_num'])->toArray();
+            $fourdays_total_num = 0;  //四天前
+            foreach ($fourdays_ago_Info as $k=>$v) {
+                $fourdays_total_num = $fourdays_total_num+$v->pay_price*$v->buy_num;
+            }
+            $threedays_ago_Info =  DB::table('mt_order_detail')->where(['shop_id'=>$shop_id])->where('order_status','>=',1)->where('pay_time','>',$threedays_ago_start_time)->where('pay_time','<',$before_yesterday_start_time)->get(['pay_price','buy_num'])->toArray();
+            $threedays_total_num = 0;  //三天前
+            foreach ($threedays_ago_Info as $k=>$v) {
+                $threedays_total_num = $threedays_total_num+$v->pay_price*$v->buy_num;
+            }
+            $before_yesterdays_ago_Info =  DB::table('mt_order_detail')->where(['shop_id'=>$shop_id])->where('order_status','>=',1)->where('pay_time','>',$before_yesterday_start_time)->where('pay_time','<',$yesterday_start_time)->get(['pay_price','buy_num'])->toArray();
+            $before_yesterdays_total_num = 0;  //两天前
+            foreach ($before_yesterdays_ago_Info as $k=>$v) {
+                $before_yesterdays_total_num = $before_yesterdays_total_num+$v->pay_price*$v->buy_num;
+            }
+
+            $yesterdays_ago_Info =  DB::table('mt_order_detail')->where(['shop_id'=>$shop_id])->where('order_status','>=',1)->where('pay_time','>',$yesterday_start_time)->where('pay_time','<',$today_start_time)->get(['pay_price','buy_num'])->toArray();
+            $yesterdays_total_num = 0;  //一天前
+            foreach ($yesterdays_ago_Info as $k=>$v) {
+                $yesterdays_total_num = $yesterdays_total_num+$v->pay_price*$v->buy_num;
+            }
+
+            $todays_ago_Info =  DB::table('mt_order_detail')->where(['shop_id'=>$shop_id])->where('order_status','>=',1)->where('pay_time','>',$today_start_time)->where('pay_time','<',$today_stop_time)->get(['pay_price','buy_num'])->toArray();
+            $todays_total_num = 0;  //今天
+            foreach ($todays_ago_Info as $k=>$v) {
+                $todays_total_num = $todays_total_num+$v->pay_price*$v->buy_num;
+            }
+
             $shopInfo = DB::table('mt_shop')
                 ->join('admin_user','admin_user.shop_id','=','mt_shop.shop_id')
                 ->where('mt_shop.shop_id',$shop_id)
                 ->first(['shop_name','shop_img','shop_project','shop_desc','shop_bus','shop_service','shop_address_provice','shop_address_city','shop_address_area','admin_tel','admin_id','shop_logo']);
+
+            $data = [
+                'shopInfo'=>$shopInfo,
+                'sixdays_total_num'=>$sixdays_total_num,
+                'fivedays_total_num'=>$fivedays_total_num,
+                'fourdays_total_num'=>$fourdays_total_num,
+                'threedays_total_num'=>$threedays_total_num,
+                'before_yesterdays_total_num'=>$before_yesterdays_total_num,
+                'yesterdays_total_num'=>$yesterdays_total_num,
+                'todays_total_num'=>$todays_total_num,
+                'total_num'=>$total_num,
+            ];
             $response=[
                 'code'=>0,
-                'data'=>$shopInfo,
+                'data'=>$data,
                 'msg'=>'数据请求成功'
             ];
             return json_encode($response, JSON_UNESCAPED_UNICODE);

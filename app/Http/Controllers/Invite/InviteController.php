@@ -180,7 +180,7 @@ class InviteController extends Controller
         foreach ($mt_invitationInfo as $k=>$v){
             $userArray = DB::table('mt_user')->where('uid',$v->uid)->first();
             $update = [
-                'money'=>$userArray->money+$everyBody
+                'money'=>$userArray->species+$everyBody
             ];
             DB::table('mt_user')->where('uid',$v->uid)->update($update);
 
@@ -197,8 +197,6 @@ class InviteController extends Controller
         ];
         return json_encode($response, JSON_UNESCAPED_UNICODE);
     }
-
-
     public function test(Request $request){
         $key = $request->input('key');
         $users = DB::table('mt_goods')
