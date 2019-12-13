@@ -1014,10 +1014,11 @@ class OrderController extends Controller
         $attitude_start=$request->input('attitude_start');  //服务态度
         $ambient=$request->input('ambient');                //店铺环境
         $evaluate_text=$request->input('evaluate_text');    //评价内容
+        $goods_evaluate_img=$request->input('goods_evaluate_img');
         $openid1 = $request->input('openid');
         $key = $openid1;
         $openid = Redis::get($key);
-        $openid='o9VUc5KN78P_jViUQnGjica4GIQs';
+//        $openid='o9VUc5KN78P_jViUQnGjica4GIQs';
         $datainfo=DB::table('mt_user')->where(['openid'=>$openid])->first();
         $uid=$datainfo->uid;
         $data_detail=DB::table('mt_order_detail')->where(['id'=>$id,'uid'=>$uid])->first();
@@ -1026,11 +1027,13 @@ class OrderController extends Controller
         $update_add=[
             'order_status'=>4
         ];
+        $data_count=DB::table('mt_goods_evaluate')->where(['goods_id'=>$data_detail->goods_id])->count();
         if($openid){
             $inser_into=[
                 'goods_id'=>$data_detail->goods_id,
                 'shop_id'=>$data_detail->shop_id,
                 'uid'=>$uid,
+                'goods_evaluate_img'=>$goods_evaluate_img,
                 'effect_start'=>$effect_start,
                 'skill_start'=>$skill_start,
                 'attitude_start'=>$attitude_start,
@@ -1038,6 +1041,15 @@ class OrderController extends Controller
                 'evaluate_text'=>$evaluate_text
             ];
             $data_info=DB::table('mt_goods_evaluate')->insert($inser_into);
+            $data_info1=DB::table('mt_goods_evaluate')->where(['goods_id'=>$data_detail->goods_id])->sum('effect_start'); //服务效果综合
+            $data_info2=DB::table('mt_goods_evaluate')->where(['goods_id'=>$data_detail->goods_id])->sum('skill_start');   //服务技术综合
+            $aa1=round((($data_info1/$data_count)+($data_info2/$data_count))/2);    //商品星级平均值
+            $data_goods=DB::table('mt_goods')->where(['goods_id'=>$data_detail->goods_id])->update(['star'=>$aa1]);
+//            $aa=DB::table('mt_goods_evaluate')->
+            $data_info3=DB::table('mt_goods_evaluate')->where(['goods_id'=>$data_detail->goods_id])->sum('attitude_start'); //服务态度综合
+            $data_info4=DB::table('mt_goods_evaluate')->where(['goods_id'=>$data_detail->goods_id])->sum('ambient');   //店铺环境综合
+            $aa2=round(($data_info3/$data_count)+($data_info4/$data_count)/2);    //店铺星级平均值
+            $data_shop=DB::table('mt_shop')->where(['shop_id'=>$data_detail->shop_id])->update(['shop_star'=>$aa1]);
             if($data_status){
                 $data_detail=DB::table('mt_order_detail')->where(['id'=>$id,'uid'=>$uid])->update($update_add);
             }else{
