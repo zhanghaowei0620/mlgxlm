@@ -205,6 +205,8 @@ Route::post('invite_friend', 'Invite\InviteController@invite_friend');   //邀�
 
 Route::post('open_red_packet', 'Invite\InviteController@open_red_packet');   //拆红包
 
+Route::post('draw_package', 'Invite\InviteController@draw_package');   //新人好礼
+
 
 Route::get('test', 'Invite\InviteController@test');
 
