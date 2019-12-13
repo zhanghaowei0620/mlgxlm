@@ -22,6 +22,8 @@ Route::get('/type_lists', 'Index\IndexController@type_lists');   //更多
 
 Route::get('/search_goods', 'Index\IndexController@search_goods');   //搜索商品
 
+Route::get('/mt_sort', 'Index\IndexController@mt_sort');   //首页四大分类
+
 Route::get('/search_shop', 'Index\IndexController@search_shop');   //搜索店铺
 
 Route::get('/index_coupon', 'Index\IndexController@index_coupon');    //首页-优惠券

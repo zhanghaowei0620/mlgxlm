@@ -17,6 +17,7 @@ class IndexController extends Controller
         $shop_address_city=$request->input('shop_address_city');
         $time=time();
         $type = DB::table('mt_type')->where(['p_id'=>0])->get()->toArray();  //父级分类
+//        var_dump($type);die;
         $s_type1 = DB::table('mt_type')->where(['p_id'=>1])->get()->toArray();          //子集分类 第一行
         $s_type2 = DB::table('mt_type')->where(['p_id'=>2])->get()->toArray();         //子集分类 第二行
         $s_type3 = DB::table('mt_type')->where(['p_id'=>3])->get()->toArray();         //子集分类 第二行
@@ -142,6 +143,98 @@ class IndexController extends Controller
             //var_dump($response);exit;
             return json_encode($response,JSON_UNESCAPED_UNICODE);
 //        }
+
+    }
+
+    //首页四大分类  美容美发0     身体护理1    问题皮肤2   瑜伽瘦身3
+    public function mt_sort(Request $request)
+    {
+        $sort_type=$request->input('sort_type');    //美容美发0     身体护理1    问题皮肤2   瑜伽瘦身3
+        if($sort_type == 0){
+            $data1=DB::table('mt_type')->where(['p_id'=>1])->get();
+            if($data1){
+                $data=[
+                    'code'=>0,
+                    'data'=>$data1
+                ];
+                $response=[
+                    'data'=>$data
+                ];
+                return json_encode($response,JSON_UNESCAPED_UNICODE);
+            }else{
+                $data=[
+                    'code'=>1,
+                    'msg'=>'数据请求失败'
+                ];
+                $response=[
+                    'data'=>$data
+                ];
+                return json_encode($response,JSON_UNESCAPED_UNICODE);
+            }
+        }else if($sort_type == 1){
+            $data2=DB::table('mt_type')->where(['p_id'=>2])->get();
+            if($data2){
+                $data=[
+                    'code'=>0,
+                    'data'=>$data2
+                ];
+                $response=[
+                    'data'=>$data
+                ];
+                return json_encode($response,JSON_UNESCAPED_UNICODE);
+            }else{
+                $data=[
+                    'code'=>1,
+                    'msg'=>'数据请求失败'
+                ];
+                $response=[
+                    'data'=>$data
+                ];
+                return json_encode($response,JSON_UNESCAPED_UNICODE);
+            }
+        }else if($sort_type == 2){
+            $data3=DB::table('mt_type')->where(['p_id'=>3])->get();
+            if($data3){
+                $data=[
+                    'code'=>0,
+                    'data'=>$data3
+                ];
+                $response=[
+                    'data'=>$data
+                ];
+                return json_encode($response,JSON_UNESCAPED_UNICODE);
+            }else{
+                $data=[
+                    'code'=>1,
+                    'msg'=>'数据请求失败'
+                ];
+                $response=[
+                    'data'=>$data
+                ];
+                return json_encode($response,JSON_UNESCAPED_UNICODE);
+            }
+        }else if($sort_type == 3){
+            $data4=DB::table('mt_type')->where(['p_id'=>4])->get();
+            if($data4){
+                $data=[
+                    'code'=>0,
+                    'data'=>$data4
+                ];
+                $response=[
+                    'data'=>$data
+                ];
+                return json_encode($response,JSON_UNESCAPED_UNICODE);
+            }else{
+                $data=[
+                    'code'=>1,
+                    'msg'=>'数据请求失败'
+                ];
+                $response=[
+                    'data'=>$data
+                ];
+                return json_encode($response,JSON_UNESCAPED_UNICODE);
+            }
+        }
 
     }
 
