@@ -152,7 +152,7 @@ class UserController extends Controller
             }
         }
     }
-    //判断用户是否第一次登陆
+    //判断用户是否为新用户
     public function usertime(Request $request)
     {
         $openid1 = $request->input('openid');
