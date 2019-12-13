@@ -1014,6 +1014,7 @@ class OrderController extends Controller
         $attitude_start=$request->input('attitude_start');  //服务态度
         $ambient=$request->input('ambient');                //店铺环境
         $evaluate_text=$request->input('evaluate_text');    //评价内容
+        $goods_evaluate_img=$request->input('goods_evaluate_img');
         $openid1 = $request->input('openid');
         $key = $openid1;
         $openid = Redis::get($key);
@@ -1032,6 +1033,7 @@ class OrderController extends Controller
                 'goods_id'=>$data_detail->goods_id,
                 'shop_id'=>$data_detail->shop_id,
                 'uid'=>$uid,
+                'goods_evaluate_img'=>$goods_evaluate_img,
                 'effect_start'=>$effect_start,
                 'skill_start'=>$skill_start,
                 'attitude_start'=>$attitude_start,
