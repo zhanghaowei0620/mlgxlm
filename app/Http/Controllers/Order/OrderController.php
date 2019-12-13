@@ -972,7 +972,9 @@ class OrderController extends Controller
         $key = $openid1;
         $openid = Redis::get($key);
         if($openid){
-            $data=DB::table('mt_order_detail')->where(['id'=>$id])->first();
+            $data=DB::table('mt_order_detail')
+                ->join('mt_goods','mt_goods.goods_id','=','mt_order_detail.goods_id')
+                ->where(['mt_order_detail.id'=>$id])->first();
             if($data){
                 $data=[
                     'code'=>0,
@@ -1015,10 +1017,11 @@ class OrderController extends Controller
         $openid1 = $request->input('openid');
         $key = $openid1;
         $openid = Redis::get($key);
-        //$openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
+        $openid='o9VUc5KN78P_jViUQnGjica4GIQs';
         $datainfo=DB::table('mt_user')->where(['openid'=>$openid])->first();
         $uid=$datainfo->uid;
         $data_detail=DB::table('mt_order_detail')->where(['id'=>$id,'uid'=>$uid])->first();
+//        var_dump($data_detail);die;
         $data_status=DB::table('mt_order')->where(['order_id'=>$data_detail->order_id,'uid'=>$uid,'order_status'=>1])->get();
         $update_add=[
             'order_status'=>4
