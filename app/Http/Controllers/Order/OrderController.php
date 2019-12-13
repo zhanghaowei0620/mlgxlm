@@ -967,6 +967,7 @@ class OrderController extends Controller
     //商品评价
     public function goods_evaluate(Request $request)
     {
+//        订单状态 0->未支付，1->已付款 待发货，3->确认收货,4->已完成,5->已关闭
         $id=$request->input('id');
         $effect_start=$request->input('effect_start');  //服务效果
         $skill_start=$request->input('skill_start');    //服务技术
@@ -980,6 +981,10 @@ class OrderController extends Controller
         $datainfo=DB::table('mt_user')->where(['openid'=>$openid])->first();
         $uid=$datainfo->uid;
         $data_detail=DB::table('mt_order_detail')->where(['id'=>$id,'uid'=>$uid])->first();
+        $data_status=DB::table('mt_order')->where(['order_id'=>$data_detail->order_id,'uid'=>$uid,'order_status'=>1])->get();
+        $update_add=[
+            'order_status'=>4
+        ];
         if($openid){
             $inser_into=[
                 'goods_id'=>$data_detail->goods_id,
@@ -992,6 +997,12 @@ class OrderController extends Controller
                 'evaluate_text'=>$evaluate_text
             ];
             $data_info=DB::table('mt_goods_evaluate')->insert($inser_into);
+            if($data_status){
+                $data_detail=DB::table('mt_order_detail')->where(['id'=>$id,'uid'=>$uid])->update($update_add);
+            }else{
+                $data_detail=DB::table('mt_order')->where(['order_id'=>$data_detail->order_id,'uid'=>$uid])->update($update_add);
+                $data_detail=DB::table('mt_order_detail')->where(['id'=>$id,'uid'=>$uid])->update($update_add);
+            }
             if($data_info){
                 $data=[
                     'code'=>1,
