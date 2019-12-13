@@ -9,16 +9,50 @@ use Illuminate\Support\Facades\Redis;
 
 class InviteController extends Controller
 {
-//    //新人有礼
-//    public function new_people(Request $request){
-//        $openid1 = $request->input('openid');
-//        $key = $openid1;
-//        $openid = Redis::get($key);
-//        if($openid){
-//            $threedays_time = time()-72*3600;
-//            $userInfo = DB::table('mt_user')->where('openid',$openid)->where('wx_user_login','>',$threedays_time)->first();
-//        }
-//    }
+    //新人有礼
+    public function draw_package(Request $request){
+        $openid1 = $request->input('openid');
+        $key = $openid1;
+        $openid = Redis::get($key);
+        if($openid){
+            $package_num = 30;
+            $userInfo = DB::table('mt_user')->where('openid',$openid)->first(['species','is_new_people']);
+            $update = [
+                'species'=>$userInfo->species+$package_num,
+                'is_new_people'=>1
+            ];
+            $updateUserInfo = DB::table('mt_user')->where('openid',$openid)->update($update);
+            if($updateUserInfo > 0){
+                $data = [
+                    'code'=>0,
+                    'msg'=>'领取成功,请去个人中心查看是否到账'
+                ];
+                $response = [
+                    'data' => $data
+                ];
+                return json_encode($response, JSON_UNESCAPED_UNICODE);
+            }else{
+                $data = [
+                    'code'=>1,
+                    'msg'=>'领取失败,请重试'
+                ];
+                $response = [
+                    'data' => $data
+                ];
+                die(json_encode($response, JSON_UNESCAPED_UNICODE));
+            }
+        }else{
+            $data = [
+                'code'=>2,
+                'msg'=>'请先登录'
+            ];
+            $response = [
+                'data' => $data
+            ];
+            die(json_encode($response, JSON_UNESCAPED_UNICODE));
+        }
+
+    }
 
     //邀请朋友拆红包
     public function invite_userInfo(Request $request){
