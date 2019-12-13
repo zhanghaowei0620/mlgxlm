@@ -1574,13 +1574,13 @@ class Admin_loginController extends Controller
                         ],
                     ])
                     ->request();
-                print_r($result->toArray());
                 Redis::set($phone_num,$code);
                 Redis::expire($phone_num,900);
+                return json_encode($result, JSON_UNESCAPED_UNICODE);
             } catch (ClientException $e) {
-                echo $e->getErrorMessage() . PHP_EOL;
+                return json_encode($e->getErrorMessage() . PHP_EOL, JSON_UNESCAPED_UNICODE);
             } catch (ServerException $e) {
-                echo $e->getErrorMessage() . PHP_EOL;
+                return json_encode($e->getErrorMessage() . PHP_EOL, JSON_UNESCAPED_UNICODE);
             }
         }else{
             $response=[
