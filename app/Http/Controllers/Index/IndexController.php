@@ -151,6 +151,8 @@ class IndexController extends Controller
     {
             $t_id=$request->input('t_id');    //美容美发0     身体护理1    问题皮肤2   瑜伽瘦身3
             $data1=DB::table('mt_type')->where(['p_id'=>$t_id])->get();
+            $data2=DB::table('mt_goods')->where(['t_id'=>6])->get();
+            if($data1){
                 $data=[
                     'code'=>0,
                     'data'=>$data1,
@@ -159,6 +161,17 @@ class IndexController extends Controller
                     'data'=>$data
                 ];
                 return json_encode($response,JSON_UNESCAPED_UNICODE);
+            }else{
+                $data=[
+                    'code'=>1,
+                    'data'=>$data1,
+                ];
+                $response=[
+                    'data'=>$data
+                ];
+                return json_encode($response,JSON_UNESCAPED_UNICODE);
+            }
+
     }
 
     //更多

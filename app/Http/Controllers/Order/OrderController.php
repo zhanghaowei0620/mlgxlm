@@ -560,18 +560,19 @@ class OrderController extends Controller
             ->first();
         if($order_status == 99){
             $data=DB::table('mt_order_detail')
-                ->join('mt_order','mt_order.order_id','=','mt_order_detail.order_id')
+//                ->join('mt_order','mt_order.order_id','=','mt_order_detail.order_id')
                 ->join('mt_shop','mt_shop.shop_id','=','mt_order_detail.shop_id')
 //                    ->join('mt_refund','mt_refund.id','=','mt_order_detail.id')
-                ->where(['mt_order_detail.uid'=>$orderInfo->uid,'good_cate'=>$good_cate])
+                ->where(['mt_order_detail.uid'=>$orderInfo->uid])
                 ->select()->paginate(10);
         }else{
             $data=DB::table('mt_order_detail')
-                ->join('mt_order','mt_order.order_id','=','mt_order_detail.order_id')
+//                ->join('mt_order','mt_order.order_id','=','mt_order_detail.order_id')
                 ->join('mt_shop','mt_shop.shop_id','=','mt_order_detail.shop_id')
 //                ->join('mt_refund','mt_refund.id','=','mt_order_detail.id')
-                ->where(['mt_order_detail.uid'=>$orderInfo->uid,'good_cate'=>$good_cate,'mt_order.order_status'=>$order_status])
+                ->where(['mt_order_detail.uid'=>$orderInfo->uid,'mt_order_detail.order_status'=>$order_status])
                 ->select()->paginate(10);
+//            var_dump($data);die;
         }
         if($data){
             $data=[
@@ -1060,7 +1061,7 @@ class OrderController extends Controller
             }
             if($data_info){
                 $data=[
-                    'code'=>1,
+                    'code'=>0,
                     'msg'=>'评价数据提交成功'
                 ];
                 $response = [
