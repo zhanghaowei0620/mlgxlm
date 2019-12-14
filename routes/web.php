@@ -235,6 +235,8 @@ Route::post('admin_passwordUpdate','Admin\Admin_loginController@admin_passwordUp
 
 Route::post('admin_set_rebate','Admin\Admin_loginController@admin_set_rebate');  //分销商设置返利比例
 
+Route::post('admin_rebate_detail','Admin\Admin_loginController@admin_rebate_detail');  //查看分销商返利比例
+
 //用户列表
 Route::any('userlist','Admin\Admin_loginController@userlist')->middleware('checkLogin');
 
