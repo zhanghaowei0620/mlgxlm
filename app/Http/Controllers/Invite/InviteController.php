@@ -17,30 +17,42 @@ class InviteController extends Controller
         if($openid){
             $package_num = 30;
             $userInfo = DB::table('mt_user')->where('openid',$openid)->first(['species','is_new_people']);
-            $update = [
-                'species'=>$userInfo->species+$package_num,
-                'is_new_people'=>1
-            ];
-            $updateUserInfo = DB::table('mt_user')->where('openid',$openid)->update($update);
-            if($updateUserInfo > 0){
-                $data = [
-                    'code'=>0,
-                    'msg'=>'领取成功,请去个人中心查看是否到账'
+            if($userInfo->is_new_people == 0){
+                $update = [
+                    'species'=>$userInfo->species+$package_num,
+                    'is_new_people'=>1
                 ];
-                $response = [
-                    'data' => $data
-                ];
-                return json_encode($response, JSON_UNESCAPED_UNICODE);
+                $updateUserInfo = DB::table('mt_user')->where('openid',$openid)->update($update);
+                if($updateUserInfo > 0){
+                    $data = [
+                        'code'=>0,
+                        'msg'=>'领取成功,请去个人中心查看是否到账'
+                    ];
+                    $response = [
+                        'data' => $data
+                    ];
+                    return json_encode($response, JSON_UNESCAPED_UNICODE);
+                }else{
+                    $data = [
+                        'code'=>1,
+                        'msg'=>'领取失败,请重试'
+                    ];
+                    $response = [
+                        'data' => $data
+                    ];
+                    die(json_encode($response, JSON_UNESCAPED_UNICODE));
+                }
             }else{
                 $data = [
-                    'code'=>1,
-                    'msg'=>'领取失败,请重试'
+                    'code'=>3,
+                    'msg'=>'每个人只能领取一次'
                 ];
                 $response = [
                     'data' => $data
                 ];
                 die(json_encode($response, JSON_UNESCAPED_UNICODE));
             }
+
         }else{
             $data = [
                 'code'=>2,
