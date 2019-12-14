@@ -159,11 +159,11 @@ class IndexController extends Controller
         $distance = DB::select("SELECT s.shop_id,shop_name,goods_id,goods_name,market_price,picture,prople,promotion_price, 6378.138*2*ASIN(SQRT(POW(SIN(($lat1*PI()/180-lat*PI()/180)/2),2)+COS($lat1*PI()/180)*COS(lat*PI()/180)*POW(SIN(($lng1*PI()/180-lng*PI()/180)/2),2))) AS juli  FROM mt_shop s inner join mt_goods g on s.shop_id = g.shop_id  where promotion_type = 1  group by juli order by juli");
             if($data1){
                 $data=[
-                    'code'=>0,
-                    'data'=>$data1,
+                    'data1'=>$data1,
                     'distance'=>$distance
                 ];
                 $response=[
+                    'code'=>0,
                     'data'=>$data
                 ];
                 return json_encode($response,JSON_UNESCAPED_UNICODE);
@@ -177,7 +177,7 @@ class IndexController extends Controller
                 ];
                 return json_encode($response,JSON_UNESCAPED_UNICODE);
             }
-
+    
     }
 
     //更多
