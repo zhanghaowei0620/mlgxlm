@@ -414,67 +414,68 @@ class OrderController extends Controller
                     ];
                     return json_encode($response,JSON_UNESCAPED_UNICODE);
                 }
-            }else if ($method_type == 5){
-                $data_order = [
-                    'uid'=>$uid,
-                    'order_no'=>$order_no,
-                    'wx_name' =>$wx_name,
-                    'order_status'=>0,
-                    'total_price'=>$total_price,
-                    'create_time'=>time(),
-                ];
-//            var_dump($data_order);die;
-                $infodata =DB::table('mt_order')->insert($data_order);
-                $dataData = DB::table('mt_order')->where('order_no',$order_no)->first();
-//            var_dump($dataData);exit;
-                $order_id = $dataData->order_id;
-                session(['order_id'=>$order_id]);
-
-                $cartUpdate=[
-                    'buy_num'=>$buy_num,
-                    'update_time'=>time(),
-                    'order_address'=>$order_address
-                ];
-//            var_dump($cartUpdate);die;
-                $res = DB::table('mt_cart')->where('uid',$uid)->where('goods_id',$goods_id)->update($cartUpdate);
-//            var_dump($res);exit;
-                //添加订单详情表
-                    $num = DB::table('re_goods')
-                        ->where('re_goods_id',$re_goods_id)
-                        ->get();
-//                            var_dump($num);exit;
-                    foreach($num as $k=>$v){
-                        $info=[
-                            'uid'=>$uid,
-                            'order_id'=>$order_id,
-                            'order_no'=>$order_no,
-                            'goods_id'=>$v->re_goods_id,
-                            'goods_name'=>$v->re_goods_name,
-                            'price'=>$v->re_goods_price,
-                            'buy_num'=>$v->buy_num,
-                            'order_status'=>0,
-                            'shop_id'=>$v->shop_id,
-//                            'shop_name'=>$v->shop_name,
-                            'create_time'=>time()
-                        ];
-                        $datailData = DB::table('mt_order_detail')->insert($info);
-
-                    }
-                if($res>=0){
-                    $data=[
-                        'code'=>'0',
-                        'msg'=>'生成分销订单成功',
-                        'order_id'=>$order_id,
-                    ];
-                    $response = [
-                        'data'=>$data
-                    ];
-                    return json_encode($response,JSON_UNESCAPED_UNICODE);
-                }
-
-
-
             }
+//            else if ($method_type == 5){
+//                $data_order = [
+//                    'uid'=>$uid,
+//                    'order_no'=>$order_no,
+//                    'wx_name' =>$wx_name,
+//                    'order_status'=>0,
+//                    'total_price'=>$total_price,
+//                    'create_time'=>time(),
+//                ];
+////            var_dump($data_order);die;
+//                $infodata =DB::table('mt_order')->insert($data_order);
+//                $dataData = DB::table('mt_order')->where('order_no',$order_no)->first();
+////            var_dump($dataData);exit;
+//                $order_id = $dataData->order_id;
+//                session(['order_id'=>$order_id]);
+//
+//                $cartUpdate=[
+//                    'buy_num'=>$buy_num,
+//                    'update_time'=>time(),
+//                    'order_address'=>$order_address
+//                ];
+////            var_dump($cartUpdate);die;
+//                $res = DB::table('mt_cart')->where('uid',$uid)->where('goods_id',$goods_id)->update($cartUpdate);
+////            var_dump($res);exit;
+//                //添加订单详情表
+//                    $num = DB::table('re_goods')
+//                        ->where('re_goods_id',$re_goods_id)
+//                        ->get();
+////                            var_dump($num);exit;
+//                    foreach($num as $k=>$v){
+//                        $info=[
+//                            'uid'=>$uid,
+//                            'order_id'=>$order_id,
+//                            'order_no'=>$order_no,
+//                            'goods_id'=>$v->re_goods_id,
+//                            'goods_name'=>$v->re_goods_name,
+//                            'price'=>$v->re_goods_price,
+//                            'buy_num'=>$v->buy_num,
+//                            'order_status'=>0,
+//                            'shop_id'=>$v->shop_id,
+////                            'shop_name'=>$v->shop_name,
+//                            'create_time'=>time()
+//                        ];
+//                        $datailData = DB::table('mt_order_detail')->insert($info);
+//
+//                    }
+//                if($res>=0){
+//                    $data=[
+//                        'code'=>'0',
+//                        'msg'=>'生成分销订单成功',
+//                        'order_id'=>$order_id,
+//                    ];
+//                    $response = [
+//                        'data'=>$data
+//                    ];
+//                    return json_encode($response,JSON_UNESCAPED_UNICODE);
+//                }
+//
+//
+//
+//            }
         }else{
             $response = [
                 'error'=>'1',
@@ -483,6 +484,27 @@ class OrderController extends Controller
             return json_encode($response,JSON_UNESCAPED_UNICODE);
         }
     }
+    //分销订单
+    public function distribution_order(Request $request)
+    {
+        $re_order_price=$request->input('re_order_price');
+        $openid1 = $request->input('openid');
+        $key = $openid1;
+        $openid = Redis::get($key);
+        $order_no = date("YmdHis", time()) . rand(1000, 9999);   //订单号
+//        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
+        if($openid){
+
+
+        }else{
+            $response = [
+                'error'=>'1',
+                'msg'=>'请先登录'
+            ];
+            return json_encode($response,JSON_UNESCAPED_UNICODE);
+        }
+    }
+
     //查询当前商品的所有优惠卷
     public function coupon_list_all(Request $request)
     {
@@ -883,27 +905,6 @@ class OrderController extends Controller
                 }
 
             }
-//
-//
-//            if($up_status && $up_detail){
-//                $data=[
-//                    'code'=>0,
-//                    'msg'=>'确认收货成功'
-//                ];
-//                $response = [
-//                    'data'=>$data
-//                ];
-//                return (json_encode($response,JSON_UNESCAPED_UNICODE));
-//            }else{
-//                $data=[
-//                    'code'=>1,
-//                    'msg'=>'确认收货失败,请重试'
-//                ];
-//                $response = [
-//                    'data'=>$data
-//                ];
-//                return (json_encode($response,JSON_UNESCAPED_UNICODE));
-//            }
         }else{
             $response = [
                 'code'=>1,
