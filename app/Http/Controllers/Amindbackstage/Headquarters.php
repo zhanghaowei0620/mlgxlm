@@ -1416,7 +1416,7 @@ class Headquarters extends Controller
     //协议详情
     public function admin_rule_Detail(Request $request){
         $rule_id = $request->input('rule_id');
-        $admin_judge = $request->input('rule_id');
+        $admin_judge = $request->input('admin_judge');
         if($admin_judge == 1){
             $ruleInfo = DB::table('mt_rules')->where('rule_id',$rule_id)->first();
             if($ruleInfo){
