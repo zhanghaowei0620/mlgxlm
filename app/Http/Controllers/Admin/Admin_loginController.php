@@ -1598,7 +1598,9 @@ class Admin_loginController extends Controller
 
         $key = $phone_num;
         $code1 = Redis::get($key);
+        $code1 = json_decode($code1);
         if($code1){
+            $code1 = $code1->code;
             if($code == $code1){
                 $response=[
                     'code'=>0,

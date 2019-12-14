@@ -199,9 +199,9 @@ Route::post('admin_Application_reseller_list', 'Amindbackstage\Headquarters@admi
 
 Route::get('admin_accessToken1', 'Amindbackstage\Headquarters@admin_accessToken1')->middleware('checkLogin');
 
-Route::get('admin_Limited_list_update_status', 'Amindbackstage\Headquarters@admin_Limited_list_update_status');
+Route::get('admin_Limited_list_update_status', 'Amindbackstage\Headquarters@admin_Limited_list_update_status');  //定时任务 -定时查找过期限时抢数据 修改状态
 
-Route::post('invite_userInfo', 'Invite\InviteController@invite_userInfo');
+Route::post('invite_userInfo', 'Invite\InviteController@invite_userInfo');  //生成团队
 
 Route::post('invite_friend', 'Invite\InviteController@invite_friend');   //邀请好友
 
@@ -307,11 +307,11 @@ Route::any('couponsearch','Admin\Admin_loginController@couponsearch')->middlewar
 //优惠卷添加
 Route::any('couponinsert','Admin\Admin_loginController@couponinsert')->middleware('checkLogin');
 //店铺管理
-Route::post('admin_shop','Admin\Admin_loginController@admin_shop')->middleware('checkLogin');
-Route::post('admin_shop_update','Admin\Admin_loginController@admin_shop_update')->middleware('checkLogin');
+Route::post('admin_shop','Admin\Admin_loginController@admin_shop')->middleware('checkLogin'); //店铺详情信息
+Route::post('admin_shop_update','Admin\Admin_loginController@admin_shop_update')->middleware('checkLogin');   //店铺信息修改
 
-Route::post('admin_black','Admin\Admin_loginController@admin_black')->middleware('checkLogin');
-Route::post('admin_delete','Admin\Admin_loginController@admin_delete')->middleware('checkLogin');
+Route::post('admin_black','Admin\Admin_loginController@admin_black')->middleware('checkLogin');    //用户拉黑
+Route::post('admin_delete','Admin\Admin_loginController@admin_delete')->middleware('checkLogin');   //用户删除
 
 Route::get('admin_accessToken','Admin\Admin_loginController@admin_accessToken');
 
@@ -325,38 +325,38 @@ Route::post('goodsAdd','Amindbackstage\Headquarters@goodsAdd')->middleware('chec
 Route::post('goods_type','Amindbackstage\Headquarters@goods_type')->middleware('checkLogin');   //分类
 //商品删除
 Route::post('goodsdelete','Amindbackstage\Headquarters@goodsdelete')->middleware('checkLogin');
-Route::post('admin_goodsUpdate','Amindbackstage\Headquarters@admin_goodsUpdate')->middleware('checkLogin');
-Route::post('admin_goodsInfo','Amindbackstage\Headquarters@admin_goodsInfo')->middleware('checkLogin');
+Route::post('admin_goodsUpdate','Amindbackstage\Headquarters@admin_goodsUpdate')->middleware('checkLogin');       //获取商品信息
+Route::post('admin_goodsInfo','Amindbackstage\Headquarters@admin_goodsInfo')->middleware('checkLogin');    //商品信息修改
 
-Route::post('admin_Assemble','Amindbackstage\Headquarters@admin_Assemble')->middleware('checkLogin');
+Route::post('admin_Assemble','Amindbackstage\Headquarters@admin_Assemble')->middleware('checkLogin');    //查看商品是否开启拼团
 
-Route::post('admin_Assemble_list','Amindbackstage\Headquarters@admin_Assemble_list')->middleware('checkLogin');   //
+Route::post('admin_Assemble_list','Amindbackstage\Headquarters@admin_Assemble_list')->middleware('checkLogin');   //拼团列表
 
-Route::post('admin_Limited_list','Amindbackstage\Headquarters@admin_Limited_list')->middleware('checkLogin');
+Route::post('admin_Limited_list','Amindbackstage\Headquarters@admin_Limited_list')->middleware('checkLogin');   //限时抢列表
 
-Route::post('admin_Limited','Amindbackstage\Headquarters@admin_Limited')->middleware('checkLogin');
+Route::post('admin_Limited','Amindbackstage\Headquarters@admin_Limited')->middleware('checkLogin');    //查看商品是否开启限时抢
 
-Route::post('admin_typeInfo','Amindbackstage\Headquarters@admin_typeInfo')->middleware('checkLogin');
+Route::post('admin_typeInfo','Amindbackstage\Headquarters@admin_typeInfo')->middleware('checkLogin');   //分类管理
 
-Route::post('admin_typeAdd','Amindbackstage\Headquarters@admin_typeAdd')->middleware('checkLogin');
+Route::post('admin_typeAdd','Amindbackstage\Headquarters@admin_typeAdd')->middleware('checkLogin');    //分类添加
 
-Route::post('admin_typeUpdate','Amindbackstage\Headquarters@admin_typeUpdate')->middleware('checkLogin');
+Route::post('admin_typeUpdate','Amindbackstage\Headquarters@admin_typeUpdate')->middleware('checkLogin');    //分类修改
 
-Route::post('admin_typeDelete','Amindbackstage\Headquarters@admin_typeDelete')->middleware('checkLogin');
+Route::post('admin_typeDelete','Amindbackstage\Headquarters@admin_typeDelete')->middleware('checkLogin');    //分类删除
 
-Route::post('admin_orderList','Amindbackstage\Headquarters@admin_orderList')->middleware('checkLogin');
+Route::post('admin_orderList','Amindbackstage\Headquarters@admin_orderList')->middleware('checkLogin');   //订单列表
 
-Route::post('admin_orderDetail','Amindbackstage\Headquarters@admin_orderDetail')->middleware('checkLogin');
+Route::post('admin_orderDetail','Amindbackstage\Headquarters@admin_orderDetail')->middleware('checkLogin');    //订单详情
 
-Route::post('admin_caseAdd','Amindbackstage\Headquarters@admin_caseAdd')->middleware('checkLogin');
+Route::post('admin_caseAdd','Amindbackstage\Headquarters@admin_caseAdd')->middleware('checkLogin');   //案例添加
 
-Route::post('admin_caseList','Amindbackstage\Headquarters@admin_caseList')->middleware('checkLogin');
+Route::post('admin_caseList','Amindbackstage\Headquarters@admin_caseList')->middleware('checkLogin');       //案例列表
 
-Route::post('admin_caseDelete','Amindbackstage\Headquarters@admin_caseDelete')->middleware('checkLogin');
+Route::post('admin_caseDelete','Amindbackstage\Headquarters@admin_caseDelete')->middleware('checkLogin');     //案例删除
 
-Route::post('admin_caseUpdate','Amindbackstage\Headquarters@admin_caseUpdate')->middleware('checkLogin');
+Route::post('admin_caseUpdate','Amindbackstage\Headquarters@admin_caseUpdate')->middleware('checkLogin');    //案例修改
 
-Route::post('admin_shop_goodsInfo','Amindbackstage\Headquarters@admin_shop_goodsInfo')->middleware('checkLogin');
+Route::post('admin_shop_goodsInfo','Amindbackstage\Headquarters@admin_shop_goodsInfo')->middleware('checkLogin');   //获取店铺下所有商品
 
 Route::post('admin_apply_reseller','Amindbackstage\Headquarters@admin_apply_reseller')->middleware('checkLogin');     //申请成为分销商
 
