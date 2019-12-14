@@ -80,6 +80,7 @@ class Admin_loginController extends Controller
     public function userlist(Request $request)
     {
         $data=DB::table('mt_user')
+            ->join('mt_order_detail','mt_order_detail.uid','=','mt_user.uid')
             ->select()      //shop_status 2启用  1拉黑
             ->paginate(7);
 //        var_dump($data);exit;

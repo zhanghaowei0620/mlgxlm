@@ -527,6 +527,7 @@ class GoodsController extends Controller
         }
         $inerdb=DB::table('mt_order')->where(['order_id'=>$order_id])->first();
         $a=$inerdb->order_method;  //0为普通购买，1.拼团购买，2.优惠券购买，3限时抢购买
+        $user_sum_price1=DB::table('mt_user')->where(['uid'=>$uid])->first();
 //        var_dump($a);die;
         if($a ==0){
             $mt_order_detail_add=DB::table('mt_order_detail')->where(['order_id'=>$order_id])->first();
@@ -552,6 +553,10 @@ class GoodsController extends Controller
             ];
             $inerttofo=DB::table('mt_order')->where(['order_id'=>$order_id])->update($infosaa);
             $update_orderss=DB::table('mt_order_detail')->where(['uid'=>$uid,'order_id'=>$order_id])->update($infosaa1);
+            $sum_price=[
+              'price_sum'=>$user_sum_price1->price_sum+$pay1
+            ];
+            $user_sum_price=DB::table('mt_user')->where(['uid'=>$uid])->update($sum_price);
             if($update_order){
                 $data=[
                     'code'=>0,
@@ -595,6 +600,10 @@ class GoodsController extends Controller
                 ];
                 $sqlupdate1=DB::table('mt_order')->where(['order_id'=>$order_id])->update($updateinfo1);
                 $detail_order1=DB::table('mt_order_detail')->where(['order_id'=>$order_id])->update($updateinfo2);
+                $sum_price=[
+                    'price_sum'=>$user_sum_price1->price_sum+$pay2
+                ];
+                $user_sum_price=DB::table('mt_user')->where(['uid'=>$uid])->update($sum_price);
                 if($user_money_add){
                     $data=[
                         'code'=>0,
@@ -646,6 +655,10 @@ class GoodsController extends Controller
                     ];
                     $sqlupdate=DB::table('mt_order')->where(['order_id'=>$order_id])->update($updateinfo);
                     $detail_order=DB::table('mt_order_detail')->where(['order_id'=>$order_id])->update($updateinfo1);
+                    $sum_price=[
+                        'price_sum'=>$user_sum_price1->price_sum+$moenfo
+                    ];
+                    $user_sum_price=DB::table('mt_user')->where(['uid'=>$uid])->update($sum_price);
                     if($sqlupdate && $detail_order){
                         $data=[
                             'code'=>0,
@@ -673,7 +686,7 @@ class GoodsController extends Controller
                         'order_status'=>1
                     ];
                 $moenfo=$data->money - $address;
-                $money_add=$data->money - $address1;
+                $money_add=$data->money - $moenfo;
                 $user_money_add=[
                     'money'=>$moenfo
                 ];
@@ -689,6 +702,10 @@ class GoodsController extends Controller
                 ];
                 $sqlupdate1=DB::table('mt_order')->where(['uid'=>$uid])->update($updateinfo);
                 $detail_order1=DB::table('mt_order_detail')->where(['order_id'=>$order_id])->update($update_info2);
+                $sum_price=[
+                    'price_sum'=>$user_sum_price1->price_sum+$money_add
+                ];
+                $user_sum_price=DB::table('mt_user')->where(['uid'=>$uid])->update($sum_price);
                 if($user_money_add){
                     $data=[
                         'code'=>0,
@@ -728,6 +745,10 @@ class GoodsController extends Controller
             ];
             $order_update=DB::table('mt_order')->where(['order_id'=>$order_id])->update($user_update_add1);
             $detail_order1=DB::table('mt_order_detail')->where(['order_id'=>$order_id])->update($user_update_add2);
+            $sum_price=[
+                'price_sum'=>$user_sum_price1->price_sum+$pay
+            ];
+            $user_sum_price=DB::table('mt_user')->where(['uid'=>$uid])->update($sum_price);
             if($order_update){
                 $data=[
                     'code'=>0,
