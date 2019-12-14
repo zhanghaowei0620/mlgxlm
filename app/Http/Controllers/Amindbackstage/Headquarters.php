@@ -1413,7 +1413,34 @@ class Headquarters extends Controller
         }
     }
 
-    //
+    //协议详情
+    public function admin_rule_Detail(Request $request){
+        $rule_id = $request->input('rule_id');
+        $admin_judge = $request->input('rule_id');
+        if($admin_judge == 1){
+            $ruleInfo = DB::table('mt_rules')->where('rule_id',$rule_id)->first();
+            if($ruleInfo){
+                $response=[
+                    'code'=>0,
+                    'data'=>$ruleInfo,
+                    'msg'=>'数据请求成功'
+                ];
+                return json_encode($response, JSON_UNESCAPED_UNICODE);
+            }else{
+                $response=[
+                    'code'=>1,
+                    'msg'=>'系统出现错误,请重试'
+                ];
+                die(json_encode($response, JSON_UNESCAPED_UNICODE));
+            }
+        }else{
+            $response=[
+                'code'=>2,
+                'msg'=>'暂无权限'
+            ];
+            die(json_encode($response, JSON_UNESCAPED_UNICODE));
+        }
+    }
 
 
 

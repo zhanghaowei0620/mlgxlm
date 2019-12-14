@@ -390,6 +390,8 @@ Route::post('admin_rule_Update','Amindbackstage\Headquarters@admin_rule_Update')
 
 Route::post('admin_rule_Delete','Amindbackstage\Headquarters@admin_rule_Delete')->middleware('checkLogin');   //协议删除
 
+Route::post('admin_rule_Detail','Amindbackstage\Headquarters@admin_rule_Detail')->middleware('checkLogin');   //协议详情
+
 
 
 Route::post('test','Test\TestController@test')->middleware('checkLogin');          //微信支付
