@@ -554,7 +554,7 @@ class OrderController extends Controller
         $good_cate=$request->input('good_cate');
         $key = $openid1;
         $openid = Redis::get($key);
-//        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
+        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
         $orderInfo = DB::table('mt_user')
             ->where('openid',$openid)
             ->first();
@@ -572,6 +572,7 @@ class OrderController extends Controller
 //                ->join('mt_refund','mt_refund.id','=','mt_order_detail.id')
                 ->where(['mt_order_detail.uid'=>$orderInfo->uid,'mt_order_detail.order_status'=>$order_status])
                 ->select()->paginate(10);
+//            var_dump($data);die;
         }
         if($data){
             $data=[
