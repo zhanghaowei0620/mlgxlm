@@ -586,6 +586,7 @@ class OrderController extends Controller
                 ->join('mt_shop','mt_shop.shop_id','=','mt_order_detail.shop_id')
 //                    ->join('mt_refund','mt_refund.id','=','mt_order_detail.id')
                 ->where(['mt_order_detail.uid'=>$orderInfo->uid])
+                ->orderby('mt_order_detail.create_time')
                 ->select()->paginate(10);
         }else{
             $data=DB::table('mt_order_detail')
@@ -593,6 +594,7 @@ class OrderController extends Controller
                 ->join('mt_shop','mt_shop.shop_id','=','mt_order_detail.shop_id')
 //                ->join('mt_refund','mt_refund.id','=','mt_order_detail.id')
                 ->where(['mt_order_detail.uid'=>$orderInfo->uid,'mt_order_detail.order_status'=>$order_status])
+                ->orderby('mt_order_detail.create_time')
                 ->select()->paginate(10);
 //            var_dump($data);die;
         }
@@ -715,7 +717,7 @@ class OrderController extends Controller
                 $datainfo_add=DB::table('mt_order')
                     ->join('mt_order_detail','mt_order_detail.order_id','=','mt_order.order_id')
                     ->where(['mt_order.uid'=>$uid,'mt_order.order_id'=>$id])
-                    ->get(['mt_order.total_price','mt_order_detail.order_no','mt_order_detail.goods_name','mt_order_detail.price','mt_order_detail.id'])->toArray();
+                    ->get(['mt_order.total_price','mt_order_detail.order_no','mt_order_detail.goods_name','mt_order_detail.price','mt_order_detail.id','mt_order_detail.picture'])->toArray();
                 if($datainfo_add){
                     $data=[
                         'code'=>0,
@@ -739,7 +741,7 @@ class OrderController extends Controller
                 $order_detailInfo1 = DB::table('mt_order_detail')
                     ->join('mt_order','mt_order.order_id','=','mt_order_detail.order_id')
                     ->where(['mt_order.uid'=>$uid,'mt_order_detail.id'=>$id])
-                    ->get(['mt_order.total_price','mt_order_detail.order_no','mt_order_detail.goods_name','mt_order_detail.price','mt_order_detail.id'])->toArray();
+                    ->get(['mt_order.total_price','mt_order_detail.order_no','mt_order_detail.goods_name','mt_order_detail.price','mt_order_detail.id','mt_order_detail.picture'])->toArray();
 //                var_dump($order_detailInfo1);die;
                 if($order_detailInfo1){
                     $data=[
