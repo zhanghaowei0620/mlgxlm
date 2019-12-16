@@ -527,6 +527,9 @@ class GoodsController extends Controller
         }
         $inerdb=DB::table('mt_order')->where(['order_id'=>$order_id])->first();
         $a=$inerdb->order_method;  //0为普通购买，1.拼团购买，2.优惠券购买，3限时抢购买
+        $user_sum_price1=DB::table('mt_user')->where(['uid'=>$uid])->first();
+        $inser_money=DB::table('mt_order')->where(['order_id'=>$order_id])->first();
+        $order_detai=DB::table('mt_order_detail')->where(['shop_id'=>$inser_money->shop_id])->first();
 //        var_dump($a);die;
         if($a ==0){
             $mt_order_detail_add=DB::table('mt_order_detail')->where(['order_id'=>$order_id])->first();
@@ -552,6 +555,14 @@ class GoodsController extends Controller
             ];
             $inerttofo=DB::table('mt_order')->where(['order_id'=>$order_id])->update($infosaa);
             $update_orderss=DB::table('mt_order_detail')->where(['uid'=>$uid,'order_id'=>$order_id])->update($infosaa1);
+            $sum_price=[
+              'price_sum'=>$user_sum_price1->price_sum+$pay1
+            ];
+            $user_sum_price=DB::table('mt_user')->where(['uid'=>$uid])->update($sum_price);
+            $aa=[
+                'shop_volume'=>$order_detai->shop_volume+$pay1
+            ];
+            $qq=DB::table('mt_shop')->where(['shop_id'=>$order_detai->shop_id])->update($aa);
             if($update_order){
                 $data=[
                     'code'=>0,
@@ -595,6 +606,14 @@ class GoodsController extends Controller
                 ];
                 $sqlupdate1=DB::table('mt_order')->where(['order_id'=>$order_id])->update($updateinfo1);
                 $detail_order1=DB::table('mt_order_detail')->where(['order_id'=>$order_id])->update($updateinfo2);
+                $sum_price=[
+                    'price_sum'=>$user_sum_price1->price_sum+$pay2
+                ];
+                $user_sum_price=DB::table('mt_user')->where(['uid'=>$uid])->update($sum_price);
+                $aa=[
+                    'shop_volume'=>$order_detai->shop_volume+$pay2
+                ];
+                $qq=DB::table('mt_shop')->where(['shop_id'=>$order_detai->shop_id])->update($aa);
                 if($user_money_add){
                     $data=[
                         'code'=>0,
@@ -646,6 +665,14 @@ class GoodsController extends Controller
                     ];
                     $sqlupdate=DB::table('mt_order')->where(['order_id'=>$order_id])->update($updateinfo);
                     $detail_order=DB::table('mt_order_detail')->where(['order_id'=>$order_id])->update($updateinfo1);
+                    $sum_price=[
+                        'price_sum'=>$user_sum_price1->price_sum+$moenfo
+                    ];
+                    $user_sum_price=DB::table('mt_user')->where(['uid'=>$uid])->update($sum_price);
+                    $aa=[
+                        'shop_volume'=>$order_detai->shop_volume+$moenfo
+                    ];
+                    $qq=DB::table('mt_shop')->where(['shop_id'=>$order_detai->shop_id])->update($aa);
                     if($sqlupdate && $detail_order){
                         $data=[
                             'code'=>0,
@@ -673,7 +700,7 @@ class GoodsController extends Controller
                         'order_status'=>1
                     ];
                 $moenfo=$data->money - $address;
-                $money_add=$data->money - $address1;
+                $money_add=$data->money - $moenfo;
                 $user_money_add=[
                     'money'=>$moenfo
                 ];
@@ -689,6 +716,14 @@ class GoodsController extends Controller
                 ];
                 $sqlupdate1=DB::table('mt_order')->where(['uid'=>$uid])->update($updateinfo);
                 $detail_order1=DB::table('mt_order_detail')->where(['order_id'=>$order_id])->update($update_info2);
+                $sum_price=[
+                    'price_sum'=>$user_sum_price1->price_sum+$money_add
+                ];
+                $user_sum_price=DB::table('mt_user')->where(['uid'=>$uid])->update($sum_price);
+                $aa=[
+                    'shop_volume'=>$order_detai->shop_volume+$money_add
+                ];
+                $qq=DB::table('mt_shop')->where(['shop_id'=>$order_detai->shop_id])->update($aa);
                 if($user_money_add){
                     $data=[
                         'code'=>0,
@@ -728,6 +763,14 @@ class GoodsController extends Controller
             ];
             $order_update=DB::table('mt_order')->where(['order_id'=>$order_id])->update($user_update_add1);
             $detail_order1=DB::table('mt_order_detail')->where(['order_id'=>$order_id])->update($user_update_add2);
+            $sum_price=[
+                'price_sum'=>$user_sum_price1->price_sum+$pay
+            ];
+            $user_sum_price=DB::table('mt_user')->where(['uid'=>$uid])->update($sum_price);
+            $aa=[
+                'shop_volume'=>$order_detai->shop_volume+$pay
+            ];
+            $qq=DB::table('mt_shop')->where(['shop_id'=>$order_detai->shop_id])->update($aa);
             if($order_update){
                 $data=[
                     'code'=>0,
@@ -748,11 +791,6 @@ class GoodsController extends Controller
                 return json_encode($response,JSON_UNESCAPED_UNICODE);
             }
         }
-
-
-
-
-
     }
 
     //购物车删除
@@ -1277,52 +1315,6 @@ class GoodsController extends Controller
         $stepTwo = 2 * asin(min(1, sqrt($stepOne)));
         $calculatedDistance = $earthRadius * $stepTwo;
         return round($calculatedDistance);
-    }
-
-    //预约
-    public function subscribe(Request $request)
-    {
-        $goods_id=$request->input('goods_id');
-        $subscribe_time=$request->input('subscribe_time');
-        $subscrib_sum=$request->input('subscrib_sum');
-        $subscribe_tel=$request->input('subscribe_tel');
-        $subscribe_text=$request->input('subscribe_text');
-        $data=DB::table('mt_goods')
-            ->where(['goods_id'=>$goods_id])
-            ->first(['goods_name','market_price']);
-//        var_dump($data);die;
-        $subscribeAdd=$data->market_price;
-        $aa=$subscribeAdd * $subscrib_sum;
-//        var_dump($aa);die;
-        $subscribeInfo=$data->goods_name;
-        $info1=[
-            'subscribe_time'=>$subscribe_time,
-            'subscrib_sum'=>$subscrib_sum,
-            'subscribe_tel'=>$subscribe_tel,
-            'subscribe_text'=>$subscribe_text,
-            'subscribe_money'=>$aa
-        ];
-        $info=DB::table('mt_subscribe')
-            ->insert($info1);
-        $datainfo=[
-          'data'=>$info
-        ];
-        if($info == true){
-            $response = [
-                'code'=>0,
-                'msg'=>"预约成功",
-                'data'=>$datainfo,
-            ];
-            return (json_encode($response, JSON_UNESCAPED_UNICODE));
-        }else{
-            $response = [
-                'code'=>1,
-                'msg'=>"预约失败",
-            ];
-            die (json_encode($response, JSON_UNESCAPED_UNICODE));
-        }
-
-
     }
 
 //    //置换商城

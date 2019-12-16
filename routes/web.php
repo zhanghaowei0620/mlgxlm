@@ -170,8 +170,6 @@ Route::get('/nearby_shop', 'Goods\GoodsController@nearby_shop');   //附近店�
 
 //Route::get('/displace', 'Goods\GoodsController@displace');   //置换商城
 
-Route::get('/subscribe', 'Goods\GoodsController@subscribe');   //预约
-
 
 Route::post('index_reseller_Apply', 'Reseller\ResellerController@index_reseller_Apply');   //分销-申请
 
