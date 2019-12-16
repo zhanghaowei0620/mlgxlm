@@ -705,14 +705,16 @@ class OrderController extends Controller
         $openid = Redis::get($key);
         $id = $request->input('id');
         $is_cart=$request->input('is_cart');
+//        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
         $datainfo=DB::table('mt_user')->where(['openid'=>$openid])->first();
         $uid=$datainfo->uid;
+
 //        $order_id = 1;
         if($openid){
-            if($is_cart === 0){
+            if($is_cart == 0){
                 $order_detailInfo = DB::table('mt_order_detail')
 //            ->join('mt_order_detail','mt_order.order_id','=','mt_order_detail.order_id')
-                    ->where('id',$id,'uid',$uid)->first();
+                    ->where(['uid'=>$uid,'id'=>$id])->first();
                 if($order_detailInfo){
                     $data=[
                         'code'=>0,
@@ -733,10 +735,10 @@ class OrderController extends Controller
                     die(json_encode($response,JSON_UNESCAPED_UNICODE));
                 }
             }else{
-                $order_detailInfo = DB::table('mt_order_detail')
+                $order_detailInfo1 = DB::table('mt_order_detail')
 //            ->join('mt_order_detail','mt_order.order_id','=','mt_order_detail.order_id')
-                    ->where('id',$id,'uid',$uid)->first();
-                $order_add=DB::table('mt_order')->where(['uid'=>$uid,'order_id'=>$order_detailInfo->order_id])->first();
+                    ->where(['uid'=>$uid,'id'=>$id])->first();
+                $order_add=DB::table('mt_order')->where(['uid'=>$uid,'order_id'=>$order_detailInfo1->order_id])->first();
                 if($order_add){
                     $data=[
                         'code'=>0,
