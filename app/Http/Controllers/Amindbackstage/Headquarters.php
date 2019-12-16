@@ -1459,7 +1459,7 @@ class Headquarters extends Controller
 
 
 
-    //分类删除
+    //分类删除3hy77
 //    public function admin_typeDelete(Request $request){
 //        $t_id = $request->input('t_id');
 //        $typeInfo = DB::table('mt_type')->where('t_id',$t_id)->first();
