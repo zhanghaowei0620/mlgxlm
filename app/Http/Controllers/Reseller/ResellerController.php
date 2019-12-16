@@ -200,7 +200,7 @@ class ResellerController extends Controller
 //        var_dump($reGoodsInfo);
             $re_goods_name = $reGoodsInfo->re_goods_name;
             $re_goods_price = $reGoodsInfo->re_goods_price;
-            $re_goods_picture = $reGoodsInfo-re_goods_picture;
+            $re_goods_picture = $reGoodsInfo->re_goods_picture;
             $shop_id = $reGoodsInfo->shop_id;
             $shopInfo = DB::table('mt_shop')->where('shop_id',$shop_id)->first(['shop_name']);
             $shop_name = $shopInfo->shop_name;
@@ -221,7 +221,7 @@ class ResellerController extends Controller
 
             $re_orderInsert = DB::table('re_order')->insert($insert);
             if($re_orderInsert){
-                $re_orderInfo = DB::table('re_order')->where('order_no',$order_no)->first(['re_order_id']);
+                $re_orderInfo = DB::table('re_order')->where('re_order_no',$order_no)->first(['re_order_id']);
                 $data = [
                     'code'=>0,
                     'data'=>$re_orderInfo,
@@ -254,15 +254,11 @@ class ResellerController extends Controller
 
     }
 
-    //分校订单详细信息
-    public function index_reseller_orderDetail(Request $request){
-        $order_id = $request->input('order_id');
-
-    }
-
-    //分校订单支付
-    public function index_reseller_wxpay(Request $request){
-        $order_id = $request->input('order_id');
+    //分校订单支付-选择支付方式
+    public function index_reseller_Topay(Request $request){
+        $re_order_id = $request->input('re_order_id');
+        $reGoodsInfo = DB::table('re_order')->where('re_order_id',$re_order_id)->first();
+        var_dump($reGoodsInfo);
     }
 
     //我的团队
