@@ -207,7 +207,7 @@ class ResellerController extends Controller
             $order_no = date("YmdHis", time()) . rand(1000, 9999);   //订单号
             $insert = [
                 'uid'=>$uid,
-                'order_no'=>$order_no,
+                're_order_no'=>$order_no,
                 're_goods_name'=>$re_goods_name,
                 're_goods_id'=>$re_goods_id,
                 're_goods_price'=>$re_goods_price,
@@ -221,8 +221,10 @@ class ResellerController extends Controller
 
             $re_orderInsert = DB::table('re_order')->insert($insert);
             if($re_orderInsert){
+                $re_orderInfo = DB::table('re_order')->where('order_no',$order_no)->first(['re_order_id']);
                 $data = [
                     'code'=>0,
+                    'data'=>$re_orderInfo,
                     'msg'=>'订单生成成功'
                 ];
                 $response = [
