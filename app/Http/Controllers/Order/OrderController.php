@@ -715,7 +715,7 @@ class OrderController extends Controller
                 $datainfo_add=DB::table('mt_order')
                     ->join('mt_order_detail','mt_order_detail.order_id','=','mt_order.order_id')
                     ->where(['mt_order.uid'=>$uid,'mt_order.order_id'=>$id])
-                    ->get(['mt_order.total_price','mt_order_detail.pay_price','mt_order_detail.order_no','mt_order_detail.goods_name'])->toArray();
+                    ->get(['mt_order.total_price','mt_order_detail.order_no','mt_order_detail.goods_name','mt_order_detail.price'])->toArray();
                 if($datainfo_add){
                     $data=[
                         'code'=>0,
@@ -737,9 +737,9 @@ class OrderController extends Controller
                 }
             }else{
                 $order_detailInfo1 = DB::table('mt_order_detail')
-//            ->join('mt_order_detail','mt_order.order_id','=','mt_order_detail.order_id')
-                    ->where(['uid'=>$uid,'id'=>$id])
-                    ->get(['pay_price','order_no','goods_name'])->toArray();
+                    ->join('mt_order','mt_order.order_id','=','mt_order_detail.order_id')
+                    ->where(['mt_order.uid'=>$uid,'mt_order_detail.id'=>$id])
+                    ->get(['mt_order.total_price','mt_order_detail.order_no','mt_order_detail.goods_name','mt_order_detail.price'])->toArray();
 //                var_dump($order_detailInfo1);die;
                 if($order_detailInfo1){
                     $data=[
