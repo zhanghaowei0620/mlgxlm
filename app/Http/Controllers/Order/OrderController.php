@@ -733,7 +733,10 @@ class OrderController extends Controller
                     die(json_encode($response,JSON_UNESCAPED_UNICODE));
                 }
             }else{
-                $order_add=DB::table('mt_order')->where(['uid'=>$uid,'order_id'=>$order_lisen->order_id])->first();
+                $order_detailInfo = DB::table('mt_order_detail')
+//            ->join('mt_order_detail','mt_order.order_id','=','mt_order_detail.order_id')
+                    ->where('id',$id,'uid',$uid)->first();
+                $order_add=DB::table('mt_order')->where(['uid'=>$uid,'order_id'=>$order_detailInfo->order_id])->first();
                 if($order_add){
                     $data=[
                         'code'=>0,
@@ -1090,7 +1093,7 @@ class OrderController extends Controller
             'order_status'=>4
         ];
         $data_count=DB::table('mt_goods_evaluate')->where(['goods_id'=>$data_detail->goods_id])->count();
-        var_dump($data_count);die;
+//        var_dump($data_count);die;
         if($openid){
             $inser_into=[
                 'goods_id'=>$data_detail->goods_id,
