@@ -162,7 +162,7 @@ class OrderController extends Controller
                             'order_no' => $order_no,
                             'goods_id' => $v->goods_id,
                             'goods_name' => $v->goods_name,
-                            'price' => $v->price,
+                            'price' => $v->promotion_price,
                             'picture' => $v->picture,
                             'buy_num' => 1,
                             'order_status' => 0,
@@ -228,7 +228,7 @@ class OrderController extends Controller
                                 'order_no'=>$order_no,
                                 'goods_id'=>$v->goods_id,
                                 'goods_name'=>$v->goods_name,
-                                'price'=>$v->price,
+                                'price'=>$v->limited_price,
                                 'picture'=>$v->picture,
                                 'buy_num'=>1,
                                 'order_status'=>0,
@@ -1094,14 +1094,15 @@ class OrderController extends Controller
         $openid1 = $request->input('openid');
         $key = $openid1;
         $openid = Redis::get($key);
-        //$openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
+//        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
         $datainfo=DB::table('mt_user')->where(['openid'=>$openid])->first();
         $uid=$datainfo->uid;
         if($openid){
-            $data=DB::table('mt_goods_evaluate')->where(['uid'=>$uid])->get();
-            if($data){
+            $data1=DB::table('mt_goods_evaluate')->where(['uid'=>$uid])->get();
+            if($data1){
                 $data=[
                     'code'=>0,
+                    'data'=>$data1,
                     'msg'=>'评价数据展示成功'
                 ];
                 $response = [
