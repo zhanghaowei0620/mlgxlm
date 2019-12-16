@@ -705,6 +705,8 @@ class OrderController extends Controller
         $openid = Redis::get($key);
         $id = $request->input('id');
         $is_cart=$request->input('is_cart');
+        $datainfo=DB::table('mt_user')->where(['openid'=>$openid])->first();
+        $uid=$datainfo->uid;
 //        $order_id = 1;
         if($openid){
             if($is_cart === 0){
@@ -1078,7 +1080,7 @@ class OrderController extends Controller
         $openid1 = $request->input('openid');
         $key = $openid1;
         $openid = Redis::get($key);
-//        $openid='o9VUc5KN78P_jViUQnGjica4GIQs';
+        $openid='o9VUc5KN78P_jViUQnGjica4GIQs';
         $datainfo=DB::table('mt_user')->where(['openid'=>$openid])->first();
         $uid=$datainfo->uid;
         $data_detail=DB::table('mt_order_detail')->where(['id'=>$id,'uid'=>$uid])->first();
@@ -1088,6 +1090,7 @@ class OrderController extends Controller
             'order_status'=>4
         ];
         $data_count=DB::table('mt_goods_evaluate')->where(['goods_id'=>$data_detail->goods_id])->count();
+        var_dump($data_count);die;
         if($openid){
             $inser_into=[
                 'goods_id'=>$data_detail->goods_id,
@@ -1105,6 +1108,7 @@ class OrderController extends Controller
                 $data_info1=DB::table('mt_goods_evaluate')->where(['goods_id'=>$data_detail->goods_id])->sum('effect_start'); //服务效果综合
                 $data_info2=DB::table('mt_goods_evaluate')->where(['goods_id'=>$data_detail->goods_id])->sum('skill_start');   //服务技术综合
                 $aa1=round((($data_info1/$data_count)+($data_info2/$data_count))/2);    //商品星级平均值
+                var_dump($aa1);die;
                 $data_goods=DB::table('mt_goods')->where(['goods_id'=>$data_detail->goods_id])->update(['star'=>$aa1]);
 //            $aa=DB::table('mt_goods_evaluate')->
                 $data_info3=DB::table('mt_goods_evaluate')->where(['goods_id'=>$data_detail->goods_id])->sum('attitude_start'); //服务态度综合
