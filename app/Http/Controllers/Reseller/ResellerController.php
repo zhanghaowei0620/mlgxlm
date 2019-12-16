@@ -255,10 +255,127 @@ class ResellerController extends Controller
     }
 
     //分校订单支付-选择支付方式
-    public function index_reseller_Topay(Request $request){
+    public function index_reseller_Choose_payment(Request $request){
         $re_order_id = $request->input('re_order_id');
         $reGoodsInfo = DB::table('re_order')->where('re_order_id',$re_order_id)->first();
-        var_dump($reGoodsInfo);
+        if($reGoodsInfo){
+            $data = [
+                'code'=>0,
+                'data'=>$reGoodsInfo,
+                'msg'=>'数据请求成功'
+            ];
+            $response = [
+                'data' => $data
+            ];
+            return json_encode($response, JSON_UNESCAPED_UNICODE);
+        }else{
+            $data = [
+                'code'=>1,
+                'msg'=>'系统出现错误,请检查订单是否真实存在'
+            ];
+            $response = [
+                'data' => $data
+            ];
+            die(json_encode($response, JSON_UNESCAPED_UNICODE));
+        }
+
+    }
+
+    //分校订单支付-去支付
+    public function index_reseller_Topay(Request $request){
+        $openid = $request->input('openid');
+//        $key = $openid1;
+//        $openid = Redis::get($key);
+        if($openid){
+            $userInfo = DB::table('mt_user')->where('openid',$openid)->first(['uid','money','mt_reseller','p_id']);
+            $uid = $userInfo->uid;   //当前支付的用户的id
+            $re_order_id = $request->input('re_order_id');
+            $reGoodsInfo = DB::table('re_order')->where('re_order_id',$re_order_id)->first(['re_goods_price','shop_id']);
+            $shopInfo = DB::table('mt_shop')->where('shop_id',$reGoodsInfo->shop_id)->first(['uid']);
+            if($userInfo->money >= $reGoodsInfo->re_goods_price){
+                $update = [
+                    'money'=>$userInfo->money - $reGoodsInfo->re_goods_price
+                ];
+                $updateUserInfo = DB::table('mt_user')->where('uid',$uid)->update($update);
+                if($updateUserInfo > 0){
+                    if($userInfo->mt_reseller == 1){
+                        $p_userInfo = DB::table('mt_user')->where('uid',$userInfo->p_id)->first();
+                        if($p_userInfo->p_id != $p_userInfo->a_id){
+                            $a_userInfo = DB::table('mt_user')->where('uid',$p_userInfo->p_id)->first();
+                            if($a_userInfo->p_id != $a_userInfo->a_id){
+                                DB::table('re_order')->where('re_order_id',$re_order_id)->update(['order_status'=>1]);
+                                DB::table('mt_user')->where('uid',$a_userInfo->uid)->update(['no_reflected'=>$reGoodsInfo->re_goods_price*0.05]);
+                                DB::table('mt_user')->where('uid',$p_userInfo->uid)->update(['no_reflected'=>$reGoodsInfo->re_goods_price*0.1]);
+                                DB::table('mt_user')->where('uid',$shopInfo->uid)->update(['no_reflected'=>$reGoodsInfo->re_goods_price*0.85]);
+                                $data = [
+                                    'code'=>0,
+                                    'msg'=>'支付成功'
+                                ];
+                                $response = [
+                                    'data' => $data
+                                ];
+                                return json_encode($response, JSON_UNESCAPED_UNICODE);
+                            }else{
+                                DB::table('re_order')->where('re_order_id',$re_order_id)->update(['order_status'=>1]);
+                                DB::table('mt_user')->where('uid',$p_userInfo->uid)->update(['no_reflected'=>$reGoodsInfo->re_goods_price*0.1]);
+                                DB::table('mt_user')->where('uid',$shopInfo->uid)->update(['no_reflected'=>$reGoodsInfo->re_goods_price*0.9]);
+                                $data = [
+                                    'code'=>0,
+                                    'msg'=>'支付成功'
+                                ];
+                                $response = [
+                                    'data' => $data
+                                ];
+                                return json_encode($response, JSON_UNESCAPED_UNICODE);
+                            }
+                        }else{
+                            DB::table('re_order')->where('re_order_id',$re_order_id)->update(['order_status'=>1]);
+                            DB::table('mt_user')->where('uid',$shopInfo->uid)->update(['no_reflected'=>$reGoodsInfo->re_goods_price]);
+                            $data = [
+                                'code'=>0,
+                                'msg'=>'支付成功'
+                            ];
+                            $response = [
+                                'data' => $data
+                            ];
+                            return json_encode($response, JSON_UNESCAPED_UNICODE);
+                        }
+                    }else{
+                        DB::table('re_order')->where('re_order_id',$re_order_id)->update(['order_status'=>1]);
+                        DB::table('mt_user')->where('uid',$shopInfo->uid)->update(['no_reflected'=>$reGoodsInfo->re_goods_price]);
+                        $data = [
+                            'code'=>0,
+                            'msg'=>'支付成功'
+                        ];
+                        $response = [
+                            'data' => $data
+                        ];
+                        return json_encode($response, JSON_UNESCAPED_UNICODE);
+                    }
+
+                }else{
+                    $data = [
+                        'code'=>1,
+                        'msg'=>'系统出现错误,请重试'
+                    ];
+                    $response = [
+                        'data' => $data
+                    ];
+                    die(json_encode($response, JSON_UNESCAPED_UNICODE));
+                }
+            }
+        }else{
+            $data = [
+                'code'=>2,
+                'msg'=>'请先登录'
+            ];
+            $response = [
+                'data' => $data
+            ];
+            die(json_encode($response, JSON_UNESCAPED_UNICODE));
+        }
+
+
     }
 
     //我的团队
