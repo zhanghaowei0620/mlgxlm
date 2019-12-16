@@ -181,6 +181,8 @@ Route::post('index_reseller_goodsList', 'Reseller\ResellerController@index_resel
 
 Route::post('index_reseller_goodsDetail', 'Reseller\ResellerController@index_reseller_goodsDetail');     //分销中心-商品详情
 
+Route::post('index_reseller_orderAdd', 'Reseller\ResellerController@index_reseller_orderAdd');   //分校订单-生成
+
 Route::post('my_team', 'Reseller\ResellerController@my_team');   //我的团队
 
 Route::post('my_team_Add', 'Reseller\ResellerController@my_team_Add');   //根据邀请码添加分销员

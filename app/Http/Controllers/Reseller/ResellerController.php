@@ -186,6 +186,69 @@ class ResellerController extends Controller
         return json_encode($response, JSON_UNESCAPED_UNICODE);
     }
 
+    //生成订单
+    public function index_reseller_orderAdd(Request $request){
+        $openid1 = $request->input('openid');
+        $key = $openid1;
+        $openid = Redis::get($key);
+        if($openid){
+            $userInfo = DB::table('mt_user')->where('openid',$openid)->first();
+            $uid = $userInfo->uid;
+            $re_goods_id = $request->input('re_goods_id');
+            $reGoodsInfo = DB::table('re_goods')->where('re_goods_id',$re_goods_id)->first();
+//        var_dump($reGoodsInfo);
+            $re_goods_name = $reGoodsInfo->re_goods_name;
+            $re_goods_price = $reGoodsInfo->re_goods_price;
+            $re_goods_picture = $reGoodsInfo-re_goods_picture;
+            $shop_id = $reGoodsInfo->shop_id;
+            $shopInfo = DB::table('mt_shop')->where('shop_id',$shop_id)->first(['shop_name']);
+            $shop_name = $shopInfo->shop_name;
+            $order_no = date("YmdHis", time()) . rand(1000, 9999);   //订单号
+            $insert = [
+                'uid'=>$uid,
+                'order_no'=>$order_no,
+                're_goods_name'=>$re_goods_name,
+                're_goods_id'=>$re_goods_id,
+                're_goods_price'=>$re_goods_price,
+                're_goods_picture'=>$re_goods_picture,
+                'buy_num'=>1,
+                'shop_id'=>$shop_id,
+                'shop_name'=>$shop_name,
+                'create_time'=>time(),
+            ];
+
+            $re_orderInsert = DB::table('re_order')->insert($insert);
+            if($re_orderInsert){
+                $data = [
+                    'code'=>0,
+                    'msg'=>'订单生成成功'
+                ];
+                $response = [
+                    'data' => $data
+                ];
+                return json_encode($response, JSON_UNESCAPED_UNICODE);
+            }else{
+                $data = [
+                    'code'=>1,
+                    'msg'=>'订单生成失败'
+                ];
+                $response = [
+                    'data' => $data
+                ];
+                die(json_encode($response, JSON_UNESCAPED_UNICODE));
+            }
+        }else{
+            $data = [
+                'code'=>2,
+                'msg'=>'请先登录'
+            ];
+            $response = [
+                'data' => $data
+            ];
+            die(json_encode($response, JSON_UNESCAPED_UNICODE));
+        }
+
+    }
     //我的团队
     public function my_team(Request $request){
         $openid = $request->input('openid');
@@ -217,7 +280,6 @@ class ResellerController extends Controller
 
 
     }
-
     //获取access_Token
     public function admin_accessToken2(){
         $access = Cache('access');
