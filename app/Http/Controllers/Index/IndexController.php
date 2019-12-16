@@ -167,7 +167,7 @@ class IndexController extends Controller
             ->join('mt_shop','mt_shop.shop_id','=','mt_goods.shop_id')
             ->where(['mt_type.p_id'=>$t_id])
             ->get()->toArray();
-//        var_dump($data111);die;
+//        var_dump($distance);die;
 //        $distance = DB::select("SELECT s.shop_id,shop_name,goods_id,goods_name,market_price,picture,prople,promotion_price ,promotion_type,introduction,star,price,limited_price,promotion_price,coupon_redouction,coupon_price,limited_ready_prople,limited_prople,is_member_discount, 6378.138*2*ASIN(SQRT(POW(SIN(($lat1*PI()/180-lat*PI()/180)/2),2)+COS($lat1*PI()/180)*COS(lat*PI()/180)*POW(SIN(($lng1*PI()/180-lng*PI()/180)/2),2))) AS juli  FROM mt_shop s inner join mt_goods g on s.shop_id = g.shop_id  where g.t_id = $datainfo->t_id  group by juli order by juli");
 //           var_dump($distance);die;
             if($data1){
