@@ -189,6 +189,7 @@ class ResellerController extends Controller
     //生成订单
     public function index_reseller_orderAdd(Request $request){
         $openid1 = $request->input('openid');
+        $address_id = $request->input('address_id');
         $key = $openid1;
         $openid = Redis::get($key);
         if($openid){
@@ -215,6 +216,7 @@ class ResellerController extends Controller
                 'shop_id'=>$shop_id,
                 'shop_name'=>$shop_name,
                 'create_time'=>time(),
+                'address_id'=>$address_id
             ];
 
             $re_orderInsert = DB::table('re_order')->insert($insert);
@@ -249,6 +251,18 @@ class ResellerController extends Controller
         }
 
     }
+
+    //分校订单详细信息
+    public function index_reseller_orderDetail(Request $request){
+        $order_id = $request->input('order_id');
+
+    }
+
+    //分校订单支付
+    public function index_reseller_wxpay(Request $request){
+        $order_id = $request->input('order_id');
+    }
+
     //我的团队
     public function my_team(Request $request){
         $openid = $request->input('openid');
@@ -280,6 +294,7 @@ class ResellerController extends Controller
 
 
     }
+
     //获取access_Token
     public function admin_accessToken2(){
         $access = Cache('access');
