@@ -704,21 +704,22 @@ class OrderController extends Controller
         $key = $openid1;
         $openid = Redis::get($key);
         $id = $request->input('id');
-        $is_cart=$request->input('is_cart');
-//        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
+        $is_big=$request->input('is_big');    //0为no    1为yes
+        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
         $datainfo=DB::table('mt_user')->where(['openid'=>$openid])->first();
         $uid=$datainfo->uid;
 
 //        $order_id = 1;
         if($openid){
-            if($is_cart == 0){
-                $order_detailInfo = DB::table('mt_order_detail')
-//            ->join('mt_order_detail','mt_order.order_id','=','mt_order_detail.order_id')
-                    ->where(['uid'=>$uid,'id'=>$id])->get();
-                if($order_detailInfo){
+            if($is_big == 1){
+                $datainfo_add=DB::table('mt_order')
+                    ->join('mt_order_detail','mt_order_detail.order_id','=','mt_order.order_id')
+                    ->where(['uid'=>$uid,'order_id'=>$id])
+                    ->get('mt_order.total_price','mt_order_detail.pay_price','mt_order_detail.order_no','mt_order_detail.goods_name')->toArray();
+                if($datainfo_add){
                     $data=[
                         'code'=>0,
-                        'data'=>$order_detailInfo
+                        'data'=>$datainfo_add
                     ];
                     $response = [
                         'data'=>$data
@@ -737,13 +738,13 @@ class OrderController extends Controller
             }else{
                 $order_detailInfo1 = DB::table('mt_order_detail')
 //            ->join('mt_order_detail','mt_order.order_id','=','mt_order_detail.order_id')
-                    ->where(['uid'=>$uid,'id'=>$id])->first();
-                $order_add=DB::table('mt_order')->where(['uid'=>$uid,'order_id'=>$order_detailInfo1->order_id])->first();
+                    ->where(['uid'=>$uid,'id'=>$id])
+                    ->get(['pay_price','order_no','goods_name'])->toArray();
 //                var_dump($order_detailInfo1);die;
-                if($order_add){
+                if($order_detailInfo1){
                     $data=[
                         'code'=>0,
-                        'data'=>$order_add
+                        'data'=>$order_detailInfo1
                     ];
                     $response = [
                         'data'=>$data
