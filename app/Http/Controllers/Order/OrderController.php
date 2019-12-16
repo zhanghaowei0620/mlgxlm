@@ -715,7 +715,7 @@ class OrderController extends Controller
                 $datainfo_add=DB::table('mt_order')
                     ->join('mt_order_detail','mt_order_detail.order_id','=','mt_order.order_id')
                     ->where(['mt_order.uid'=>$uid,'mt_order.order_id'=>$id])
-                    ->get('mt_order.total_price','mt_order_detail.pay_price','mt_order_detail.order_no','mt_order_detail.goods_name')->toArray();
+                    ->get(['mt_order.total_price','mt_order_detail.pay_price','mt_order_detail.order_no','mt_order_detail.goods_name'])->toArray();
                 if($datainfo_add){
                     $data=[
                         'code'=>0,
