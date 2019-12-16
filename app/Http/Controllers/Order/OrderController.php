@@ -705,7 +705,7 @@ class OrderController extends Controller
         $openid = Redis::get($key);
         $id = $request->input('id');
         $is_big=$request->input('is_big');    //0为no    1为yes
-        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
+//        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
         $datainfo=DB::table('mt_user')->where(['openid'=>$openid])->first();
         $uid=$datainfo->uid;
 
