@@ -700,31 +700,89 @@ class OrderController extends Controller
 
     //订单详情
     public function order_detail(Request $request){
+        $openid1 = $request->input('openid');
+        $key = $openid1;
+        $openid = Redis::get($key);
         $id = $request->input('id');
+        $is_cart=$request->input('is_cart');
 //        $order_id = 1;
-        $order_detailInfo = DB::table('mt_order_detail')
+        if($openid){
+            if($is_cart === 0){
+                $order_detailInfo = DB::table('mt_order_detail')
 //            ->join('mt_order_detail','mt_order.order_id','=','mt_order_detail.order_id')
-            ->where('id',$id)->get();
-        //var_dump($order_detailInfo);exit;
-        if($order_detailInfo){
-            $data=[
-                'code'=>0,
-                'data'=>$order_detailInfo
-            ];
-            $response = [
-                'data'=>$data
-            ];
-            return json_encode($response,JSON_UNESCAPED_UNICODE);
+                    ->where('id',$id,'uid',$uid)->first();
+                if($order_detailInfo){
+                    $data=[
+                        'code'=>0,
+                        'data'=>$order_detailInfo
+                    ];
+                    $response = [
+                        'data'=>$data
+                    ];
+                    return json_encode($response,JSON_UNESCAPED_UNICODE);
+                }else{
+                    $data=[
+                        'code'=>1,
+                        'msg'=>'订单出现错误，请重新下单'
+                    ];
+                    $response = [
+                        'data'=>$data
+                    ];
+                    die(json_encode($response,JSON_UNESCAPED_UNICODE));
+                }
+            }else{
+                $order_add=DB::table('mt_order')->where(['uid'=>$uid,'order_id'=>$order_lisen->order_id])->first();
+                if($order_add){
+                    $data=[
+                        'code'=>0,
+                        'data'=>$order_add
+                    ];
+                    $response = [
+                        'data'=>$data
+                    ];
+                    return json_encode($response,JSON_UNESCAPED_UNICODE);
+                }else{
+                    $data=[
+                        'code'=>1,
+                        'msg'=>'订单出现错误，请重新下单'
+                    ];
+                    $response = [
+                        'data'=>$data
+                    ];
+                    die(json_encode($response,JSON_UNESCAPED_UNICODE));
+                }
+        }
+
         }else{
             $data=[
                 'code'=>1,
-                'msg'=>'订单出现错误，请重新下单'
+                'msg'=>'请先去登陆'
             ];
             $response = [
                 'data'=>$data
             ];
             die(json_encode($response,JSON_UNESCAPED_UNICODE));
         }
+        //var_dump($order_detailInfo);exit;
+//        if($order_detailInfo){
+//            $data=[
+//                'code'=>0,
+//                'data'=>$order_detailInfo
+//            ];
+//            $response = [
+//                'data'=>$data
+//            ];
+//            return json_encode($response,JSON_UNESCAPED_UNICODE);
+//        }else{
+//            $data=[
+//                'code'=>1,
+//                'msg'=>'订单出现错误，请重新下单'
+//            ];
+//            $response = [
+//                'data'=>$data
+//            ];
+//            die(json_encode($response,JSON_UNESCAPED_UNICODE));
+//        }
     }
 
 
