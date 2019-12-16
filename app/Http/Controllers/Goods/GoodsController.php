@@ -528,6 +528,8 @@ class GoodsController extends Controller
         $inerdb=DB::table('mt_order')->where(['order_id'=>$order_id])->first();
         $a=$inerdb->order_method;  //0为普通购买，1.拼团购买，2.优惠券购买，3限时抢购买
         $user_sum_price1=DB::table('mt_user')->where(['uid'=>$uid])->first();
+        $inser_money=DB::table('mt_order')->where(['order_id'=>$order_id])->first();
+        $order_detai=DB::table('mt_order_detail')->where(['shop_id'=>$inser_money->shop_id])->first();
 //        var_dump($a);die;
         if($a ==0){
             $mt_order_detail_add=DB::table('mt_order_detail')->where(['order_id'=>$order_id])->first();
@@ -557,6 +559,10 @@ class GoodsController extends Controller
               'price_sum'=>$user_sum_price1->price_sum+$pay1
             ];
             $user_sum_price=DB::table('mt_user')->where(['uid'=>$uid])->update($sum_price);
+            $aa=[
+                'shop_volume'=>$order_detai->shop_volume+$pay1
+            ];
+            $qq=DB::table('mt_shop')->where(['shop_id'=>$order_detai->shop_id])->update($aa);
             if($update_order){
                 $data=[
                     'code'=>0,
@@ -604,6 +610,10 @@ class GoodsController extends Controller
                     'price_sum'=>$user_sum_price1->price_sum+$pay2
                 ];
                 $user_sum_price=DB::table('mt_user')->where(['uid'=>$uid])->update($sum_price);
+                $aa=[
+                    'shop_volume'=>$order_detai->shop_volume+$pay2
+                ];
+                $qq=DB::table('mt_shop')->where(['shop_id'=>$order_detai->shop_id])->update($aa);
                 if($user_money_add){
                     $data=[
                         'code'=>0,
@@ -659,6 +669,10 @@ class GoodsController extends Controller
                         'price_sum'=>$user_sum_price1->price_sum+$moenfo
                     ];
                     $user_sum_price=DB::table('mt_user')->where(['uid'=>$uid])->update($sum_price);
+                    $aa=[
+                        'shop_volume'=>$order_detai->shop_volume+$moenfo
+                    ];
+                    $qq=DB::table('mt_shop')->where(['shop_id'=>$order_detai->shop_id])->update($aa);
                     if($sqlupdate && $detail_order){
                         $data=[
                             'code'=>0,
@@ -706,6 +720,10 @@ class GoodsController extends Controller
                     'price_sum'=>$user_sum_price1->price_sum+$money_add
                 ];
                 $user_sum_price=DB::table('mt_user')->where(['uid'=>$uid])->update($sum_price);
+                $aa=[
+                    'shop_volume'=>$order_detai->shop_volume+$money_add
+                ];
+                $qq=DB::table('mt_shop')->where(['shop_id'=>$order_detai->shop_id])->update($aa);
                 if($user_money_add){
                     $data=[
                         'code'=>0,
@@ -749,6 +767,10 @@ class GoodsController extends Controller
                 'price_sum'=>$user_sum_price1->price_sum+$pay
             ];
             $user_sum_price=DB::table('mt_user')->where(['uid'=>$uid])->update($sum_price);
+            $aa=[
+                'shop_volume'=>$order_detai->shop_volume+$pay
+            ];
+            $qq=DB::table('mt_shop')->where(['shop_id'=>$order_detai->shop_id])->update($aa);
             if($order_update){
                 $data=[
                     'code'=>0,
@@ -769,11 +791,6 @@ class GoodsController extends Controller
                 return json_encode($response,JSON_UNESCAPED_UNICODE);
             }
         }
-
-
-
-
-
     }
 
     //购物车删除
