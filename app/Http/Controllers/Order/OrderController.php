@@ -700,11 +700,11 @@ class OrderController extends Controller
 
     //订单详情
     public function order_detail(Request $request){
-        $order_id = $request->input('order_id');
+        $id = $request->input('id');
 //        $order_id = 1;
-        $order_detailInfo = DB::table('mt_order')
-            ->join('mt_order_detail','mt_order.order_id','=','mt_order_detail.order_id')
-            ->where('mt_order_detail.order_id',$order_id)->get();
+        $order_detailInfo = DB::table('mt_order_detail')
+//            ->join('mt_order_detail','mt_order.order_id','=','mt_order_detail.order_id')
+            ->where('id',$id)->get();
         //var_dump($order_detailInfo);exit;
         if($order_detailInfo){
             $data=[
