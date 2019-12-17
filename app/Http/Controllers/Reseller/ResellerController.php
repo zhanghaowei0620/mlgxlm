@@ -190,6 +190,7 @@ class ResellerController extends Controller
     public function index_reseller_orderAdd(Request $request){
         $openid1 = $request->input('openid');
         $address_id = $request->input('address_id');
+        $buy_num = $request->input('buy_num');
         $key = $openid1;
         $openid = Redis::get($key);
         if($openid){
@@ -212,7 +213,7 @@ class ResellerController extends Controller
                 're_goods_id'=>$re_goods_id,
                 're_goods_price'=>$re_goods_price,
                 're_goods_picture'=>$re_goods_picture,
-                'buy_num'=>1,
+                'buy_num'=>$buy_num,
                 'shop_id'=>$shop_id,
                 'shop_name'=>$shop_name,
                 'create_time'=>time(),
@@ -290,11 +291,12 @@ class ResellerController extends Controller
             $userInfo = DB::table('mt_user')->where('openid',$openid)->first(['uid','money','mt_reseller','p_id','a_id']);
             $uid = $userInfo->uid;   //当前支付的用户的id
             $re_order_id = $request->input('re_order_id');
-            $reGoodsInfo = DB::table('re_order')->where('re_order_id',$re_order_id)->first(['re_goods_price','shop_id']);
+            $reGoodsInfo = DB::table('re_order')->where('re_order_id',$re_order_id)->first(['re_goods_price','shop_id','buy_num']);
             $shopInfo = DB::table('mt_shop')->where('shop_id',$reGoodsInfo->shop_id)->first(['uid','up_rebate','indirect_up_rebate']);
-            if($userInfo->money >= $reGoodsInfo->re_goods_price){
+            $total_num = $reGoodsInfo->re_goods_price*$reGoodsInfo->buy_num;
+            if($userInfo->money >= $total_num){
                 $update = [
-                    'money'=>$userInfo->money - $reGoodsInfo->re_goods_price
+                    'money'=>$userInfo->money - $total_num
                 ];
                 $updateUserInfo = DB::table('mt_user')->where('uid',$uid)->update($update);
                 if($updateUserInfo > 0){
@@ -306,9 +308,9 @@ class ResellerController extends Controller
                                 $a_userInfo = DB::table('mt_user')->where('uid',$p_userInfo->p_id)->first();
                                 if($a_userInfo->uid != $a_userInfo->a_id){
                                     $re_orderInfoUpdate = DB::table('re_order')->where('re_order_id',$re_order_id)->update(['order_status'=>1]);
-                                    $p_userInfoUpdate = DB::table('mt_user')->where('uid',$p_userInfo->uid)->update(['no_reflected'=>$reGoodsInfo->re_goods_price*$shopInfo->up_rebate/100]);
-                                    $a_userInfoUpdate = DB::table('mt_user')->where('uid',$a_userInfo->uid)->update(['no_reflected'=>$reGoodsInfo->re_goods_price*$shopInfo->indirect_up_rebate/100]);
-                                    $shopUserInfoUpdate = DB::table('mt_user')->where('uid',$shopInfo->uid)->update(['no_reflected'=>$reGoodsInfo->re_goods_price*(100 - $shopInfo->up_rebate - $shopInfo->indirect_up_rebate)/100]);
+                                    $p_userInfoUpdate = DB::table('mt_user')->where('uid',$p_userInfo->uid)->update(['no_reflected'=>$total_num*$shopInfo->up_rebate/100]);
+                                    $a_userInfoUpdate = DB::table('mt_user')->where('uid',$a_userInfo->uid)->update(['no_reflected'=>$total_num*$shopInfo->indirect_up_rebate/100]);
+                                    $shopUserInfoUpdate = DB::table('mt_user')->where('uid',$shopInfo->uid)->update(['no_reflected'=>$total_num*(100 - $shopInfo->up_rebate - $shopInfo->indirect_up_rebate)/100]);
                                     if($re_orderInfoUpdate>0 && $p_userInfoUpdate>0 && $a_userInfoUpdate>0 && $shopUserInfoUpdate>0){
                                         $data = [
                                             'code'=>0,
@@ -330,8 +332,8 @@ class ResellerController extends Controller
                                     }
                                 }else{
                                     $re_orderInfoUpdate = DB::table('re_order')->where('re_order_id',$re_order_id)->update(['order_status'=>1]);
-                                    $p_userInfoUpdate = DB::table('mt_user')->where('uid',$p_userInfo->uid)->update(['no_reflected'=>$reGoodsInfo->re_goods_price*$shopInfo->up_rebate/100]);
-                                    $shopUserInfoUpdate = DB::table('mt_user')->where('uid',$shopInfo->uid)->update(['no_reflected'=>$reGoodsInfo->re_goods_price*(100 - $shopInfo->up_rebate)/100]);
+                                    $p_userInfoUpdate = DB::table('mt_user')->where('uid',$p_userInfo->uid)->update(['no_reflected'=>$total_num*$shopInfo->up_rebate/100]);
+                                    $shopUserInfoUpdate = DB::table('mt_user')->where('uid',$shopInfo->uid)->update(['no_reflected'=>$total_num*(100 - $shopInfo->up_rebate)/100]);
                                     if($re_orderInfoUpdate>0 && $p_userInfoUpdate>0 && $shopUserInfoUpdate>0){
                                         $data = [
                                             'code'=>0,
@@ -354,7 +356,7 @@ class ResellerController extends Controller
                                 }
                             }else{
                                 $re_orderInfoUpdate = DB::table('re_order')->where('re_order_id',$re_order_id)->update(['order_status'=>1]);
-                                $shopUserInfoUpdate = DB::table('mt_user')->where('uid',$shopInfo->uid)->update(['no_reflected'=>$reGoodsInfo->re_goods_price]);
+                                $shopUserInfoUpdate = DB::table('mt_user')->where('uid',$shopInfo->uid)->update(['no_reflected'=>$total_num]);
                                 if($re_orderInfoUpdate>0 && $shopUserInfoUpdate>0){
                                     $data = [
                                         'code'=>0,
@@ -377,7 +379,7 @@ class ResellerController extends Controller
                             }
                         }else{
                             $re_orderInfoUpdate = DB::table('re_order')->where('re_order_id',$re_order_id)->update(['order_status'=>1]);
-                            $shopUserInfoUpdate = DB::table('mt_user')->where('uid',$shopInfo->uid)->update(['no_reflected'=>$reGoodsInfo->re_goods_price]);
+                            $shopUserInfoUpdate = DB::table('mt_user')->where('uid',$shopInfo->uid)->update(['no_reflected'=>$total_num]);
                             if($re_orderInfoUpdate>0 && $shopUserInfoUpdate>0){
                                 $data = [
                                     'code'=>0,
@@ -400,7 +402,7 @@ class ResellerController extends Controller
                         }
                     }else{
                         $re_orderInfoUpdate = DB::table('re_order')->where('re_order_id',$re_order_id)->update(['order_status'=>1]);
-                        $shopUserInfoUpdate = DB::table('mt_user')->where('uid',$shopInfo->uid)->update(['no_reflected'=>$reGoodsInfo->re_goods_price]);
+                        $shopUserInfoUpdate = DB::table('mt_user')->where('uid',$shopInfo->uid)->update(['no_reflected'=>$total_num]);
                         if($re_orderInfoUpdate>0 && $shopUserInfoUpdate>0){
                             $data = [
                                 'code'=>0,
