@@ -173,7 +173,7 @@ Route::get('/nearby_shop', 'Goods\GoodsController@nearby_shop');   //附近店�
 
 Route::post('index_reseller_Apply', 'Reseller\ResellerController@index_reseller_Apply');   //分销-申请
 
-Route::post('index_rellerList', 'Reseller\ResellerController@index_rellerList');    //分销中心-列表
+Route::get('index_rellerList', 'Reseller\ResellerController@index_rellerList');    //分销中心-列表
 
 Route::post('index_reseller_goodsList', 'Reseller\ResellerController@index_reseller_goodsList');   //分销中心-商品列表
 
