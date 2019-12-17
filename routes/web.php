@@ -185,6 +185,8 @@ Route::post('index_reseller_Choose_payment', 'Reseller\ResellerController@index_
 
 Route::post('index_reseller_Topay', 'Reseller\ResellerController@index_reseller_Topay');   //分校订单-去支付
 
+Route::post('reseller_user_AddressDetail', 'Reseller\ResellerController@reseller_user_AddressDetail');    //根据地址id 获取详情信息
+
 Route::post('my_team', 'Reseller\ResellerController@my_team');   //我的团队
 
 Route::post('my_team_Add', 'Reseller\ResellerController@my_team_Add');   //根据邀请码添加分销员

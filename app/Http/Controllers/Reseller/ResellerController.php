@@ -613,6 +613,35 @@ class ResellerController extends Controller
         return json_encode($response, JSON_UNESCAPED_UNICODE);
     }
 
+    //用户所有收货地址
+    public function reseller_user_AddressDetail(Request $request){
+        $openid1 = $request->input('openid');
+        $address_id = $request->input('address_id');
+        $key = $openid1;
+        $openid = Redis::get($key);
+        if($openid){
+            $user_addressInfo = DB::table('mt_address')->where(['address_id'=>$address_id])->first();
+            $data = [
+                'code'=>0,
+                'user_addressInfo'=>$user_addressInfo,
+                'msg'=>'数据请求成功'
+            ];
+            $response = [
+                'data' => $data
+            ];
+            return json_encode($response, JSON_UNESCAPED_UNICODE);
+        }else{
+            $data = [
+                'code'=>1,
+                'msg'=>'请先登录'
+            ];
+            $response = [
+                'data' => $data
+            ];
+            die(json_encode($response, JSON_UNESCAPED_UNICODE));
+        }
+    }
+
 
 
 
