@@ -281,7 +281,7 @@ class ResellerController extends Controller
         }
 
     }
-    
+
     //分校订单支付-去支付
     public function index_reseller_Topay(Request $request){
         $openid1 = $request->input('openid');
