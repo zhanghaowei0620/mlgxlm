@@ -294,6 +294,7 @@ class ResellerController extends Controller
             $reGoodsInfo = DB::table('re_order')->where('re_order_id',$re_order_id)->first(['re_goods_price','shop_id','buy_num','order_status']);
             if($reGoodsInfo->order_status == 0){
                 $shopInfo = DB::table('mt_shop')->where('shop_id',$reGoodsInfo->shop_id)->first(['uid','up_rebate','indirect_up_rebate']);
+                $shopInfo1 = DB::table('mt_user')->where('uid',$shopInfo->uid)->first();
                 $total_num = $reGoodsInfo->re_goods_price*$reGoodsInfo->buy_num;
                 if($userInfo->money >= $total_num){
                     $update = [
@@ -309,9 +310,9 @@ class ResellerController extends Controller
                                     $a_userInfo = DB::table('mt_user')->where('uid',$p_userInfo->p_id)->first();
                                     if($a_userInfo->uid != $a_userInfo->a_id){
                                         $re_orderInfoUpdate = DB::table('re_order')->where('re_order_id',$re_order_id)->update(['order_status'=>1]);
-                                        $p_userInfoUpdate = DB::table('mt_user')->where('uid',$p_userInfo->uid)->update(['no_reflected'=>$total_num*$shopInfo->up_rebate/100]);
-                                        $a_userInfoUpdate = DB::table('mt_user')->where('uid',$a_userInfo->uid)->update(['no_reflected'=>$total_num*$shopInfo->indirect_up_rebate/100]);
-                                        $shopUserInfoUpdate = DB::table('mt_user')->where('uid',$shopInfo->uid)->update(['no_reflected'=>$total_num*(100 - $shopInfo->up_rebate - $shopInfo->indirect_up_rebate)/100]);
+                                        $p_userInfoUpdate = DB::table('mt_user')->where('uid',$p_userInfo->uid)->update(['no_reflected'=>$p_userInfo->no_reflected + $total_num*$shopInfo->up_rebate/100]);
+                                        $a_userInfoUpdate = DB::table('mt_user')->where('uid',$a_userInfo->uid)->update(['no_reflected'=>$a_userInfo->no_reflected + $total_num*$shopInfo->indirect_up_rebate/100]);
+                                        $shopUserInfoUpdate = DB::table('mt_user')->where('uid',$shopInfo->uid)->update(['no_reflected'=>$shopInfo1->no_reflected + $total_num*(100 - $shopInfo->up_rebate - $shopInfo->indirect_up_rebate)/100]);
                                         if($re_orderInfoUpdate>0 && $p_userInfoUpdate>0 && $a_userInfoUpdate>0 && $shopUserInfoUpdate>0){
                                             $data = [
                                                 'code'=>0,
@@ -333,8 +334,8 @@ class ResellerController extends Controller
                                         }
                                     }else{
                                         $re_orderInfoUpdate = DB::table('re_order')->where('re_order_id',$re_order_id)->update(['order_status'=>1]);
-                                        $p_userInfoUpdate = DB::table('mt_user')->where('uid',$p_userInfo->uid)->update(['no_reflected'=>$total_num*$shopInfo->up_rebate/100]);
-                                        $shopUserInfoUpdate = DB::table('mt_user')->where('uid',$shopInfo->uid)->update(['no_reflected'=>$total_num*(100 - $shopInfo->up_rebate)/100]);
+                                        $p_userInfoUpdate = DB::table('mt_user')->where('uid',$p_userInfo->uid)->update(['no_reflected'=>$p_userInfo->no_reflected + $total_num*$shopInfo->up_rebate/100]);
+                                        $shopUserInfoUpdate = DB::table('mt_user')->where('uid',$shopInfo->uid)->update(['no_reflected'=>$shopInfo1->no_reflected + $total_num*(100 - $shopInfo->up_rebate)/100]);
                                         if($re_orderInfoUpdate>0 && $p_userInfoUpdate>0 && $shopUserInfoUpdate>0){
                                             $data = [
                                                 'code'=>0,
@@ -357,7 +358,7 @@ class ResellerController extends Controller
                                     }
                                 }else{
                                     $re_orderInfoUpdate = DB::table('re_order')->where('re_order_id',$re_order_id)->update(['order_status'=>1]);
-                                    $shopUserInfoUpdate = DB::table('mt_user')->where('uid',$shopInfo->uid)->update(['no_reflected'=>$total_num]);
+                                    $shopUserInfoUpdate = DB::table('mt_user')->where('uid',$shopInfo->uid)->update(['no_reflected'=>$shopInfo1->no_reflected + $total_num]);
                                     if($re_orderInfoUpdate>0 && $shopUserInfoUpdate>0){
                                         $data = [
                                             'code'=>0,
@@ -380,7 +381,7 @@ class ResellerController extends Controller
                                 }
                             }else{
                                 $re_orderInfoUpdate = DB::table('re_order')->where('re_order_id',$re_order_id)->update(['order_status'=>1]);
-                                $shopUserInfoUpdate = DB::table('mt_user')->where('uid',$shopInfo->uid)->update(['no_reflected'=>$total_num]);
+                                $shopUserInfoUpdate = DB::table('mt_user')->where('uid',$shopInfo->uid)->update(['no_reflected'=>$shopInfo1->no_reflected + $total_num]);
                                 if($re_orderInfoUpdate>0 && $shopUserInfoUpdate>0){
                                     $data = [
                                         'code'=>0,
@@ -403,7 +404,7 @@ class ResellerController extends Controller
                             }
                         }else{
                             $re_orderInfoUpdate = DB::table('re_order')->where('re_order_id',$re_order_id)->update(['order_status'=>1]);
-                            $shopUserInfoUpdate = DB::table('mt_user')->where('uid',$shopInfo->uid)->update(['no_reflected'=>$total_num]);
+                            $shopUserInfoUpdate = DB::table('mt_user')->where('uid',$shopInfo->uid)->update(['no_reflected'=>$shopInfo1->no_reflected + $total_num]);
                             if($re_orderInfoUpdate>0 && $shopUserInfoUpdate>0){
                                 $data = [
                                     'code'=>0,
