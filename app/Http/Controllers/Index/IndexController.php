@@ -154,30 +154,40 @@ class IndexController extends Controller
             $t_id=$request->input('t_id');    //美容美发0     身体护理1    问题皮肤2   瑜伽瘦身3
             $data1=DB::table('mt_type')->where(['p_id'=>$t_id])->get();
             $data2=DB::table('mt_goods')->where(['t_id'=>$t_id])->get();
-//        $lng2 = '112.5930404663';
-//        $lat2 = '37.7424852383';    //距离最近
+
+//       查到大分类了
         $aaa=DB::table('mt_type')->where(['t_id'=>$t_id])->first();
         if($aaa->p_id == 0){
+//            根据t_id找到了店铺
             $data=DB::table('mt_shop')->where(['t_id'=>$t_id])->get()->toArray();
             $pop = [];
+//            循环店铺传入距离
             foreach($data as $k =>$v){
                 $aa=  $this->GetDistance($v->lat,$v->lng,$lat1,$lng1);
                 $v->juli=$aa;
                 array_push($pop,$v);
             }
+//            店铺排序
             $last_names = array_column($pop,'juli');
             array_multisort($last_names,SORT_ASC,$pop);
             $qwq=[];
+//            return json_encode($pop,JSON_UNESCAPED_UNICODE);die;
+//            根据店铺去找下面的商品并传入距离
             foreach($pop as $k =>$v){
-                $goods_add = DB::table('mt_goods')->where(['shop_id'=>$v->shop_id])->get();
+                $goods_add = DB::table('mt_goods')
+                    ->where(['shop_id'=>$v->shop_id])->get();
                 foreach($goods_add as $value){
                     $value->juli = $v->juli;
+                    $value->shop_name = $v->shop_name;
+                    $value->shop_id = $v->shop_id;
                     array_push($qwq,$value);
                 }
             }
+//            接口返回
             if($qwq){
                 $data=[
                     'data1'=>$qwq,
+
                     'data2'=>$data1,
                 ];
                 $response=[
@@ -196,16 +206,20 @@ class IndexController extends Controller
                 return json_encode($response,JSON_UNESCAPED_UNICODE);die;
             }
         }else if($aaa->p_id > 0){
+//            去找大分类下面的店铺
             $data_list=DB::table('mt_shop')->where(['t_id'=>$aaa->p_id])->get();
             $pop = [];
+//            店铺传入距离
             foreach($data_list as $k =>$v){
                 $aa=  $this->GetDistance($v->lat,$v->lng,$lat1,$lng1);
                 $v->juli=$aa;
                 array_push($pop,$v);
             }
+//            排序
             $last_names = array_column($pop,'juli');
             array_multisort($last_names,SORT_ASC,$pop);
             $qwq=[];
+//            根据店铺找商品
             foreach($pop as $k =>$v){
                 $goods_add = DB::table('mt_goods')->where(['shop_id'=>$v->shop_id])->get();
                 foreach($goods_add as $value){
@@ -214,11 +228,13 @@ class IndexController extends Controller
                 }
             }
             $qqwq=[];
+//            剔除吴用商品数据
             foreach($qwq as $value){
                 if($value->t_id == $t_id){
                     array_push($qqwq,$value);
                 }
             }
+//            接口返回
              if($qwq){
                  $data=[
                      'data1'=>$qqwq,
