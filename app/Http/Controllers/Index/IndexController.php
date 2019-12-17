@@ -154,26 +154,30 @@ class IndexController extends Controller
             $t_id=$request->input('t_id');    //美容美发0     身体护理1    问题皮肤2   瑜伽瘦身3
             $data1=DB::table('mt_type')->where(['p_id'=>$t_id])->get();
             $data2=DB::table('mt_goods')->where(['t_id'=>$t_id])->get();
-//        $lng1 = '112.5930404663';
-//        $lat1 = '37.7424852383';    //距离最近
-//        $data111=DB::table('mt_shop')
-//            ->join('mt_goods','mt_goods.shop_id','=','mt_shop.shop_id')
-////            ->join('mt_shop'.'mt_type.t_id','=','mt_shop.t_id')
-//            ->where(['mt_goods.p_id'=>$t_id])
-//            ->get()->toArray();
-//            var_dump($data111);die;
-        $distance=DB::table('mt_goods')
-            ->join('mt_type','mt_goods.t_id','=','mt_type.t_id')
-            ->join('mt_shop','mt_shop.shop_id','=','mt_goods.shop_id')
-            ->where(['mt_type.p_id'=>$t_id])
-            ->get()->toArray();
-//        var_dump($distance);die;
-//        $distance = DB::select("SELECT s.shop_id,shop_name,goods_id,goods_name,market_price,picture,prople,promotion_price ,promotion_type,introduction,star,price,limited_price,promotion_price,coupon_redouction,coupon_price,limited_ready_prople,limited_prople,is_member_discount, 6378.138*2*ASIN(SQRT(POW(SIN(($lat1*PI()/180-lat*PI()/180)/2),2)+COS($lat1*PI()/180)*COS(lat*PI()/180)*POW(SIN(($lng1*PI()/180-lng*PI()/180)/2),2))) AS juli  FROM mt_shop s inner join mt_goods g on s.shop_id = g.shop_id  where g.t_id = $datainfo->t_id  group by juli order by juli");
-//           var_dump($distance);die;
-            if($data1){
+//        $lng2 = '112.5930404663';
+//        $lat2 = '37.7424852383';    //距离最近
+        $aaa=DB::table('mt_type')->where(['t_id'=>$t_id])->first();
+        if($aaa->p_id == 0){
+            $data=DB::table('mt_shop')->where(['t_id'=>$t_id])->get()->toArray();
+            $pop = [];
+            foreach($data as $k =>$v){
+                $aa=  $this->GetDistance($v->lat,$v->lng,$lat2,$lng2);
+                $v->juli=$aa;
+                array_push($pop,$v);
+            }
+            $last_names = array_column($pop,'juli');
+            array_multisort($last_names,SORT_ASC,$pop);
+            $qwq=[];
+            foreach($pop as $k =>$v){
+                $goods_add = DB::table('mt_goods')->where(['shop_id'=>$v->shop_id])->get();
+                foreach($goods_add as $value){
+                    $value->juli = $v->juli;
+                    array_push($qwq,$value);
+                }
+            }
+            if($qwq){
                 $data=[
-                    'data1'=>$data1,
-                    'distance'=>$distance
+                    'data1'=>$qwq,
                 ];
                 $response=[
                     'code'=>0,
@@ -182,15 +186,77 @@ class IndexController extends Controller
                 return json_encode($response,JSON_UNESCAPED_UNICODE);
             }else{
                 $data=[
-                    'code'=>1,
-                    'data'=>$data1,
+                    'msg'=>'返回失败',
                 ];
                 $response=[
+                    'code'=>1,
                     'data'=>$data
                 ];
-                return json_encode($response,JSON_UNESCAPED_UNICODE);
+                return json_encode($response,JSON_UNESCAPED_UNICODE);die;
             }
-    
+        }else if($aaa->p_id > 0){
+            $data_list=DB::table('mt_shop')->where(['t_id'=>$aaa->p_id])->get();
+            $pop = [];
+            foreach($data_list as $k =>$v){
+                $aa=  $this->GetDistance($v->lat,$v->lng,$lat2,$lng2);
+                $v->juli=$aa;
+                array_push($pop,$v);
+            }
+            $last_names = array_column($pop,'juli');
+            array_multisort($last_names,SORT_ASC,$pop);
+            $qwq=[];
+            foreach($pop as $k =>$v){
+                $goods_add = DB::table('mt_goods')->where(['shop_id'=>$v->shop_id])->get();
+                foreach($goods_add as $value){
+                    $value->juli = $v->juli;
+                    array_push($qwq,$value);
+                }
+            }
+            $qqwq=[];
+            foreach($qwq as $value){
+                if($value->t_id == $t_id){
+                    array_push($qqwq,$value);
+                }
+            }
+             if($qwq){
+                 $data=[
+                     'data1'=>$qqwq,
+                 ];
+                 $response=[
+                     'code'=>0,
+                     'data'=>$data
+                 ];
+                 return json_encode($response,JSON_UNESCAPED_UNICODE);
+             }else{
+                 $data=[
+                     'msg'=>'返回失败',
+                 ];
+                 $response=[
+                     'code'=>1,
+                     'data'=>$data
+                 ];
+                 return json_encode($response,JSON_UNESCAPED_UNICODE);
+             }
+        }
+    }
+
+    public function GetDistance($lat1, $lng1, $lat2, $lng2)
+    {
+        $EARTH_RADIUS = 6378.137;
+        $radLat1 = $this->rad($lat1);
+        $radLat2 = $this->rad($lat2);
+        $a = $radLat1 - $radLat2;
+        $b = $this->rad($lng1) - $this->rad($lng2);
+        $s = 2 * asin(sqrt(pow(sin($a / 2), 2) + cos($radLat1) * cos($radLat2) * pow(sin($b / 2), 2)));
+        $s = $s * $EARTH_RADIUS;
+        $s = round($s * 10000) / 10000;
+
+        //        return $s;
+        return   json_encode($s,JSON_UNESCAPED_UNICODE);
+    }
+    private function rad($d)
+    {
+        return $d * M_PI / 180.0;
     }
 
     //更多
