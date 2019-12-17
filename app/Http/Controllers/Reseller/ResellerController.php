@@ -300,9 +300,9 @@ class ResellerController extends Controller
                 if($updateUserInfo > 0){
                     if($userInfo->mt_reseller == 1){
                         $p_userInfo = DB::table('mt_user')->where('uid',$userInfo->p_id)->first();
-                        if($p_userInfo->p_id != $p_userInfo->a_id){
+                        if($p_userInfo->uid != $p_userInfo->a_id){
                             $a_userInfo = DB::table('mt_user')->where('uid',$p_userInfo->p_id)->first();
-                            if($a_userInfo->p_id != $a_userInfo->a_id){
+                            if($a_userInfo->uid != $a_userInfo->a_id){
                                 $re_orderInfoUpdate = DB::table('re_order')->where('re_order_id',$re_order_id)->update(['order_status'=>1]);
                                 $p_userInfoUpdate = DB::table('mt_user')->where('uid',$p_userInfo->uid)->update(['no_reflected'=>$reGoodsInfo->re_goods_price*$shopInfo->up_rebate/100]);
                                 $a_userInfoUpdate = DB::table('mt_user')->where('uid',$a_userInfo->uid)->update(['no_reflected'=>$reGoodsInfo->re_goods_price*$shopInfo->indirect_up_rebate/100]);
