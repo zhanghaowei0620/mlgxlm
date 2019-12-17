@@ -283,9 +283,9 @@ class ResellerController extends Controller
 
     //分校订单支付-去支付
     public function index_reseller_Topay(Request $request){
-        $openid = $request->input('openid');
-//        $key = $openid1;
-//        $openid = Redis::get($key);
+        $openid1 = $request->input('openid');
+        $key = $openid1;
+        $openid = Redis::get($key);
         if($openid){
             $userInfo = DB::table('mt_user')->where('openid',$openid)->first(['uid','money','mt_reseller','p_id']);
             $uid = $userInfo->uid;   //当前支付的用户的id
