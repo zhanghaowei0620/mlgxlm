@@ -620,7 +620,7 @@ class ResellerController extends Controller
         $key = $openid1;
         $openid = Redis::get($key);
         if($openid){
-            $user_addressInfo = DB::table('mt_address')->where(['address_id'=>$address_id])->first();
+            $user_addressInfo = DB::table('mt_address')->where(['id'=>$address_id])->first();
             $data = [
                 'code'=>0,
                 'user_addressInfo'=>$user_addressInfo,
