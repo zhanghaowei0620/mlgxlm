@@ -161,7 +161,7 @@ class IndexController extends Controller
             $data=DB::table('mt_shop')->where(['t_id'=>$t_id])->get()->toArray();
             $pop = [];
             foreach($data as $k =>$v){
-                $aa=  $this->GetDistance($v->lat,$v->lng,$lat2,$lng2);
+                $aa=  $this->GetDistance($v->lat,$v->lng,$lat1,$lng1);
                 $v->juli=$aa;
                 array_push($pop,$v);
             }
@@ -198,7 +198,7 @@ class IndexController extends Controller
             $data_list=DB::table('mt_shop')->where(['t_id'=>$aaa->p_id])->get();
             $pop = [];
             foreach($data_list as $k =>$v){
-                $aa=  $this->GetDistance($v->lat,$v->lng,$lat2,$lng2);
+                $aa=  $this->GetDistance($v->lat,$v->lng,$lat1,$lng1);
                 $v->juli=$aa;
                 array_push($pop,$v);
             }
