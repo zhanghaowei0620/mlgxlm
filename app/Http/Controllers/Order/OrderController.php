@@ -498,7 +498,7 @@ class OrderController extends Controller
 
         }else{
             $response = [
-                'error'=>'1',
+                'error'=>1,
                 'msg'=>'请先登录'
             ];
             return json_encode($response,JSON_UNESCAPED_UNICODE);
