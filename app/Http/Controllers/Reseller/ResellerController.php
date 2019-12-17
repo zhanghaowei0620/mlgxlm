@@ -162,7 +162,7 @@ class ResellerController extends Controller
         $shop_id = $request->input('shop_id');
         //商品详情信息
         $re_goodsShopInfo = DB::table('re_goods')->join('mt_shop','re_goods.shop_id','=','mt_shop.shop_id')
-            ->where('re_goods.re_goods_id',$re_goods_id)->first(['re_goods_name','re_goods_price','re_goods_stock','re_goods_picture','re_goods_introduction','is_distribution','re_goods_volume','re_goods_planting_picture','re_goods_picture_detail','re_production_time','re_expiration_time','mt_shop.shop_id','shop_name','shop_score','shop_address_provice','shop_address_city','shop_address_area','shop_img']);
+            ->where('re_goods.re_goods_id',$re_goods_id)->first(['re_goods_name','re_goods_price','re_goods_stock','re_goods_picture','re_goods_introduction','is_distribution','re_goods_volume','re_goods_planting_picture','re_goods_picture_detail','re_production_time','re_expiration_time','mt_shop.shop_id','shop_name','shop_score','shop_address_provice','shop_address_city','shop_address_area','shop_img','shop_phone','shop_star']);
 //        var_dump($re_goodsShopInfo);exit;
 
         $re_evaluateInfo = DB::table('re_evaluate')
@@ -189,6 +189,8 @@ class ResellerController extends Controller
     //生成订单
     public function index_reseller_orderAdd(Request $request){
         $openid1 = $request->input('openid');
+        $address_id = $request->input('address_id');
+        $buy_num = $request->input('buy_num');
         $key = $openid1;
         $openid = Redis::get($key);
         if($openid){
@@ -199,28 +201,31 @@ class ResellerController extends Controller
 //        var_dump($reGoodsInfo);
             $re_goods_name = $reGoodsInfo->re_goods_name;
             $re_goods_price = $reGoodsInfo->re_goods_price;
-            $re_goods_picture = $reGoodsInfo-re_goods_picture;
+            $re_goods_picture = $reGoodsInfo->re_goods_picture;
             $shop_id = $reGoodsInfo->shop_id;
             $shopInfo = DB::table('mt_shop')->where('shop_id',$shop_id)->first(['shop_name']);
             $shop_name = $shopInfo->shop_name;
             $order_no = date("YmdHis", time()) . rand(1000, 9999);   //订单号
             $insert = [
                 'uid'=>$uid,
-                'order_no'=>$order_no,
+                're_order_no'=>$order_no,
                 're_goods_name'=>$re_goods_name,
                 're_goods_id'=>$re_goods_id,
                 're_goods_price'=>$re_goods_price,
                 're_goods_picture'=>$re_goods_picture,
-                'buy_num'=>1,
+                'buy_num'=>$buy_num,
                 'shop_id'=>$shop_id,
                 'shop_name'=>$shop_name,
                 'create_time'=>time(),
+                'address_id'=>$address_id
             ];
 
             $re_orderInsert = DB::table('re_order')->insert($insert);
             if($re_orderInsert){
+                $re_orderInfo = DB::table('re_order')->where('re_order_no',$order_no)->first(['re_order_id']);
                 $data = [
                     'code'=>0,
+                    'data'=>$re_orderInfo,
                     'msg'=>'订单生成成功'
                 ];
                 $response = [
@@ -249,6 +254,201 @@ class ResellerController extends Controller
         }
 
     }
+
+    //分校订单支付-选择支付方式
+    public function index_reseller_Choose_payment(Request $request){
+        $re_order_id = $request->input('re_order_id');
+        $reGoodsInfo = DB::table('re_order')->where('re_order_id',$re_order_id)->first();
+        if($reGoodsInfo){
+            $data = [
+                'code'=>0,
+                'data'=>$reGoodsInfo,
+                'msg'=>'数据请求成功'
+            ];
+            $response = [
+                'data' => $data
+            ];
+            return json_encode($response, JSON_UNESCAPED_UNICODE);
+        }else{
+            $data = [
+                'code'=>1,
+                'msg'=>'系统出现错误,请检查订单是否真实存在'
+            ];
+            $response = [
+                'data' => $data
+            ];
+            die(json_encode($response, JSON_UNESCAPED_UNICODE));
+        }
+
+    }
+
+    //分校订单支付-去支付
+    public function index_reseller_Topay(Request $request){
+        $openid1 = $request->input('openid');
+        $key = $openid1;
+        $openid = Redis::get($key);
+        if($openid){
+            $userInfo = DB::table('mt_user')->where('openid',$openid)->first(['uid','money','mt_reseller','p_id','a_id']);
+            $uid = $userInfo->uid;   //当前支付的用户的id
+            $re_order_id = $request->input('re_order_id');
+            $reGoodsInfo = DB::table('re_order')->where('re_order_id',$re_order_id)->first(['re_goods_price','shop_id','buy_num']);
+            $shopInfo = DB::table('mt_shop')->where('shop_id',$reGoodsInfo->shop_id)->first(['uid','up_rebate','indirect_up_rebate']);
+            $total_num = $reGoodsInfo->re_goods_price*$reGoodsInfo->buy_num;
+            if($userInfo->money >= $total_num){
+                $update = [
+                    'money'=>$userInfo->money - $total_num
+                ];
+                $updateUserInfo = DB::table('mt_user')->where('uid',$uid)->update($update);
+                if($updateUserInfo > 0){
+                    if($userInfo->mt_reseller == 1){
+                        $u_shopInfo = DB::table('mt_shop')->where('uid',$userInfo->a_id)->first(['shop_id']);
+                        if($reGoodsInfo->shop_id == $u_shopInfo->shop_id){
+                            $p_userInfo = DB::table('mt_user')->where('uid',$userInfo->p_id)->first();
+                            if($p_userInfo->uid != $p_userInfo->a_id){
+                                $a_userInfo = DB::table('mt_user')->where('uid',$p_userInfo->p_id)->first();
+                                if($a_userInfo->uid != $a_userInfo->a_id){
+                                    $re_orderInfoUpdate = DB::table('re_order')->where('re_order_id',$re_order_id)->update(['order_status'=>1]);
+                                    $p_userInfoUpdate = DB::table('mt_user')->where('uid',$p_userInfo->uid)->update(['no_reflected'=>$total_num*$shopInfo->up_rebate/100]);
+                                    $a_userInfoUpdate = DB::table('mt_user')->where('uid',$a_userInfo->uid)->update(['no_reflected'=>$total_num*$shopInfo->indirect_up_rebate/100]);
+                                    $shopUserInfoUpdate = DB::table('mt_user')->where('uid',$shopInfo->uid)->update(['no_reflected'=>$total_num*(100 - $shopInfo->up_rebate - $shopInfo->indirect_up_rebate)/100]);
+                                    if($re_orderInfoUpdate>0 && $p_userInfoUpdate>0 && $a_userInfoUpdate>0 && $shopUserInfoUpdate>0){
+                                        $data = [
+                                            'code'=>0,
+                                            'msg'=>'支付成功'
+                                        ];
+                                        $response = [
+                                            'data' => $data
+                                        ];
+                                        return json_encode($response, JSON_UNESCAPED_UNICODE);
+                                    }else{
+                                        $data = [
+                                            'code'=>3,
+                                            'msg'=>'系统出现错误,分账失败,请重试'
+                                        ];
+                                        $response = [
+                                            'data' => $data
+                                        ];
+                                        return json_encode($response, JSON_UNESCAPED_UNICODE);
+                                    }
+                                }else{
+                                    $re_orderInfoUpdate = DB::table('re_order')->where('re_order_id',$re_order_id)->update(['order_status'=>1]);
+                                    $p_userInfoUpdate = DB::table('mt_user')->where('uid',$p_userInfo->uid)->update(['no_reflected'=>$total_num*$shopInfo->up_rebate/100]);
+                                    $shopUserInfoUpdate = DB::table('mt_user')->where('uid',$shopInfo->uid)->update(['no_reflected'=>$total_num*(100 - $shopInfo->up_rebate)/100]);
+                                    if($re_orderInfoUpdate>0 && $p_userInfoUpdate>0 && $shopUserInfoUpdate>0){
+                                        $data = [
+                                            'code'=>0,
+                                            'msg'=>'支付成功'
+                                        ];
+                                        $response = [
+                                            'data' => $data
+                                        ];
+                                        return json_encode($response, JSON_UNESCAPED_UNICODE);
+                                    }else{
+                                        $data = [
+                                            'code'=>4,
+                                            'msg'=>'系统出现错误,分账失败,请重试'
+                                        ];
+                                        $response = [
+                                            'data' => $data
+                                        ];
+                                        return json_encode($response, JSON_UNESCAPED_UNICODE);
+                                    }
+                                }
+                            }else{
+                                $re_orderInfoUpdate = DB::table('re_order')->where('re_order_id',$re_order_id)->update(['order_status'=>1]);
+                                $shopUserInfoUpdate = DB::table('mt_user')->where('uid',$shopInfo->uid)->update(['no_reflected'=>$total_num]);
+                                if($re_orderInfoUpdate>0 && $shopUserInfoUpdate>0){
+                                    $data = [
+                                        'code'=>0,
+                                        'msg'=>'支付成功'
+                                    ];
+                                    $response = [
+                                        'data' => $data
+                                    ];
+                                    return json_encode($response, JSON_UNESCAPED_UNICODE);
+                                }else{
+                                    $data = [
+                                        'code'=>5,
+                                        'msg'=>'系统出现错误,修改订单信息失败,请重试'
+                                    ];
+                                    $response = [
+                                        'data' => $data
+                                    ];
+                                    return json_encode($response, JSON_UNESCAPED_UNICODE);
+                                }
+                            }
+                        }else{
+                            $re_orderInfoUpdate = DB::table('re_order')->where('re_order_id',$re_order_id)->update(['order_status'=>1]);
+                            $shopUserInfoUpdate = DB::table('mt_user')->where('uid',$shopInfo->uid)->update(['no_reflected'=>$total_num]);
+                            if($re_orderInfoUpdate>0 && $shopUserInfoUpdate>0){
+                                $data = [
+                                    'code'=>0,
+                                    'msg'=>'支付成功'
+                                ];
+                                $response = [
+                                    'data' => $data
+                                ];
+                                return json_encode($response, JSON_UNESCAPED_UNICODE);
+                            }else{
+                                $data = [
+                                    'code'=>6,
+                                    'msg'=>'系统出现错误,修改订单信息失败,请重试'
+                                ];
+                                $response = [
+                                    'data' => $data
+                                ];
+                                return json_encode($response, JSON_UNESCAPED_UNICODE);
+                            }
+                        }
+                    }else{
+                        $re_orderInfoUpdate = DB::table('re_order')->where('re_order_id',$re_order_id)->update(['order_status'=>1]);
+                        $shopUserInfoUpdate = DB::table('mt_user')->where('uid',$shopInfo->uid)->update(['no_reflected'=>$total_num]);
+                        if($re_orderInfoUpdate>0 && $shopUserInfoUpdate>0){
+                            $data = [
+                                'code'=>0,
+                                'msg'=>'支付成功'
+                            ];
+                            $response = [
+                                'data' => $data
+                            ];
+                            return json_encode($response, JSON_UNESCAPED_UNICODE);
+                        }else{
+                            $data = [
+                                'code'=>6,
+                                'msg'=>'系统出现错误,修改订单信息失败,请重试'
+                            ];
+                            $response = [
+                                'data' => $data
+                            ];
+                            return json_encode($response, JSON_UNESCAPED_UNICODE);
+                        }
+                    }
+
+                }else{
+                    $data = [
+                        'code'=>1,
+                        'msg'=>'系统出现错误,请重试'
+                    ];
+                    $response = [
+                        'data' => $data
+                    ];
+                    die(json_encode($response, JSON_UNESCAPED_UNICODE));
+                }
+            }
+        }else{
+            $data = [
+                'code'=>2,
+                'msg'=>'请先登录'
+            ];
+            $response = [
+                'data' => $data
+            ];
+            die(json_encode($response, JSON_UNESCAPED_UNICODE));
+        }
+
+
+    }
+
     //我的团队
     public function my_team(Request $request){
         $openid = $request->input('openid');
@@ -280,6 +480,7 @@ class ResellerController extends Controller
 
 
     }
+
     //获取access_Token
     public function admin_accessToken2(){
         $access = Cache('access');
@@ -437,6 +638,35 @@ class ResellerController extends Controller
             'data' => $data
         ];
         return json_encode($response, JSON_UNESCAPED_UNICODE);
+    }
+
+    //用户所有收货地址
+    public function reseller_user_AddressDetail(Request $request){
+        $openid1 = $request->input('openid');
+        $address_id = $request->input('address_id');
+        $key = $openid1;
+        $openid = Redis::get($key);
+        if($openid){
+            $user_addressInfo = DB::table('mt_address')->where(['id'=>$address_id])->first();
+            $data = [
+                'code'=>0,
+                'user_addressInfo'=>$user_addressInfo,
+                'msg'=>'数据请求成功'
+            ];
+            $response = [
+                'data' => $data
+            ];
+            return json_encode($response, JSON_UNESCAPED_UNICODE);
+        }else{
+            $data = [
+                'code'=>1,
+                'msg'=>'请先登录'
+            ];
+            $response = [
+                'data' => $data
+            ];
+            die(json_encode($response, JSON_UNESCAPED_UNICODE));
+        }
     }
 
 
