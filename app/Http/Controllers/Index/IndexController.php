@@ -178,6 +178,7 @@ class IndexController extends Controller
             if($qwq){
                 $data=[
                     'data1'=>$qwq,
+                    'data2'=>$data1,
                 ];
                 $response=[
                     'code'=>0,
@@ -221,6 +222,7 @@ class IndexController extends Controller
              if($qwq){
                  $data=[
                      'data1'=>$qqwq,
+                     'data2'=>$data1,
                  ];
                  $response=[
                      'code'=>0,
