@@ -502,7 +502,7 @@ class GoodsController extends Controller
         $is_big=$request->input('is_big');
         $key = $openid1;
         $openid = Redis::get($key);
-        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
+//        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
         $order_id=$request->input('order_id');
         $price=$request->input('price');
         $data=DB::table('mt_user')
