@@ -154,12 +154,13 @@ class IndexController extends Controller
             $t_id=$request->input('t_id');    //美容美发0     身体护理1    问题皮肤2   瑜伽瘦身3
             $data1=DB::table('mt_type')->where(['p_id'=>$t_id])->get();
 //            var_dump($data1);die;
-        
             $data2=DB::table('mt_goods')->where(['t_id'=>$t_id])->get();
+//            var_dump($data2);die;
 
 //       查到大分类了
         $aaa=DB::table('mt_type')->where(['t_id'=>$t_id])->first();
 //        var_dump($aaa);die;
+        $dainfos=DB::table('mt_type')->where(['p_id'=>$aaa->p_id])->get();
         if($aaa->p_id == 0){
 //            根据t_id找到了店铺
             $data=DB::table('mt_shop')->where(['t_id'=>$t_id])->get()->toArray();
@@ -190,7 +191,7 @@ class IndexController extends Controller
             if($data1){
                 $data=[
                     'data1'=>$qwq,
-                    'data2'=>$data2,
+                    'data2'=>$dainfos,
                 ];
                 $response=[
                     'code'=>0,
@@ -209,7 +210,7 @@ class IndexController extends Controller
                 return json_encode($response,JSON_UNESCAPED_UNICODE);die;
             }
         }else if($aaa->p_id > 0){
-            $dainfos=DB::table('mt_type')->where(['p_id'=>$aaa->p_id])->get();
+
 //            去找大分类下面的店铺
             $data_list=DB::table('mt_shop')->where(['t_id'=>$aaa->p_id])->get();
             $pop = [];
@@ -244,7 +245,7 @@ class IndexController extends Controller
              if($data1){
                  $data=[
                      'data1'=>$qqwq,
-                     'data2'=>$data2,
+                     'data2'=>$dainfos,
                  ];
                  $response=[
                      'code'=>0,
