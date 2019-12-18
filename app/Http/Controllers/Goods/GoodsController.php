@@ -364,13 +364,10 @@ class GoodsController extends Controller
     //点击加入购物车
     public function add_cart(Request $request){
         $goods_id = $request->input('goods_id');
-//        $ip = $_SERVER['SERVER_ADDR'];
-//        $key = 'openid'.$ip;
-//        $openid = Redis::get($key);
         $openid1 = $request->input('openid');
         $key = $openid1;
         $openid = Redis::get($key);
-//        $openid="o9VUc5AOsdEdOBeUAw4TdYg-F-dM";
+        $openid="o9VUc5AOsdEdOBeUAw4TdYg-F-dM";
         if($openid){
             $buy_num = $request->input('buy_num');
             $user_info = DB::table('mt_user')->where('openid',$openid)->first();
@@ -465,7 +462,7 @@ class GoodsController extends Controller
         $openid1 = $request->input('openid');
         $key = $openid1;
         $openid = Redis::get($key);
-//        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
+        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
         $cartAdd=DB::table('mt_cart')
             ->join('mt_goods','mt_goods.goods_id','=','mt_cart.goods_id')
             ->where(['mt_cart.openid'=>$openid])

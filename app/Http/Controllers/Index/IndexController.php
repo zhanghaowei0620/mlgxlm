@@ -184,7 +184,7 @@ class IndexController extends Controller
                 }
             }
 //            接口返回
-            if($qwq){
+            if($data1){
                 $data=[
                     'data1'=>$qwq,
                     'data2'=>$data1,
@@ -237,7 +237,7 @@ class IndexController extends Controller
                 }
             }
 //            接口返回
-             if($qwq){
+             if($data1){
                  $data=[
                      'data1'=>$qqwq,
                      'data2'=>$data1,
