@@ -282,7 +282,7 @@ class ResellerController extends Controller
 
     }
 
-    //分校订单支付-去支付
+    //分校订单支付-分享币支付
     public function index_reseller_Topay(Request $request){
         $openid1 = $request->input('openid');
         $key = $openid1;
@@ -309,7 +309,7 @@ class ResellerController extends Controller
                                 if($p_userInfo->uid != $p_userInfo->a_id){
                                     $a_userInfo = DB::table('mt_user')->where('uid',$p_userInfo->p_id)->first();
                                     if($a_userInfo->uid != $a_userInfo->a_id){
-                                        $re_orderInfoUpdate = DB::table('re_order')->where('re_order_id',$re_order_id)->update(['order_status'=>1]);
+                                        $re_orderInfoUpdate = DB::table('re_order')->where('re_order_id',$re_order_id)->update(['order_status'=>1,'pay_type'=>0,'pay_price'=>$total_num,'pay_time'=>time()]);
                                         $p_userInfoUpdate = DB::table('mt_user')->where('uid',$p_userInfo->uid)->update(['no_reflected'=>$p_userInfo->no_reflected + $total_num*$shopInfo->up_rebate/100]);
                                         $a_userInfoUpdate = DB::table('mt_user')->where('uid',$a_userInfo->uid)->update(['no_reflected'=>$a_userInfo->no_reflected + $total_num*$shopInfo->indirect_up_rebate/100]);
                                         $shopUserInfoUpdate = DB::table('mt_user')->where('uid',$shopInfo->uid)->update(['no_reflected'=>$shopInfo1->no_reflected + $total_num*(100 - $shopInfo->up_rebate - $shopInfo->indirect_up_rebate)/100]);
@@ -333,7 +333,7 @@ class ResellerController extends Controller
                                             return json_encode($response, JSON_UNESCAPED_UNICODE);
                                         }
                                     }else{
-                                        $re_orderInfoUpdate = DB::table('re_order')->where('re_order_id',$re_order_id)->update(['order_status'=>1]);
+                                        $re_orderInfoUpdate = DB::table('re_order')->where('re_order_id',$re_order_id)->update(['order_status'=>1,'pay_type'=>0,'pay_price'=>$total_num,'pay_time'=>time()]);
                                         $p_userInfoUpdate = DB::table('mt_user')->where('uid',$p_userInfo->uid)->update(['no_reflected'=>$p_userInfo->no_reflected + $total_num*$shopInfo->up_rebate/100]);
                                         $shopUserInfoUpdate = DB::table('mt_user')->where('uid',$shopInfo->uid)->update(['no_reflected'=>$shopInfo1->no_reflected + $total_num*(100 - $shopInfo->up_rebate)/100]);
                                         if($re_orderInfoUpdate>0 && $p_userInfoUpdate>0 && $shopUserInfoUpdate>0){
@@ -357,7 +357,7 @@ class ResellerController extends Controller
                                         }
                                     }
                                 }else{
-                                    $re_orderInfoUpdate = DB::table('re_order')->where('re_order_id',$re_order_id)->update(['order_status'=>1]);
+                                    $re_orderInfoUpdate = DB::table('re_order')->where('re_order_id',$re_order_id)->update(['order_status'=>1,'pay_type'=>0,'pay_price'=>$total_num,'pay_time'=>time()]);
                                     $shopUserInfoUpdate = DB::table('mt_user')->where('uid',$shopInfo->uid)->update(['no_reflected'=>$shopInfo1->no_reflected + $total_num]);
                                     if($re_orderInfoUpdate>0 && $shopUserInfoUpdate>0){
                                         $data = [
@@ -380,7 +380,7 @@ class ResellerController extends Controller
                                     }
                                 }
                             }else{
-                                $re_orderInfoUpdate = DB::table('re_order')->where('re_order_id',$re_order_id)->update(['order_status'=>1]);
+                                $re_orderInfoUpdate = DB::table('re_order')->where('re_order_id',$re_order_id)->update(['order_status'=>1,'pay_type'=>0,'pay_price'=>$total_num,'pay_time'=>time()]);
                                 $shopUserInfoUpdate = DB::table('mt_user')->where('uid',$shopInfo->uid)->update(['no_reflected'=>$shopInfo1->no_reflected + $total_num]);
                                 if($re_orderInfoUpdate>0 && $shopUserInfoUpdate>0){
                                     $data = [
@@ -403,7 +403,7 @@ class ResellerController extends Controller
                                 }
                             }
                         }else{
-                            $re_orderInfoUpdate = DB::table('re_order')->where('re_order_id',$re_order_id)->update(['order_status'=>1]);
+                            $re_orderInfoUpdate = DB::table('re_order')->where('re_order_id',$re_order_id)->update(['order_status'=>1,'pay_type'=>0,'pay_price'=>$total_num,'pay_time'=>time()]);
                             $shopUserInfoUpdate = DB::table('mt_user')->where('uid',$shopInfo->uid)->update(['no_reflected'=>$shopInfo1->no_reflected + $total_num]);
                             if($re_orderInfoUpdate>0 && $shopUserInfoUpdate>0){
                                 $data = [
@@ -460,6 +460,50 @@ class ResellerController extends Controller
         }
 
 
+    }
+
+    //订单列表
+    public function index_reseller_orderList(Request $request){
+        $openid1 = $request->input('openid');
+        $order_status = $request->input('order_status');
+        $key = $openid1;
+        $openid = Redis::get($key);
+        if($openid){
+            if($order_status == 99){
+                $re_orderInfo = DB::table('re_order')
+                    ->where('order_status','!=',4)
+                    ->get()->toArray();
+                $data = [
+                    'code'=>0,
+                    'data'=>$re_orderInfo,
+                    'msg'=>'数据请求成功'
+                ];
+                $response = [
+                    'data' => $data
+                ];
+                return json_encode($response, JSON_UNESCAPED_UNICODE);
+            }else{
+                $re_orderInfo = DB::table('re_order')->where('order_status',$order_status)->get()->toArray();
+                $data = [
+                    'code'=>0,
+                    'data'=>$re_orderInfo,
+                    'msg'=>'数据请求成功'
+                ];
+                $response = [
+                    'data' => $data
+                ];
+                return json_encode($response, JSON_UNESCAPED_UNICODE);
+            }
+        }else{
+            $data = [
+                'code'=>1,
+                'msg'=>'请先登录'
+            ];
+            $response = [
+                'data' => $data
+            ];
+            die(json_encode($response, JSON_UNESCAPED_UNICODE));
+        }
     }
 
     //我的团队
