@@ -507,6 +507,11 @@ class ResellerController extends Controller
         }
     }
 
+    //订单物流信息-异步回调
+    public function note_Notify(){
+        echo 111;exit;
+    }
+
     //我的团队
     public function my_team(Request $request){
         $openid = $request->input('openid');
