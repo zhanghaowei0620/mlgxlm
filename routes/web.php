@@ -191,6 +191,8 @@ Route::post('index_reseller_orderList', 'Reseller\ResellerController@index_resel
 
 Route::get('reseller_order_information', 'Reseller\ResellerController@reseller_order_information');
 
+Route::get('information', 'Reseller\ResellerController@information');
+
 Route::post('note_Notify', 'Reseller\ResellerController@note_Notify');
 
 Route::post('my_team', 'Reseller\ResellerController@my_team');   //我的团队
