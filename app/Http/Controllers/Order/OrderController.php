@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
-    // 普通订单  拼团订单  优惠卷订单   限时抢订单  分销订单
+    // 普通订单  拼团订单  优惠卷订单   限时抢订单
     public function order_insert(Request $request)
     {
         $method_type = $request->input('method_type');  //接收 普通订单为1  拼团订单为2  优惠卷订单为3   限时抢订单为4
@@ -48,7 +48,6 @@ class OrderController extends Controller
                 $dataData = DB::table('mt_order')->where('order_no',$order_no)->first();
                 $order_id = $dataData->order_id;
                 session(['order_id'=>$order_id]);
-
                 $cartUpdate=[
                     'buy_num'=>0,
                     'update_time'=>time()
@@ -58,7 +57,6 @@ class OrderController extends Controller
 //            var_dump($res);exit;
                 //添加订单详情表
                 if($is_cart == 1){
-
                     foreach($goods_id as &$value){
 //                        var_dump($value);
                          $num = DB::table('mt_goods')
