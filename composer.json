@@ -12,9 +12,11 @@
         "alibabacloud/client": "^1.5",
         "aliyuncs/oss-sdk-php": "^2.3",
         "fideloper/proxy": "^4.0",
+        "flex/express": "^1.0",
         "guzzlehttp/guzzle": "^6.4",
         "laravel/framework": "5.8.*",
-        "laravel/tinker": "^1.0"
+        "laravel/tinker": "^1.0",
+        "xu42/laravel-kuaidiniao": "^1.0"
     },
     "require-dev": {
         "beyondcode/laravel-dump-server": "^1.0",

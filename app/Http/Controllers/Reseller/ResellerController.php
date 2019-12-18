@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Str;
+use Flex\Express\ExpressBird;
 
 class ResellerController extends Controller
 {
@@ -505,6 +506,20 @@ class ResellerController extends Controller
             ];
             die(json_encode($response, JSON_UNESCAPED_UNICODE));
         }
+    }
+
+    //订单物流信息-异步回调
+    public function note_Notify(){
+        echo 111;exit;
+    }
+
+    public function reseller_order_information(Request $request){
+        $express = new ExpressBird('1609892','d383f272-38fa-4d61-9260-fc6369fa61cb');
+        $tracking_code = "YT4282310249330";
+        $shipping_code = "YTO";
+        $order_code = "";
+        $info = $express->track($tracking_code, $shipping_code,$order_code); //快递单号 物流公司编号 订单编号(选填)
+        var_dump($info);exit;
     }
 
     //我的团队
