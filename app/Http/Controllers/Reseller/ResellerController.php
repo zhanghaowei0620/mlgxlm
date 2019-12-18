@@ -514,7 +514,7 @@ class ResellerController extends Controller
     }
 
     public function reseller_order_information(Request $request){
-        $express = new ExpressBird('1609968','9612c175-d75f-4f87-90d7-6a36893c612f');
+        $express = new ExpressBird('1609892','d383f272-38fa-4d61-9260-fc6369fa61cb');
         $tracking_code = "YT4282310249330";
         $shipping_code = "YTO";
         $order_code = "";
