@@ -12,7 +12,7 @@ return [
 
         //即时查询API
         'track' => [
-            'url' => 'http://sandboxapi.kdniao.cc:8080/kdniaosandbox/gateway/exterfaceInvoke.json',
+            'url' => 'http://api.kdniao.cc/Ebusiness/EbusinessOrderHandle.aspx',
             'type' => '1002',
         ],
 
