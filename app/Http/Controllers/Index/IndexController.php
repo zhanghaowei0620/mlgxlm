@@ -154,6 +154,7 @@ class IndexController extends Controller
             $t_id=$request->input('t_id');    //美容美发0     身体护理1    问题皮肤2   瑜伽瘦身3
             $data1=DB::table('mt_type')->where(['p_id'=>$t_id])->get();
 //            var_dump($data1);die;
+        
             $data2=DB::table('mt_goods')->where(['t_id'=>$t_id])->get();
 
 //       查到大分类了
