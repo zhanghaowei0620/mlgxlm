@@ -364,9 +364,6 @@ class GoodsController extends Controller
     //点击加入购物车
     public function add_cart(Request $request){
         $goods_id = $request->input('goods_id');
-//        $ip = $_SERVER['SERVER_ADDR'];
-//        $key = 'openid'.$ip;
-//        $openid = Redis::get($key);
         $openid1 = $request->input('openid');
         $key = $openid1;
         $openid = Redis::get($key);

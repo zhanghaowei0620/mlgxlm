@@ -184,10 +184,9 @@ class IndexController extends Controller
                 }
             }
 //            接口返回
-            if($qwq){
+            if($data1){
                 $data=[
                     'data1'=>$qwq,
-
                     'data2'=>$data1,
                 ];
                 $response=[
@@ -198,6 +197,7 @@ class IndexController extends Controller
             }else{
                 $data=[
                     'msg'=>'返回失败',
+                    'data2'=>''
                 ];
                 $response=[
                     'code'=>1,
@@ -224,6 +224,8 @@ class IndexController extends Controller
                 $goods_add = DB::table('mt_goods')->where(['shop_id'=>$v->shop_id])->get();
                 foreach($goods_add as $value){
                     $value->juli = $v->juli;
+                    $value->shop_name = $v->shop_name;
+                    $value->shop_id = $v->shop_id;
                     array_push($qwq,$value);
                 }
             }
@@ -235,7 +237,7 @@ class IndexController extends Controller
                 }
             }
 //            接口返回
-             if($qwq){
+             if($data1){
                  $data=[
                      'data1'=>$qqwq,
                      'data2'=>$data1,
@@ -248,6 +250,7 @@ class IndexController extends Controller
              }else{
                  $data=[
                      'msg'=>'返回失败',
+                     'data'=>'',
                  ];
                  $response=[
                      'code'=>1,
