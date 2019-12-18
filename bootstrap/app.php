@@ -41,6 +41,8 @@ $app->singleton(
     App\Exceptions\Handler::class
 );
 
+$app->configPath('kdniao');
+
 /*
 |--------------------------------------------------------------------------
 | Return The Application

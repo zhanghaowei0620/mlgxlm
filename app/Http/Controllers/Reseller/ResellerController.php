@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Str;
+use Xu42\KuaiDiNiao\KuaiDiNiao;
 
 class ResellerController extends Controller
 {
@@ -511,6 +512,14 @@ class ResellerController extends Controller
     public function note_Notify(){
         echo 111;exit;
     }
+
+    public function reseller_order_information(Request $request){
+        $kgs = "YTO";
+        $number = "YT4282310249330";//快递单号
+        $a = KuaiDiNiao::track($kgs,$number,['order_no'=>"763512577038696131"]);
+        var_dump($a);exit;
+    }
+
 
     //我的团队
     public function my_team(Request $request){
