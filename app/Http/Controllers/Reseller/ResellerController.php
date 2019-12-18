@@ -7,7 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Str;
-use Xu42\KuaiDiNiao\KuaiDiNiao;
+use Flex\Express\ExpressBird;
 
 class ResellerController extends Controller
 {
@@ -514,51 +514,13 @@ class ResellerController extends Controller
     }
 
     public function reseller_order_information(Request $request){
-        $kgs = "YTO";
-        $number = "YT4282310249330";//快递单号
-        $a = KuaiDiNiao::track($number,$kgs,['order_no'=>"763512577038696131"]);
-        var_dump($a);exit;
+        $express = new ExpressBird('1609968','9612c175-d75f-4f87-90d7-6a36893c612f');
+        $tracking_code = "YT4282310249330";
+        $shipping_code = "YTO";
+        $order_code = "";
+        $info = $express->track($tracking_code, $shipping_code,$order_code); //快递单号 物流公司编号 订单编号(选填)
+        var_dump($info);exit;
     }
-
-    public function information(){
-        $key = 'jPIGkIib4492';						//客户授权key
-        $customer = 'D2CCBE8971B7BEA296CB4F9DDCB67DDA';					//查询公司编号
-        $param = array (
-            'com' => 'shentong',			//快递公司编码
-            'num' => '773019566012633',	//快递单号
-        );
-
-        //请求参数
-        $post_data = array();
-        $post_data["customer"] = $customer;
-        $post_data["param"] = json_encode($param);
-        $sign = md5($post_data["param"].$key.$post_data["customer"]);
-        $post_data["sign"] = strtoupper($sign);
-
-        $url = 'http://poll.kuaidi100.com/poll/query.do';	//实时查询请求地址
-
-        $params = "";
-        foreach ($post_data as $k=>$v) {
-            $params .= "$k=".urlencode($v)."&";		//默认UTF-8编码格式
-        }
-        $post_data = substr($params, 0, -1);
-        echo '请求参数<br/>'.$post_data;
-
-        //发送post请求
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_HEADER, 0);
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        $result = curl_exec($ch);
-        $data = str_replace("\"", '"', $result );
-        $data = json_decode($data);
-
-        echo '<br/><br/>返回数据<br/>';
-        echo var_dump($data);
-    }
-
 
     //我的团队
     public function my_team(Request $request){

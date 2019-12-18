@@ -40,9 +40,6 @@ $app->singleton(
     Illuminate\Contracts\Debug\ExceptionHandler::class,
     App\Exceptions\Handler::class
 );
-
-$app->configPath('kdniao');
-
 /*
 |--------------------------------------------------------------------------
 | Return The Application
