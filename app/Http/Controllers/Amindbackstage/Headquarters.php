@@ -1119,10 +1119,7 @@ class Headquarters extends Controller
         $admin_judge = $request->input('admin_judge');
         $shop_id = $request->input('shop_id');
         if($admin_judge == 1){
-            $orderInfo = DB::table('admin_user')
-                ->join('mt_order_detail','admin_user.shop_id','=','mt_order_detail.shop_id')
-                ->where('order_type',2)
-                ->select(['order_id','order_no','mt_order_detail.shop_id','mt_order_detail.shop_name','mt_order_detail.goods_name','mt_order_detail.price','mt_order_detail.picture','mt_order_detail.create_time','mt_order_detail.buy_num'])->paginate(7);
+            $orderInfo = DB::table('re_order')->select()->paginate(7);
 //            var_dump($orderInfo);exit;
             if($orderInfo){
                 $response=[
@@ -1139,11 +1136,7 @@ class Headquarters extends Controller
                 die(json_encode($response, JSON_UNESCAPED_UNICODE));
             }
         }elseif($admin_judge == 2){
-            $orderInfo = DB::table('admin_user')
-                ->join('mt_order_detail','admin_user.shop_id','=','mt_order_detail.shop_id')
-                ->where(['order_type'=>2,'mt_order_detail.shop_id'=>$shop_id])
-                ->select(['order_id','order_no','mt_order_detail.shop_id','mt_order_detail.shop_name','mt_order_detail.goods_name','mt_order_detail.price','mt_order_detail.picture','mt_order_detail.create_time','mt_order_detail.buy_num'])->paginate(7);
-//            var_dump($orderInfo);exit;
+            $orderInfo = DB::table('re_order')->where(['re_order.shop_id'=>$shop_id])->select()->paginate(7);
             if($orderInfo){
                 $response=[
                     'code'=>0,
