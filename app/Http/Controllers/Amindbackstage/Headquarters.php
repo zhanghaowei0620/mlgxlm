@@ -1178,7 +1178,7 @@ class Headquarters extends Controller
         $log_id = $request->input('log_id');
         $log_num = $request->input('log_num');
         if($admin_judge == 2){
-            $orderUpdate = DB::table('re_order')->where('re_order_id',$re_order_id)->update(['shipping_type'=>$log_id,'logistics_no'=>$log_num]);
+            $orderUpdate = DB::table('re_order')->where('re_order_id',$re_order_id)->update(['shipping_type'=>$log_id,'logistics_no'=>$log_num,'order_status'=>2]);
             if($orderUpdate > 0){
                 $response=[
                     'code'=>0,
