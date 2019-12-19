@@ -365,6 +365,9 @@ class GoodsController extends Controller
     public function add_cart(Request $request){
         $goods_id = $request->input('goods_id');
         $openid1 = $request->input('openid');
+        // 1，2，3 店铺列表
+        // 1111，2222，3333，商品
+
         $key = $openid1;
         $openid = Redis::get($key);
 //        $openid="o9VUc5AOsdEdOBeUAw4TdYg-F-dM";
@@ -491,79 +494,80 @@ class GoodsController extends Controller
             die(json_encode($response,JSON_UNESCAPED_UNICODE));
         }
     }
-
     //使用分享币点击购买服务
     public function moneybuy(Request $request)
     {
         $openid1 = $request->input('openid');
-        $pt_id=$request->input('pt_id');
+        $is_big=$request->input('is_big');
         $key = $openid1;
         $openid = Redis::get($key);
-//        $method_type=$request->input('method_type'); //1为普通购买，2.拼团购买，3.优惠券购买，4限时抢购买
-//        $openid='o9VUc5KN78P_jViUQnGjica4GIQs';
+//        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
         $order_id=$request->input('order_id');
         $price=$request->input('price');
         $data=DB::table('mt_user')
             ->where(['openid'=>$openid])
             ->first();
         $uid=$data->uid;
-        $money=$data->money-$price;
-        $infos=DB::table('mt_order')
-            ->where(['mt_order.order_id'=>$order_id])->first();
-        $order_info_add=DB::table('mt_order')
-            ->where(['order_id'=>$order_id])->first();
-        if($infos->order_status!=0){
+//        $money=$data->money-$price;
+        if($data->money <$price ){
             $data=[
-                'code'=>0,
-                'msg'=>'此订单已被支付，请勿重新支付'
+                'code'=>1,
+                'msg'=>'您的分销币数量不足,请充值'
             ];
-            $response = [
+            $response=[
                 'data'=>$data
             ];
             return json_encode($response,JSON_UNESCAPED_UNICODE);
         }
-        $inerdb=DB::table('mt_order')->where(['order_id'=>$order_id])->first();
-        $a=$inerdb->order_method;  //0为普通购买，1.拼团购买，2.优惠券购买，3限时抢购买
-        $user_sum_price1=DB::table('mt_user')->where(['uid'=>$uid])->first();
-        $inser_money=DB::table('mt_order')->where(['order_id'=>$order_id])->first();
-        $order_detai=DB::table('mt_order_detail')->where(['shop_id'=>$inser_money->shop_id])->first();
-//        var_dump($a);die;
-        if($a ==0){
-            $mt_order_detail_add=DB::table('mt_order_detail')->where(['order_id'=>$order_id])->first();
-            $infoadd=DB::table('mt_order_detail')
-                ->where(['uid'=>$uid,'goods_id'=>$mt_order_detail_add->goods_id])->first();
-            $money=$data->money - $infoadd->price;
-            $pay1=$data->money -$money;
-            $updates_info=[
-                'money'=>$money,
-            ];
-            $update_order=DB::table('mt_user')
-                ->where(['mt_user.uid'=>$uid])
-                ->update($updates_info);
-//            var_dump($update_order);die;
-            $infosaa=[
-                'order_status'=>1,
-                'pay_price'=>$pay1
-            ];
-            $infosaa1=[
-                'order_status'=>1,
-                'pay_price'=>$pay1,
-                'pay_time'=>time()
-            ];
-            $inerttofo=DB::table('mt_order')->where(['order_id'=>$order_id])->update($infosaa);
-            $update_orderss=DB::table('mt_order_detail')->where(['uid'=>$uid,'order_id'=>$order_id])->update($infosaa1);
-            $sum_price=[
-              'price_sum'=>$user_sum_price1->price_sum+$pay1
-            ];
-            $user_sum_price=DB::table('mt_user')->where(['uid'=>$uid])->update($sum_price);
-            $aa=[
-                'shop_volume'=>$order_detai->shop_volume+$pay1
-            ];
-            $qq=DB::table('mt_shop')->where(['shop_id'=>$order_detai->shop_id])->update($aa);
-            if($update_order){
+        if($is_big==1){
+            $inerdb=DB::table('mt_order')->where(['order_id'=>$order_id])->first();     //大订单信息
+            if($inerdb->order_status!=0){
                 $data=[
                     'code'=>0,
-                    'msg'=>'您已普通支付成功'
+                    'msg'=>'此订单已被支付，请勿重新支付'
+                ];
+                $response = [
+                    'data'=>$data
+                ];
+                return json_encode($response,JSON_UNESCAPED_UNICODE);
+            }
+            $a=$inerdb->order_method;  //0为普通购买，1.拼团购买，2.优惠券购买，3限时抢购买
+            $user_sum_price1=DB::table('mt_user')->where(['uid'=>$uid])->first();               //用户信息
+            $order_detai=DB::table('mt_order_detail')->where(['order_id'=>$inerdb->order_id])->get();           //得到下边所有的小订单
+            forEach($order_detai as $k=>$v){
+                $goods_info=DB::table('mt_goods')->where(['goods_id'=>$v->goods_id])->first();
+                $price=0;
+                if($goods_info->promotion_type == 0){
+                    $price= $goods_info->price;
+                }else if($goods_info->promotion_type == 1){
+                    $price=$goods_info->promotion_price;
+                }else if($goods_info->promotion_type == 2){
+                    if($goods_info->coupon_type == 0){
+                        if($goods_info->price > $goods_info->coupon_redouction){
+                            $price = $goods_info->price - $goods_info->coupon_price;
+                        }else{
+                            $price= $goods_info->price;
+                        }
+                    }else if($goods_info->coupon_type == 1){
+                        $price= $goods_info->price * $goods_info->is_member_discount * 0.1;
+                    }
+                }else if ($goods_info->promotion_type == 4){
+                    $price= $goods_info->limited_price;
+                }
+                $datainfo=DB::table('mt_shop')->where(['shop_id'=>$v->shop_id])->first(['shop_volume']);
+                $aaa=$datainfo->shop_volume + $price;
+                $data_add=DB::table('mt_shop')->where(['shop_id'=>$v->shop_id])->update(['shop_volume'=>$aaa]);
+                $data_info=DB::table('mt_order_detail')->where(['id'=>$v->id])->update(['order_status'=>1]);
+            }
+            $data_info1=DB::table('mt_order')->where(['order_id'=>$inerdb->order_id])->update(['order_status'=>1]);
+            $infostoadd= $data->money - $price;
+            $datato_fo=DB::table('mt_user')->where(['uid'=>$uid])->update(['money'=>$infostoadd]);
+            $updateinfo=$data->money -$infostoadd;
+            $data_info=DB::table('mt_order')->where(['order_id'=>$order_id])->update(['pay_price'=>$updateinfo]);
+            if($data_info1){
+                $data=[
+                    'code'=>0,
+                    'msg'=>'支付成功'
                 ];
                 $response=[
                     'data'=>$data
@@ -579,213 +583,48 @@ class GoodsController extends Controller
                 ];
                 return json_encode($response,JSON_UNESCAPED_UNICODE);
             }
-        }else if($a == 1){
-            //伪拼团
-            $mt_order_detail_add1=DB::table('mt_order_detail')->where(['order_id'=>$order_id])->first();
-//            var_dump($mt_order_detail_add1);die;
-            if($mt_order_detail_add1){
-                $mt_goods_detail=DB::table('mt_goods')->where(['goods_id'=>$mt_order_detail_add1->goods_id])->first();
-//                var_dump($mt_goods_detail);die;
-                $money_add_op=$data->money - $mt_goods_detail->promotion_price;
-                $pay2=$data->money -$money_add_op;
-                $updas_add=[
-                    'money'=>$money_add_op
-                ];
-                $user_money_add=DB::table('mt_user')->where(['uid'=>$uid])->update($updas_add);
-                $updateinfo1=[
-                    'pay_price'=>$pay2,
-                    'order_status'=>1
-                ];
-                $updateinfo2=[
-                    'pay_price'=>$pay2,
-                    'order_status'=>1,
-                    'pay_time'=>time()
-                ];
-                $sqlupdate1=DB::table('mt_order')->where(['order_id'=>$order_id])->update($updateinfo1);
-                $detail_order1=DB::table('mt_order_detail')->where(['order_id'=>$order_id])->update($updateinfo2);
-                $sum_price=[
-                    'price_sum'=>$user_sum_price1->price_sum+$pay2
-                ];
-                $user_sum_price=DB::table('mt_user')->where(['uid'=>$uid])->update($sum_price);
-                $aa=[
-                    'shop_volume'=>$order_detai->shop_volume+$pay2
-                ];
-                $qq=DB::table('mt_shop')->where(['shop_id'=>$order_detai->shop_id])->update($aa);
-                if($user_money_add){
-                    $data=[
-                        'code'=>0,
-                        'msg'=>'拼团价支付成功'
-                    ];
-                    $response = [
-                        'data'=>$data
-                    ];
-                    return json_encode($response,JSON_UNESCAPED_UNICODE);
-                }else{
-                    $data=[
-                        'code'=>1,
-                        'msg'=>'拼团价支付失败'
-                    ];
-                    $response = [
-                        'data'=>$data
-                    ];
-                    return json_encode($response,JSON_UNESCAPED_UNICODE);
-                }
-            }else{
-                $data=[
-                    'code'=>1,
-                    'msg'=>'您的支付出现问题,请重新尝试生成订单并支付'
-                ];
-                $response = [
-                    'data'=>$data
-                ];
-                return json_encode($response,JSON_UNESCAPED_UNICODE);
-            }
-        }else if ($a == 2){
-            $coupon_lists=DB::table('mt_coupon')->where(['uid'=>$uid])->first();
-            if($coupon_lists->coupon_type ==0){                 //coupon_type判断0为满减   1 为折扣
-                if($coupon_lists->coupon_redouction  >  $goods_price->price){
-                    $money_lists=$data->money - $coupon_lists->coupon_price;
-                    $moenfo=$data->money - $money_lists;
-//                    var_dump($moenfo);die;
-                    $user_money_add=[
-                        'money'=>$money_lists
-                    ];
-                    $user_money=DB::table('mt_user')->where(['uid'=>$uid])->update($user_money_add);
-                    $updateinfo=[
-                         'pay_price'=>$moenfo,
-                        'order_status'=>1
-                    ];
-                    $updateinfo1=[
-                        'pay_price'=>$moenfo,
-                        'order_status'=>1,
-                        'pay_time'=>time()
-                    ];
-                    $sqlupdate=DB::table('mt_order')->where(['order_id'=>$order_id])->update($updateinfo);
-                    $detail_order=DB::table('mt_order_detail')->where(['order_id'=>$order_id])->update($updateinfo1);
-                    $sum_price=[
-                        'price_sum'=>$user_sum_price1->price_sum+$moenfo
-                    ];
-                    $user_sum_price=DB::table('mt_user')->where(['uid'=>$uid])->update($sum_price);
-                    $aa=[
-                        'shop_volume'=>$order_detai->shop_volume+$moenfo
-                    ];
-                    $qq=DB::table('mt_shop')->where(['shop_id'=>$order_detai->shop_id])->update($aa);
-                    if($sqlupdate && $detail_order){
-                        $data=[
-                            'code'=>0,
-                            'msg'=>'优惠卷支付成功'
-                        ];
-                        $response = [
-                            'data'=>$data
-                        ];
-                        return json_encode($response,JSON_UNESCAPED_UNICODE);
-                    }else{
-                        $data=[
-                            'code'=>1,
-                            'msg'=>'优惠支付失败'
-                        ];
-                        $response = [
-                            'data'=>$data
-                        ];
-                        return json_encode($response,JSON_UNESCAPED_UNICODE);
-                    }
-                }
-            }else if ($coupon_lists->coupon_type == 1){
-                $address=$goods_price->price*($coupon_lists->discount/10);
-                $address1=[
-                        'pay_price'=> $address,
-                        'order_status'=>1
-                    ];
-                $moenfo=$data->money - $address;
-                $money_add=$data->money - $moenfo;
-                $user_money_add=[
-                    'money'=>$moenfo
-                ];
-                $user_money=DB::table('mt_user')->where(['uid'=>$uid])->update($user_money_add);
-                $update_info1=[
-                    'order_status'=>1,
-                    'pay_price'=>$address
-                ];
-                $update_info2=[
-                    'order_status'=>1,
-                    'pay_price'=>$address,
-                    'pay_time'=>time()
-                ];
-                $sqlupdate1=DB::table('mt_order')->where(['uid'=>$uid])->update($updateinfo);
-                $detail_order1=DB::table('mt_order_detail')->where(['order_id'=>$order_id])->update($update_info2);
-                $sum_price=[
-                    'price_sum'=>$user_sum_price1->price_sum+$money_add
-                ];
-                $user_sum_price=DB::table('mt_user')->where(['uid'=>$uid])->update($sum_price);
-                $aa=[
-                    'shop_volume'=>$order_detai->shop_volume+$money_add
-                ];
-                $qq=DB::table('mt_shop')->where(['shop_id'=>$order_detai->shop_id])->update($aa);
-                if($user_money_add){
-                    $data=[
-                        'code'=>0,
-                        'msg'=>'优惠卷支付成功'
-                    ];
-                    $response = [
-                        'data'=>$data
-                    ];
-                    return json_encode($response,JSON_UNESCAPED_UNICODE);
-                }else{
-                    $data=[
-                        'code'=>1,
-                        'msg'=>'优惠支付失败'
-                    ];
-                    $response = [
-                        'data'=>$data
-                    ];
-                    return json_encode($response,JSON_UNESCAPED_UNICODE);
-                }
-            }
-        }else if ($a == 3){             //限时抢
-            $datainfos=DB::table('mt_order')->where(['order_id'=>$order_id,'order_method'=>3])->first();
-            $infos_add=$data->money - $datainfos->total_price;
-            $pay=$data->money - $infos_add;
-            $user_update_add=[
-              'money'=>  $infos_add
-            ];
-            $info_update=DB::table('mt_user')->where(['uid'=>$uid])->update($user_update_add);
-            $user_update_add1=[
-              'order_status'=>1,
-                'pay_price'=>$pay
-            ];
-            $user_update_add2=[
-                'order_status'=>1,
-                'pay_price'=>$pay,
-                'pay_time'=>time()
-            ];
-            $order_update=DB::table('mt_order')->where(['order_id'=>$order_id])->update($user_update_add1);
-            $detail_order1=DB::table('mt_order_detail')->where(['order_id'=>$order_id])->update($user_update_add2);
-            $sum_price=[
-                'price_sum'=>$user_sum_price1->price_sum+$pay
-            ];
-            $user_sum_price=DB::table('mt_user')->where(['uid'=>$uid])->update($sum_price);
-            $aa=[
-                'shop_volume'=>$order_detai->shop_volume+$pay
-            ];
-            $qq=DB::table('mt_shop')->where(['shop_id'=>$order_detai->shop_id])->update($aa);
-            if($order_update){
+        }else if ($is_big == 0){
+            $inerdb=DB::table('mt_order_detail')->where(['id'=>$order_id])->first();     //大订单信息
+            if($inerdb->order_status!=0){
                 $data=[
                     'code'=>0,
-                    'msg'=>'限时抢支付成功'
+                    'msg'=>'此订单已被支付，请勿重新支付'
                 ];
                 $response = [
                     'data'=>$data
                 ];
                 return json_encode($response,JSON_UNESCAPED_UNICODE);
-            }else{
-                $data=[
-                    'code'=>1,
-                    'msg'=>'限时抢支付失败'
-                ];
-                $response = [
-                    'data'=>$data
-                ];
-                return json_encode($response,JSON_UNESCAPED_UNICODE);
+            }
+
+            $inerdb=DB::table('mt_order_detail')->where(['id'=>$order_id])->first();
+            $data_info1=DB::table('mt_order_detail')->where(['id'=>$order_id])->update(['order_status'=>1]);
+
+            $data_foto=DB::table('mt_order_detail')->where(['order_status'=>0,'order_id'=>$inerdb->order_id])->get()->toArray();
+            if(!$data_foto){
+                $data_info2=DB::table('mt_order')->where(['order_id'=>$inerdb->order_id])->update(['order_status'=>1]);
+                $infostoadd= $data->money - $price;
+                $datato_fo=DB::table('mt_user')->where(['uid'=>$uid])->update(['money'=>$infostoadd]);
+                $updateinfo=$data->money -$infostoadd;
+                $data_info=DB::table('mt_order_detail')->where(['id'=>$order_detai->id])->update(['pay_price'=>$updateinfo]);
+                if($data_info2){
+                    $data=[
+                        'code'=>0,
+                        'msg'=>'支付成功'
+                    ];
+                    $response=[
+                        'data'=>$data
+                    ];
+                    return json_encode($response,JSON_UNESCAPED_UNICODE);
+                }else{
+                    $data=[
+                        'code'=>1,
+                        'msg'=>'支付失败,请重试'
+                    ];
+                    $response=[
+                        'data'=>$data
+                    ];
+                    return json_encode($response,JSON_UNESCAPED_UNICODE);
+                }
             }
         }
     }
