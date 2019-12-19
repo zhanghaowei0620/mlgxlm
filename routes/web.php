@@ -404,6 +404,8 @@ Route::post('admin_reseller_Confirm_shipment','Amindbackstage\Headquarters@admin
 
 Route::post('admin_Logistics_type','Amindbackstage\Headquarters@admin_Logistics_type')->middleware('checkLogin');       //查询所有物流方式
 
+Route::post('admin_reseller_order_information','Amindbackstage\Headquarters@admin_reseller_order_information')->middleware('checkLogin');    //物流信息-使用快递鸟
+
 Route::post('admin_rule_Add','Amindbackstage\Headquarters@admin_rule_Add')->middleware('checkLogin');   //协议添加
 
 Route::post('admin_rule_List','Amindbackstage\Headquarters@admin_rule_List')->middleware('checkLogin');   //协议列表
