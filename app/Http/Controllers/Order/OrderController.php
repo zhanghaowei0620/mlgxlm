@@ -1120,14 +1120,74 @@ class OrderController extends Controller
         }
     }
 
-    //个人中心我的评价
+    //点赞
     public function evaluate_list(Request $request)
     {
+        $goods_id=$request->input('goods_id');
         $openid1 = $request->input('openid');
-
+        $goods_evaluate_id= $request->input('goods_evaluate_id');
+//        $infodata=$request->input('infodata');  //0为点赞 1为没点赞
         $key = $openid1;
         $openid = Redis::get($key);
-        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
+//        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
+//        $openid='o9VUc5ApKb0aOFlZvw69oHJNY6ao';
+        $datainfo=DB::table('mt_user')->where(['openid'=>$openid])->first();
+        $uid=$datainfo->uid;
+        $aaa=DB::table('mt_goods_evaluate')->join('mt_user','mt_user.uid','=','mt_goods_evaluate.uid')->where(['goods_id'=>$goods_id])->get();
+        if($datainfo->is_fabulous ==1){
+            $data=[
+                'code'=>0,
+                'msg'=>'此商品您已点赞,无法再次点赞'
+            ];
+            $response = [
+                'data'=>$data
+            ];
+            return (json_encode($response,JSON_UNESCAPED_UNICODE));
+        }
+        foreach ($aaa as $k => $v){
+                    $asd=0;
+                    $asd=DB::table('mt_goods_evaluate')->where(['goods_evaluate_id'=>$goods_evaluate_id])->update(['fabulous'=>$v->fabulous+1]);
+        }
+        if($datainfo->is_fabulous == 0){
+                $datainfo1=DB::table('mt_user')->where(['openid'=>$openid])->update(['is_fabulous'=>1]);
+                if($datainfo1 && $asd){
+                    $data=[
+                        'code'=>0,
+                        'msg'=>'您已点赞成功'
+                    ];
+                    $response = [
+                        'data'=>$data
+                    ];
+                    return (json_encode($response,JSON_UNESCAPED_UNICODE));
+                }else{
+                    $data=[
+                        'code'=>1,
+                        'msg'=>'点赞失败,请重新尝试'
+                    ];
+                    $response = [
+                        'data'=>$data
+                    ];
+                    return (json_encode($response,JSON_UNESCAPED_UNICODE));
+                }
+        }else{
+            $data=[
+                'code'=>1,
+                'msg'=>'此用户已点赞,无法再次点赞'
+            ];
+            $response = [
+                'data'=>$data
+            ];
+            return (json_encode($response,JSON_UNESCAPED_UNICODE));
+        }
+    }
+
+    //我的个人中心评价
+    public function my_evaluate_list(Request $request)
+    {
+        $openid1 = $request->input('openid');
+        $key = $openid1;
+        $openid = Redis::get($key);
+//        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
         $datainfo=DB::table('mt_user')->where(['openid'=>$openid])->first();
         $uid=$datainfo->uid;
         if($openid){
@@ -1154,7 +1214,6 @@ class OrderController extends Controller
                 ];
                 return (json_encode($response,JSON_UNESCAPED_UNICODE));
             }
-
         }else{
             $response = [
                 'code'=>1,
@@ -1163,7 +1222,4 @@ class OrderController extends Controller
             return (json_encode($response,JSON_UNESCAPED_UNICODE));
         }
     }
-
-
-
 }
