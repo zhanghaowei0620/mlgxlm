@@ -122,7 +122,9 @@ Route::get('/order_detail', 'Order\OrderController@order_detail');     //订单�
 
 Route::get('/goods_evaluate', 'Order\OrderController@goods_evaluate'); //订单商品评价
 
-Route::get('/evaluate_list', 'Order\OrderController@evaluate_list'); //个人中心我的评价
+Route::get('/evaluate_list', 'Order\OrderController@evaluate_list'); //点赞
+
+Route::get('/my_evaluate_list', 'Order\OrderController@my_evaluate_list'); //个人中心我的评价
 
 Route::get('/goods_evaluate_list', 'Order\OrderController@goods_evaluate_list'); //订单商品评价列表
 
