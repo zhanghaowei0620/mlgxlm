@@ -259,7 +259,10 @@ class ResellerController extends Controller
     //分校订单支付-选择支付方式
     public function index_reseller_Choose_payment(Request $request){
         $re_order_id = $request->input('re_order_id');
-        $reGoodsInfo = DB::table('re_order')->where('re_order_id',$re_order_id)->first();
+        $reGoodsInfo = DB::table('re_order')
+            ->join('mt_address','re_order.address_id','=','mt_address.id')
+            ->where('re_order_id',$re_order_id)
+            ->first();
         if($reGoodsInfo){
             $data = [
                 'code'=>0,
@@ -508,11 +511,7 @@ class ResellerController extends Controller
         }
     }
 
-    //订单物流信息-异步回调
-    public function note_Notify(){
-        echo 111;exit;
-    }
-
+    //获取物流信息
     public function reseller_order_information(Request $request){
         $express = new ExpressBird('1609892','d383f272-38fa-4d61-9260-fc6369fa61cb');
         $tracking_code = "YT4282310249330";
@@ -520,6 +519,29 @@ class ResellerController extends Controller
         $order_code = "";
         $info = $express->track($tracking_code, $shipping_code,$order_code); //快递单号 物流公司编号 订单编号(选填)
         var_dump($info);exit;
+    }
+
+    //确认收货
+    public function reseller_order_Confirm_receipt(Request $request){
+        $openid1 = $request->input('openid');
+        $re_order_id = $request->input('re_order_id');
+        $key = $openid1;
+        $openid = Redis::get($key);
+        if($openid){
+            $userInfo = DB::table('mt_user')->where('openid',$openid)->first();
+            $reOrderInfo = DB::table('re_order')->where('re_order_id',$re_order_id)->first();
+            $shopInfo = DB::table('mt_shop')->where('shop_id',$reOrderInfo->shop_id)->first();
+            $updateRe_orderInfo =  DB::table('re_order')->where('re_order_id',$re_order_id)->update(['order_id'=>3]);
+            if($updateRe_orderInfo > 0){
+                if($userInfo->mt_reseller == 1){
+
+                }else{
+
+                }
+
+            }
+        }
+
     }
 
     //我的团队
