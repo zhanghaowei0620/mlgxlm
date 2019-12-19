@@ -336,7 +336,7 @@ class ResellerController extends Controller
                                             $response = [
                                                 'data' => $data
                                             ];
-                                            return json_encode($response, JSON_UNESCAPED_UNICODE);
+                                            die(json_encode($response, JSON_UNESCAPED_UNICODE));
                                         }
                                     }else{
                                         $re_orderInfoUpdate = DB::table('re_order')->where('re_order_id',$re_order_id)->update(['order_status'=>1,'pay_type'=>0,'pay_price'=>$total_num,'pay_time'=>time()]);
@@ -359,7 +359,7 @@ class ResellerController extends Controller
                                             $response = [
                                                 'data' => $data
                                             ];
-                                            return json_encode($response, JSON_UNESCAPED_UNICODE);
+                                            die(json_encode($response, JSON_UNESCAPED_UNICODE));
                                         }
                                     }
                                 }else{
@@ -382,7 +382,7 @@ class ResellerController extends Controller
                                         $response = [
                                             'data' => $data
                                         ];
-                                        return json_encode($response, JSON_UNESCAPED_UNICODE);
+                                        die(json_encode($response, JSON_UNESCAPED_UNICODE));
                                     }
                                 }
                             }else{
@@ -405,7 +405,7 @@ class ResellerController extends Controller
                                     $response = [
                                         'data' => $data
                                     ];
-                                    return json_encode($response, JSON_UNESCAPED_UNICODE);
+                                    die(json_encode($response, JSON_UNESCAPED_UNICODE));
                                 }
                             }
                         }else{
@@ -428,7 +428,7 @@ class ResellerController extends Controller
                                 $response = [
                                     'data' => $data
                                 ];
-                                return json_encode($response, JSON_UNESCAPED_UNICODE);
+                                die(json_encode($response, JSON_UNESCAPED_UNICODE));
                             }
                         }
 

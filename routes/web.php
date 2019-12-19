@@ -400,6 +400,10 @@ Route::post('admin_reseller_goods_update','Amindbackstage\Headquarters@admin_res
 
 Route::post('admin_reseller_goods_delete','Amindbackstage\Headquarters@admin_reseller_goods_delete')->middleware('checkLogin');   //分销商品删除
 
+Route::post('admin_reseller_Confirm_shipment','Amindbackstage\Headquarters@admin_reseller_Confirm_shipment')->middleware('checkLogin');   //确认发货
+
+Route::post('admin_Logistics_type','Amindbackstage\Headquarters@admin_Logistics_type')->middleware('checkLogin');       //查询所有物流方式
+
 Route::post('admin_rule_Add','Amindbackstage\Headquarters@admin_rule_Add')->middleware('checkLogin');   //协议添加
 
 Route::post('admin_rule_List','Amindbackstage\Headquarters@admin_rule_List')->middleware('checkLogin');   //协议列表

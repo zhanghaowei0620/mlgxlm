@@ -1160,10 +1160,45 @@ class Headquarters extends Controller
         }
     }
 
+    //所有物流方式
+    public function admin_Logistics_type(Request $request){
+        $logisticsInfo = DB::table('mt_logistics')->get()->toArray();
+        $response=[
+            'code'=>0,
+            'data'=>$logisticsInfo,
+            'msg'=>'数据请求成功'
+        ];
+        return json_encode($response, JSON_UNESCAPED_UNICODE);
+    }
+
     //确认发货
     public function admin_reseller_Confirm_shipment(Request $request){
         $re_order_id = $request->input('re_order_id');
-
+        $admin_judge = $request->input('admin_judge');
+        $log_id = $request->input('log_id');
+        $log_num = $request->input('log_num');
+        if($admin_judge == 2){
+            $orderUpdate = DB::table('re_order')->where('re_order_id',$re_order_id)->update(['shipping_type'=>$log_id,'logistics_no'=>$log_num]);
+            if($orderUpdate > 0){
+                $response=[
+                    'code'=>0,
+                    'msg'=>'确认发货成功'
+                ];
+                return json_encode($response, JSON_UNESCAPED_UNICODE);
+            }else{
+                $response=[
+                    'code'=>1,
+                    'msg'=>'系统出现错误,请重试'
+                ];
+                die(json_encode($response, JSON_UNESCAPED_UNICODE));
+            }
+        }else{
+            $response=[
+                'code'=>1,
+                'msg'=>'只有店铺才能使用此功能'
+            ];
+            die(json_encode($response, JSON_UNESCAPED_UNICODE));
+        }
     }
 
     //分销商品修改
