@@ -1216,6 +1216,8 @@ class Headquarters extends Controller
         $shipping_code = $reOrderInfo->log_code;
         $order_code = $reOrderInfo->re_order_no;
         $info = $express->track($tracking_code, $shipping_code,$order_code); //快递单号 物流公司编号 订单编号(选填)
+        $info = json_decode($info);
+        $info = json_encode($info,JSON_UNESCAPED_UNICODE);
         $data = [
             'code'=>0,
             'data'=>$info,
