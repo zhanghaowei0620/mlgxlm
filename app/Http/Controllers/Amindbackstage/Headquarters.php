@@ -1218,13 +1218,10 @@ class Headquarters extends Controller
         $info = $express->track($tracking_code, $shipping_code,$order_code); //快递单号 物流公司编号 订单编号(选填)
         $info = json_decode($info);
         $info = json_encode($info,JSON_UNESCAPED_UNICODE);
-        $data = [
-            'code'=>0,
-            'data'=>$info,
-            'msg'=>'数据请求成功'
-        ];
         $response = [
-            'data' => $data
+            'code'=>0,
+            'data' => $info,
+            'msg'=>'数据请求成功'
         ];
         return json_encode($response, JSON_UNESCAPED_UNICODE);
     }
