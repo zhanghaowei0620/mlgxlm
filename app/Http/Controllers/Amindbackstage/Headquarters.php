@@ -1160,6 +1160,12 @@ class Headquarters extends Controller
         }
     }
 
+    //确认发货
+    public function admin_reseller_Confirm_shipment(Request $request){
+        $re_order_id = $request->input('re_order_id');
+
+    }
+
     //分销商品修改
     public function admin_reseller_goods_update(Request $request){
         $shop_id = $request->input('shop_id');

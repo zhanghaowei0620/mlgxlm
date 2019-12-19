@@ -264,7 +264,7 @@ class ResellerController extends Controller
             ->join('mt_address','re_order.address_id','=','mt_address.id')
             ->join('re_goods','re_order.re_goods_id','=','re_goods.re_goods_id')
             ->where('re_order_id',$re_order_id)
-            ->first(['re_order_id','re_order_no','re_order.re_goods_name','re_order.re_goods_id','pay_price','re_order.re_goods_price','re_order.re_goods_picture','re_goods_introduction','buy_num','mt_shop.shop_name','mt_shop.shop_id','shop_logo','pay_time','sign_time','consign_time','re_order.update_time','re_order.create_time','finish_time','order_status','logistics_no','shipping_type','mt_address.id','address_provice','address_city','address_area','address_detail','tel','is_default','name']);
+            ->first(['re_order_id','re_order_no','re_order.re_goods_name','re_order.re_goods_id','pay_price','re_order.re_goods_price','re_order.re_goods_picture','re_goods_introduction','buy_num','mt_shop.shop_name','mt_shop.shop_id','shop_logo','pay_time','sign_time','consign_time','re_order.update_time','re_order.create_time','finish_time','order_status','logistics_no','shipping_type','mt_address.id','address_provice','address_city','address_area','address_detail','tel','is_default','name','pay_type']);
         if($reGoodsInfo){
             $data = [
                 'code'=>0,
