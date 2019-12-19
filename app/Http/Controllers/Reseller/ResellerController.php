@@ -308,13 +308,13 @@ class ResellerController extends Controller
                     ];
                     $updateUserInfo = DB::table('mt_user')->where('uid',$uid)->update($update);
                     if($updateUserInfo > 0){
-                        if($userInfo->mt_reseller == 1){
+                        if($userInfo->mt_reseller == 1){   //判断用户是否为分销员
                             $u_shopInfo = DB::table('mt_shop')->where('uid',$userInfo->a_id)->first(['shop_id']);
-                            if($reGoodsInfo->shop_id == $u_shopInfo->shop_id){
+                            if($reGoodsInfo->shop_id == $u_shopInfo->shop_id){    //判断用户购买的商品是否为自己上级分销商的商品   如果不是 给直接上级分钱
                                 $p_userInfo = DB::table('mt_user')->where('uid',$userInfo->p_id)->first();
-                                if($p_userInfo->uid != $p_userInfo->a_id){
+                                if($p_userInfo->uid != $p_userInfo->a_id){   //判断用户直接上级 是否为分销商  如果不是 给间接上级分钱
                                     $a_userInfo = DB::table('mt_user')->where('uid',$p_userInfo->p_id)->first();
-                                    if($a_userInfo->uid != $a_userInfo->a_id){
+                                    if($a_userInfo->uid != $a_userInfo->a_id){   //判断用户间接上级是否为分销商
                                         $re_orderInfoUpdate = DB::table('re_order')->where('re_order_id',$re_order_id)->update(['order_status'=>1,'pay_type'=>0,'pay_price'=>$total_num,'pay_time'=>time()]);
                                         $p_userInfoUpdate = DB::table('mt_user')->where('uid',$p_userInfo->uid)->update(['no_reflected'=>$p_userInfo->no_reflected + $total_num*$shopInfo->up_rebate/100]);
                                         $a_userInfoUpdate = DB::table('mt_user')->where('uid',$a_userInfo->uid)->update(['no_reflected'=>$a_userInfo->no_reflected + $total_num*$shopInfo->indirect_up_rebate/100]);
@@ -736,6 +736,48 @@ class ResellerController extends Controller
             die(json_encode($response, JSON_UNESCAPED_UNICODE));
         }
 
+    }
+
+    //删除订单
+    public function reseller_order_delete(Request $request){
+        $re_order_id = $request->input('re_order_id');
+        $openid1 = $request->input('openid');
+        $key = $openid1;
+        $openid = Redis::get($key);
+        if($openid){
+            $orderInfo = DB::table('re_order')->where('re_order_id',$re_order_id)->first(['order_status']);
+            if($orderInfo->order_status == 0 || $orderInfo->order_status == 5){
+                $orderDelete = DB::table('re_order')->where(['re_order_id'=>$re_order_id])->delete();
+                if($orderDelete){
+                    $data = [
+                        'code'=>0,
+                        'msg'=>'订单删除成功'
+                    ];
+                    $response = [
+                        'data' => $data
+                    ];
+                    return json_encode($response, JSON_UNESCAPED_UNICODE);
+                }else{
+                    $data = [
+                        'code'=>1,
+                        'msg'=>'订单删除失败'
+                    ];
+                    $response = [
+                        'data' => $data
+                    ];
+                    die(json_encode($response, JSON_UNESCAPED_UNICODE));
+                }
+            }else{
+                $data = [
+                    'code'=>2,
+                    'msg'=>'只有未付款或者已退款的订单可删除'
+                ];
+                $response = [
+                    'data' => $data
+                ];
+                die(json_encode($response, JSON_UNESCAPED_UNICODE));
+            }
+        }
     }
 
     //我的团队

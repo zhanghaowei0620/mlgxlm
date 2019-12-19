@@ -191,6 +191,8 @@ Route::post('index_reseller_Topay', 'Reseller\ResellerController@index_reseller_
 
 Route::post('reseller_user_AddressDetail', 'Reseller\ResellerController@reseller_user_AddressDetail');    //根据地址id 获取详情信息
 
+Route::post('reseller_order_delete', 'Reseller\ResellerController@reseller_order_delete');   //订单删除
+
 Route::post('index_reseller_orderList', 'Reseller\ResellerController@index_reseller_orderList');
 
 Route::post('reseller_order_information', 'Reseller\ResellerController@reseller_order_information');
