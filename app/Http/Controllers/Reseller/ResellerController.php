@@ -536,6 +536,7 @@ class ResellerController extends Controller
             $data = [
                 'code'=>0,
                 'data'=>$info,
+                'reOrderInfo'=>$reOrderInfo,
                 'msg'=>'数据请求成功'
             ];
             $response = [
