@@ -422,11 +422,11 @@ Route::post('admin_rule_Detail','Amindbackstage\Headquarters@admin_rule_Detail')
 
 
 
-Route::post('test','Test\TestController@test')->middleware('checkLogin');          //微信支付
+Route::post('test','Test\TestController@test');          //微信支付
 
-Route::post('getInfo','Test\TestController@getInfo')->middleware('checkLogin');     //微信获取用户openid
+Route::post('getInfo','Test\TestController@getInfo');     //微信获取用户openid
 
-Route::post('weixinPay/notify','Test\TestController@notify')->middleware('checkLogin');     //微信支付-异步回调
+Route::post('weixinPay/notify','Test\TestController@notify');     //微信支付-异步回调
 
 
 
