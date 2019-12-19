@@ -1120,13 +1120,13 @@ class OrderController extends Controller
         }
     }
 
-    //个人中心我的评价
+    //点赞
     public function evaluate_list(Request $request)
     {
         $goods_id=$request->input('goods_id');
         $openid1 = $request->input('openid');
         $goods_evaluate_id= $request->input('goods_evaluate_id');
-        $infodata=$request->input('infodata');  //0为点赞 1为没点赞
+//        $infodata=$request->input('infodata');  //0为点赞 1为没点赞
         $key = $openid1;
         $openid = Redis::get($key);
 //        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
@@ -1134,7 +1134,6 @@ class OrderController extends Controller
         $datainfo=DB::table('mt_user')->where(['openid'=>$openid])->first();
         $uid=$datainfo->uid;
         $aaa=DB::table('mt_goods_evaluate')->join('mt_user','mt_user.uid','=','mt_goods_evaluate.uid')->where(['goods_id'=>$goods_id])->get();
-//        var_dump($aaa);die;
         if($datainfo->is_fabulous ==1){
             $data=[
                 'code'=>0,
@@ -1173,7 +1172,7 @@ class OrderController extends Controller
         }else{
             $data=[
                 'code'=>1,
-                'msg'=>'此用户已点赞，无法再次点赞'
+                'msg'=>'此用户已点赞,无法再次点赞'
             ];
             $response = [
                 'data'=>$data
@@ -1182,7 +1181,7 @@ class OrderController extends Controller
         }
     }
 
-    //个人中心评价
+    //我的个人中心评价
     public function my_evaluate_list(Request $request)
     {
         $openid1 = $request->input('openid');
