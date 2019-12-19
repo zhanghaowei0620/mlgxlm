@@ -185,6 +185,8 @@ Route::post('index_reseller_orderAdd', 'Reseller\ResellerController@index_resell
 
 Route::post('index_reseller_Choose_payment', 'Reseller\ResellerController@index_reseller_Choose_payment');   //分校订单-选择支付方式
 
+Route::post('reseller_order_Confirm_receipt', 'Reseller\ResellerController@reseller_order_Confirm_receipt');   //确认收货
+
 Route::post('index_reseller_Topay', 'Reseller\ResellerController@index_reseller_Topay');   //分校订单-去支付
 
 Route::post('reseller_user_AddressDetail', 'Reseller\ResellerController@reseller_user_AddressDetail');    //根据地址id 获取详情信息
@@ -192,8 +194,6 @@ Route::post('reseller_user_AddressDetail', 'Reseller\ResellerController@reseller
 Route::post('index_reseller_orderList', 'Reseller\ResellerController@index_reseller_orderList');
 
 Route::get('reseller_order_information', 'Reseller\ResellerController@reseller_order_information');
-
-Route::get('information', 'Reseller\ResellerController@information');
 
 Route::post('note_Notify', 'Reseller\ResellerController@note_Notify');
 
