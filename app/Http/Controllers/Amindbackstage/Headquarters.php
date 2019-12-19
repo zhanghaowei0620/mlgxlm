@@ -1119,10 +1119,7 @@ class Headquarters extends Controller
         $admin_judge = $request->input('admin_judge');
         $shop_id = $request->input('shop_id');
         if($admin_judge == 1){
-            $orderInfo = DB::table('admin_user')
-                ->join('mt_order_detail','admin_user.shop_id','=','mt_order_detail.shop_id')
-                ->where('order_type',2)
-                ->select(['order_id','order_no','mt_order_detail.shop_id','mt_order_detail.shop_name','mt_order_detail.goods_name','mt_order_detail.price','mt_order_detail.picture','mt_order_detail.create_time','mt_order_detail.buy_num'])->paginate(7);
+            $orderInfo = DB::table('re_order')->select()->paginate(7);
 //            var_dump($orderInfo);exit;
             if($orderInfo){
                 $response=[
@@ -1139,11 +1136,7 @@ class Headquarters extends Controller
                 die(json_encode($response, JSON_UNESCAPED_UNICODE));
             }
         }elseif($admin_judge == 2){
-            $orderInfo = DB::table('admin_user')
-                ->join('mt_order_detail','admin_user.shop_id','=','mt_order_detail.shop_id')
-                ->where(['order_type'=>2,'mt_order_detail.shop_id'=>$shop_id])
-                ->select(['order_id','order_no','mt_order_detail.shop_id','mt_order_detail.shop_name','mt_order_detail.goods_name','mt_order_detail.price','mt_order_detail.picture','mt_order_detail.create_time','mt_order_detail.buy_num'])->paginate(7);
-//            var_dump($orderInfo);exit;
+            $orderInfo = DB::table('re_order')->where(['re_order.shop_id'=>$shop_id])->select()->paginate(7);
             if($orderInfo){
                 $response=[
                     'code'=>0,
@@ -1165,6 +1158,72 @@ class Headquarters extends Controller
             ];
             die(json_encode($response, JSON_UNESCAPED_UNICODE));
         }
+    }
+
+    //所有物流方式
+    public function admin_Logistics_type(Request $request){
+        $logisticsInfo = DB::table('mt_logistics')->get()->toArray();
+        $response=[
+            'code'=>0,
+            'data'=>$logisticsInfo,
+            'msg'=>'数据请求成功'
+        ];
+        return json_encode($response, JSON_UNESCAPED_UNICODE);
+    }
+
+    //确认发货
+    public function admin_reseller_Confirm_shipment(Request $request){
+        $re_order_id = $request->input('re_order_id');
+        $admin_judge = $request->input('admin_judge');
+        $log_id = $request->input('log_id');
+        $log_num = $request->input('log_num');
+        if($admin_judge == 2){
+            $orderUpdate = DB::table('re_order')->where('re_order_id',$re_order_id)->update(['shipping_type'=>$log_id,'logistics_no'=>$log_num]);
+            if($orderUpdate > 0){
+                $response=[
+                    'code'=>0,
+                    'msg'=>'确认发货成功'
+                ];
+                return json_encode($response, JSON_UNESCAPED_UNICODE);
+            }else{
+                $response=[
+                    'code'=>1,
+                    'msg'=>'系统出现错误,请重试'
+                ];
+                die(json_encode($response, JSON_UNESCAPED_UNICODE));
+            }
+        }else{
+            $response=[
+                'code'=>1,
+                'msg'=>'只有店铺才能使用此功能'
+            ];
+            die(json_encode($response, JSON_UNESCAPED_UNICODE));
+        }
+    }
+
+    //获取物流信息
+    public function admin_reseller_order_information(Request $request){
+        $re_order_id = $request->input('re_order_id');
+        $reOrderInfo = DB::table('re_order')
+            ->join('mt_logistics','re_order.shipping_type','=','mt_logistics.log_id')
+            ->where('re_order_id',$re_order_id)->first();
+        $express = new ExpressBird('1609892','d383f272-38fa-4d61-9260-fc6369fa61cb');
+//            $tracking_code = "YT4282310249330";
+//            $shipping_code = "YTO";
+//            $order_code = "";
+        $tracking_code = $reOrderInfo->logistics_no;
+        $shipping_code = $reOrderInfo->log_code;
+        $order_code = $reOrderInfo->re_order_no;
+        $info = $express->track($tracking_code, $shipping_code,$order_code); //快递单号 物流公司编号 订单编号(选填)
+        $data = [
+            'code'=>0,
+            'data'=>$info,
+            'msg'=>'数据请求成功'
+        ];
+        $response = [
+            'data' => $data
+        ];
+        return json_encode($response, JSON_UNESCAPED_UNICODE);
     }
 
     //分销商品修改

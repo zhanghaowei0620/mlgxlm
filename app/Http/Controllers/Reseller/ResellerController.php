@@ -259,7 +259,12 @@ class ResellerController extends Controller
     //分校订单支付-选择支付方式
     public function index_reseller_Choose_payment(Request $request){
         $re_order_id = $request->input('re_order_id');
-        $reGoodsInfo = DB::table('re_order')->where('re_order_id',$re_order_id)->first();
+        $reGoodsInfo = DB::table('re_order')
+            ->join('mt_shop','re_order.shop_id','=','mt_shop.shop_id')
+            ->join('mt_address','re_order.address_id','=','mt_address.id')
+            ->join('re_goods','re_order.re_goods_id','=','re_goods.re_goods_id')
+            ->where('re_order_id',$re_order_id)
+            ->first(['re_order_id','re_order_no','re_order.re_goods_name','re_order.re_goods_id','pay_price','re_order.re_goods_price','re_order.re_goods_picture','re_goods_introduction','buy_num','mt_shop.shop_name','mt_shop.shop_id','shop_logo','pay_time','sign_time','consign_time','re_order.update_time','re_order.create_time','finish_time','order_status','logistics_no','shipping_type','mt_address.id','address_provice','address_city','address_area','address_detail','tel','is_default','name','pay_type']);
         if($reGoodsInfo){
             $data = [
                 'code'=>0,
@@ -331,7 +336,7 @@ class ResellerController extends Controller
                                             $response = [
                                                 'data' => $data
                                             ];
-                                            return json_encode($response, JSON_UNESCAPED_UNICODE);
+                                            die(json_encode($response, JSON_UNESCAPED_UNICODE));
                                         }
                                     }else{
                                         $re_orderInfoUpdate = DB::table('re_order')->where('re_order_id',$re_order_id)->update(['order_status'=>1,'pay_type'=>0,'pay_price'=>$total_num,'pay_time'=>time()]);
@@ -354,7 +359,7 @@ class ResellerController extends Controller
                                             $response = [
                                                 'data' => $data
                                             ];
-                                            return json_encode($response, JSON_UNESCAPED_UNICODE);
+                                            die(json_encode($response, JSON_UNESCAPED_UNICODE));
                                         }
                                     }
                                 }else{
@@ -377,7 +382,7 @@ class ResellerController extends Controller
                                         $response = [
                                             'data' => $data
                                         ];
-                                        return json_encode($response, JSON_UNESCAPED_UNICODE);
+                                        die(json_encode($response, JSON_UNESCAPED_UNICODE));
                                     }
                                 }
                             }else{
@@ -400,7 +405,7 @@ class ResellerController extends Controller
                                     $response = [
                                         'data' => $data
                                     ];
-                                    return json_encode($response, JSON_UNESCAPED_UNICODE);
+                                    die(json_encode($response, JSON_UNESCAPED_UNICODE));
                                 }
                             }
                         }else{
@@ -423,7 +428,7 @@ class ResellerController extends Controller
                                 $response = [
                                     'data' => $data
                                 ];
-                                return json_encode($response, JSON_UNESCAPED_UNICODE);
+                                die(json_encode($response, JSON_UNESCAPED_UNICODE));
                             }
                         }
 
@@ -508,18 +513,229 @@ class ResellerController extends Controller
         }
     }
 
-    //订单物流信息-异步回调
-    public function note_Notify(){
-        echo 111;exit;
+    //获取物流信息
+    public function reseller_order_information(Request $request){
+        $openid1 = $request->input('openid');
+        $re_order_id = $request->input('re_order_id');
+        $key = $openid1;
+        $openid = Redis::get($key);
+        if($openid){
+            $reOrderInfo = DB::table('re_order')
+                ->join('mt_logistics','re_order.shipping_type','=','mt_logistics.log_id')
+                ->where('re_order_id',$re_order_id)->first();
+            $express = new ExpressBird('1609892','d383f272-38fa-4d61-9260-fc6369fa61cb');
+//            $tracking_code = "YT4282310249330";
+//            $shipping_code = "YTO";
+//            $order_code = "";
+            $tracking_code = $reOrderInfo->logistics_no;
+            $shipping_code = $reOrderInfo->log_code;
+            $order_code = $reOrderInfo->re_order_no;
+            $info = $express->track($tracking_code, $shipping_code,$order_code); //快递单号 物流公司编号 订单编号(选填)
+            $data = [
+                'code'=>0,
+                'data'=>$info,
+                'msg'=>'数据请求成功'
+            ];
+            $response = [
+                'data' => $data
+            ];
+            return json_encode($response, JSON_UNESCAPED_UNICODE);
+        }else{
+            $data = [
+                'code'=>1,
+                'msg'=>'请先登录'
+            ];
+            $response = [
+                'data' => $data
+            ];
+            die(json_encode($response, JSON_UNESCAPED_UNICODE));
+        }
+
     }
 
-    public function reseller_order_information(Request $request){
-        $express = new ExpressBird('1609892','d383f272-38fa-4d61-9260-fc6369fa61cb');
-        $tracking_code = "YT4282310249330";
-        $shipping_code = "YTO";
-        $order_code = "";
-        $info = $express->track($tracking_code, $shipping_code,$order_code); //快递单号 物流公司编号 订单编号(选填)
-        var_dump($info);exit;
+    //确认收货
+    public function reseller_order_Confirm_receipt(Request $request){
+        $openid1 = $request->input('openid');
+        $re_order_id = $request->input('re_order_id');
+        $key = $openid1;
+        $openid = Redis::get($key);
+        if($openid){
+            $userInfo = DB::table('mt_user')->where('openid',$openid)->first();
+            $reOrderInfo = DB::table('re_order')->where('re_order_id',$re_order_id)->first();
+            $shopInfo = DB::table('mt_shop')->where('shop_id',$reOrderInfo->shop_id)->first();
+            $shopUserInfo = DB::table('mt_user')->where('uid',$shopInfo->uid)->first();
+            $updateRe_orderInfo =  DB::table('re_order')->where('re_order_id',$re_order_id)->update(['order_id'=>3]);
+            if($updateRe_orderInfo > 0){
+                if($userInfo->mt_reseller == 1){
+                    if($reOrderInfo->order_status !=0){
+                        $u_shopInfo = DB::table('mt_shop')->where('uid',$userInfo->a_id)->first(['shop_id']);
+                        if($reOrderInfo->shop_id == $u_shopInfo->shop_id){
+                            $p_userInfo = DB::table('mt_user')->where('uid',$userInfo->p_id)->first();
+                            if($p_userInfo->uid != $p_userInfo->a_id){
+                                $a_userInfo = DB::table('mt_user')->where('uid',$p_userInfo->p_id)->first();
+                                if($a_userInfo->uid != $a_userInfo->a_id){
+                                    $re_orderInfoUpdate = DB::table('re_order')->where('re_order_id',$re_order_id)->update(['order_status'=>3,'sign_time' => time()]);
+                                    $p_userInfoUpdate = DB::table('mt_user')->where('uid',$p_userInfo->uid)->update(['no_reflected'=>$p_userInfo->no_reflected - $reOrderInfo->pay_price*$shopInfo->up_rebate/100,'money'=>$p_userInfo->money + $reOrderInfo->pay_price*$shopInfo->up_rebate/100]);
+                                    $a_userInfoUpdate = DB::table('mt_user')->where('uid',$a_userInfo->uid)->update(['no_reflected'=>$a_userInfo->no_reflected - $reOrderInfo->pay_price*$shopInfo->indirect_up_rebate/100,'money'=>$a_userInfo->money + $reOrderInfo->pay_price*$shopInfo->indirect_up_rebate/100]);
+                                    $shopUserInfoUpdate = DB::table('mt_user')->where('uid',$shopInfo->uid)->update(['no_reflected'=>$shopUserInfo->no_reflected - $reOrderInfo->pay_price*(100 - $shopInfo->up_rebate - $shopInfo->indirect_up_rebate)/100,'money'=>$shopUserInfo->money + $reOrderInfo->pay_price*(100 - $shopInfo->up_rebate - $shopInfo->indirect_up_rebate)/100]);
+                                    if($re_orderInfoUpdate>0 && $p_userInfoUpdate>0 && $a_userInfoUpdate>0 && $shopUserInfoUpdate>0){
+                                        $data = [
+                                            'code'=>0,
+                                            'msg'=>'确认收货成功'
+                                        ];
+                                        $response = [
+                                            'data' => $data
+                                        ];
+                                        return json_encode($response, JSON_UNESCAPED_UNICODE);
+                                    }else{
+                                        $data = [
+                                            'code'=>5,
+                                            'msg'=>'系统出现错误,确认收货失败,请重试'
+                                        ];
+                                        $response = [
+                                            'data' => $data
+                                        ];
+                                        die(json_encode($response, JSON_UNESCAPED_UNICODE));
+                                    }
+                                }else{
+                                    $re_orderInfoUpdate = DB::table('re_order')->where('re_order_id',$re_order_id)->update(['order_status'=>3,'sign_time' => time()]);
+                                    $p_userInfoUpdate = DB::table('mt_user')->where('uid',$p_userInfo->uid)->update(['no_reflected'=>$p_userInfo->no_reflected - $reOrderInfo->pay_price*$shopInfo->up_rebate/100]);
+                                    $shopUserInfoUpdate = DB::table('mt_user')->where('uid',$shopInfo->uid)->update(['no_reflected'=>$shopUserInfo->no_reflected - $reOrderInfo->pay_price*(100 - $shopInfo->up_rebate)/100]);
+                                    if($re_orderInfoUpdate>0 && $p_userInfoUpdate>0 && $shopUserInfoUpdate>0){
+                                        $data = [
+                                            'code'=>0,
+                                            'msg'=>'确认收货成功'
+                                        ];
+                                        $response = [
+                                            'data' => $data
+                                        ];
+                                        return json_encode($response, JSON_UNESCAPED_UNICODE);
+                                    }else{
+                                        $data = [
+                                            'code'=>6,
+                                            'msg'=>'系统出现错误,确认收货失败,请重试'
+                                        ];
+                                        $response = [
+                                            'data' => $data
+                                        ];
+                                        die(json_encode($response, JSON_UNESCAPED_UNICODE));
+                                    }
+                                }
+                            }else{
+                                $re_orderInfoUpdate = DB::table('re_order')->where('re_order_id',$re_order_id)->update(['order_status'=>3,'sign_time' => time()]);
+                                $shopUserInfoUpdate = DB::table('mt_user')->where('uid',$shopInfo->uid)->update(['no_reflected'=>$shopUserInfo->no_reflected - $reOrderInfo->pay_price,'money'=>$shopUserInfo->money + $reOrderInfo->pay_price]);
+                                if($re_orderInfoUpdate>0 && $shopUserInfoUpdate>0){
+                                    $data = [
+                                        'code'=>0,
+                                        'msg'=>'确认收货成功'
+                                    ];
+                                    $response = [
+                                        'data' => $data
+                                    ];
+                                    return json_encode($response, JSON_UNESCAPED_UNICODE);
+                                }else{
+                                    $data = [
+                                        'code'=>7,
+                                        'msg'=>'系统出现错误,确认收货失败,请重试'
+                                    ];
+                                    $response = [
+                                        'data' => $data
+                                    ];
+                                    die(json_encode($response, JSON_UNESCAPED_UNICODE));
+                                }
+                            }
+                        }else{
+                            $re_orderInfoUpdate = DB::table('re_order')->where('re_order_id',$re_order_id)->update(['order_status'=>3,'sign_time' => time()]);
+                            $shopUserInfoUpdate = DB::table('mt_user')->where('uid',$shopInfo->uid)->update(['no_reflected'=>$shopUserInfo->no_reflected - $reOrderInfo->pay_price,'money'=>$shopUserInfo->money + $reOrderInfo->pay_price]);
+                            if($re_orderInfoUpdate>0 && $shopUserInfoUpdate>0){
+                                $data = [
+                                    'code'=>0,
+                                    'msg'=>'确认收货成功'
+                                ];
+                                $response = [
+                                    'data' => $data
+                                ];
+                                return json_encode($response, JSON_UNESCAPED_UNICODE);
+                            }else{
+                                $data = [
+                                    'code'=>8,
+                                    'msg'=>'系统出现错误,确认收货失败,请重试'
+                                ];
+                                $response = [
+                                    'data' => $data
+                                ];
+                                die(json_encode($response, JSON_UNESCAPED_UNICODE));
+                            }
+                        }
+                    }else{
+                        $data = [
+                            'code'=>2,
+                            'msg'=>'此订单未支付'
+                        ];
+                        $response = [
+                            'data' => $data
+                        ];
+                        die(json_encode($response, JSON_UNESCAPED_UNICODE));
+                    }
+                }else{
+                    if($reOrderInfo->order_status !=0){
+                        $update = [
+                            'no_reflected' => $shopUserInfo->no_reflected - $reOrderInfo->pay_price,
+                            'money' => $shopUserInfo->money + $reOrderInfo->pay_price,
+                        ];
+                        $re_orderInfoUpdate = DB::table('re_order')->where('re_order_id',$re_order_id)->update(['order_status'=>3,'sign_time' => time()]);
+                        $updateuserInfo = DB::table('mt_user')->where('uid',$shopInfo->uid)->update($update);
+                        if($updateuserInfo > 0 && $re_orderInfoUpdate > 0){
+                            $data = [
+                                'code'=>0,
+                                'msg'=>'确认收货成功'
+                            ];
+                            $response = [
+                                'data' => $data
+                            ];
+                            return json_encode($response, JSON_UNESCAPED_UNICODE);
+                        }else{
+                            $data = [
+                                'code'=>1,
+                                'msg'=>'系统出现问题,请重试'
+                            ];
+                            $response = [
+                                'data' => $data
+                            ];
+                            die(json_encode($response, JSON_UNESCAPED_UNICODE));
+                        }
+                    }else{
+                        $data = [
+                            'code'=>2,
+                            'msg'=>'此订单未支付'
+                        ];
+                        $response = [
+                            'data' => $data
+                        ];
+                        die(json_encode($response, JSON_UNESCAPED_UNICODE));
+                    }
+                }
+            }else{
+                $data = [
+                    'code'=>4,
+                    'msg'=>'确认收货失败,请重试'
+                ];
+                $response = [
+                    'data' => $data
+                ];
+                die(json_encode($response, JSON_UNESCAPED_UNICODE));
+            }
+        }else{
+            $data = [
+                'code'=>3,
+                'msg'=>'请先登录'
+            ];
+            $response = [
+                'data' => $data
+            ];
+            die(json_encode($response, JSON_UNESCAPED_UNICODE));
+        }
+
     }
 
     //我的团队

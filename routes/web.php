@@ -187,15 +187,15 @@ Route::post('index_reseller_orderAdd', 'Reseller\ResellerController@index_resell
 
 Route::post('index_reseller_Choose_payment', 'Reseller\ResellerController@index_reseller_Choose_payment');   //分校订单-选择支付方式
 
+Route::post('reseller_order_Confirm_receipt', 'Reseller\ResellerController@reseller_order_Confirm_receipt');   //确认收货
+
 Route::post('index_reseller_Topay', 'Reseller\ResellerController@index_reseller_Topay');   //分校订单-去支付
 
 Route::post('reseller_user_AddressDetail', 'Reseller\ResellerController@reseller_user_AddressDetail');    //根据地址id 获取详情信息
 
 Route::post('index_reseller_orderList', 'Reseller\ResellerController@index_reseller_orderList');
 
-Route::get('reseller_order_information', 'Reseller\ResellerController@reseller_order_information');
-
-Route::get('information', 'Reseller\ResellerController@information');
+Route::post('reseller_order_information', 'Reseller\ResellerController@reseller_order_information');
 
 Route::post('note_Notify', 'Reseller\ResellerController@note_Notify');
 
@@ -401,6 +401,12 @@ Route::post('admin_reseller_order','Amindbackstage\Headquarters@admin_reseller_o
 Route::post('admin_reseller_goods_update','Amindbackstage\Headquarters@admin_reseller_goods_update')->middleware('checkLogin');   //分销商品修改
 
 Route::post('admin_reseller_goods_delete','Amindbackstage\Headquarters@admin_reseller_goods_delete')->middleware('checkLogin');   //分销商品删除
+
+Route::post('admin_reseller_Confirm_shipment','Amindbackstage\Headquarters@admin_reseller_Confirm_shipment')->middleware('checkLogin');   //确认发货
+
+Route::post('admin_Logistics_type','Amindbackstage\Headquarters@admin_Logistics_type')->middleware('checkLogin');       //查询所有物流方式
+
+Route::post('admin_reseller_order_information','Amindbackstage\Headquarters@admin_reseller_order_information')->middleware('checkLogin');    //物流信息-使用快递鸟
 
 Route::post('admin_rule_Add','Amindbackstage\Headquarters@admin_rule_Add')->middleware('checkLogin');   //协议添加
 
