@@ -494,7 +494,6 @@ class GoodsController extends Controller
             die(json_encode($response,JSON_UNESCAPED_UNICODE));
         }
     }
-
     //使用分享币点击购买服务
     public function moneybuy(Request $request)
     {
@@ -562,7 +561,9 @@ class GoodsController extends Controller
             }
             $data_info1=DB::table('mt_order')->where(['order_id'=>$inerdb->order_id])->update(['order_status'=>1]);
             $infostoadd= $data->money - $price;
-            $datato_fo=DB::table('mt_user')->where(['uid'=>$uid])->update(['money'=>$infostoadd])
+            $datato_fo=DB::table('mt_user')->where(['uid'=>$uid])->update(['money'=>$infostoadd]);
+            $updateinfo=$data->money -$infostoadd;
+            $data_info=DB::table('mt_order')->where(['order_id'=>$order_id])->update(['pay_price'=>$updateinfo]);
             if($data_info1){
                 $data=[
                     'code'=>0,
@@ -602,7 +603,9 @@ class GoodsController extends Controller
             if(!$data_foto){
                 $data_info2=DB::table('mt_order')->where(['order_id'=>$inerdb->order_id])->update(['order_status'=>1]);
                 $infostoadd= $data->money - $price;
-                $datato_fo=DB::table('mt_user')->where(['uid'=>$uid])->update(['money'=>$infostoadd])
+                $datato_fo=DB::table('mt_user')->where(['uid'=>$uid])->update(['money'=>$infostoadd]);
+                $updateinfo=$data->money -$infostoadd;
+                $data_info=DB::table('mt_order_detail')->where(['id'=>$order_detai->id])->update(['pay_price'=>$updateinfo]);
                 if($data_info2){
                     $data=[
                         'code'=>0,

@@ -15,7 +15,6 @@ class OrderController extends Controller
         $method_type = $request->input('method_type');  //接收 普通订单为1  拼团订单为2  优惠卷订单为3   限时抢订单为4
         $goods_id = $request->input('goods_id');  //商品id
         $goods_id = explode(',',$goods_id);
-//        var_dump($goods_id);die;
         $order_address = $request->input('order_address');   //分销商品的收货地址
         $re_goods_id = $request->input('re_goods_id');  //分销商品id
         $is_cart = $request->input('is_cart');  //0为否 1为是
@@ -413,90 +412,9 @@ class OrderController extends Controller
                     return json_encode($response,JSON_UNESCAPED_UNICODE);
                 }
             }
-//            else if ($method_type == 5){
-//                $data_order = [
-//                    'uid'=>$uid,
-//                    'order_no'=>$order_no,
-//                    'wx_name' =>$wx_name,
-//                    'order_status'=>0,
-//                    'total_price'=>$total_price,
-//                    'create_time'=>time(),
-//                ];
-////            var_dump($data_order);die;
-//                $infodata =DB::table('mt_order')->insert($data_order);
-//                $dataData = DB::table('mt_order')->where('order_no',$order_no)->first();
-////            var_dump($dataData);exit;
-//                $order_id = $dataData->order_id;
-//                session(['order_id'=>$order_id]);
-//
-//                $cartUpdate=[
-//                    'buy_num'=>$buy_num,
-//                    'update_time'=>time(),
-//                    'order_address'=>$order_address
-//                ];
-////            var_dump($cartUpdate);die;
-//                $res = DB::table('mt_cart')->where('uid',$uid)->where('goods_id',$goods_id)->update($cartUpdate);
-////            var_dump($res);exit;
-//                //添加订单详情表
-//                    $num = DB::table('re_goods')
-//                        ->where('re_goods_id',$re_goods_id)
-//                        ->get();
-////                            var_dump($num);exit;
-//                    foreach($num as $k=>$v){
-//                        $info=[
-//                            'uid'=>$uid,
-//                            'order_id'=>$order_id,
-//                            'order_no'=>$order_no,
-//                            'goods_id'=>$v->re_goods_id,
-//                            'goods_name'=>$v->re_goods_name,
-//                            'price'=>$v->re_goods_price,
-//                            'buy_num'=>$v->buy_num,
-//                            'order_status'=>0,
-//                            'shop_id'=>$v->shop_id,
-////                            'shop_name'=>$v->shop_name,
-//                            'create_time'=>time()
-//                        ];
-//                        $datailData = DB::table('mt_order_detail')->insert($info);
-//
-//                    }
-//                if($res>=0){
-//                    $data=[
-//                        'code'=>'0',
-//                        'msg'=>'生成分销订单成功',
-//                        'order_id'=>$order_id,
-//                    ];
-//                    $response = [
-//                        'data'=>$data
-//                    ];
-//                    return json_encode($response,JSON_UNESCAPED_UNICODE);
-//                }
-//
-//
-//
-//            }
         }else{
             $response = [
                 'error'=>'1',
-                'msg'=>'请先登录'
-            ];
-            return json_encode($response,JSON_UNESCAPED_UNICODE);
-        }
-    }
-    //分销订单
-    public function distribution_order(Request $request)
-    {
-        $re_order_price=$request->input('re_order_price');
-        $openid1 = $request->input('openid');
-        $key = $openid1;
-        $openid = Redis::get($key);
-        $order_no = date("YmdHis", time()) . rand(1000, 9999);   //订单号
-//        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
-        if($openid){
-
-
-        }else{
-            $response = [
-                'error'=>1,
                 'msg'=>'请先登录'
             ];
             return json_encode($response,JSON_UNESCAPED_UNICODE);
@@ -1108,7 +1026,8 @@ class OrderController extends Controller
                 'skill_start'=>$skill_start,
                 'attitude_start'=>$attitude_start,
                 'ambient'=>$ambient,
-                'evaluate_text'=>$evaluate_text
+                'evaluate_text'=>$evaluate_text,
+                'time'=>time()
             ];
             $data_info=DB::table('mt_goods_evaluate')->insert($inser_into);
             if($data_count !=NULL){
@@ -1171,6 +1090,50 @@ class OrderController extends Controller
         $uid=$datainfo->uid;
         if($openid){
             $data1=DB::table('mt_goods_evaluate')->where(['uid'=>$uid])->get();
+            if($data1){
+                $data=[
+                    'code'=>0,
+                    'data'=>$data1,
+                    'msg'=>'评价数据展示成功'
+                ];
+                $response = [
+                    'data'=>$data
+                ];
+                return (json_encode($response,JSON_UNESCAPED_UNICODE));
+            }else{
+                $data=[
+                    'code'=>1,
+                    'msg'=>'评价数据展示失败'
+                ];
+                $response = [
+                    'data'=>$data
+                ];
+                return (json_encode($response,JSON_UNESCAPED_UNICODE));
+            }
+
+        }else{
+            $response = [
+                'code'=>1,
+                'msg'=>'请先去登陆'
+            ];
+            return (json_encode($response,JSON_UNESCAPED_UNICODE));
+        }
+    }
+
+    //个人中心我的评价
+    public function evaluate_list(Request $request)
+    {
+        $openid1 = $request->input('openid');
+
+        $key = $openid1;
+        $openid = Redis::get($key);
+        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
+        $datainfo=DB::table('mt_user')->where(['openid'=>$openid])->first();
+        $uid=$datainfo->uid;
+        if($openid){
+            $data1=DB::table('mt_goods_evaluate')
+                ->join('mt_user','mt_user.uid','=','mt_goods_evaluate.uid')
+                ->where(['mt_user.uid'=>$uid])->get();
             if($data1){
                 $data=[
                     'code'=>0,
