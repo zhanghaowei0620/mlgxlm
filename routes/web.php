@@ -193,7 +193,7 @@ Route::post('reseller_user_AddressDetail', 'Reseller\ResellerController@reseller
 
 Route::post('index_reseller_orderList', 'Reseller\ResellerController@index_reseller_orderList');
 
-Route::get('reseller_order_information', 'Reseller\ResellerController@reseller_order_information');
+Route::post('reseller_order_information', 'Reseller\ResellerController@reseller_order_information');
 
 Route::post('note_Notify', 'Reseller\ResellerController@note_Notify');
 
