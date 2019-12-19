@@ -230,7 +230,7 @@ Route::post('open_red_packet', 'Invite\InviteController@open_red_packet');   //�
 Route::post('draw_package', 'Invite\InviteController@draw_package');   //新人好礼
 
 
-Route::get('test', 'Invite\InviteController@test');
+//Route::get('test', 'Invite\InviteController@test');
 
 
 
