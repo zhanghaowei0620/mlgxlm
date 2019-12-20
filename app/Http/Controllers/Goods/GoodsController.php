@@ -546,7 +546,7 @@ class GoodsController extends Controller
                 $datainfo=DB::table('mt_shop')->where(['shop_id'=>$v->shop_id])->first(['shop_volume']);
                 $aaa=$datainfo->shop_volume + $price;
                 $data_add=DB::table('mt_shop')->where(['shop_id'=>$v->shop_id])->update(['shop_volume'=>$aaa]);
-                $data_info=DB::table('mt_order_detail')->where(['id'=>$v->id])->update(['order_status'=>1]);
+                $data_info=DB::table('mt_order_detail')->where(['id'=>$v->id])->update(['order_status'=>1,'pay_price'=>$price]);
             }
             $data_info1=DB::table('mt_order')->where(['order_id'=>$inerdb->order_id])->update(['order_status'=>1]);
             $infostoadd= $data->money - $price;
@@ -590,11 +590,11 @@ class GoodsController extends Controller
 
             $data_foto=DB::table('mt_order_detail')->where(['order_status'=>0,'order_id'=>$inerdb->order_id])->get()->toArray();
             if(!$data_foto){
-                $data_info2=DB::table('mt_order')->where(['order_id'=>$inerdb->order_id])->update(['order_status'=>1]);
+                $data_info2=DB::table('mt_order')->where(['order_id'=>$inerdb->order_id])->update(['order_status'=>1,'pay_price'=>$price]);
                 $infostoadd= $data->money - $price;
                 $datato_fo=DB::table('mt_user')->where(['uid'=>$uid])->update(['money'=>$infostoadd]);
-                $updateinfo=$data->money -$infostoadd;
-                $data_info=DB::table('mt_order_detail')->where(['id'=>$order_detai->id])->update(['pay_price'=>$updateinfo]);
+                $updateinfo=$data->money - $infostoadd;
+                $data_info=DB::table('mt_order_detail')->where(['id'=>$order_detai->id])->update(['pay_price'=>$updateinfo,'order_status'=>1);
                 if($data_info2){
                     $data=[
                         'code'=>0,
