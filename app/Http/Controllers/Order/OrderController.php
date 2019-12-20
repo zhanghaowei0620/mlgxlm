@@ -369,7 +369,7 @@ class OrderController extends Controller
                             'order_no'=>$order_no,
                             'goods_id'=>$v->goods_id,
                             'goods_name'=>$v->goods_name,
-                            'price'=>$v->price,
+                            'price'=>$v->limited_price,
                             'picture'=>$v->picture,
                             'buy_num'=>1,
                             'order_status'=>0,
@@ -379,9 +379,6 @@ class OrderController extends Controller
                         ];
                         $datailData = DB::table('mt_order_detail')->insert($info);
                     }
-
-
-
                     $dainfo=DB::table('mt_order')
                         ->where(['order_no'=>$order_no])
                         ->first();
