@@ -26,7 +26,7 @@ class OrderController extends Controller
         $key = $openid1;
         $openid = Redis::get($key);
         $order_no = date("YmdHis", time()) . rand(1000, 9999);   //订单号
-//        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
+//        $openid='o3JM75DR8-IQ3ieEL_nsEiOMrTvc';
         $userInfo = DB::table('mt_user')->where('openid', $openid)->first();
 //            var_dump($userInfo);die;
         $wx_name = $userInfo->wx_name;
@@ -217,7 +217,6 @@ class OrderController extends Controller
                             ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
                             ->where('mt_goods.goods_id',$goods_id)
                             ->get();
-//            var_dump($num);die;
                         foreach($num as $k=>$v){
                             $info=[
                                 'uid'=>$uid,
@@ -225,7 +224,7 @@ class OrderController extends Controller
                                 'order_no'=>$order_no,
                                 'goods_id'=>$v->goods_id,
                                 'goods_name'=>$v->goods_name,
-                                'price'=>$v->limited_price,
+                                'price'=>$total_price -  $v->coupon_price,
                                 'picture'=>$v->picture,
                                 'buy_num'=>1,
                                 'order_status'=>0,
@@ -265,7 +264,7 @@ class OrderController extends Controller
                         ];
                         return json_encode($response,JSON_UNESCAPED_UNICODE);
                     }
-                }else{
+                }else if($coupon_type == 1){
                     $data_order = [
                         'uid'=>$uid,
                         'order_no'=>$order_no,
@@ -296,7 +295,7 @@ class OrderController extends Controller
                             'order_no'=>$order_no,
                             'goods_id'=>$v->goods_id,
                             'goods_name'=>$v->goods_name,
-                            'price'=>$v->price,
+                            'price'=>(($total_price *  $v->is_member_discount)/1000),
                             'picture'=>$v->picture,
                             'buy_num'=>1,
                             'order_status'=>0,
@@ -492,7 +491,7 @@ class OrderController extends Controller
         $good_cate=$request->input('good_cate');
         $key = $openid1;
         $openid = Redis::get($key);
-//        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
+//        $openid='o3JM75DR8-IQ3ieEL_nsEiOMrTvc';
         $orderInfo = DB::table('mt_user')
             ->where('openid',$openid)
             ->first();
@@ -502,17 +501,17 @@ class OrderController extends Controller
                 ->join('mt_shop','mt_shop.shop_id','=','mt_order_detail.shop_id')
 //                    ->join('mt_refund','mt_refund.id','=','mt_order_detail.id')
                 ->where(['mt_order_detail.uid'=>$orderInfo->uid])
-                ->orderby('mt_order_detail.create_time')
-                ->select()->paginate(10);
+                ->orderby('mt_order_detail.create_time','desc')
+                ->select(['goods_name','create_time'])->paginate(10);
+
         }else{
             $data=DB::table('mt_order_detail')
 //                ->join('mt_order','mt_order.order_id','=','mt_order_detail.order_id')
                 ->join('mt_shop','mt_shop.shop_id','=','mt_order_detail.shop_id')
 //                ->join('mt_refund','mt_refund.id','=','mt_order_detail.id')
                 ->where(['mt_order_detail.uid'=>$orderInfo->uid,'mt_order_detail.order_status'=>$order_status])
-                ->orderby('mt_order_detail.create_time')
-                ->select()->paginate(10);
-//            var_dump($data);die;
+                ->orderby('mt_order_detail.create_time','desc')
+                ->select(['goods_name','create_time'])->paginate(10);
         }
         if($data){
             $data=[
@@ -623,13 +622,20 @@ class OrderController extends Controller
         $openid = Redis::get($key);
         $id = $request->input('id');
         $is_big=$request->input('is_big');    //0为no    1为yes
+        $order_type = $request->input('order_type'); // 0为普通支付   1为拼团支付   2为优惠卷支付   3为限时抢支付
 //        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
         $datainfo=DB::table('mt_user')->where(['openid'=>$openid])->first();
         $uid=$datainfo->uid;
-
 //        $order_id = 1;
         if($openid){
             if($is_big == 1){
+//                if($order_type == 0){
+//
+//                }else if($order_type == 1){
+//
+//                }else if($order_type == 2){
+//
+//                }else if($order_type == 3)
                 $datainfo_add=DB::table('mt_order')
                     ->join('mt_order_detail','mt_order_detail.order_id','=','mt_order.order_id')
                     ->where(['mt_order.uid'=>$uid,'mt_order.order_id'=>$id])
