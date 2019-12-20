@@ -114,14 +114,22 @@ class IndexController extends Controller
                 ->get('mt_shop.shop_id');
 //            var_dump($shop_id);exit;
             $week_newshop = DB::table('mt_shop')
-                ->join('mt_goods','mt_goods.shop_id','=','mt_shop.shop_id')
+//                ->join('mt_goods','mt_goods.shop_id','=','mt_shop.shop_id')
                 ->where(['mt_shop.shop_status'=>2])
                 ->orderBy('mt_shop.shop_add_time','desc')
                 ->limit(5)
-                ->get(['mt_shop.shop_id','mt_shop.shop_name','mt_shop.shop_img','mt_shop.shop_desc','mt_goods.goods_name','mt_goods.goods_id','shop_address_provice','shop_address_city','shop_address_area','shop_score'])->toArray();    //本周新店
-//            var_dump($shop_set);exit;
-//            var_dump($type_lists);die;
-//        var_dump($goodsInfo);die;
+                ->get(['mt_shop.shop_id','mt_shop.shop_name','mt_shop.shop_img','mt_shop.shop_desc','shop_address_provice','shop_address_city','shop_address_area','shop_score'])->toArray();    //本周新店
+//        var_dump($week_newshop);die;
+        $week_newshop=[];
+        foreach ($week_newshop as $k => $v){
+            $datainfo=DB::table('mt_goods')->where(['shop_id'=>$v->shop_id])->limit(4)->get(['goods_id','goods_name']);
+            $data = [
+                'shop_info'=>$v,
+                'goods_list'=>$datainfo
+            ];
+            array_push($week_newshop,$data);
+        }
+
             $data = [
                 'type'          =>  $type,
                 's_type1'      =>  $s_type1,
