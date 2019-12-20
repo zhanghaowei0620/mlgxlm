@@ -216,7 +216,7 @@ class OrderController extends Controller
                         $num = DB::table('mt_goods')
                             ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
                             ->where('mt_goods.goods_id',$goods_id)
-                            ->get();
+                            ->first();
 //                        foreach($num as $k=>$num){
                             $info=[
                                 'uid'=>$uid,
@@ -289,7 +289,7 @@ class OrderController extends Controller
                     $num = DB::table('mt_goods')
                         ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
                         ->where('mt_goods.goods_id',$goods_id)
-                        ->get();
+                        ->first();
 //                    foreach($num as $k=>$v){
                         $info=[
                             'uid'=>$uid,
