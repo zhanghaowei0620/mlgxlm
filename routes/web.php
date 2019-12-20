@@ -276,8 +276,6 @@ Route::any('integral','Admin\Admin_loginController@integral')->middleware('check
 Route::any('search','Admin\Admin_loginController@search')->middleware('checkLogin');
 //用户移除
 Route::any('userdelete','Admin\Admin_loginController@userdelete')->middleware('checkLogin');
-//用户拉黑
-Route::any('userblack','Admin\Admin_loginController@userblack')->middleware('checkLogin');
 //商家移除
 Route::any('businessdelete','Admin\Admin_loginController@businessdelete')->middleware('checkLogin');
 //商家搜索
