@@ -367,28 +367,20 @@ class GoodsController extends Controller
         $openid1 = $request->input('openid');
         $key = $openid1;
         $openid = Redis::get($key);
-//        $openid="o9VUc5AOsdEdOBeUAw4TdYg-F-dM";
+//        $openid="o3JM75DR8-IQ3ieEL_nsEiOMrTvc";
         if($openid){
             $buy_num = $request->input('buy_num');
             $user_info = DB::table('mt_user')->where('openid',$openid)->first();
-//            var_dump($user_info);die;
             $uid = $user_info->uid;
-//            $buy_num = 1;
-//            $goods_id = 7;
             $where = [
                 'goods_id'=>$goods_id,
-                'collection_cart'=>0
+                'collection_cart'=>0,
+                'uid'=>$uid
             ];
             $goods_cart = DB::table('mt_cart')->where($where)->get()->toArray();
-//            var_dump($goods_cart);exit;
             if($goods_cart){
-//                $update = [
-//                    'buy_num'=>$goods_cart[0]->buy_num+$buy_num
-//                ];
-//                $update_buynum = DB::table('mt_cart')->where('goods_id',$goods_id)->update($update);
-                $cart_is=DB::table('mt_cart')->where(['goods_id'=>$goods_id,'uid'=>$uid])->get();
-//                var_dump($cart_is);exit;
-                if($cart_is==true){
+                $cart_is=DB::table('mt_cart')->where(['goods_id'=>$goods_id,'uid'=>$uid])->get()->toArray();
+                if($cart_is){
                     $aa=[
                         'code'=>'0',
                         'msg'=>'您的购物车已有此商品'
@@ -405,7 +397,7 @@ class GoodsController extends Controller
                     $response = [
                         'data'=>$data1
                     ];
-                    die(json_encode($response,JSON_UNESCAPED_UNICODE));
+                    return (json_encode($response,JSON_UNESCAPED_UNICODE));
                 }
             }else{
                 $goodsInfo = DB::table('mt_shop')
@@ -554,7 +546,7 @@ class GoodsController extends Controller
                 $datainfo=DB::table('mt_shop')->where(['shop_id'=>$v->shop_id])->first(['shop_volume']);
                 $aaa=$datainfo->shop_volume + $price;
                 $data_add=DB::table('mt_shop')->where(['shop_id'=>$v->shop_id])->update(['shop_volume'=>$aaa]);
-                $data_info=DB::table('mt_order_detail')->where(['id'=>$v->id])->update(['order_status'=>1]);
+                $data_info=DB::table('mt_order_detail')->where(['id'=>$v->id])->update(['order_status'=>1,'pay_price'=>$price]);
             }
             $data_info1=DB::table('mt_order')->where(['order_id'=>$inerdb->order_id])->update(['order_status'=>1]);
             $infostoadd= $data->money - $price;
@@ -598,11 +590,11 @@ class GoodsController extends Controller
 
             $data_foto=DB::table('mt_order_detail')->where(['order_status'=>0,'order_id'=>$inerdb->order_id])->get()->toArray();
             if(!$data_foto){
-                $data_info2=DB::table('mt_order')->where(['order_id'=>$inerdb->order_id])->update(['order_status'=>1]);
+                $data_info2=DB::table('mt_order')->where(['order_id'=>$inerdb->order_id])->update(['order_status'=>1,'pay_price'=>$price]);
                 $infostoadd= $data->money - $price;
                 $datato_fo=DB::table('mt_user')->where(['uid'=>$uid])->update(['money'=>$infostoadd]);
-                $updateinfo=$data->money -$infostoadd;
-                $data_info=DB::table('mt_order_detail')->where(['id'=>$order_detai->id])->update(['pay_price'=>$updateinfo]);
+                $updateinfo=$data->money - $infostoadd;
+                $data_info=DB::table('mt_order_detail')->where(['id'=>$order_detai->id])->update(['pay_price'=>$updateinfo,'order_status'=>1]);
                 if($data_info2){
                     $data=[
                         'code'=>0,

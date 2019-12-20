@@ -120,14 +120,14 @@ class IndexController extends Controller
                 ->limit(5)
                 ->get(['mt_shop.shop_id','mt_shop.shop_name','mt_shop.shop_img','mt_shop.shop_desc','shop_address_provice','shop_address_city','shop_address_area','shop_score'])->toArray();    //本周新店
 //        var_dump($week_newshop);die;
-        $week_newshop=[];
+        $week_newshop1=[];
         foreach ($week_newshop as $k => $v){
             $datainfo=DB::table('mt_goods')->where(['shop_id'=>$v->shop_id])->limit(4)->get(['goods_id','goods_name']);
             $data = [
                 'shop_info'=>$v,
                 'goods_list'=>$datainfo
             ];
-            array_push($week_newshop,$data);
+            array_push($week_newshop1,$data);
         }
 
             $data = [
@@ -137,7 +137,7 @@ class IndexController extends Controller
                 's_type3'      =>  $s_type3,
                 's_type4'      =>  $s_type4,
                 'goodsInfo'     =>  $goodsInfo,
-                'week_newshop'  =>  $week_newshop,
+                'week_newshop'  =>  $week_newshop1,
                 'recommend'     =>  $recommend,
                 'discountInfo' => $discountInfo,
                 'salesInfo'   => $salesInfo,
