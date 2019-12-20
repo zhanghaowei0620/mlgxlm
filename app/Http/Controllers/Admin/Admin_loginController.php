@@ -211,19 +211,19 @@ class Admin_loginController extends Controller
      */
     public function money(Request $request)
     {
-        $admin_id=$request->input('admin_id');
-        $admin_user_money=$request->input('admin_user_money');
-        $money=[
-            'admin_user_money'=>$admin_user_money
+        $uid=$request->input('uid');
+        $money=$request->input('money');
+        $money1=[
+            'money'=>$money
         ];
-        $data=DB::table('admin_user')->where('admin_id',$admin_id)->update($money);
+        $data=DB::table('mt_user')->where('uid',$uid)->update($money1);
         if($data){
             $response=[
                 'code'=>0,
                 'data'=>$data,
                 'msg'=>'您的分享币修改成功',
             ];
-            die(json_encode($response,JSON_UNESCAPED_UNICODE));
+            return (json_encode($response,JSON_UNESCAPED_UNICODE));
         }else{
             $response=[
                 'code'=>1,
@@ -238,12 +238,12 @@ class Admin_loginController extends Controller
      */
     public function integral(Request $request)
     {
-        $admin_id=$request->input('admin_id');
-        $admin_user_integral=$request->input('admin_user_integral');
+        $uid=$request->input('uid');
+        $integral=$request->input('integral');
         $integral=[
-          'admin_user_integral'=>$admin_user_integral
+          'integral'=>$integral
         ];
-        $data=DB::table('admin_user')->where('admin_id',$admin_id)->update($integral);
+        $data=DB::table('mt_user')->where('uid',$uid)->update($integral);
                 if($data){
                     $response=[
                         'code'=>0,
@@ -265,34 +265,34 @@ class Admin_loginController extends Controller
      */
     public function search(Request $request)
     {
-        $admin_names=$request->input('admin_names');
-        $admin_tel=$request->input('admin_tel');
-        if($admin_tel){
-            $data=DB::table('admin_user')
-                ->where('admin_tel' , '=' , "$admin_tel")
-                ->get(['admin_id','admin_names','admin_tel','admin_consumption','admin_user_integral','admin_user_money'])
+        $wx_name=$request->input('wx_name');
+//        $admin_tel=$request->input('admin_tel');
+//        if($admin_tel){
+//            $data=DB::table('admin_user')
+//                ->where('admin_tel' , '=' , "$admin_tel")
+//                ->get(['admin_id','admin_names','admin_tel','admin_consumption','admin_user_integral','admin_user_money'])
+//                ->toArray();
+//            if($admin_tel){
+//                $response=[
+//                    'code'=>0,
+//                    'data'=>$data,
+//                    'msg'=>'用户查询成功',
+//                ];
+//                die(json_encode($response,JSON_UNESCAPED_UNICODE));
+//            }else{
+//                $response=[
+//                    'code'=>1,
+//                    'msg'=>'用户查询失败',
+//                ];
+//                die(json_encode($response,JSON_UNESCAPED_UNICODE));
+//            }
+//        }
+        if($wx_name){
+            $data=DB::table('mt_user')
+                ->where('wx_names' , '=' , "$wx_names")
+                ->get()
                 ->toArray();
-            if($admin_tel){
-                $response=[
-                    'code'=>0,
-                    'data'=>$data,
-                    'msg'=>'用户查询成功',
-                ];
-                die(json_encode($response,JSON_UNESCAPED_UNICODE));
-            }else{
-                $response=[
-                    'code'=>1,
-                    'msg'=>'用户查询失败',
-                ];
-                die(json_encode($response,JSON_UNESCAPED_UNICODE));
-            }
-        }
-        if($admin_names){
-            $data=DB::table('admin_user')
-                ->where('admin_names' , '=' , "$admin_names")
-                ->get(['admin_id','admin_names','admin_tel','admin_consumption','admin_user_integral','admin_user_money'])
-                ->toArray();
-            if($admin_names){
+            if($data){
                 $response=[
                     'code'=>0,
                     'data'=>$data,
@@ -313,10 +313,7 @@ class Admin_loginController extends Controller
      */
     public function userman(Request $request)
     {
-        $shop_status=[
-            'shop_status'=>2
-        ];
-        $data=DB::table('admin_user')->where($shop_status)->count();
+        $data=DB::table('mt_user')->count();
 //        var_dump($data);die;
         if($data){
             $response=[
@@ -337,10 +334,8 @@ class Admin_loginController extends Controller
      */
     public function usermoney(Request $request)
     {
-        $shop_status=[
-            'shop_status'=>2
-        ];
-        $data=DB::table('admin_user')->where($shop_status)->sum('admin_user_money');
+
+        $data=DB::table('mt_user')->sum('money');
         if($data){
             $response=[
                 'code'=>0,
@@ -362,17 +357,14 @@ class Admin_loginController extends Controller
      */
     public function userintegral(Request $request)
     {
-        $shop_status=[
-            'shop_status'=>2
-        ];
-        $data=DB::table('admin_user')->where($shop_status)->sum('admin_user_integral');
+        $data=DB::table('mt_user')->sum('integral');
         if($data){
             $response=[
                 'code'=>0,
                 'data'=>$data,
                 'msg'=>'',
             ];
-            die(json_encode($response,JSON_UNESCAPED_UNICODE));
+            return (json_encode($response,JSON_UNESCAPED_UNICODE));
         }else{
             $response=[
                 'code'=>1,
@@ -386,11 +378,11 @@ class Admin_loginController extends Controller
     */
     public function userdelete(Request $request)
     {
-        $admin_id=$request->input('admin_id');
+        $uid=$request->input('uid');
         $where=[
-            'admin_id'=>$admin_id
+            'uid'=>$uid
         ];
-        $data=DB::table('admin_user')->where($where)->delete();
+        $data=DB::table('mt_user')->where($where)->delete();
         if($data){
             $response=[
                 'code'=>0,
@@ -406,34 +398,6 @@ class Admin_loginController extends Controller
             return (json_encode($response, JSON_UNESCAPED_UNICODE));
         }
     }
-
-    /*
-     * 普通用户拉黑
-     */
-    public function userblack(Request $request)
-    {
-        $admin_id=$request->input('admin_id');
-        $where=[
-            'admin_id'=>$admin_id
-        ];
-        $data=DB::table('admin_user')->where($where)->delete();
-        if($data){
-            $response=[
-                'code'=>0,
-                'data'=>$data,
-                'msg'=>'此用户已被拉黑'
-            ];
-            return (json_encode($response, JSON_UNESCAPED_UNICODE));
-        }else{
-            $response=[
-                'code'=>1,
-                'msg'=>'用户拉黑失败'
-            ];
-            return (json_encode($response, JSON_UNESCAPED_UNICODE));
-        }
-    }
-
-
     /*
      * 商家信息展示
      */

@@ -122,9 +122,9 @@ Route::get('/order_detail', 'Order\OrderController@order_detail');     //订单�
 
 Route::get('/goods_evaluate', 'Order\OrderController@goods_evaluate'); //订单商品评价
 
-Route::get('/evaluate_list', 'Order\OrderController@evaluate_list'); //点赞
+Route::post('/evaluate_list', 'Order\OrderController@evaluate_list'); //点赞
 
-Route::get('/my_evaluate_list', 'Order\OrderController@my_evaluate_list'); //个人中心我的评价
+Route::post('/my_evaluate_list', 'Order\OrderController@my_evaluate_list'); //个人中心我的评价
 
 Route::get('/goods_evaluate_list', 'Order\OrderController@goods_evaluate_list'); //订单商品评价列表
 
@@ -278,8 +278,6 @@ Route::any('integral','Admin\Admin_loginController@integral')->middleware('check
 Route::any('search','Admin\Admin_loginController@search')->middleware('checkLogin');
 //用户移除
 Route::any('userdelete','Admin\Admin_loginController@userdelete')->middleware('checkLogin');
-//用户拉黑
-Route::any('userblack','Admin\Admin_loginController@userblack')->middleware('checkLogin');
 //商家移除
 Route::any('businessdelete','Admin\Admin_loginController@businessdelete')->middleware('checkLogin');
 //商家搜索
