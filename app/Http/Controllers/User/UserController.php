@@ -1776,10 +1776,6 @@ class UserController extends Controller
         return json_encode($response, JSON_UNESCAPED_UNICODE);
     }
 
-
-
-
-
     //模板消息
     public function template(Request $request)
     {
