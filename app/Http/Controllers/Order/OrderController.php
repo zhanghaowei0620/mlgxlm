@@ -504,7 +504,7 @@ class OrderController extends Controller
 //                    ->join('mt_refund','mt_refund.id','=','mt_order_detail.id')
                 ->where(['mt_order_detail.uid'=>$orderInfo->uid])
                 ->orderby('mt_order_detail.create_time','desc')
-                ->select(['goods_name','create_time'])->paginate(10);
+                ->select()->paginate(10);
 
         }else{
             $data=DB::table('mt_order_detail')
@@ -513,7 +513,7 @@ class OrderController extends Controller
 //                ->join('mt_refund','mt_refund.id','=','mt_order_detail.id')
                 ->where(['mt_order_detail.uid'=>$orderInfo->uid,'mt_order_detail.order_status'=>$order_status])
                 ->orderby('mt_order_detail.create_time','desc')
-                ->select(['goods_name','create_time'])->paginate(10);
+                ->select()->paginate(10);
         }
         if($data){
             $data=[
