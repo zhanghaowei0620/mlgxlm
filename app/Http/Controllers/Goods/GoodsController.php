@@ -371,22 +371,15 @@ class GoodsController extends Controller
         if($openid){
             $buy_num = $request->input('buy_num');
             $user_info = DB::table('mt_user')->where('openid',$openid)->first();
-//            var_dump($user_info);die;
             $uid = $user_info->uid;
-//            $buy_num = 1;
-//            $goods_id = 7;
             $where = [
                 'goods_id'=>$goods_id,
                 'collection_cart'=>0,
                 'uid'=>$uid
             ];
             $goods_cart = DB::table('mt_cart')->where($where)->get()->toArray();
-//            var_dump($goods_cart);exit;
             if($goods_cart){
-//                echo 1111;die;
-//                var_dump($goods_id);die;
                 $cart_is=DB::table('mt_cart')->where(['goods_id'=>$goods_id,'uid'=>$uid])->get()->toArray();
-//                var_dump($cart_is);exit;
                 if($cart_is){
                     $aa=[
                         'code'=>'0',
