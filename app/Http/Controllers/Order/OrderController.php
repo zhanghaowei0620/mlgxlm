@@ -26,7 +26,7 @@ class OrderController extends Controller
         $key = $openid1;
         $openid = Redis::get($key);
         $order_no = date("YmdHis", time()) . rand(1000, 9999);   //订单号
-        $openid='o3JM75DR8-IQ3ieEL_nsEiOMrTvc';
+//        $openid='o3JM75DR8-IQ3ieEL_nsEiOMrTvc';
         $userInfo = DB::table('mt_user')->where('openid', $openid)->first();
 //            var_dump($userInfo);die;
         $wx_name = $userInfo->wx_name;
