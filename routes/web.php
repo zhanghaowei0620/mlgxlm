@@ -183,11 +183,13 @@ Route::post('index_reseller_goodsList', 'Reseller\ResellerController@index_resel
 
 Route::post('index_reseller_goodsDetail', 'Reseller\ResellerController@index_reseller_goodsDetail');     //分销中心-商品详情
 
-Route::post('index_reseller_orderAdd', 'Reseller\ResellerController@index_reseller_orderAdd');   //分校订单-生成
+Route::post('index_reseller_orderAdd', 'Reseller\ResellerController@index_reseller_orderAdd');   //分销订单-生成
 
-Route::post('index_reseller_Choose_payment', 'Reseller\ResellerController@index_reseller_Choose_payment');   //分校订单-选择支付方式
+Route::post('index_reseller_Choose_payment', 'Reseller\ResellerController@index_reseller_Choose_payment');   //分销订单-选择支付方式
 
 Route::post('reseller_order_Confirm_receipt', 'Reseller\ResellerController@reseller_order_Confirm_receipt');   //确认收货
+
+Route::get('crontab_information', 'Reseller\ResellerController@crontab_information');   //定时任务  --定时获取物流实时信息
 
 Route::post('index_reseller_Topay', 'Reseller\ResellerController@index_reseller_Topay');   //分校订单-去支付
 

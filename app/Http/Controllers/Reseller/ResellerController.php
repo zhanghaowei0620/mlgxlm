@@ -729,6 +729,38 @@ class ResellerController extends Controller
 
     }
 
+    //定时任务--定时获取物流实时信息
+    public function crontab_information(){
+        $reOrderInfo = DB::table('re_order')
+            ->join('mt_logistics','re_order.shipping_type','=','mt_logistics.log_id')
+            ->where('order_status',2)->get()->toArray();
+        $data = [];
+        foreach ($reOrderInfo as $k=>$v){
+            $express = new ExpressBird('1609892','d383f272-38fa-4d61-9260-fc6369fa61cb');
+//            $tracking_code = "YT4282310249330";
+//            $shipping_code = "YTO";
+//            $order_code = "";
+            $tracking_code = $v->logistics_no;
+            $shipping_code = $v->log_code;
+            $order_code = $v->re_order_no;
+            $info = $express->track($tracking_code, $shipping_code,$order_code); //快递单号 物流公司编号 订单编号(选填)
+            $info = json_decode($info);
+//            $info = json_encode($info,JSON_UNESCAPED_UNICODE);
+            array_push($data,$info);
+        }
+        foreach ($data as $val) {
+            if($val->State == 3){
+                $last_names = array_column($val->Traces,'AcceptTime');
+                array_multisort($last_names,SORT_DESC,$val->Traces);
+                if(strtotime($val->Traces[0]->AcceptTime)+86400*7 < time()){
+                    DB::table('re_order')->where('logistics_no',$val->LogisticCode)->update(['order_status'=>3]);
+                }else if(strtotime($val->Traces[0]->AcceptTime)+86400*7 > time()){
+                    DB::table('re_order')->where('logistics_no',$val->LogisticCode)->update(['order_status'=>3]);
+                }
+            }
+        }
+    }
+
     //删除订单
     public function reseller_order_delete(Request $request){
         $re_order_id = $request->input('re_order_id');
