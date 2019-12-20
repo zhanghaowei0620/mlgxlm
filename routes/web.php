@@ -193,6 +193,8 @@ Route::post('index_reseller_Topay', 'Reseller\ResellerController@index_reseller_
 
 Route::post('reseller_user_AddressDetail', 'Reseller\ResellerController@reseller_user_AddressDetail');    //根据地址id 获取详情信息
 
+Route::post('reseller_order_delete', 'Reseller\ResellerController@reseller_order_delete');   //订单删除
+
 Route::post('index_reseller_orderList', 'Reseller\ResellerController@index_reseller_orderList');
 
 Route::post('reseller_order_information', 'Reseller\ResellerController@reseller_order_information');
@@ -228,7 +230,7 @@ Route::post('open_red_packet', 'Invite\InviteController@open_red_packet');   //�
 Route::post('draw_package', 'Invite\InviteController@draw_package');   //新人好礼
 
 
-Route::get('test', 'Invite\InviteController@test');
+//Route::get('test', 'Invite\InviteController@test');
 
 
 
@@ -420,11 +422,11 @@ Route::post('admin_rule_Detail','Amindbackstage\Headquarters@admin_rule_Detail')
 
 
 
-Route::post('test','Test\TestController@test')->middleware('checkLogin');          //微信支付
+Route::post('test','Test\TestController@test');          //微信支付
 
-Route::post('getInfo','Test\TestController@getInfo')->middleware('checkLogin');     //微信获取用户openid
+Route::post('getInfo','Test\TestController@getInfo');     //微信获取用户openid
 
-Route::post('weixinPay/notify','Test\TestController@notify')->middleware('checkLogin');     //微信支付-异步回调
+Route::post('weixinPay/notify','Test\TestController@notify');     //微信支付-异步回调
 
 
 

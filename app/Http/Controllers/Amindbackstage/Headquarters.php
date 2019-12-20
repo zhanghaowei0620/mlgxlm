@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Str;
+use Flex\Express\ExpressBird;
 
 class Headquarters extends Controller
 {
@@ -1178,7 +1179,7 @@ class Headquarters extends Controller
         $log_id = $request->input('log_id');
         $log_num = $request->input('log_num');
         if($admin_judge == 2){
-            $orderUpdate = DB::table('re_order')->where('re_order_id',$re_order_id)->update(['shipping_type'=>$log_id,'logistics_no'=>$log_num]);
+            $orderUpdate = DB::table('re_order')->where('re_order_id',$re_order_id)->update(['shipping_type'=>$log_id,'logistics_no'=>$log_num,'order_status'=>2]);
             if($orderUpdate > 0){
                 $response=[
                     'code'=>0,
@@ -1215,13 +1216,12 @@ class Headquarters extends Controller
         $shipping_code = $reOrderInfo->log_code;
         $order_code = $reOrderInfo->re_order_no;
         $info = $express->track($tracking_code, $shipping_code,$order_code); //快递单号 物流公司编号 订单编号(选填)
-        $data = [
-            'code'=>0,
-            'data'=>$info,
-            'msg'=>'数据请求成功'
-        ];
+        $info = json_decode($info);
+        $info = json_encode($info,JSON_UNESCAPED_UNICODE);
         $response = [
-            'data' => $data
+            'code'=>0,
+            'data' => $info,
+            'msg'=>'数据请求成功'
         ];
         return json_encode($response, JSON_UNESCAPED_UNICODE);
     }
