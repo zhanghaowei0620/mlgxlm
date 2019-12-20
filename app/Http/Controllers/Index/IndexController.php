@@ -114,10 +114,11 @@ class IndexController extends Controller
                 ->get('mt_shop.shop_id');
 //            var_dump($shop_id);exit;
             $week_newshop = DB::table('mt_shop')
-                    ->where(['mt_shop.shop_status'=>2])
-                ->orderBy('shop_add_time')
-                ->limit(3)
-                ->get(['mt_shop.shop_id','shop_name','shop_Ename','shop_desc','shop_label','shop_address_provice','shop_address_city','shop_address_area','shop_score'])->toArray();    //本周新店
+                ->join('mt_goods','mt_goods.shop_id','=','mt_shop.shop_id')
+                ->where(['mt_shop.shop_status'=>2])
+                ->orderBy('mt_shop.shop_add_time','desc')
+                ->limit(5)
+                ->get(['mt_shop.shop_id','mt_shop.shop_name','mt_shop.shop_img','mt_shop.shop_desc','mt_goods.goods_name','mt_goods.goods_id','shop_address_provice','shop_address_city','shop_address_area','shop_score'])->toArray();    //本周新店
 //            var_dump($shop_set);exit;
 //            var_dump($type_lists);die;
 //        var_dump($goodsInfo);die;
