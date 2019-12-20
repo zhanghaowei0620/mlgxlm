@@ -594,7 +594,7 @@ class GoodsController extends Controller
                 $infostoadd= $data->money - $price;
                 $datato_fo=DB::table('mt_user')->where(['uid'=>$uid])->update(['money'=>$infostoadd]);
                 $updateinfo=$data->money - $infostoadd;
-                $data_info=DB::table('mt_order_detail')->where(['id'=>$order_detai->id])->update(['pay_price'=>$updateinfo,'order_status'=>1);
+                $data_info=DB::table('mt_order_detail')->where(['id'=>$order_detai->id])->update(['pay_price'=>$updateinfo,'order_status'=>1]);
                 if($data_info2){
                     $data=[
                         'code'=>0,
