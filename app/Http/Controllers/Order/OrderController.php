@@ -217,23 +217,23 @@ class OrderController extends Controller
                             ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
                             ->where('mt_goods.goods_id',$goods_id)
                             ->get();
-                        foreach($num as $k=>$v){
+//                        foreach($num as $k=>$num){
                             $info=[
                                 'uid'=>$uid,
                                 'order_id'=>$order_id,
                                 'order_no'=>$order_no,
-                                'goods_id'=>$v->goods_id,
-                                'goods_name'=>$v->goods_name,
-                                'price'=>$v->coupon_price,
-                                'picture'=>$v->picture,
+                                'goods_id'=>$num->goods_id,
+                                'goods_name'=>$num->goods_name,
+                                'price'=>$num->coupon_price,
+                                'picture'=>$num->picture,
                                 'buy_num'=>1,
                                 'order_status'=>0,
-                                'shop_id'=>$v->shop_id,
-                                'shop_name'=>$v->shop_name,
+                                'shop_id'=>$num->shop_id,
+                                'shop_name'=>$num->shop_name,
                                 'create_time'=>time(),
                             ];
                             $datailData = DB::table('mt_order_detail')->insert($info);
-                        }
+//                        }
                         $aaa=$total_price - $num->coupon_price;
                         $datailData1 = DB::table('mt_order_detail')->where(['order_no'=>$order_no])->update(['price'=>$aaa]);
                         if($infodata){
@@ -290,23 +290,23 @@ class OrderController extends Controller
                         ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
                         ->where('mt_goods.goods_id',$goods_id)
                         ->get();
-                    foreach($num as $k=>$v){
+//                    foreach($num as $k=>$v){
                         $info=[
                             'uid'=>$uid,
                             'order_id'=>$order_id,
                             'order_no'=>$order_no,
-                            'goods_id'=>$v->goods_id,
-                            'goods_name'=>$v->goods_name,
-                            'price'=>(($total_price * $v->is_member_discount)/1000),
-                            'picture'=>$v->picture,
+                            'goods_id'=>$num->goods_id,
+                            'goods_name'=>$num->goods_name,
+                            'price'=>(($total_price * $num->is_member_discount)/1000),
+                            'picture'=>$num->picture,
                             'buy_num'=>1,
                             'order_status'=>0,
-                            'shop_id'=>$v->shop_id,
-                            'shop_name'=>$v->shop_name,
+                            'shop_id'=>$num->shop_id,
+                            'shop_name'=>$num->shop_name,
                             'create_time'=>time(),
                         ];
                         $datailData = DB::table('mt_order_detail')->insert($info);
-                    }
+//                    }
                     $aaa=(($total_price * $num->is_member_discount)/1000);
                     $datailData1 = DB::table('mt_order_detail')->where(['order_no'=>$order_no])->update(['price'=>$aaa]);
                     $dainfo=DB::table('mt_order')
