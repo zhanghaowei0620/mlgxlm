@@ -211,19 +211,19 @@ class Admin_loginController extends Controller
      */
     public function money(Request $request)
     {
-        $admin_id=$request->input('admin_id');
-        $admin_user_money=$request->input('admin_user_money');
-        $money=[
-            'admin_user_money'=>$admin_user_money
+        $uid=$request->input('uid');
+        $money=$request->input('money');
+        $money1=[
+            'money'=>$money
         ];
-        $data=DB::table('admin_user')->where('admin_id',$admin_id)->update($money);
+        $data=DB::table('mt_user')->where('uid',$uid)->update($money1);
         if($data){
             $response=[
                 'code'=>0,
                 'data'=>$data,
                 'msg'=>'您的分享币修改成功',
             ];
-            die(json_encode($response,JSON_UNESCAPED_UNICODE));
+            return (json_encode($response,JSON_UNESCAPED_UNICODE));
         }else{
             $response=[
                 'code'=>1,
