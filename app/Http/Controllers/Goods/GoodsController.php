@@ -595,6 +595,7 @@ class GoodsController extends Controller
                 $datato_fo=DB::table('mt_user')->where(['uid'=>$uid])->update(['money'=>$infostoadd]);
                 $updateinfo=$data->money - $infostoadd;
                 $data_info=DB::table('mt_order_detail')->where(['id'=>$order_detai->id])->update(['pay_price'=>$price,'order_status'=>1]);
+//                var_dump($daa);die;
                 if($data_info2){
                     $data=[
                         'code'=>0,
