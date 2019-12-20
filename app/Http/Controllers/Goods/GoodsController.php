@@ -365,9 +365,6 @@ class GoodsController extends Controller
     public function add_cart(Request $request){
         $goods_id = $request->input('goods_id');
         $openid1 = $request->input('openid');
-        // 1，2，3 店铺列表
-        // 1111，2222，3333，商品
-
         $key = $openid1;
         $openid = Redis::get($key);
 //        $openid="o9VUc5AOsdEdOBeUAw4TdYg-F-dM";
@@ -389,7 +386,7 @@ class GoodsController extends Controller
 //                    'buy_num'=>$goods_cart[0]->buy_num+$buy_num
 //                ];
 //                $update_buynum = DB::table('mt_cart')->where('goods_id',$goods_id)->update($update);
-                $cart_is=DB::table('mt_cart')->where(['goods_id'=>$goods_id])->get();
+                $cart_is=DB::table('mt_cart')->where(['goods_id'=>$goods_id,'uid'=>$uid])->get();
 //                var_dump($cart_is);exit;
                 if($cart_is==true){
                     $aa=[
