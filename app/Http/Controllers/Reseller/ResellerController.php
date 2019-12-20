@@ -477,6 +477,8 @@ class ResellerController extends Controller
         if($openid){
             if($order_status == 99){
                 $re_orderInfo = DB::table('re_order')
+                    ->join('mt_user','re_order.uid','=','mt_user.uid')
+                    ->where('mt_user.openid',$openid)
                     ->where('order_status','!=',4)
                     ->orderBy('create_time','desc')
                     ->get()->toArray();
@@ -490,7 +492,10 @@ class ResellerController extends Controller
                 ];
                 return json_encode($response, JSON_UNESCAPED_UNICODE);
             }else{
-                $re_orderInfo = DB::table('re_order')->where('order_status',$order_status)->orderBy('create_time','desc')->get()->toArray();
+                $re_orderInfo = DB::table('re_order')
+                    ->join('mt_user','re_order.uid','=','mt_user.uid')
+                    ->where('mt_user.openid',$openid)
+                    ->where('order_status',$order_status)->orderBy('create_time','desc')->get()->toArray();
                 $data = [
                     'code'=>0,
                     'data'=>$re_orderInfo,
