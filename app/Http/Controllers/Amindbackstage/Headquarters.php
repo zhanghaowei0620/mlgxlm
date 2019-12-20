@@ -410,7 +410,7 @@ class Headquarters extends Controller
 
 
 
-        //无限级分类
+    //无限级分类
     public function list_level($data,$pid,$level){
 
         static $array = array();
@@ -1115,7 +1115,7 @@ class Headquarters extends Controller
 
     }
 
-    //订单
+    //分销订单
     public function admin_reseller_order(Request $request){
         $admin_judge = $request->input('admin_judge');
         $shop_id = $request->input('shop_id');
@@ -1158,6 +1158,211 @@ class Headquarters extends Controller
                 'msg'=>'请先登录'
             ];
             die(json_encode($response, JSON_UNESCAPED_UNICODE));
+        }
+    }
+
+    //退款申请列表
+    public function admin_reseller_Apply_refundList(Request $request){
+        $admin_judge = $request->input('admin_judge');
+        $shop_id = $request->input('shop_id');
+        if($admin_judge == 2){
+            $reOrderInfo = DB::table('re_order')->where(['shop_id'=>$shop_id,'order_status'=>5])->paginate(7);
+            $response=[
+                'code'=>0,
+                'data'=>$reOrderInfo,
+                'msg'=>'数据请求成功'
+            ];
+            return json_encode($response, JSON_UNESCAPED_UNICODE);
+        }else{
+            $reOrderInfo = DB::table('re_order')->where(['order_status'=>5])->paginate(7);
+            $response=[
+                'code'=>0,
+                'data'=>$reOrderInfo,
+                'msg'=>'数据请求成功'
+            ];
+            return json_encode($response, JSON_UNESCAPED_UNICODE);
+        }
+    }
+
+    //分校订单退款审核
+    public function admin_reseller_refund_examine(Request $request){
+        $re_order_id = $request->input('re_order_id');
+        $reOrderInfo = DB::table('re_order')->where('re_order_id',$re_order_id)->first();
+        $userInfo = DB::table('mt_user')->where('uid',$reOrderInfo->uid)->first(['uid','money','mt_reseller','p_id','a_id']);  //购买用户的信息
+        //分享币支付
+        if($reOrderInfo->pay_type == 0){
+            $shopInfo = DB::table('mt_shop')->where('shop_id',$reOrderInfo->shop_id)->first(['uid','up_rebate','indirect_up_rebate']);
+            $shopUserInfo = DB::table('mt_user')->where('uid',$shopInfo->uid)->first();
+             //如果支付的人 是分销员
+            if($userInfo->mt_reseller == 1){
+                //确认收货之前
+                if($reOrderInfo->order_status ==1 || $reOrderInfo->order_status==2){
+                    $u_shopInfo = DB::table('mt_shop')->where('uid',$userInfo->a_id)->first(['shop_id']);
+                    //用户是否购买自己团队中分销商品
+                    if($reOrderInfo->shop_id == $u_shopInfo->shop_id){
+                        $p_userInfo = DB::table('mt_user')->where('uid',$userInfo->p_id)->first();
+                        //判断用户上级是否为分销商
+                        if($p_userInfo->uid != $p_userInfo->a_id){
+                            $a_userInfo = DB::table('mt_user')->where('uid',$p_userInfo->p_id)->first();
+                            //判断用户间接上级是否为分销商
+                            if($a_userInfo->uid != $a_userInfo->a_id){
+                                $re_orderInfoUpdate = DB::table('re_order')->where('re_order_id',$re_order_id)->update(['order_status'=>6,'refund_time' => time()]);
+                                $p_userInfoUpdate = DB::table('mt_user')->where('uid',$p_userInfo->uid)->update(['no_reflected'=>$p_userInfo->no_reflected - $reOrderInfo->pay_price*$shopInfo->up_rebate/100]);
+                                $a_userInfoUpdate = DB::table('mt_user')->where('uid',$a_userInfo->uid)->update(['no_reflected'=>$a_userInfo->no_reflected - $reOrderInfo->pay_price*$shopInfo->indirect_up_rebate/100]);
+                                $shopUserInfoUpdate = DB::table('mt_user')->where('uid',$shopInfo->uid)->update(['no_reflected'=>$shopUserInfo->no_reflected - $reOrderInfo->pay_price*(100 - $shopInfo->up_rebate - $shopInfo->indirect_up_rebate)/100]);
+                                $gm_userInfoUpdate = DB::table('mt_user')->where('uid',$userInfo->uid)->update(['money'=>$userInfo->money + $reOrderInfo->pay_price]);
+                                //退款前的一系列操作全部成功
+                                if($re_orderInfoUpdate>0 && $p_userInfoUpdate>0 && $a_userInfoUpdate>0 && $shopUserInfoUpdate>0 && $gm_userInfoUpdate>0){
+                                    $data = [
+                                        'code'=>0,
+                                        'msg'=>'退款成功'
+                                    ];
+                                    $response = [
+                                        'data' => $data
+                                    ];
+                                    return json_encode($response, JSON_UNESCAPED_UNICODE);
+                                }else{
+                                    $data = [
+                                        'code'=>5,
+                                        'msg'=>'系统出现错误,退款失败,请重试'
+                                    ];
+                                    $response = [
+                                        'data' => $data
+                                    ];
+                                    die(json_encode($response, JSON_UNESCAPED_UNICODE));
+                                }
+                            }else{
+                                $re_orderInfoUpdate = DB::table('re_order')->where('re_order_id',$re_order_id)->update(['order_status'=>6,'refund_time' => time()]);
+                                $p_userInfoUpdate = DB::table('mt_user')->where('uid',$p_userInfo->uid)->update(['no_reflected'=>$p_userInfo->no_reflected - $reOrderInfo->pay_price*$shopInfo->up_rebate/100]);
+                                $shopUserInfoUpdate = DB::table('mt_user')->where('uid',$shopInfo->uid)->update(['no_reflected'=>$shopUserInfo->no_reflected - $reOrderInfo->pay_price*(100 - $shopInfo->up_rebate)/100]);
+                                $gm_userInfoUpdate = DB::table('mt_user')->where('uid',$userInfo->uid)->update(['money'=>$userInfo->money + $reOrderInfo->pay_price]);
+                                if($re_orderInfoUpdate>0 && $p_userInfoUpdate>0 && $shopUserInfoUpdate>0 && $gm_userInfoUpdate>0){
+                                    $data = [
+                                        'code'=>0,
+                                        'msg'=>'退款成功'
+                                    ];
+                                    $response = [
+                                        'data' => $data
+                                    ];
+                                    return json_encode($response, JSON_UNESCAPED_UNICODE);
+                                }else{
+                                    $data = [
+                                        'code'=>6,
+                                        'msg'=>'系统出现错误,退款失败,请重试'
+                                    ];
+                                    $response = [
+                                        'data' => $data
+                                    ];
+                                    die(json_encode($response, JSON_UNESCAPED_UNICODE));
+                                }
+                            }
+                        }else{
+                             // 用户上级不是分销商
+                            $update = [
+                                'no_reflected' => $shopUserInfo->no_reflected - $reOrderInfo->pay_price,
+                            ];
+                            $re_orderInfoUpdate = DB::table('re_order')->where('re_order_id',$re_order_id)->update(['order_status'=>6,'refund_time' => time()]);
+                            $updateuserInfo = DB::table('mt_user')->where('uid',$shopInfo->uid)->update($update);
+                            $gm_userInfoUpdate = DB::table('mt_user')->where('uid',$userInfo->uid)->update(['money'=>$userInfo->money+$reOrderInfo->pay_price]);
+                            if($updateuserInfo > 0 && $re_orderInfoUpdate > 0 && $gm_userInfoUpdate){
+                                $data = [
+                                    'code'=>0,
+                                    'msg'=>'退款成功'
+                                ];
+                                $response = [
+                                    'data' => $data
+                                ];
+                                return json_encode($response, JSON_UNESCAPED_UNICODE);
+                            }else{
+                                $data = [
+                                    'code'=>1,
+                                    'msg'=>'系统出现问题,请重试'
+                                ];
+                                $response = [
+                                    'data' => $data
+                                ];
+                                die(json_encode($response, JSON_UNESCAPED_UNICODE));
+                            }
+                        }
+                    }else{
+                        //                       用户没购买自己团队中分销商品
+                        $update = [
+                            'no_reflected' => $shopUserInfo->no_reflected - $reOrderInfo->pay_price,
+                        ];
+                        $re_orderInfoUpdate = DB::table('re_order')->where('re_order_id',$re_order_id)->update(['order_status'=>6,'refund_time' => time()]);
+                        $updateuserInfo = DB::table('mt_user')->where('uid',$shopInfo->uid)->update($update);
+                        $gm_userInfoUpdate = DB::table('mt_user')->where('uid',$userInfo->uid)->update(['money'=>$userInfo->money+$reOrderInfo->pay_price]);
+                        if($updateuserInfo > 0 && $re_orderInfoUpdate > 0 && $gm_userInfoUpdate){
+                            $data = [
+                                'code'=>0,
+                                'msg'=>'退款成功'
+                            ];
+                            $response = [
+                                'data' => $data
+                            ];
+                            return json_encode($response, JSON_UNESCAPED_UNICODE);
+                        }else{
+                            $data = [
+                                'code'=>1,
+                                'msg'=>'系统出现问题,请重试'
+                            ];
+                            $response = [
+                                'data' => $data
+                            ];
+                            die(json_encode($response, JSON_UNESCAPED_UNICODE));
+                        }
+                    }
+                }else{
+                    $data = [
+                        'code'=>2,
+                        'msg'=>'只有支付成功并且未收货的订单可退款'
+                    ];
+                    $response = [
+                        'data' => $data
+                    ];
+                    die(json_encode($response, JSON_UNESCAPED_UNICODE));
+                }
+            }else{
+                //             如果支付的人不是分销员
+
+//                    判断订单用户是否 支付
+                if($reOrderInfo->order_status ==1 || $reOrderInfo->order_status==2){
+                    $update = [
+                        'no_reflected' => $shopUserInfo->no_reflected - $reOrderInfo->pay_price,
+                    ];
+                    $re_orderInfoUpdate = DB::table('re_order')->where('re_order_id',$re_order_id)->update(['order_status'=>6,'refund_time' => time()]);
+                    $updateuserInfo = DB::table('mt_user')->where('uid',$shopInfo->uid)->update($update);
+                    $gm_userInfoUpdate = DB::table('mt_user')->where('uid',$userInfo->uid)->update(['money'=>$userInfo->money+$reOrderInfo->pay_price]);
+                    if($updateuserInfo > 0 && $re_orderInfoUpdate > 0 && $gm_userInfoUpdate){
+                        $data = [
+                            'code'=>0,
+                            'msg'=>'退款成功'
+                        ];
+                        $response = [
+                            'data' => $data
+                        ];
+                        return json_encode($response, JSON_UNESCAPED_UNICODE);
+                    }else{
+                        $data = [
+                            'code'=>1,
+                            'msg'=>'系统出现问题,请重试'
+                        ];
+                        $response = [
+                            'data' => $data
+                        ];
+                        die(json_encode($response, JSON_UNESCAPED_UNICODE));
+                    }
+                }else{
+                    $data = [
+                        'code'=>2,
+                        'msg'=>'只有支付成功并且未收货的订单可退款'
+                    ];
+                    $response = [
+                        'data' => $data
+                    ];
+                    die(json_encode($response, JSON_UNESCAPED_UNICODE));
+                }
+            }
         }
     }
 

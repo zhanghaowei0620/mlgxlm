@@ -187,7 +187,11 @@ Route::post('index_reseller_orderAdd', 'Reseller\ResellerController@index_resell
 
 Route::post('index_reseller_Choose_payment', 'Reseller\ResellerController@index_reseller_Choose_payment');   //分销订单-选择支付方式
 
-Route::post('reseller_order_Confirm_receipt', 'Reseller\ResellerController@reseller_order_Confirm_receipt');   //确认收货
+Route::post('reseller_order_Confirm_receipt', 'Reseller\ResellerController@reseller_order_Confirm_receipt');   //分销-确认收货
+
+Route::post('index_reseller_share_Apply_refund', 'Reseller\ResellerController@index_reseller_share_Apply_refund');   //分销-申请退款
+
+Route::post('reseller_order_evaluate', 'Reseller\ResellerController@reseller_order_evaluate');    //分校订单评论
 
 Route::get('crontab_information', 'Reseller\ResellerController@crontab_information');   //定时任务  --定时获取物流实时信息
 
@@ -411,6 +415,10 @@ Route::post('admin_reseller_Confirm_shipment','Amindbackstage\Headquarters@admin
 Route::post('admin_Logistics_type','Amindbackstage\Headquarters@admin_Logistics_type')->middleware('checkLogin');       //查询所有物流方式
 
 Route::post('admin_reseller_order_information','Amindbackstage\Headquarters@admin_reseller_order_information')->middleware('checkLogin');    //物流信息-使用快递鸟
+
+Route::post('admin_reseller_Apply_refundList', 'Amindbackstage\Headquarters@admin_reseller_Apply_refundList');   //分校订单-退款申请列表
+
+Route::post('admin_reseller_refund_examine', 'Amindbackstage\Headquarters@admin_reseller_refund_examine');   //分销订单-退款审核
 
 Route::post('admin_rule_Add','Amindbackstage\Headquarters@admin_rule_Add')->middleware('checkLogin');   //协议添加
 
