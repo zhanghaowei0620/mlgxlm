@@ -367,7 +367,7 @@ class GoodsController extends Controller
         $openid1 = $request->input('openid');
         $key = $openid1;
         $openid = Redis::get($key);
-//        $openid="o9VUc5AOsdEdOBeUAw4TdYg-F-dM";
+//        $openid="o3JM75DR8-IQ3ieEL_nsEiOMrTvc";
         if($openid){
             $buy_num = $request->input('buy_num');
             $user_info = DB::table('mt_user')->where('openid',$openid)->first();
@@ -377,18 +377,17 @@ class GoodsController extends Controller
 //            $goods_id = 7;
             $where = [
                 'goods_id'=>$goods_id,
-                'collection_cart'=>0
+                'collection_cart'=>0,
+                'uid'=>$uid
             ];
             $goods_cart = DB::table('mt_cart')->where($where)->get()->toArray();
 //            var_dump($goods_cart);exit;
             if($goods_cart){
-//                $update = [
-//                    'buy_num'=>$goods_cart[0]->buy_num+$buy_num
-//                ];
-//                $update_buynum = DB::table('mt_cart')->where('goods_id',$goods_id)->update($update);
-                $cart_is=DB::table('mt_cart')->where(['goods_id'=>$goods_id,'uid'=>$uid])->get();
+//                echo 1111;die;
+//                var_dump($goods_id);die;
+                $cart_is=DB::table('mt_cart')->where(['goods_id'=>$goods_id,'uid'=>$uid])->get()->toArray();
 //                var_dump($cart_is);exit;
-                if($cart_is==true){
+                if($cart_is){
                     $aa=[
                         'code'=>'0',
                         'msg'=>'您的购物车已有此商品'
@@ -405,7 +404,7 @@ class GoodsController extends Controller
                     $response = [
                         'data'=>$data1
                     ];
-                    die(json_encode($response,JSON_UNESCAPED_UNICODE));
+                    return (json_encode($response,JSON_UNESCAPED_UNICODE));
                 }
             }else{
                 $goodsInfo = DB::table('mt_shop')
