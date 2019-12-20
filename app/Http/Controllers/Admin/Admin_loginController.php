@@ -319,12 +319,13 @@ class Admin_loginController extends Controller
             $response=[
                 'code'=>0,
                 'data'=>$data,
-                'msg'=>'',
+                'msg'=>'成功',
             ];
             die(json_encode($response,JSON_UNESCAPED_UNICODE));
         }else{
             $response=[
                 'code'=>1,
+                'msg'=>'失败'
             ];
             die(json_encode($response,JSON_UNESCAPED_UNICODE));
         }
