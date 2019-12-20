@@ -192,6 +192,7 @@ class OrderController extends Controller
                     }
             }else if($method_type == 3){            //$coupon_type：0,满减   1，折扣
                 $coupon_add=DB::table('mt_coupon')->where(['uid'=>$uid,'goods_id'=>$goods_id])->first();
+                $order_goods=DB::table('mt_goods')->where(['goods_id'=>$goods_id])->first();
 //            var_dump($coupon_add);die;
                 if($coupon_type == 0){
                     if($total_price >= $coupon_add->coupon_redouction){
@@ -212,30 +213,30 @@ class OrderController extends Controller
                             ->where(['order_no'=>$order_no])
                             ->first(['order_id']);
                         $dataData = DB::table('mt_order')->where('order_no',$order_no)->first();
+
                         $order_id = $dataData->order_id;
                         $num = DB::table('mt_goods')
                             ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
                             ->where('mt_goods.goods_id',$goods_id)
-                            ->first();
-//                        foreach($num as $k=>$num){
+                            ->get();
+//                        var_dump($num);die;
+                        foreach($num as $k=>$v){
                             $info=[
                                 'uid'=>$uid,
                                 'order_id'=>$order_id,
                                 'order_no'=>$order_no,
-                                'goods_id'=>$goods_id,
-                                'goods_name'=>$num->goods_name,
-                                'price'=>$num->coupon_price,
-                                'picture'=>$num->picture,
+                                'goods_id'=>$v->goods_id,
+                                'goods_name'=>$v->goods_name,
+                                'price'=>$total_price - $v->coupon_price,
+                                'picture'=>$v->picture,
                                 'buy_num'=>1,
                                 'order_status'=>0,
-                                'shop_id'=>$num->shop_id,
-                                'shop_name'=>$num->shop_name,
+                                'shop_id'=>$v->shop_id,
+                                'shop_name'=>$v->shop_name,
                                 'create_time'=>time(),
                             ];
                             $datailData = DB::table('mt_order_detail')->insert($info);
-//                        }
-                        $aaa=$total_price - $num->coupon_price;
-                        $datailData1 = DB::table('mt_order_detail')->where(['order_no'=>$order_no])->update(['price'=>$aaa]);
+                        }
                         if($infodata){
                             $data=[
                                 'code'=>0,
@@ -272,7 +273,7 @@ class OrderController extends Controller
                         'order_no'=>$order_no,
                         'wx_name' =>$wx_name,
                         'order_status'=>0,
-                        'is_use'=>1,
+//                        'is_use'=>1,
                         'order_method'=>2,
                         'total_price'=>$total_price,
                         'create_time'=>time(),
@@ -281,6 +282,7 @@ class OrderController extends Controller
 //                var_dump($data_order);die;
                     $infodata =DB::table('mt_order')->insert($data_order);
                     $coupon_add=DB::table('mt_coupon')->where(['uid'=>$uid,'goods_id'=>$goods_id])->update(['is_use'=>1]);
+//                    var_dump($coupon_add);die;
                     $dainfo=DB::table('mt_order')
                         ->where(['order_no'=>$order_no])
                         ->first(['order_id']);
@@ -289,26 +291,25 @@ class OrderController extends Controller
                     $num = DB::table('mt_goods')
                         ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
                         ->where('mt_goods.goods_id',$goods_id)
-                        ->first();
-//                    foreach($num as $k=>$v){
+                        ->get();
+                    foreach($num as $k=>$v){
                         $info=[
                             'uid'=>$uid,
                             'order_id'=>$order_id,
                             'order_no'=>$order_no,
-                            'goods_id'=>$goods_id,
-                            'goods_name'=>$num->goods_name,
-                            'price'=>(($total_price * $num->is_member_discount)/1000),
-                            'picture'=>$num->picture,
+                            'goods_id'=>$v->goods_id,
+                            'goods_name'=>$v->goods_name,
+                            'price'=>(($total_price * $v->is_member_discount)/10),
+                            'picture'=>$v->picture,
                             'buy_num'=>1,
                             'order_status'=>0,
-                            'shop_id'=>$num->shop_id,
-                            'shop_name'=>$num->shop_name,
+                            'shop_id'=>$v->shop_id,
+                            'shop_name'=>$v->shop_name,
                             'create_time'=>time(),
                         ];
                         $datailData = DB::table('mt_order_detail')->insert($info);
-//                    }
-                    $aaa=(($total_price * $num->is_member_discount)/1000);
-                    $datailData1 = DB::table('mt_order_detail')->where(['order_no'=>$order_no])->update(['price'=>$aaa]);
+                    }
+
                     $dainfo=DB::table('mt_order')
                         ->where(['order_no'=>$order_no])
                         ->first();
