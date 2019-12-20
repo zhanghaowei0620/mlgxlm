@@ -24,8 +24,6 @@ class TestController extends Controller
 
     public function test(Request $request)
     {
-        //$request = $_REQUEST;
-//        $openid = 'o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
         $openid = $request->input('openid');
         //var_dump($openid);exit;
         $appid = 'wx66bfdbefbfb06ddb';
