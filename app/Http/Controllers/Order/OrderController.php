@@ -224,7 +224,7 @@ class OrderController extends Controller
                                 'order_no'=>$order_no,
                                 'goods_id'=>$v->goods_id,
                                 'goods_name'=>$v->goods_name,
-                                'price'=>$total_price -  $v->coupon_price,
+                                'price'=>$v->coupon_price,
                                 'picture'=>$v->picture,
                                 'buy_num'=>1,
                                 'order_status'=>0,
@@ -234,6 +234,8 @@ class OrderController extends Controller
                             ];
                             $datailData = DB::table('mt_order_detail')->insert($info);
                         }
+                        $aaa=$total_price - $num->coupon_price;
+                        $datailData1 = DB::table('mt_order_detail')->where(['order_no'=>$order_no])->update(['price'=>$aaa]);
                         if($infodata){
                             $data=[
                                 'code'=>0,
@@ -295,7 +297,7 @@ class OrderController extends Controller
                             'order_no'=>$order_no,
                             'goods_id'=>$v->goods_id,
                             'goods_name'=>$v->goods_name,
-                            'price'=>(($total_price *  $v->is_member_discount)/1000),
+                            'price'=>(($total_price * $v->is_member_discount)/1000),
                             'picture'=>$v->picture,
                             'buy_num'=>1,
                             'order_status'=>0,
@@ -305,6 +307,8 @@ class OrderController extends Controller
                         ];
                         $datailData = DB::table('mt_order_detail')->insert($info);
                     }
+                    $aaa=(($total_price * $num->is_member_discount)/1000);
+                    $datailData1 = DB::table('mt_order_detail')->where(['order_no'=>$order_no])->update(['price'=>$aaa]);
                     $dainfo=DB::table('mt_order')
                         ->where(['order_no'=>$order_no])
                         ->first();
