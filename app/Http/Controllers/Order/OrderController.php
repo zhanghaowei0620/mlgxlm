@@ -26,7 +26,7 @@ class OrderController extends Controller
         $key = $openid1;
         $openid = Redis::get($key);
         $order_no = date("YmdHis", time()) . rand(1000, 9999);   //订单号
-//        $openid='o3JM75DR8-IQ3ieEL_nsEiOMrTvc';
+        $openid='o3JM75DR8-IQ3ieEL_nsEiOMrTvc';
         $userInfo = DB::table('mt_user')->where('openid', $openid)->first();
 //            var_dump($userInfo);die;
         $wx_name = $userInfo->wx_name;
@@ -194,7 +194,7 @@ class OrderController extends Controller
                 $coupon_add=DB::table('mt_coupon')->where(['uid'=>$uid,'goods_id'=>$goods_id])->first();
                 $order_goods=DB::table('mt_goods')->where(['goods_id'=>$goods_id])->first();
 //            var_dump($coupon_add);die;
-                if($coupon_type == 0){
+                if($order_goods->coupon_type == 0){
                     if($total_price >= $coupon_add->coupon_redouction){
                         $data_order = [
                             'uid'=>$uid,
@@ -267,7 +267,7 @@ class OrderController extends Controller
                         ];
                         return json_encode($response,JSON_UNESCAPED_UNICODE);
                     }
-                }else if($coupon_type == 1){
+                }else if($order_goods->coupon_type == 1){
                     $data_order = [
                         'uid'=>$uid,
                         'order_no'=>$order_no,
