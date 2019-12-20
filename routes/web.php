@@ -191,6 +191,8 @@ Route::post('reseller_order_Confirm_receipt', 'Reseller\ResellerController@resel
 
 Route::get('crontab_information', 'Reseller\ResellerController@crontab_information');   //定时任务  --定时获取物流实时信息
 
+Route::post('reseller_order_evaluate', 'Reseller\ResellerController@reseller_order_evaluate');   //用户评价
+
 Route::post('index_reseller_Topay', 'Reseller\ResellerController@index_reseller_Topay');   //分校订单-去支付
 
 Route::post('reseller_user_AddressDetail', 'Reseller\ResellerController@reseller_user_AddressDetail');    //根据地址id 获取详情信息

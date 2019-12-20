@@ -766,6 +766,66 @@ class ResellerController extends Controller
         }
     }
 
+    //评论
+    public function reseller_order_evaluate(Request $request){
+        $openid1 = $request->input('openid');
+        $re_order_id = $request->input('re_order_id');
+        $comment = $request->input('comment');  //内容
+        $comment_img = $request->input('comment_img');   //图片
+        $shop_score = $request->input('shop_score');       //店铺评分
+        $logistics_score = $request->input('logistics_score');  //物流评分
+        $re_goods_score = $request->input('re_goods_score');   //商品评分
+
+        $reOrderInfo = DB::table('re_order')->where('re_order_id',$re_order_id)->first();
+        $key = $openid1;
+        $openid = Redis::get($key);
+        if($openid){
+            $insert = [
+                'comment'=>$comment,
+                'comment_img'=>$comment_img,
+                'shop_id'=>$reOrderInfo->shop_id,
+                're_goods_id'=>$reOrderInfo->re_goods_id,
+                'uid'=>$reOrderInfo->uid,
+                're_goods_score'=>$re_goods_score,
+                'shop_score'=>$shop_score,
+                'logistics_score'=>$logistics_score,
+                'create_time'=>time(),
+                're_order_id'=>$re_order_id
+            ];
+            $insertInfo = DB::table('re_evaluate')->insert($insert);
+            if($insertInfo){
+                DB::table('re_order')->where('re_order_id',$re_order_id)->update(['order_status'=>4]);
+                $data = [
+                    'code'=>0,
+                    'msg'=>'评价成功'
+                ];
+                $response = [
+                    'data' => $data
+                ];
+                return json_encode($response, JSON_UNESCAPED_UNICODE);
+            }else{
+                $data = [
+                    'code'=>2,
+                    'msg'=>'系统出现错误,评价失败,请重试'
+                ];
+                $response = [
+                    'data' => $data
+                ];
+                die(json_encode($response, JSON_UNESCAPED_UNICODE));
+            }
+        }else{
+            $data = [
+                'code'=>1,
+                'msg'=>'请先登录'
+            ];
+            $response = [
+                'data' => $data
+            ];
+            die(json_encode($response, JSON_UNESCAPED_UNICODE));
+        }
+
+    }
+
     //删除订单
     public function reseller_order_delete(Request $request){
         $re_order_id = $request->input('re_order_id');
