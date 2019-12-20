@@ -468,6 +468,57 @@ class ResellerController extends Controller
 
     }
 
+    //申请退款
+    public function index_reseller_share_Apply_refund(Request $request){
+        $re_order_id = $request->input('re_order_id');
+        $refund_reason = $request->input('refund_reason');  //申请理由
+        $is_receipt = $request->input('is_receipt');   //0为未收到货  1为已收到货
+        $refund_img = $request->input('refund_img');   //图片
+        $openid1 = $request->input('openid');
+        $key = $openid1;
+        $openid = Redis::get($key);
+        if($openid){
+            $reOrderInfo = DB::table('re_order')->where('re_order_id',$re_order_id)->first();
+            if($reOrderInfo->status == 1 || $reOrderInfo->status == 2){
+                $update = [
+                    'refund_reason'=>$refund_reason,
+                    'is_receipt'=>$is_receipt,
+                    'refund_img'=>$refund_img,
+                    'order_status'=>5
+                ];
+                $updateInfo = DB::table('re_order')->where('re_order_id',$re_order_id)->update($update);
+                if($updateInfo>0){
+                    $data = [
+                        'code'=>0,
+                        'msg'=>'发起申请成功,请等待店铺审核,或直接联系店铺'
+                    ];
+                    $response = [
+                        'data' => $data
+                    ];
+                    return json_encode($response, JSON_UNESCAPED_UNICODE);
+                }else{
+                    $data = [
+                        'code'=>1,
+                        'msg'=>'系统出现错误,申请失败,请重试'
+                    ];
+                    $response = [
+                        'data' => $data
+                    ];
+                    die(json_encode($response, JSON_UNESCAPED_UNICODE));
+                }
+            }
+        }else{
+            $data = [
+                'code'=>2,
+                'msg'=>'请先登录'
+            ];
+            $response = [
+                'data' => $data
+            ];
+            die(json_encode($response, JSON_UNESCAPED_UNICODE));
+        }
+    }
+
     //订单列表
     public function index_reseller_orderList(Request $request){
         $openid1 = $request->input('openid');
@@ -605,8 +656,8 @@ class ResellerController extends Controller
                                 }
                             }else{
                                 $re_orderInfoUpdate = DB::table('re_order')->where('re_order_id',$re_order_id)->update(['order_status'=>3,'sign_time' => time()]);
-                                $p_userInfoUpdate = DB::table('mt_user')->where('uid',$p_userInfo->uid)->update(['no_reflected'=>$p_userInfo->no_reflected - $reOrderInfo->pay_price*$shopInfo->up_rebate/100]);
-                                $shopUserInfoUpdate = DB::table('mt_user')->where('uid',$shopInfo->uid)->update(['no_reflected'=>$shopUserInfo->no_reflected - $reOrderInfo->pay_price*(100 - $shopInfo->up_rebate)/100]);
+                                $p_userInfoUpdate = DB::table('mt_user')->where('uid',$p_userInfo->uid)->update(['no_reflected'=>$p_userInfo->no_reflected - $reOrderInfo->pay_price*$shopInfo->up_rebate/100,'money'=>$p_userInfo->money + $reOrderInfo->pay_price*$shopInfo->up_rebate/100]);
+                                $shopUserInfoUpdate = DB::table('mt_user')->where('uid',$shopInfo->uid)->update(['no_reflected'=>$shopUserInfo->no_reflected - $reOrderInfo->pay_price*(100 - $shopInfo->up_rebate)/100,'money'=>$shopUserInfo->money + $reOrderInfo->pay_price*(100 - $shopInfo->up_rebate)/100]);
                                 if($re_orderInfoUpdate>0 && $p_userInfoUpdate>0 && $shopUserInfoUpdate>0){
                                     $data = [
                                         'code'=>0,
@@ -1006,6 +1057,7 @@ class ResellerController extends Controller
     }
 
     //个人中心-分销中心
+
     public function user_reseller_List(Request $request){
         $openid = $request->input('openid');
         $userInfo = DB::table('mt_user')->where('openid',$openid)->first(['wx_headimg','wx_name','uid','shop_random_str','withdrawals_money','withdrawable_money','not_acquired_money']);
