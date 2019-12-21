@@ -1111,7 +1111,7 @@ class GoodsController extends Controller
             $body = '服务微信支付订单-'.$datainfo->goods_name;
             $order_id = $datainfo->order_no;//测试订单号 随机生成
             $trade_type = 'JSAPI';
-            $notify_url = 'https://mt.mlgxlm.com/test_pay';
+            $notify_url = 'https://mt.mlgxlm.com/notify';
             //dump($openid);die;
             $spbill_create_ip = $_SERVER['REMOTE_ADDR'];
             (int)$total_fee = $datainfo->price * 100;//因为充值金额最小是1 而且单位为分 如果是充值1元所以这里需要*100
@@ -1161,15 +1161,6 @@ class GoodsController extends Controller
                 $data['return_msg'] = $array['return_msg'];
             }
             return json_encode($data);
-        }else{
-            $data1=[
-                'code'=>'2',
-                'msg'=>'请先登录'
-            ];
-            $response = [
-                'data'=>$data1
-            ];
-            die(json_encode($response,JSON_UNESCAPED_UNICODE));
         }
 
     }
@@ -1294,13 +1285,15 @@ class GoodsController extends Controller
      * 微信支付回调
      */
     public function notify(){
-        echo 111;exit;
         $xml = file_get_contents("php://input");
         $xml_obj = simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA);
         $xml_arr = json_decode(json_encode($xml_obj), true);
-        file_put_contents('/wwwroot/mlgxlm/storage/logs/wechat.log', 'XML_ARR:' . print_r($xml_arr, 1) . "\r\n", FILE_APPEND);
+        file_put_contents('/wwwroot/mlgxlm/public/logs/fuwuwechat.log', 'XML_ARR:' . print_r($xml_arr, 1) . "\r\n", FILE_APPEND);
         if (($xml_arr['return_code'] == 'SUCCESS') && ($xml_arr['result_code'] == 'SUCCESS')) {
             //修改订单状态
+            $order_no1 = $xml_arr['out_trade_no'];
+            $orderInfo1 = DB::table('mt_order')->where('order_no',$order_no1)->first();
+            $order_uid = DB::table('mt_user')->where(['uid'=>$orderInfo1->uid])->first();
 
 
             if ($xml_arr) {
