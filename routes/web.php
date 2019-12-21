@@ -16,7 +16,7 @@ Route::get('/', function () {
 });
 
 //Route::get('/访问方式', '文件夹名\控制器名@方法名');
-Route::get('/index', 'Index\IndexController@index');   //首页
+Route::get('     /index', 'Index\IndexController@index');   //首页
 
 Route::get('/type_lists', 'Index\IndexController@type_lists');   //更多
 
@@ -68,7 +68,7 @@ Route::get('/caselist', 'Goods\GoodsController@caselist');     //案例列表
 
 Route::get('/user_coupon', 'User\UserController@user_coupon');    //个人中心优惠券
 
-Route::get('/couponlist', 'Goods\GoodsController@couponlist');     //优惠卷列表
+Route::post('/couponlist', 'Goods\GoodsController@couponlist');     //优惠卷列表
 
 Route::get('/goodsInfo', 'Goods\GoodsController@goodsInfo');    //获取商品详情信息
 
@@ -172,7 +172,11 @@ Route::get('/whole_shop', 'Goods\GoodsController@whole_shop');    //全部店铺
 
 Route::get('/nearby_shop', 'Goods\GoodsController@nearby_shop');   //附近店铺
 
-//Route::get('/displace', 'Goods\GoodsController@displace');   //置换商城
+//服务微信支付
+Route::post('/getInfo', 'Goods\GoodsController@getInfo');
+Route::post('/test_pay', 'Goods\GoodsController@test_pay');
+Route::post('/http_requests', 'Goods\GoodsController@http_requests');
+Route::post('/notify', 'Goods\GoodsController@notify');
 
 
 Route::post('index_reseller_Apply', 'Reseller\ResellerController@index_reseller_Apply');   //分销-申请
