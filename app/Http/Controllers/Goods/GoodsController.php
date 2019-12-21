@@ -1114,7 +1114,8 @@ class GoodsController extends Controller
             $notify_url = 'https://mt.mlgxlm.com/test_pay';
             //dump($openid);die;
             $spbill_create_ip = $_SERVER['REMOTE_ADDR'];
-            $total_fee = (int)$datainfo->price * 100;//因为充值金额最小是1 而且单位为分 如果是充值1元所以这里需要*100
+            $total_fee = $datainfo->price * 100;//因为充值金额最小是1 而且单位为分 如果是充值1元所以这里需要*100
+            var_dump($total_fee);
             //dump($total_fee);die;
             //这里是按照顺序的 因为下面的签名是按照顺序 排序错误 肯定出错
             $post['appid'] = $appid;

@@ -16,7 +16,7 @@ Route::get('/', function () {
 });
 
 //Route::get('/访问方式', '文件夹名\控制器名@方法名');
-Route::get('/index', 'Index\IndexController@index');   //首页
+Route::get('     /index', 'Index\IndexController@index');   //首页
 
 Route::get('/type_lists', 'Index\IndexController@type_lists');   //更多
 
