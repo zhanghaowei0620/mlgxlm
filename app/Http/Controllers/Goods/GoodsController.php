@@ -490,7 +490,7 @@ class GoodsController extends Controller
         $is_big=$request->input('is_big');
         $key = $openid1;
         $openid = Redis::get($key);
-//        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
+//        $openid='o3JM75DR8-IQ3ieEL_nsEiOMrTvc';
         $order_id=$request->input('order_id');
         $price=$request->input('price');
         $data=DB::table('mt_user')
@@ -584,7 +584,6 @@ class GoodsController extends Controller
                 ];
                 return json_encode($response,JSON_UNESCAPED_UNICODE);
             }
-
             $inerdb=DB::table('mt_order_detail')->where(['id'=>$order_id])->first();
             $data_info1=DB::table('mt_order_detail')->where(['id'=>$order_id])->update(['order_status'=>1]);
 
@@ -593,8 +592,8 @@ class GoodsController extends Controller
                 $data_info2=DB::table('mt_order')->where(['order_id'=>$inerdb->order_id])->update(['order_status'=>1,'pay_price'=>$price]);
                 $infostoadd= $data->money - $price;
                 $datato_fo=DB::table('mt_user')->where(['uid'=>$uid])->update(['money'=>$infostoadd]);
-                $updateinfo=$data->money - $infostoadd;
-                $data_info=DB::table('mt_order_detail')->where(['id'=>$order_detai->id])->update(['pay_price'=>$price,'order_status'=>1]);
+//                $updateinfo=$data->money - $infostoadd;
+                $data_info=DB::table('mt_order_detail')->where(['id'=>$order_id])->update(['pay_price'=>$price,'order_status'=>1]);
 //                var_dump($daa);die;
                 if($data_info){
                     $data=[
