@@ -189,6 +189,10 @@ Route::post('index_reseller_Choose_payment', 'Reseller\ResellerController@index_
 
 Route::post('reseller_order_Confirm_receipt', 'Reseller\ResellerController@reseller_order_Confirm_receipt');   //分销-确认收货
 
+Route::post('re_wxpay', 'Reseller\ResellerController@re_wxpay');     //分销订单-微信支付
+
+Route::post('re_wxNotify', 'Reseller\ResellerController@re_wxNotify');   //分销订单-微信支付异步回调
+
 Route::post('index_reseller_share_Apply_refund', 'Reseller\ResellerController@index_reseller_share_Apply_refund');   //分销-申请退款
 
 Route::post('reseller_order_evaluate', 'Reseller\ResellerController@reseller_order_evaluate');    //分校订单评论
