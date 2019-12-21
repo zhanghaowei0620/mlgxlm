@@ -1154,7 +1154,7 @@ class ResellerController extends Controller
             $body = '美丽共享联盟-购买商品:'.$reOrderInfo->re_goods_name;
             $order_id = $reOrderInfo->re_order_no;;//测试订单号 随机生成
             $trade_type = 'JSAPI';
-            $notify_url = 'http://lvs.mlgxlm.com/weixinPay/re_wxNotify';
+            $notify_url = 'https://mt.mlgxlm.com/re_wxNotify';
             //dump($openid);die;
             $spbill_create_ip = $_SERVER['REMOTE_ADDR'];
             $total_fee = $reOrderInfo->re_goods_price * $reOrderInfo->buy_num * 100;//因为充值金额最小是1 而且单位为分 如果是充值1元所以这里需要*100
