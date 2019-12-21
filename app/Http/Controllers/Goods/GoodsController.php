@@ -585,7 +585,7 @@ class GoodsController extends Controller
                 return json_encode($response,JSON_UNESCAPED_UNICODE);
             }
             $inerdb=DB::table('mt_order_detail')->where(['id'=>$order_id])->first();
-            $data_info1=DB::table('mt_order_detail')->where(['id'=>$order_id])->update(['order_status'=>1]);
+            $data_info1=DB::table('mt_order_detail')->where(['id'=>$order_id])->update(['order_status'=>1,'pay_price'=>$price]);
 
             $data_foto=DB::table('mt_order_detail')->where(['order_status'=>0,'order_id'=>$inerdb->order_id])->get()->toArray();
             if(!$data_foto){
@@ -593,9 +593,9 @@ class GoodsController extends Controller
                 $infostoadd= $data->money - $price;
                 $datato_fo=DB::table('mt_user')->where(['uid'=>$uid])->update(['money'=>$infostoadd]);
 //                $updateinfo=$data->money - $infostoadd;
-                $data_info=DB::table('mt_order_detail')->where(['id'=>$order_id])->update(['pay_price'=>$price,'order_status'=>1]);
-//                var_dump($daa);die;
-                if($data_info){
+//                $data_info=DB::table('mt_order_detail')->where(['id'=>$order_id])->update([]);
+//                var_dump($data_info);die;'order_status'=>1
+                if($data_info1){
                     $data=[
                         'code'=>0,
                         'msg'=>'支付成功'
