@@ -1111,18 +1111,7 @@ class GoodsController extends Controller
             return json_encode($response,JSON_UNESCAPED_UNICODE);
         }
         //var_dump($shopInfo);exit;
-
-//        $shopInfo = DB::table('mt_shop')
-//            ->join('mt_goods','mt_shop.shop_id','=','mt_goods.shop_id')
-//            ->orderBy('mt_shop.shop_id')
-//            ->limit(6)
-//            ->where('mt_goods.is_recommend',1)
-//            ->get(['mt_shop.shop_id','shop_name','shop_address_provice','shop_address_city','shop_address_area','shop_score','shop_desc','shop_label','shop_logo','goods_id','goods_name','price','picture','latitude_longitude'])->toArray();
     }
-
-
-
-
     //距离算法
     public function getDistance($lat1, $lng1, $lat2, $lng2){
         $earthRadius = 6367000; //approximate radius of earth in meters
@@ -1138,28 +1127,74 @@ class GoodsController extends Controller
         return round($calculatedDistance);
     }
 
-//    //置换商城
-//    public function displace(Request $request)
-//    {
-//        $openid = Redis::set('openid','o9VUc5HEPNrYq5d5iQFygPVbX7EM');
-////        $openid = Redis::get('openid');
-//        $data=DB::table('mt_displace')
-////            ->where('openid',$openid)
-//            ->join('mt_shop','mt_shop.shop_id','=','mt_displace.shop_id')
-//            ->join('mt_goods','mt_goods.goods_id','=','mt_displace.goods_id')
-//            ->join('mt_address','mt_address.id','=','mt_displace.id')
-//            ->select(['mt_shop.shop_name','mt_goods.goods_name','mt_goods.stock','mt_goods.market_price','mt_address.address_provice','mt_address.address_city','mt_address.address_area','mt_address.address_detail','mt_displace.displace_time'])
-//            ->paginate(4);
-//        var_dump($data);die;
-//    }
 
+    public function test(Request $request)
+    {
+//        $re_order_id = $request->input('re_order_id');
+        $openid = $request->input('openid');
+        $order_id = $request->input('order_id');
+        //var_dump($openid);exit;
+        $mt_user=DB::table('mt_user')->where(['openid'=>$openid])->first();
+        $uid=$mt_user->uid;
+        $order_detail=DB::table('mt_order_detail')->where(['uid'=>$uid,'id'=>$order_id])->first();
+        $appid = env('WX_APP_ID');
+        $mch_id = env('wx_mch_id');
+        $nonce_str = $this->nonce_str();
+//        $body = '测试订单-'.mt_rand(1111,9999) . Str::random(6);
+//        $order_id = 'zhangsan-'.time().mt_rand(11111,99999);//测试订单号 随机生成
+        $body = $order_detail->order_no;
+        $trade_type = 'JSAPI';
+        $notify_url = 'http://lvs.mlgxlm.com/weixinPay/notify';
+        //dump($openid);die;
+        $spbill_create_ip = $_SERVER['REMOTE_ADDR'];
+        $total_fee = (int)$order_detail->pay_price * 100;//因为充值金额最小是1 而且单位为分 如果是充值1元所以这里需要*100
+        //dump($total_fee);die;
+        //这里是按照顺序的 因为下面的签名是按照顺序 排序错误 肯定出错
+        $post['appid'] = $appid;
+        $post['mch_id'] = $mch_id;
+        $post['body'] = $body;
+        $post['nonce_str'] = $nonce_str;//随机字符串
+        $post['notify_url'] = $notify_url;
+        $post['openid'] = $openid;
+        $post['out_trade_no'] = $order_id;
+        $post['spbill_create_ip'] = $spbill_create_ip;//终端的ip
+        $post['total_fee'] = $total_fee;//总金额 最低为一块钱 必须是整数
+        $post['trade_type'] = $trade_type;
+        $post['sign'] = $this->sign($post);//签名
 
+        $post_xml = $this->ArrToXml($post);
+        //统一接口prepay_id
+        $url = 'https://api.mch.weixin.qq.com/pay/unifiedorder';
+        $xml = $this->curlRequest($url, $post_xml);
+        $array = $this->xml($xml);//全要大写
+//        var_dump($array);exit;
+        if ($array['return_code'] == 'SUCCESS' && $array['result_code'] == 'SUCCESS') {
 
+            $time = time();
+            //$tmp = '';//临时数组用于签名
+            $tmp['appId'] = $appid;
+            $tmp['nonceStr'] = $nonce_str;
+            $tmp['package'] = 'prepay_id=' . $array['prepay_id'];
+            $tmp['signType'] = 'MD5';
+            $tmp['timeStamp'] = "$time";
 
+            $data['prepay_id'] = $array['prepay_id'];
+            //$data['state'] = 1;
+            $data['timeStamp'] = "$time";//时间戳
+            $data['nonceStr'] = $nonce_str;//随机字符串
+            $data['signType'] = 'MD5';//签名算法，暂支持 MD5
+            $data['package'] = 'prepay_id=' . $array['prepay_id'];//统一下单接口返回的 prepay_id 参数值，提交格式如：prepay_id=*
+            $data['paySign'] = $this->sign($tmp);//签名,具体签名方案参见微信公众号支付帮助文档;
+            $data['out_trade_no'] = $order_id;
 
-
-
-
+        } else {
+            $data['state'] = 0;
+            $data['text'] = "错误";
+            $data['return_code'] = $array['return_code'];
+            $data['return_msg'] = $array['return_msg'];
+        }
+        return json_encode($data);
+    }
 
 
 
