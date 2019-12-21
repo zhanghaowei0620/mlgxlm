@@ -625,19 +625,12 @@ class OrderController extends Controller
         $id = $request->input('id');
         $is_big=$request->input('is_big');    //0为no    1为yes
         $order_type = $request->input('order_type'); // 0为普通支付   1为拼团支付   2为优惠卷支付   3为限时抢支付
-//        $openid='o9VUc5AOsdEdOBeUAw4TdYg-F-dM';
+//        $openid='o3JM75DR8-IQ3ieEL_nsEiOMrTvc';
         $datainfo=DB::table('mt_user')->where(['openid'=>$openid])->first();
         $uid=$datainfo->uid;
 //        $order_id = 1;
         if($openid){
             if($is_big == 1){
-//                if($order_type == 0){
-//
-//                }else if($order_type == 1){
-//
-//                }else if($order_type == 2){
-//
-//                }else if($order_type == 3)
                 $datainfo_add=DB::table('mt_order')
                     ->join('mt_order_detail','mt_order_detail.order_id','=','mt_order.order_id')
                     ->where(['mt_order.uid'=>$uid,'mt_order.order_id'=>$id])
@@ -664,8 +657,13 @@ class OrderController extends Controller
             }else{
                 $order_detailInfo1 = DB::table('mt_order_detail')
                     ->join('mt_order','mt_order.order_id','=','mt_order_detail.order_id')
+                    ->join('mt_goods','mt_goods.goods_id','=','mt_order_detail.goods_id')
+                    ->join('mt_shop','mt_shop.shop_id','=','mt_order_detail.shop_id')
                     ->where(['mt_order.uid'=>$uid,'mt_order_detail.id'=>$id])
-                    ->get(['mt_order.total_price','mt_order_detail.order_no','mt_order_detail.goods_name','mt_order_detail.price','mt_order_detail.id','mt_order_detail.picture'])->toArray();
+                    ->get(['mt_order_detail.order_no','mt_order_detail.goods_name','mt_order_detail.price','mt_order_detail.id',
+                        'mt_order_detail.picture','mt_shop.shop_name','mt_shop.shop_id','mt_shop.shop_phone','mt_shop.shop_address_provice','mt_shop.shop_address_city',
+                        'mt_shop.shop_address_area','mt_shop.shop_address_detail','mt_shop.lat','mt_shop.lng','mt_shop.shop_logo','mt_goods.goods_id',
+                        'mt_goods.goods_effect','mt_order.order_method','mt_order.order_status','mt_order.order_pay','mt_order_detail.pay_price','mt_order_detail.create_time'])->toArray();
 //                var_dump($order_detailInfo1);die;
                 if($order_detailInfo1){
                     $data=[
@@ -698,36 +696,12 @@ class OrderController extends Controller
             ];
             die(json_encode($response,JSON_UNESCAPED_UNICODE));
         }
-        //var_dump($order_detailInfo);exit;
-//        if($order_detailInfo){
-//            $data=[
-//                'code'=>0,
-//                'data'=>$order_detailInfo
-//            ];
-//            $response = [
-//                'data'=>$data
-//            ];
-//            return json_encode($response,JSON_UNESCAPED_UNICODE);
-//        }else{
-//            $data=[
-//                'code'=>1,
-//                'msg'=>'订单出现错误，请重新下单'
-//            ];
-//            $response = [
-//                'data'=>$data
-//            ];
-//            die(json_encode($response,JSON_UNESCAPED_UNICODE));
-//        }
     }
 
 
     //根据订单状态查找订单信息
     public function order_status_list(Request $request){
         $order_status_id = $request->input('order_status_id');
-        //$order_status_id = 0;
-//        $ip = $_SERVER['SERVER_ADDR'];
-//        $key = 'openid'.$ip;
-//        $openid = Redis::get($key);
         $openid1 = $request->input('openid');
         $key = $openid1;
         $openid = Redis::get($key);
