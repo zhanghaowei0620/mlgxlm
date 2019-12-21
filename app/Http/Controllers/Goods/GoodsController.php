@@ -150,7 +150,7 @@ class GoodsController extends Controller
             ->join('mt_type','mt_type.t_id','=','mt_shop.t_id')
             ->first(['shop_id','shop_name','shop_phone','shop_desc','shop_address_detail','shop_score','shop_img','mt_type.t_name','shop_logo','shop_bus','shop_service','shop_star']);
         $shop_coupon=DB::table('mt_goods')
-            ->where(['shop_id'=>$shop_id])
+            ->where(['shop_id'=>$shop_id,'is_coupon'=>1])
             ->limit(2)
             ->get(['is_member_discount','coupon_redouction','coupon_price','coupon_num','coupon_names','coupon_type']);
         $goods_shop=DB::table('mt_goods')
