@@ -68,7 +68,7 @@ Route::get('/caselist', 'Goods\GoodsController@caselist');     //案例列表
 
 Route::get('/user_coupon', 'User\UserController@user_coupon');    //个人中心优惠券
 
-Route::get('/couponlist', 'Goods\GoodsController@couponlist');     //优惠卷列表
+Route::post('/couponlist', 'Goods\GoodsController@couponlist');     //优惠卷列表
 
 Route::get('/goodsInfo', 'Goods\GoodsController@goodsInfo');    //获取商品详情信息
 
