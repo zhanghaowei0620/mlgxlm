@@ -191,7 +191,7 @@ Route::post('reseller_order_Confirm_receipt', 'Reseller\ResellerController@resel
 
 Route::post('re_wxpay', 'Reseller\ResellerController@re_wxpay');     //分销订单-微信支付
 
-Route::get('re_wxNotify', 'Reseller\ResellerController@re_wxNotify');   //分销订单-微信支付异步回调
+Route::post('re_wxNotify', 'Reseller\ResellerController@re_wxNotify');   //分销订单-微信支付异步回调
 
 Route::post('index_reseller_share_Apply_refund', 'Reseller\ResellerController@index_reseller_share_Apply_refund');   //分销-申请退款
 
