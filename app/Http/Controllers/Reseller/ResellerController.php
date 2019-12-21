@@ -1334,7 +1334,8 @@ class ResellerController extends Controller
         file_put_contents('/wwwroot/mlgxlm/storage/logs/wechat.log', 'XML_ARR:' . print_r($xml_arr, 1) . "\r\n", FILE_APPEND);
         if (($xml_arr['return_code'] == 'SUCCESS') && ($xml_arr['result_code'] == 'SUCCESS')) {
             //修改订单状态
-            echo 111;exit;
+            var_dump($xml_arr);exit;
+//            echo 111;exit;
 
             if ($xml_arr) {
                 $str='<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>';
