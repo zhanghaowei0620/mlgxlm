@@ -1363,6 +1363,85 @@ class Headquarters extends Controller
                     die(json_encode($response, JSON_UNESCAPED_UNICODE));
                 }
             }
+        }elseif($reOrderInfo->pay_type == 2){
+            $shopInfo = DB::table('mt_shop')->where('shop_id',$reOrderInfo->shop_id)->first(['uid','up_rebate','indirect_up_rebate']);
+            $shopUserInfo = DB::table('mt_user')->where('uid',$shopInfo->uid)->first();
+            //如果支付的人 是分销员
+            if($userInfo->mt_reseller == 1){
+
+            }else{
+                if($reOrderInfo->order_status ==1 || $reOrderInfo->order_status==2){
+//                    $update = [
+//                        'no_reflected' => $shopUserInfo->no_reflected - $reOrderInfo->pay_price,
+//                    ];
+//                    $re_orderInfoUpdate = DB::table('re_order')->where('re_order_id',$re_order_id)->update(['order_status'=>6,'refund_time' => time()]);
+//                    $updateuserInfo = DB::table('mt_user')->where('uid',$shopInfo->uid)->update($update);
+//                    $gm_userInfoUpdate = DB::table('mt_user')->where('uid',$userInfo->uid)->update(['money'=>$userInfo->money+$reOrderInfo->pay_price]);
+                    //调用微信退款
+                    $reOrderInfo = DB::table('re_order')->where('re_order_id',$re_order_id)->first();
+                    $appid = env('WX_APP_ID');   //小程序APPid
+                    $mch_id = env('wx_mch_id');   //商户号
+                    $nonce_str = $this->nonce_str();   //随机字符串
+                    $order_id = $reOrderInfo->re_order_no;;//订单号
+//                    $notify_url = 'https://mt.mlgxlm.com/wx_refund_Notify';   //微信退款异步回调
+                    $transaction_id = $reOrderInfo->wx_pay_no;     //微信支付单号
+                    $out_refund_no = $reOrderInfo->wx_refund_no;        //微信退款单号
+                    $total_fee = $reOrderInfo->pay_price * 100;    //支付金额
+                    $refund_fee = $reOrderInfo->pay_price * 100;    //退款金额
+
+
+                    $post['appid'] = $appid;
+                    $post['mch_id'] = $mch_id;
+                    $post['nonce_str'] = $nonce_str;//随机字符串
+//                    $post['notify_url'] = $notify_url;
+                    $post['out_refund_no'] = $out_refund_no;
+                    $post['out_trade_no'] = $order_id;
+                    $post['refund_fee'] = $refund_fee;
+                    $post['total_fee'] = $total_fee;//总金额 最低为1分钱 必须是整数
+                    $post['transaction_id'] = $transaction_id;
+                    $post['sign'] = $this->sign($post);//签名
+
+                    $post_xml = $this->ArrToXml($post);
+                    //统一接口prepay_id
+                    $url = 'https://api.mch.weixin.qq.com/secapi/pay/refund';
+                    $xml = $this->curlRequest($url, $post_xml);
+//
+                    $array = $this->xml($xml);//全要大写
+
+                    var_dump($array);exit;
+
+                    if($updateuserInfo > 0 && $re_orderInfoUpdate > 0 ){
+                        $data = [
+                            'code'=>0,
+                            'msg'=>'退款成功'
+                        ];
+                        $response = [
+                            'data' => $data
+                        ];
+                        return json_encode($response, JSON_UNESCAPED_UNICODE);
+                    }else{
+                        $data = [
+                            'code'=>1,
+                            'msg'=>'系统出现问题,请重试'
+                        ];
+                        $response = [
+                            'data' => $data
+                        ];
+                        die(json_encode($response, JSON_UNESCAPED_UNICODE));
+                    }
+                }else{
+                    $data = [
+                        'code'=>2,
+                        'msg'=>'只有支付成功并且未收货的订单可退款'
+                    ];
+                    $response = [
+                        'data' => $data
+                    ];
+                    die(json_encode($response, JSON_UNESCAPED_UNICODE));
+                }
+            }
+        }elseif($reOrderInfo->pay_type == 1){
+
         }
     }
 
@@ -1717,6 +1796,127 @@ class Headquarters extends Controller
 
 
 
+
+    public function nonce_str()
+    {
+        $result = '';
+        $str = 'QWERTYUIOPASDFGHJKLZXVBNMqwertyuioplkjhgfdsamnbvcxz';
+        for ($i = 0; $i < 32; $i++) {
+            $result .= $str[rand(0, 48)];
+        }
+        return $result;
+    }
+
+    public function sign($data)
+    {
+        $wx_key = 'hkxhbjmequurd0bdv1ilnlb0ufq3lurn';
+        ksort($data);
+        $str = urldecode(http_build_query($data) . '&key=' . $wx_key);
+        $sign = strtoupper(md5($str));
+        return $sign;
+    }
+    function curlRequest($url, $data = '')
+    {
+        $ch = curl_init();
+        $params[CURLOPT_URL] = $url;    //请求url地址
+        $params[CURLOPT_HEADER] = false; //是否返回响应头信息
+        $params[CURLOPT_RETURNTRANSFER] = true; //是否将结果返回
+        $params[CURLOPT_FOLLOWLOCATION] = true; //是否重定向
+        $params[CURLOPT_TIMEOUT] = 30; //超时时间
+        $params[CURLOPT_SSLCERTTYPE] = 'PEM';
+        $params[CURLOPT_SSLCERT] = "/wwwroot/laravel0/app/wxpay/cert/apiclient_cert11111.pem";
+        $params[CURLOPT_SSLKEYTYPE] = 'PEM';
+        $params[CURLOPT_SSLKEY] = "/wwwroot/laravel0/app/wxpay/cert/apiclient_key11111.pem";
+//        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, '/wwwroot/laravel0/app/wxpay/cert/apiclient_cert.pem');
+//        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, '/wwwroot/laravel0/app/wxpay/cert/apiclient_key.pem');
+        if (!empty($data)) {
+            $params[CURLOPT_POST] = true;
+            $params[CURLOPT_POSTFIELDS] = $data;
+        }
+        $params[CURLOPT_SSL_VERIFYPEER] = false;//请求https时设置,还有其他解决方案
+        $params[CURLOPT_SSL_VERIFYHOST] = false;//请求https时,其他方案查看其他博文
+        curl_setopt_array($ch, $params); //传入curl参数
+        $content = curl_exec($ch); //执行
+        curl_close($ch); //关闭连接
+        return $content;
+    }
+
+    public function http_requests($url, $data = null, $headers = array())
+    {
+        $curl = curl_init();
+        if (count($headers) >= 1) {
+            curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+        }
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, FALSE);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, FALSE);
+        if (!empty($data)) {
+            curl_setopt($curl, CURLOPT_POST, 1);
+            curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+        }
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        $output = curl_exec($curl);
+        curl_close($curl);
+        return $output;
+    }
+
+    /**
+     * 异步回调处理成功时返回内容
+     * @param $msg
+     * @return string
+     */
+    public function notifyReturnSuccess($msg = 'OK')
+    {
+        return '<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[' . $msg . ']]></return_msg></xml>';
+    }
+
+    /**
+     * 异步回调处理失败时返回内容
+     * @param $msg
+     * @return string
+     */
+    public function notifyReturnFail($msg = 'FAIL')
+    {
+        return '<xml><return_code><![CDATA[FAIL]]></return_code><return_msg><![CDATA[' . $msg . ']]></return_msg></xml>';
+    }
+    /**
+     * 输出xml字符（数组转换成xml）
+     * @param $params 参数名称
+     * return string 返回组装的xml
+     **/
+    public function ArrToXml($params)
+    {
+        if (!is_array($params) || count($params) <= 0) {
+            return false;
+        }
+        $xml = "<xml>";
+        foreach ($params as $key => $val) {
+            if (is_numeric($val)) {
+                $xml .= "<" . $key . ">" . $val . "</" . $key . ">";
+            } else {
+                $xml .= "<" . $key . "><![CDATA[" . $val . "]]></" . $key . ">";
+            }
+        }
+        $xml .= "</xml>";
+        return $xml;
+    }
+
+    function XmlToArr($xml)
+    {
+        if ($xml == '') return '';
+        libxml_disable_entity_loader(true);
+        $arr = json_decode(json_encode(simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA)), true);
+        return $arr;
+    }
+
+    public function xml($xml)
+    {
+        //禁止引用外部xml实体
+        libxml_disable_entity_loader(true);
+        $xmlstring = simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA);
+        $val = json_decode(json_encode($xmlstring), true);
+        return $val;
+    }
 
 
 
