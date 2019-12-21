@@ -1157,7 +1157,7 @@ class ResellerController extends Controller
             $notify_url = 'http://lvs.mlgxlm.com/weixinPay/re_wxNotify';
             //dump($openid);die;
             $spbill_create_ip = $_SERVER['REMOTE_ADDR'];
-            $total_fee = $reOrderInfo->re_goods_price * $reOrderInfo->buy_num *100;//因为充值金额最小是1 而且单位为分 如果是充值1元所以这里需要*100
+            $total_fee = ($reOrderInfo->re_goods_price * $reOrderInfo->buy_num)*100;//因为充值金额最小是1 而且单位为分 如果是充值1元所以这里需要*100
             //dump($total_fee);die;
             //这里是按照顺序的 因为下面的签名是按照顺序 排序错误 肯定出错
             $post['appid'] = $appid;
@@ -1326,12 +1326,11 @@ class ResellerController extends Controller
     /**
      * 微信支付回调
      */
-    public function re_wxNotify(){
-//        echo 111;exit;
+    public function re_wxNotify(Request $request){
         $xml = file_get_contents("php://input");
         $xml_obj = simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA);
         $xml_arr = json_decode(json_encode($xml_obj), true);
-        file_put_contents('/wwwroot/mlgxlm/storage/logs/wechat.log', 'XML_ARR:' . print_r($xml_arr, 1) . "\r\n", FILE_APPEND);
+        file_put_contents('/wwwroot/mlgxlm/public/logs/wechat.log', 'XML_ARR:' . print_r($xml_arr, 1) . "\r\n", FILE_APPEND);
         if (($xml_arr['return_code'] == 'SUCCESS') && ($xml_arr['result_code'] == 'SUCCESS')) {
             //修改订单状态
             var_dump($xml_arr);exit;
