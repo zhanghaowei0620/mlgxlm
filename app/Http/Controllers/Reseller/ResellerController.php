@@ -1154,11 +1154,10 @@ class ResellerController extends Controller
             $body = '美丽共享联盟-购买商品:'.$reOrderInfo->re_goods_name;
             $order_id = $reOrderInfo->re_order_no;;//测试订单号 随机生成
             $trade_type = 'JSAPI';
-            $notify_url = 'http://lvs.mlgxlm.com/weixinPay/re_wxNotify';
+            $notify_url = 'https://mt.mlgxlm.com/re_wxNotify';
             //dump($openid);die;
             $spbill_create_ip = $_SERVER['REMOTE_ADDR'];
-            $total_fee = ($reOrderInfo->re_goods_price * $reOrderInfo->buy_num)*100;//因为充值金额最小是1 而且单位为分 如果是充值1元所以这里需要*100
-            //dump($total_fee);die;
+            $total_fee = $reOrderInfo->re_goods_price * $reOrderInfo->buy_num * 100;//因为充值金额最小是1 而且单位为分 如果是充值1元所以这里需要*100
             //这里是按照顺序的 因为下面的签名是按照顺序 排序错误 肯定出错
             $post['appid'] = $appid;
             $post['mch_id'] = $mch_id;
@@ -1333,8 +1332,46 @@ class ResellerController extends Controller
         file_put_contents('/wwwroot/mlgxlm/public/logs/wechat.log', 'XML_ARR:' . print_r($xml_arr, 1) . "\r\n", FILE_APPEND);
         if (($xml_arr['return_code'] == 'SUCCESS') && ($xml_arr['result_code'] == 'SUCCESS')) {
             //修改订单状态
-            var_dump($xml_arr);exit;
-//            echo 111;exit;
+            $re_order_no = $xml_arr['out_trade_no'];
+            $reOrderInfo = DB::table('re_order')->where('re_order_no',$re_order_no)->first();
+            $userInfo = DB::table('mt_user')->where('uid',$reOrderInfo->uid)->first();
+            $shopInfo = DB::table('mt_shop')->where('shop_id',$reOrderInfo->shop_id)->first(['uid','up_rebate','indirect_up_rebate']);
+            $shopUserInfo = DB::table('mt_user')->where('uid',$shopInfo->uid)->first();
+            if($userInfo->mt_reseller == 1){
+
+            }else{
+                $update = [
+                    'order_status'=>1,
+                    'pay_type'=>2,
+                    'pay_price'=>$reOrderInfo->re_goods_price * $reOrderInfo->buy_num,
+                    'pay_time'=>time()
+                ];
+
+                $reOrderInfoUpdate = DB::table('re_order')->where('re_order_no',$re_order_no)->update($update);
+                $shopUserInfoUpdate = DB::table('mt_user')->where('uid',$shopInfo->uid)->update(['no_reflected'=>$shopUserInfo->no_reflected + $reOrderInfo->re_goods_price * $reOrderInfo->buy_num]);
+                if($reOrderInfoUpdate>0 && $shopUserInfoUpdate>0){
+                    $data = [
+                        'code'=>0,
+                        'msg'=>'支付成功'
+                    ];
+                    $response = [
+                        'data' => $data
+                    ];
+                    return json_encode($response, JSON_UNESCAPED_UNICODE);
+                }else{
+                    $data = [
+                        'code'=>6,
+                        'msg'=>'系统出现错误,修改订单信息失败,请重试'
+                    ];
+                    $response = [
+                        'data' => $data
+                    ];
+                    die(json_encode($response, JSON_UNESCAPED_UNICODE));
+                }
+
+
+            }
+
 
             if ($xml_arr) {
                 $str='<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>';
