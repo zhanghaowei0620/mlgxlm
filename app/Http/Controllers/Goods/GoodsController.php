@@ -586,34 +586,30 @@ class GoodsController extends Controller
             }
             $inerdb=DB::table('mt_order_detail')->where(['id'=>$order_id])->first();
             $data_info1=DB::table('mt_order_detail')->where(['id'=>$order_id])->update(['order_status'=>1,'pay_price'=>$price]);
-
+            $infostoadd= $data->money - $price;
+            $datato_fo=DB::table('mt_user')->where(['uid'=>$uid])->update(['money'=>$infostoadd]);
             $data_foto=DB::table('mt_order_detail')->where(['order_status'=>0,'order_id'=>$inerdb->order_id])->get()->toArray();
             if(!$data_foto){
                 $data_info2=DB::table('mt_order')->where(['order_id'=>$inerdb->order_id])->update(['order_status'=>1,'pay_price'=>$price]);
-                $infostoadd= $data->money - $price;
-                $datato_fo=DB::table('mt_user')->where(['uid'=>$uid])->update(['money'=>$infostoadd]);
-//                $updateinfo=$data->money - $infostoadd;
-//                $data_info=DB::table('mt_order_detail')->where(['id'=>$order_id])->update([]);
-//                var_dump($data_info);die;'order_status'=>1
-                if($data_info1){
-                    $data=[
-                        'code'=>0,
-                        'msg'=>'支付成功'
-                    ];
-                    $response=[
-                        'data'=>$data
-                    ];
-                    return json_encode($response,JSON_UNESCAPED_UNICODE);
-                }else{
-                    $data=[
-                        'code'=>1,
-                        'msg'=>'支付失败,请重试'
-                    ];
-                    $response=[
-                        'data'=>$data
-                    ];
-                    return json_encode($response,JSON_UNESCAPED_UNICODE);
-                }
+            }
+            if($data_info1){
+                $data=[
+                    'code'=>0,
+                    'msg'=>'支付成功'
+                ];
+                $response=[
+                    'data'=>$data
+                ];
+                return json_encode($response,JSON_UNESCAPED_UNICODE);
+            }else{
+                $data=[
+                    'code'=>1,
+                    'msg'=>'支付失败,请重试'
+                ];
+                $response=[
+                    'data'=>$data
+                ];
+                return json_encode($response,JSON_UNESCAPED_UNICODE);
             }
         }
     }
