@@ -13,10 +13,7 @@ class TestController extends Controller
     public function getInfo(Request $request)
     {
         $code = $request->input("code");
-//        var_dump($code);die;
-        $WX_APPID = 'wx66bfdbefbfb06ddb';   //小程序appid
-        $WX_SECRET = '81dc04ad3d27da5bf2ce397032cb0773';  //小程序appsecret
-        $url = "https://api.weixin.qq.com/sns/jscode2session?appid=" . $WX_APPID . "&secret=" . $WX_SECRET . "&js_code=" . $code . "&grant_type=authorization_code";
+        $url = "https://api.weixin.qq.com/sns/jscode2session?appid=" . env('WX_APP_ID') . "&secret=" . env('WX_KEY') . "&js_code=" . $code . "&grant_type=authorization_code";
         $infos = json_decode(file_get_contents($url));
         $openid = $infos->openid;
         return $openid;
@@ -24,10 +21,11 @@ class TestController extends Controller
 
     public function test(Request $request)
     {
+//        $re_order_id = $request->input('re_order_id');
         $openid = $request->input('openid');
         //var_dump($openid);exit;
-        $appid = 'wx66bfdbefbfb06ddb';
-        $mch_id = '1535423301';
+        $appid = env('WX_APP_ID');
+        $mch_id = env('wx_mch_id');
         $nonce_str = $this->nonce_str();
         $body = '测试订单-'.mt_rand(1111,9999) . Str::random(6);
         $order_id = 'zhangsan-'.time().mt_rand(11111,99999);//测试订单号 随机生成
@@ -49,30 +47,15 @@ class TestController extends Controller
         $post['total_fee'] = $total_fee;//总金额 最低为一块钱 必须是整数
         $post['trade_type'] = $trade_type;
         $post['sign'] = $this->sign($post);//签名
-//        $wx_key = 'hkxhbjmequurd0bdv1ilnlb0ufq3lurn';
-//        ksort($post);
-//        $str = urldecode(http_build_query($post) . '&key=' . $wx_key);
-//        $post['sign'] = strtoupper(md5($str));
-
 
         $post_xml = $this->ArrToXml($post);
         //统一接口prepay_id
         $url = 'https://api.mch.weixin.qq.com/pay/unifiedorder';
         $xml = $this->curlRequest($url, $post_xml);
-//        var_dump($xml);exit;
         $array = $this->xml($xml);//全要大写
 //        var_dump($array);exit;
         if ($array['return_code'] == 'SUCCESS' && $array['result_code'] == 'SUCCESS') {
-//            echo 111;exit;
-            //dump($data);die;
 
-//            if ($res === false){
-//                $data['state'] = 0;
-//                $data['text'] = "错误";
-//                $data['return_code'] = 201;
-//                $data['return_msg'] = '生成订单错误';
-//            }
-            //echo 1;die;
             $time = time();
             //$tmp = '';//临时数组用于签名
             $tmp['appId'] = $appid;
@@ -89,7 +72,6 @@ class TestController extends Controller
             $data['package'] = 'prepay_id=' . $array['prepay_id'];//统一下单接口返回的 prepay_id 参数值，提交格式如：prepay_id=*
             $data['paySign'] = $this->sign($tmp);//签名,具体签名方案参见微信公众号支付帮助文档;
             $data['out_trade_no'] = $order_id;
-
 
         } else {
             $data['state'] = 0;
@@ -108,13 +90,6 @@ class TestController extends Controller
             $result .= $str[rand(0, 48)];
         }
         return $result;
-    }
-
-    //生成订单号
-    private function order_number($openid)
-    {
-        //date('Ymd',time()).time().rand(10,99);//18位
-        return md5($openid . time() . rand(10, 99));//32位
     }
 
     public function sign($data)
@@ -183,8 +158,6 @@ class TestController extends Controller
     {
         return '<xml><return_code><![CDATA[FAIL]]></return_code><return_msg><![CDATA[' . $msg . ']]></return_msg></xml>';
     }
-
-
     /**
      * 输出xml字符（数组转换成xml）
      * @param $params 参数名称
@@ -215,7 +188,6 @@ class TestController extends Controller
         return $arr;
     }
 
-
     public function xml($xml)
     {
         //禁止引用外部xml实体
@@ -234,7 +206,7 @@ class TestController extends Controller
         $xml = file_get_contents("php://input");
         $xml_obj = simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA);
         $xml_arr = json_decode(json_encode($xml_obj), true);
-        file_put_contents('/usr/local/webapp/laravel/storage/logs/wechat.log', 'XML_ARR:' . print_r($xml_arr, 1) . "\r\n", FILE_APPEND);
+        file_put_contents('/wwwroot/mlgxlm/storage/logs/wechat.log', 'XML_ARR:' . print_r($xml_arr, 1) . "\r\n", FILE_APPEND);
         if (($xml_arr['return_code'] == 'SUCCESS') && ($xml_arr['result_code'] == 'SUCCESS')) {
             //修改订单状态
 
