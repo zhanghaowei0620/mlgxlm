@@ -141,61 +141,30 @@ class GoodsController extends Controller
         }
     }
 
-    //根据导航栏子级分类获取店铺 根据热门项目分类id获取店铺
-//    public function type_shop(Request $request){
-//        $type_id = $request->input('type_id');
-//        //$page_num = $request->input('page_num');  //当前展示页数
-//        $type_id = 7;
-//        if($type_id){
-//            $shop_type = DB::table('mt_shop')->where('t_id',$type_id)->paginate(7);
-//            //var_dump($shop_type);exit;
-//            $response = [
-//                'error'=>'0',
-//                'shop_goodsInfo'=>$shop_type
-//            ];
-//            return json_encode($response,JSON_UNESCAPED_UNICODE);
-//        }else{
-//            $response = [
-//                'error'=>'1',
-//                'msg'=>'暂未开通该类型店铺'
-//            ];
-//            die(json_encode($response,JSON_UNESCAPED_UNICODE));
-//        }
-//    }
-
     //点击店铺获取店铺详情信息及店铺下所有的商品
     public function shop_goods(Request $request)
     {
         $shop_id = $request->input('shop_id');
-//        $shop_id = 2;
-//        $shop_goodsInfo = DB::table('mt_goods')
-//            ->join('mt_shop','mt_goods.shop_id','=','mt_shop.shop_id')
-//            ->where('mt_goods.shop_id',$shop_id)->paginate(7);
         $shopInfo=DB ::table('mt_shop')
             ->where(['shop_id'=>$shop_id])
             ->join('mt_type','mt_type.t_id','=','mt_shop.t_id')
-            ->first(['shop_id','shop_name','shop_phone','shop_desc','shop_address_detail','shop_score','shop_img','mt_type.t_name','shop_logo','shop_bus','shop_service']);
-//        var_dump($shopInfo);die;
+            ->first(['shop_id','shop_name','shop_phone','shop_desc','shop_address_detail','shop_score','shop_img','mt_type.t_name','shop_logo','shop_bus','shop_service','shop_star']);
         $shop_coupon=DB::table('mt_coupon')
             ->where(['shop_id'=>$shop_id])
             ->limit(2)
             ->get(['coupon_redouction','discount','coupon_id','coupon_type','discount','coupon_redouction','coupon_price','coupon_num']);
-//                var_dump($shop_coupon);die;
         $goods_shop=DB::table('mt_goods')
             ->join('mt_shop','mt_shop.shop_id','=','mt_goods.shop_id')
             ->where(['mt_shop.shop_id'=>$shop_id])
             ->select(['mt_goods.goods_name','mt_goods.goods_id','mt_goods.market_price','mt_goods.picture','mt_goods.goods_gd_num','shop_name','mt_shop.shop_address_provice','mt_shop.shop_address_city','mt_shop.shop_address_area'])
             ->paginate(4);
-//        var_dump($goods_shop);die;
         $goods_list=DB::table('mt_goods')
             ->where(['mt_shop.shop_id'=>$shop_id])
             ->join('mt_shop','mt_shop.shop_id','=','mt_goods.goods_id')
             ->limit(4)
             ->get();
-//       var_dump($caseInfo);die;
         if($shopInfo){
             $data=[
-//                'shop_goodsInfo'=>$shop_goodsInfo,
                 'shopInfo'=>$shopInfo,
                 'shop_coupon'=>$shop_coupon,
                 'goods_shop'=>$goods_shop,
@@ -226,7 +195,6 @@ class GoodsController extends Controller
             ->join('mt_shop','mt_shop.shop_id','=','mt_goods.shop_id')
             ->where(['mt_case.shop_id'=>$shop_id])
             ->get(['case_id','case_front','case_after','case_trouble','goods_name','shop_name']);
-//        var_dump($caseInfo);die;
         if($caseInfo){
             $data=[
                 'code'=>0,
