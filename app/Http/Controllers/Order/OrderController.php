@@ -660,7 +660,7 @@ class OrderController extends Controller
                     ->join('mt_goods','mt_goods.goods_id','=','mt_order_detail.goods_id')
                     ->join('mt_shop','mt_shop.shop_id','=','mt_order_detail.shop_id')
                     ->where(['mt_order.uid'=>$uid,'mt_order_detail.id'=>$id])
-                    ->get(['mt_order_detail.order_no','mt_order_detail.goods_name','mt_goods.price','mt_order_detail.price','mt_order_detail.id',
+                    ->get(['mt_order_detail.order_no','mt_order_detail.goods_name','mt_order_detail.price','mt_order_detail.id',
                         'mt_order_detail.picture','mt_shop.shop_name','mt_shop.shop_id','mt_shop.shop_phone','mt_shop.shop_address_provice','mt_shop.shop_address_city',
                         'mt_shop.shop_address_area','mt_shop.shop_address_detail','mt_shop.lat','mt_shop.lng','mt_shop.shop_logo','mt_goods.goods_id',
                         'mt_goods.goods_effect','mt_order.order_method','mt_order.order_status','mt_order.order_pay','mt_order_detail.pay_price','mt_order_detail.create_time'])->toArray();
