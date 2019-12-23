@@ -1120,7 +1120,7 @@ class GoodsController extends Controller
                 $body = '服务微信支付订单-'.$datainfo1->goods_name;
             }
             $trade_type = 'JSAPI';
-            $notify_url = 'https://mt.mlgxlm.com/notify?is_big='.$is_big;
+            $notify_url = 'https://mt.mlgxlm.com/notify';
             $spbill_create_ip = $_SERVER['REMOTE_ADDR'];
 //            (int)$total_fee = $datainfo->price * 100;//因为充值金额最小是1 而且单位为分 如果是充值1元所以这里需要*100
             if($is_big == 1){
@@ -1166,7 +1166,6 @@ class GoodsController extends Controller
                 $data['package'] = 'prepay_id=' . $array['prepay_id'];//统一下单接口返回的 prepay_id 参数值，提交格式如：prepay_id=*
                 $data['paySign'] = $this->sign($tmp);//签名,具体签名方案参见微信公众号支付帮助文档;
                 $data['out_trade_no'] = $order_id;
-                $data['is_big'] = $is_big;
 
             } else {
                 $data['state'] = 0;
