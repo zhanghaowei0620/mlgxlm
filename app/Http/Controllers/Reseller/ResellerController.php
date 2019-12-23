@@ -1334,14 +1334,14 @@ class ResellerController extends Controller
     public function share_Currency_Recharge(Request $request){
         $openid1 = $request->input('openid');
         $total_fee = $request->input('total_fee');
-        $key = $openid1;
-        $openid = Redis::get($key);
-        if($openid){
+//        $key = $openid1;
+//        $openid = Redis::get($key);
+        if($openid1){
             $appid = env('WX_APP_ID');
             $mch_id = env('wx_mch_id');
             $nonce_str = $this->nonce_str();
             $body = '美丽共享联盟-分享币充值';
-            $order_id = md5(date("YmdHis", time())). rand(1000, 9999);//微信充值订单号 随机生成
+            $order_id = date("YmdHis", time()). rand(1000, 9999);//微信充值订单号 随机生成
             $trade_type = 'JSAPI';
             $notify_url = 'https://mt.mlgxlm.com/share_Currency_wxNotify';
             //dump($openid);die;
