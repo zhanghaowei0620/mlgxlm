@@ -456,7 +456,7 @@ class GoodsController extends Controller
     public function moneybuy(Request $request)
     {
         $openid1 = $request->input('openid');
-        $is_big=$request->input('is_big');
+        $is_big=$request->input('is_big');   //1为大订单  0为小订单
         $key = $openid1;
         $openid = Redis::get($key);
 //        $openid='o3JM75DR8-IQ3ieEL_nsEiOMrTvc';
@@ -1285,15 +1285,34 @@ class GoodsController extends Controller
      * 微信支付回调
      */
     public function notify(){
+//        $is_big=$request->input('is_big');   //1为大订单   0为小订单
         $xml = file_get_contents("php://input");
         $xml_obj = simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA);
         $xml_arr = json_decode(json_encode($xml_obj), true);
         file_put_contents('/wwwroot/mlgxlm/public/logs/fuwuwechat.log', 'XML_ARR:' . print_r($xml_arr, 1) . "\r\n", FILE_APPEND);
         if (($xml_arr['return_code'] == 'SUCCESS') && ($xml_arr['result_code'] == 'SUCCESS')) {
             //修改订单状态
+//            if($is_big == 1){
+//
+//            }else if($is_big){
+//
+//            }
             $order_no1 = $xml_arr['out_trade_no'];
             $orderInfo1 = DB::table('mt_order')->where('order_no',$order_no1)->first();
             $order_uid = DB::table('mt_user')->where(['uid'=>$orderInfo1->uid])->first();
+            $order_add = DB::table('')
+
+
+
+
+
+
+
+
+
+
+
+
 
 
             if ($xml_arr) {

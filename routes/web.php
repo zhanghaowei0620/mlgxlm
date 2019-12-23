@@ -16,7 +16,7 @@ Route::get('/', function () {
 });
 
 //Route::get('/访问方式', '文件夹名\控制器名@方法名');
-Route::get('     /index', 'Index\IndexController@index');   //首页
+Route::get('/index', 'Index\IndexController@index');   //首页
 
 Route::get('/type_lists', 'Index\IndexController@type_lists');   //更多
 
@@ -195,7 +195,7 @@ Route::post('reseller_order_Confirm_receipt', 'Reseller\ResellerController@resel
 
 Route::post('re_wxpay', 'Reseller\ResellerController@re_wxpay');     //分销订单-微信支付
 
-Route::get('re_wxNotify', 'Reseller\ResellerController@re_wxNotify');   //分销订单-微信支付异步回调
+Route::post('re_wxNotify', 'Reseller\ResellerController@re_wxNotify');   //分销订单-微信支付异步回调
 
 Route::post('index_reseller_share_Apply_refund', 'Reseller\ResellerController@index_reseller_share_Apply_refund');   //分销-申请退款
 
@@ -426,10 +426,7 @@ Route::post('admin_reseller_order_information','Amindbackstage\Headquarters@admi
 
 Route::post('admin_reseller_Apply_refundList', 'Amindbackstage\Headquarters@admin_reseller_Apply_refundList');   //分校订单-退款申请列表
 
-Route::get('admin_reseller_refund_examine', 'Amindbackstage\Headquarters@admin_reseller_refund_examine');   //分销订单-退款审核
-
-Route::post('wx_refund_Notify', 'Amindbackstage\Headquarters@wx_refund_Notify');   //微信退款-异步回调
-
+Route::post('admin_reseller_refund_examine', 'Amindbackstage\Headquarters@admin_reseller_refund_examine');   //分销订单-退款审核
 
 Route::post('admin_rule_Add','Amindbackstage\Headquarters@admin_rule_Add')->middleware('checkLogin');   //协议添加
 
