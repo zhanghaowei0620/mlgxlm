@@ -1383,7 +1383,7 @@ class Headquarters extends Controller
                     $mch_id = env('wx_mch_id');   //商户号
                     $nonce_str = $this->nonce_str();   //随机字符串
                     $order_id = $reOrderInfo->re_order_no;;//订单号
-//                    $notify_url = 'https://mt.mlgxlm.com/wx_refund_Notify';   //微信退款异步回调
+                    $notify_url = 'https://mt.mlgxlm.com/wx_refund_Notify';   //微信退款异步回调
                     $transaction_id = $reOrderInfo->wx_pay_no;     //微信支付单号
                     $out_refund_no = $reOrderInfo->wx_refund_no;        //微信退款单号
                     $total_fee = $reOrderInfo->pay_price * 100;    //支付金额
@@ -1393,7 +1393,7 @@ class Headquarters extends Controller
                     $post['appid'] = $appid;
                     $post['mch_id'] = $mch_id;
                     $post['nonce_str'] = $nonce_str;//随机字符串
-//                    $post['notify_url'] = $notify_url;
+                    $post['notify_url'] = $notify_url;
                     $post['out_refund_no'] = $out_refund_no;
                     $post['out_trade_no'] = $order_id;
                     $post['refund_fee'] = $refund_fee;
@@ -1441,6 +1441,17 @@ class Headquarters extends Controller
                 }
             }
         }elseif($reOrderInfo->pay_type == 1){
+
+        }
+    }
+
+    //微信退款异步回调
+    public function wx_refund_Notify(Request $request){
+        $xml = file_get_contents("php://input");
+        $xml_obj = simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA);
+        $xml_arr = json_decode(json_encode($xml_obj), true);
+        file_put_contents('https://mt.mlgxlm.com/logs/refund_Notify.log', 'XML_ARR:' . print_r($xml_arr, 1) . "\r\n", FILE_APPEND);
+        if (($xml_arr['return_code'] == 'SUCCESS') && ($xml_arr['result_code'] == 'SUCCESS')) {
 
         }
     }
