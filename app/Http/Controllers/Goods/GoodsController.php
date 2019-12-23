@@ -1114,16 +1114,16 @@ class GoodsController extends Controller
             $appid = env('WX_APP_ID');
             $mch_id = env('wx_mch_id');
             $nonce_str = $this->nonce_str();
-            $body = '服务微信支付订单-'.$datainfo->goods_name;
+//            $body = '服务微信支付订单-'.$datainfo->goods_name;
+            $body=[];
+            foreach ($datainfo as $k =>$v){
+                $body='服务微信支付订单-'.$v->goods_name;
+            }
 //            $order_id = $datainfo->order_no;//测试订单号 随机生成
             if($is_big == 1){
                 $order_id = $datainfo1->order_no;//测试订单号 随机生成
             }else if ($is_big == 0){
-//                $order_id = $datainfo->order_no;//测试订单号 随机生成
-                $order_id=[];
-                foreach ($datainfo as $k =>$v){
-                    $order_id=$v->order_no;
-                }
+                $order_id = $datainfo->order_no;//测试订单号 随机生成
             }
             $trade_type = 'JSAPI';
             $notify_url = 'https://mt.mlgxlm.com/notify';
