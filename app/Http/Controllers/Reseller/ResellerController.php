@@ -308,6 +308,13 @@ class ResellerController extends Controller
                     ];
                     $updateUserInfo = DB::table('mt_user')->where('uid',$uid)->update($update);
                     if($updateUserInfo > 0){
+                        $insert1 = [
+                            'uid'=>$uid,
+                            'in_money'=>$total_num,
+                            'is_type'=>3,
+                            'in_time'=>time()
+                        ];
+                        DB::table('mt_money_list')->insertGetId($insert1);
                         if($userInfo->mt_reseller == 1){   //判断用户是否为分销员
                             $u_shopInfo = DB::table('mt_shop')->where('uid',$userInfo->a_id)->first(['shop_id']);
                             if($reGoodsInfo->shop_id == $u_shopInfo->shop_id){    //判断用户购买的商品是否为自己上级分销商的商品   如果不是 给直接上级分钱
@@ -320,6 +327,27 @@ class ResellerController extends Controller
                                         $a_userInfoUpdate = DB::table('mt_user')->where('uid',$a_userInfo->uid)->update(['no_reflected'=>$a_userInfo->no_reflected + $total_num*$shopInfo->indirect_up_rebate/100]);
                                         $shopUserInfoUpdate = DB::table('mt_user')->where('uid',$shopInfo->uid)->update(['no_reflected'=>$shopInfo1->no_reflected + $total_num*(100 - $shopInfo->up_rebate - $shopInfo->indirect_up_rebate)/100]);
                                         if($re_orderInfoUpdate>0 && $p_userInfoUpdate>0 && $a_userInfoUpdate>0 && $shopUserInfoUpdate>0){
+                                            $insert1 = [
+                                                'uid'=>$p_userInfo->uid,
+                                                'in_money'=>$total_num*$shopInfo->up_rebate/100,
+                                                'is_type'=>1,
+                                                'in_time'=>time()
+                                            ];
+                                            DB::table('mt_money_list')->insertGetId($insert1);
+                                            $insert2 = [
+                                                'uid'=>$a_userInfo->uid,
+                                                'in_money'=>$total_num*$shopInfo->indirect_up_rebate/100,
+                                                'is_type'=>1,
+                                                'in_time'=>time()
+                                            ];
+                                            DB::table('mt_money_list')->insertGetId($insert2);
+                                            $insert3 = [
+                                                'uid'=>$shopInfo->uid,
+                                                'in_money'=>$total_num*(100 - $shopInfo->up_rebate - $shopInfo->indirect_up_rebate)/100,
+                                                'is_type'=>1,
+                                                'in_time'=>time()
+                                            ];
+                                            DB::table('mt_money_list')->insertGetId($insert3);
                                             $data = [
                                                 'code'=>0,
                                                 'msg'=>'支付成功'
@@ -343,6 +371,20 @@ class ResellerController extends Controller
                                         $p_userInfoUpdate = DB::table('mt_user')->where('uid',$p_userInfo->uid)->update(['no_reflected'=>$p_userInfo->no_reflected + $total_num*$shopInfo->up_rebate/100]);
                                         $shopUserInfoUpdate = DB::table('mt_user')->where('uid',$shopInfo->uid)->update(['no_reflected'=>$shopInfo1->no_reflected + $total_num*(100 - $shopInfo->up_rebate)/100]);
                                         if($re_orderInfoUpdate>0 && $p_userInfoUpdate>0 && $shopUserInfoUpdate>0){
+                                            $insert1 = [
+                                                'uid'=>$p_userInfo->uid,
+                                                'in_money'=>$total_num*$shopInfo->up_rebate/100,
+                                                'is_type'=>1,
+                                                'in_time'=>time()
+                                            ];
+                                            DB::table('mt_money_list')->insertGetId($insert1);
+                                            $insert3 = [
+                                                'uid'=>$shopInfo->uid,
+                                                'in_money'=>$total_num*(100 - $shopInfo->up_rebate)/100,
+                                                'is_type'=>1,
+                                                'in_time'=>time()
+                                            ];
+                                            DB::table('mt_money_list')->insertGetId($insert3);
                                             $data = [
                                                 'code'=>0,
                                                 'msg'=>'支付成功'
@@ -366,6 +408,13 @@ class ResellerController extends Controller
                                     $re_orderInfoUpdate = DB::table('re_order')->where('re_order_id',$re_order_id)->update(['order_status'=>1,'pay_type'=>0,'pay_price'=>$total_num,'pay_time'=>time()]);
                                     $shopUserInfoUpdate = DB::table('mt_user')->where('uid',$shopInfo->uid)->update(['no_reflected'=>$shopInfo1->no_reflected + $total_num]);
                                     if($re_orderInfoUpdate>0 && $shopUserInfoUpdate>0){
+                                        $insert3 = [
+                                            'uid'=>$shopInfo->uid,
+                                            'in_money'=>$total_num,
+                                            'is_type'=>1,
+                                            'in_time'=>time()
+                                        ];
+                                        DB::table('mt_money_list')->insertGetId($insert3);
                                         $data = [
                                             'code'=>0,
                                             'msg'=>'支付成功'
@@ -389,6 +438,13 @@ class ResellerController extends Controller
                                 $re_orderInfoUpdate = DB::table('re_order')->where('re_order_id',$re_order_id)->update(['order_status'=>1,'pay_type'=>0,'pay_price'=>$total_num,'pay_time'=>time()]);
                                 $shopUserInfoUpdate = DB::table('mt_user')->where('uid',$shopInfo->uid)->update(['no_reflected'=>$shopInfo1->no_reflected + $total_num]);
                                 if($re_orderInfoUpdate>0 && $shopUserInfoUpdate>0){
+                                    $insert3 = [
+                                        'uid'=>$shopInfo->uid,
+                                        'in_money'=>$total_num,
+                                        'is_type'=>1,
+                                        'in_time'=>time()
+                                    ];
+                                    DB::table('mt_money_list')->insertGetId($insert3);
                                     $data = [
                                         'code'=>0,
                                         'msg'=>'支付成功'
@@ -412,6 +468,13 @@ class ResellerController extends Controller
                             $re_orderInfoUpdate = DB::table('re_order')->where('re_order_id',$re_order_id)->update(['order_status'=>1,'pay_type'=>0,'pay_price'=>$total_num,'pay_time'=>time()]);
                             $shopUserInfoUpdate = DB::table('mt_user')->where('uid',$shopInfo->uid)->update(['no_reflected'=>$shopInfo1->no_reflected + $total_num]);
                             if($re_orderInfoUpdate>0 && $shopUserInfoUpdate>0){
+                                $insert3 = [
+                                    'uid'=>$shopInfo->uid,
+                                    'in_money'=>$total_num,
+                                    'is_type'=>1,
+                                    'in_time'=>time()
+                                ];
+                                DB::table('mt_money_list')->insertGetId($insert3);
                                 $data = [
                                     'code'=>0,
                                     'msg'=>'支付成功'
@@ -1173,6 +1236,7 @@ class ResellerController extends Controller
         }
     }
 
+    //分销订单支付
     public function re_wxpay(Request $request)
     {
         $re_order_id = $request->input('re_order_id');
@@ -1228,6 +1292,8 @@ class ResellerController extends Controller
                 $data['paySign'] = $this->sign($tmp);//签名,具体签名方案参见微信公众号支付帮助文档;
                 $data['out_trade_no'] = $order_id;
 
+
+
             } else {
 //                $appid = env('WX_APP_ID');
 //                $mch_id = env('wx_mch_id');
@@ -1252,6 +1318,92 @@ class ResellerController extends Controller
                 $data['return_msg'] = $array['return_msg'];
             }
             return json_encode($data);
+        }
+    }
+
+    //分享币充值
+    public function share_Currency_Recharge(Request $request){
+        $openid1 = $request->input('openid');
+        $total_fee = $request->input('total_fee');
+        $key = $openid1;
+        $openid = Redis::get($key);
+        if($openid){
+            $appid = env('WX_APP_ID');
+            $mch_id = env('wx_mch_id');
+            $nonce_str = $this->nonce_str();
+            $body = '美丽共享联盟-分享币充值';
+            $order_id = md5(date("YmdHis", time())). rand(1000, 9999);//微信充值订单号 随机生成
+            $trade_type = 'JSAPI';
+            $notify_url = 'https://mt.mlgxlm.com/share_Currency_wxNotify';
+            //dump($openid);die;
+            $spbill_create_ip = $_SERVER['REMOTE_ADDR'];
+            $total_fee = $total_fee * 100;//因为充值金额最小是1 而且单位为分 如果是充值1元所以这里需要*100
+            //这里是按照顺序的 因为下面的签名是按照顺序 排序错误 肯定出错
+            $post['appid'] = $appid;
+            $post['mch_id'] = $mch_id;
+            $post['body'] = $body;
+            $post['nonce_str'] = $nonce_str;//随机字符串
+            $post['notify_url'] = $notify_url;
+            $post['openid'] = $openid;
+            $post['out_trade_no'] = $order_id;
+            $post['spbill_create_ip'] = $spbill_create_ip;//终端的ip
+            $post['total_fee'] = $total_fee;//总金额 最低为1分钱 必须是整数
+            $post['trade_type'] = $trade_type;
+            $post['sign'] = $this->sign($post);//签名
+
+            $post_xml = $this->ArrToXml($post);
+            //统一接口prepay_id
+            $url = 'https://api.mch.weixin.qq.com/pay/unifiedorder';
+            $xml = $this->curlRequest($url, $post_xml);
+            $array = $this->xml($xml);//全要大写
+//        var_dump($array);exit;
+            if ($array['return_code'] == 'SUCCESS' && $array['result_code'] == 'SUCCESS') {
+                $time = time();
+                //$tmp = '';//临时数组用于签名
+                $tmp['appId'] = $appid;
+                $tmp['nonceStr'] = $nonce_str;
+                $tmp['package'] = 'prepay_id=' . $array['prepay_id'];
+                $tmp['signType'] = 'MD5';
+                $tmp['timeStamp'] = "$time";
+
+                $data['prepay_id'] = $array['prepay_id'];
+                //$data['state'] = 1;
+                $data['timeStamp'] = "$time";//时间戳
+                $data['nonceStr'] = $nonce_str;//随机字符串
+                $data['signType'] = 'MD5';//签名算法，暂支持 MD5
+                $data['package'] = 'prepay_id=' . $array['prepay_id'];//统一下单接口返回的 prepay_id 参数值，提交格式如：prepay_id=*
+                $data['paySign'] = $this->sign($tmp);//签名,具体签名方案参见微信公众号支付帮助文档;
+                $data['out_trade_no'] = $order_id;
+
+
+
+            } else {
+
+                $data['state'] = 0;
+                $data['text'] = "错误";
+                $data['return_code'] = $array['return_code'];
+                $data['return_msg'] = $array['return_msg'];
+            }
+            return json_encode($data);
+        }
+    }
+
+    //分享币充值异步回调
+    public function share_Currency_wxNotify(Request $request){
+        $xml = file_get_contents("php://input");
+        $xml_obj = simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA);
+        $xml_arr = json_decode(json_encode($xml_obj), true);
+        file_put_contents('https://mt.mlgxlm.com/logs/share_Currency_wxNotify.log', 'XML_ARR:' . print_r($xml_arr, 1) . "\r\n", FILE_APPEND);
+        if (($xml_arr['return_code'] == 'SUCCESS') && ($xml_arr['result_code'] == 'SUCCESS')) {
+            $userInfo = DB::table('mt_user')->where('openid',$xml_arr['openid'])->first();
+            DB::table('mt_user')->where('openid',$xml_arr['openid'])->update('money',$userInfo->money + $xml_arr['total_fee']);
+            $insert = [
+                'uid'=>$userInfo->uid,
+                'in_money'=>$xml_arr['total_fee'],
+                'is_type'=>0,
+                'in_time'=>time()
+            ];
+            DB::table('mt_money_list')->insertGetId($insert);
         }
     }
 
@@ -1372,7 +1524,7 @@ class ResellerController extends Controller
 
 
     /**
-     * 微信支付回调
+     * 分校订单-微信支付回调
      */
     public function re_wxNotify(Request $request){
         $xml = file_get_contents("php://input");
@@ -1399,6 +1551,27 @@ class ResellerController extends Controller
                             $a_userInfoUpdate = DB::table('mt_user')->where('uid',$a_userInfo->uid)->update(['no_reflected'=>$a_userInfo->no_reflected + $total_num*$shopInfo->indirect_up_rebate/100]);
                             $shopUserInfoUpdate = DB::table('mt_user')->where('uid',$shopInfo->uid)->update(['no_reflected'=>$shopUserInfo->no_reflected + $total_num*(100 - $shopInfo->up_rebate - $shopInfo->indirect_up_rebate)/100]);
                             if($re_orderInfoUpdate>0 && $p_userInfoUpdate>0 && $a_userInfoUpdate>0 && $shopUserInfoUpdate>0){
+                                $insert1 = [
+                                    'uid'=>$p_userInfo->uid,
+                                    'in_money'=>$total_num*$shopInfo->up_rebate/100,
+                                    'is_type'=>1,
+                                    'in_time'=>time()
+                                ];
+                                DB::table('mt_money_list')->insertGetId($insert1);
+                                $insert2 = [
+                                    'uid'=>$a_userInfo->uid,
+                                    'in_money'=>$total_num*$shopInfo->indirect_up_rebate/100,
+                                    'is_type'=>1,
+                                    'in_time'=>time()
+                                ];
+                                DB::table('mt_money_list')->insertGetId($insert2);
+                                $insert3 = [
+                                    'uid'=>$shopInfo->uid,
+                                    'in_money'=>$total_num*(100 - $shopInfo->up_rebate - $shopInfo->indirect_up_rebate)/100,
+                                    'is_type'=>1,
+                                    'in_time'=>time()
+                                ];
+                                DB::table('mt_money_list')->insertGetId($insert3);
                                 $data = [
                                     'code'=>0,
                                     'msg'=>'支付成功'
@@ -1422,6 +1595,20 @@ class ResellerController extends Controller
                             $p_userInfoUpdate = DB::table('mt_user')->where('uid',$p_userInfo->uid)->update(['no_reflected'=>$p_userInfo->no_reflected + $total_num*$shopInfo->up_rebate/100]);
                             $shopUserInfoUpdate = DB::table('mt_user')->where('uid',$shopInfo->uid)->update(['no_reflected'=>$shopUserInfo->no_reflected + $total_num*(100 - $shopInfo->up_rebate)/100]);
                             if($re_orderInfoUpdate>0 && $p_userInfoUpdate>0 && $shopUserInfoUpdate>0){
+                                $insert1 = [
+                                    'uid'=>$p_userInfo->uid,
+                                    'in_money'=>$total_num*$shopInfo->up_rebate/100,
+                                    'is_type'=>1,
+                                    'in_time'=>time()
+                                ];
+                                DB::table('mt_money_list')->insertGetId($insert1);
+                                $insert2 = [
+                                    'uid'=>$shopInfo->uid,
+                                    'in_money'=>$total_num*(100 - $shopInfo->up_rebate)/100,
+                                    'is_type'=>1,
+                                    'in_time'=>time()
+                                ];
+                                DB::table('mt_money_list')->insertGetId($insert2);
                                 $data = [
                                     'code'=>0,
                                     'msg'=>'支付成功'
@@ -1450,8 +1637,15 @@ class ResellerController extends Controller
                         ];
 
                         $reOrderInfoUpdate = DB::table('re_order')->where('re_order_no',$re_order_no)->update($update);
-                        $shopUserInfoUpdate = DB::table('mt_user')->where('uid',$shopInfo->uid)->update(['no_reflected'=>$total_num]);
+                        $shopUserInfoUpdate = DB::table('mt_user')->where('uid',$shopInfo->uid)->update(['no_reflected'=>$shopUserInfo->no_reflected + $total_num]);
                         if($reOrderInfoUpdate>0 && $shopUserInfoUpdate>0){
+                            $insert = [
+                                'uid'=>$shopInfo->uid,
+                                'in_money'=>$total_num,
+                                'is_type'=>1,
+                                'in_time'=>time()
+                            ];
+                            DB::table('mt_money_list')->insertGetId($insert);
                             $data = [
                                 'code'=>0,
                                 'msg'=>'支付成功'
@@ -1480,8 +1674,15 @@ class ResellerController extends Controller
                     ];
 
                     $reOrderInfoUpdate = DB::table('re_order')->where('re_order_no',$re_order_no)->update($update);
-                    $shopUserInfoUpdate = DB::table('mt_user')->where('uid',$shopInfo->uid)->update(['no_reflected'=>$total_num]);
+                    $shopUserInfoUpdate = DB::table('mt_user')->where('uid',$shopInfo->uid)->update(['no_reflected'=>$shopUserInfo->no_reflected + $total_num]);
                     if($reOrderInfoUpdate>0 && $shopUserInfoUpdate>0){
+                        $insert = [
+                            'uid'=>$shopInfo->uid,
+                            'in_money'=>$total_num,
+                            'is_type'=>1,
+                            'in_time'=>time()
+                        ];
+                        DB::table('mt_money_list')->insertGetId($insert);
                         $data = [
                             'code'=>0,
                             'msg'=>'支付成功'
@@ -1510,8 +1711,15 @@ class ResellerController extends Controller
                 ];
 
                 $reOrderInfoUpdate = DB::table('re_order')->where('re_order_no',$re_order_no)->update($update);
-                $shopUserInfoUpdate = DB::table('mt_user')->where('uid',$shopInfo->uid)->update(['no_reflected'=>$total_num]);
+                $shopUserInfoUpdate = DB::table('mt_user')->where('uid',$shopInfo->uid)->update(['no_reflected'=> $shopUserInfo->no_reflected +$total_num]);
                 if($reOrderInfoUpdate>0 && $shopUserInfoUpdate>0){
+                    $insert = [
+                        'uid'=>$shopInfo->uid,
+                        'in_money'=>$total_num,
+                        'is_type'=>1,
+                        'in_time'=>time()
+                    ];
+                    DB::table('mt_money_list')->insertGetId($insert);
                     $data = [
                         'code'=>0,
                         'msg'=>'支付成功'
