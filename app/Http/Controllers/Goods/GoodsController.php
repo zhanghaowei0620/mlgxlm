@@ -1299,6 +1299,7 @@ class GoodsController extends Controller
      * 微信支付回调
      */
     public function notify($is_big){
+        echo 41353465;
         var_dump($is_big);die;
         $xml = file_get_contents("php://input");
         $xml_obj = simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA);
