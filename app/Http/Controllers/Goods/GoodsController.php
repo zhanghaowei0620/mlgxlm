@@ -1121,7 +1121,7 @@ class GoodsController extends Controller
             }
             $trade_type = 'JSAPI';
             $notify_url = 'https://mt.mlgxlm.com/notify';
-            //dump($openid);die;
+            dump($notify_url);die;
             $spbill_create_ip = $_SERVER['REMOTE_ADDR'];
 //            (int)$total_fee = $datainfo->price * 100;//因为充值金额最小是1 而且单位为分 如果是充值1元所以这里需要*100
             if($is_big == 1){
@@ -1310,7 +1310,6 @@ class GoodsController extends Controller
 //            var_dump($order_no1);die;
             $orderInfo1 = DB::table('mt_order')->where(['order_no'=>$order_no1])->first();
             $data_addd=DB::table('mt_order')->where(['order_no'=>$order_no1,'uid'=>$orderInfo1->uid])->update(['order_status'=>1,'pay_price'=>$orderInfo1->price]);
-            var_dump($data_addd);die;
             $order_add = DB::table('mt_order_detail')->where(['uid'=>$orderInfo1->uid,'order_no'=>$order_no1])->first();
             if($order_add->order_no){
                 $data_addd=DB::table('mt_order')->where(['order_no'=>$order_no1,'uid'=>$orderInfo1->uid])->update(['order_status'=>1,'pay_price'=>$orderInfo1->price]);
