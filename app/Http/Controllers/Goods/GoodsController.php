@@ -1302,7 +1302,7 @@ class GoodsController extends Controller
         if (($xml_arr['return_code'] == 'SUCCESS') && ($xml_arr['result_code'] == 'SUCCESS')) {
             //修改订单状态
             $order_no1 = $xml_arr['out_trade_no'];
-            $orderInfo1 = DB::table('mt_order')->where('order_no',$order_no1)->first();
+            $orderInfo1 = DB::table('mt_order')->where(['order_no'=>$order_no1])->first();
 //            $order_uid = DB::table('mt_user')->where(['uid'=>$orderInfo1->uid])->first();
             $order_add = DB::table('mt_order_detail')->where(['uid'=>$orderInfo1->uid,'order_no'=>$order_no1])->first();
             if($order_add->order_no == NULL){
