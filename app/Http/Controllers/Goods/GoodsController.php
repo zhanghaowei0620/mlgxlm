@@ -1138,7 +1138,7 @@ class GoodsController extends Controller
             $post['total_fee'] = $total_fee;//总金额 最低为一块钱 必须是整数
             $post['trade_type'] = $trade_type;
             $post['sign'] = $this->sign($post);//签名
-            var_dump($post);exit;
+//            var_dump($post);exit;
             $post_xml = $this->ArrToXml($post);
             //统一接口prepay_id
             $url = 'https://api.mch.weixin.qq.com/pay/unifiedorder';
