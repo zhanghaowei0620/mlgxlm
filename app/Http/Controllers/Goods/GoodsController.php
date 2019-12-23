@@ -1105,7 +1105,7 @@ class GoodsController extends Controller
 //        $key = $openid1;
 //        $openid = Redis::get($key);
         $id = $request->input('id');
-        $is_big = $request->input('is_big');
+        $is_big = $request->input('is_big');    //1为大订单  0为小订单
         $datainfo1=DB::table('mt_order')->where(['order_id'=>$id])->first();
 //        var_dump($datainfo1);die;
         $datainfo=DB::table('mt_order_detail')->where(['id'=>$id])->first();
@@ -1115,7 +1115,12 @@ class GoodsController extends Controller
             $mch_id = env('wx_mch_id');
             $nonce_str = $this->nonce_str();
             $body = '服务微信支付订单-'.$datainfo->goods_name;
-            $order_id = $datainfo->order_no;//测试订单号 随机生成
+//            $order_id = $datainfo->order_no;//测试订单号 随机生成
+            if($is_big == 1){
+                $order_id = $datainfo1->order_no;//测试订单号 随机生成
+            }else if ($is_big == 0){
+                $order_id = $datainfo->order_no;//测试订单号 随机生成
+            }
             $trade_type = 'JSAPI';
             $notify_url = 'https://mt.mlgxlm.com/notify';
             //dump($openid);die;
@@ -1303,6 +1308,7 @@ class GoodsController extends Controller
         if (($xml_arr['return_code'] == 'SUCCESS') && ($xml_arr['result_code'] == 'SUCCESS')) {
             //修改订单状态
             $order_no1 = $xml_arr['out_trade_no'];
+//            var_dump($order_no1);die;
             $orderInfo1 = DB::table('mt_order')->where(['order_no'=>$order_no1])->first();
 //            $order_uid = DB::table('mt_user')->where(['uid'=>$orderInfo1->uid])->first();
             $order_add = DB::table('mt_order_detail')->where(['uid'=>$orderInfo1->uid,'order_no'=>$order_no1])->first();
