@@ -1166,7 +1166,7 @@ class GoodsController extends Controller
                 $data['package'] = 'prepay_id=' . $array['prepay_id'];//统一下单接口返回的 prepay_id 参数值，提交格式如：prepay_id=*
                 $data['paySign'] = $this->sign($tmp);//签名,具体签名方案参见微信公众号支付帮助文档;
                 $data['out_trade_no'] = $order_id;
-                $data['is_big'] = $big;
+                $data['is_big'] = $is_big;
 
             } else {
                 $data['state'] = 0;
