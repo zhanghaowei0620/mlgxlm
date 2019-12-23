@@ -1405,7 +1405,6 @@ class Headquarters extends Controller
                     //统一接口prepay_id
                     $url = 'https://api.mch.weixin.qq.com/secapi/pay/refund';
                     $xml = $this->curlRequest($url, $post_xml);
-//
                     $array = $this->xml($xml);//全要大写
 
                     var_dump($array);exit;
@@ -1835,9 +1834,9 @@ class Headquarters extends Controller
         $params[CURLOPT_FOLLOWLOCATION] = true; //是否重定向
         $params[CURLOPT_TIMEOUT] = 30; //超时时间
         $params[CURLOPT_SSLCERTTYPE] = 'PEM';
-        $params[CURLOPT_SSLCERT] = "/wwwroot/laravel0/app/wxpay/cert/apiclient_cert11111.pem";
+        $params[CURLOPT_SSLCERT] = "/wwwroot/laravel0/app/wxpay/cert/apiclient_cert.pem";
         $params[CURLOPT_SSLKEYTYPE] = 'PEM';
-        $params[CURLOPT_SSLKEY] = "/wwwroot/laravel0/app/wxpay/cert/apiclient_key11111.pem";
+        $params[CURLOPT_SSLKEY] = "/wwwroot/laravel0/app/wxpay/cert/apiclient_key.pem";
 //        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, '/wwwroot/laravel0/app/wxpay/cert/apiclient_cert.pem');
 //        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, '/wwwroot/laravel0/app/wxpay/cert/apiclient_key.pem');
         if (!empty($data)) {
