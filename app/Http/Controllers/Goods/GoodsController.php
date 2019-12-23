@@ -1310,7 +1310,7 @@ class GoodsController extends Controller
             $order_add = DB::table('mt_order_detail')->where(['uid'=>$orderInfo1->uid,'order_no'=>$order_no1])->first();
             if($is_big == 1){
                 $datainfo=DB::table('mt_order')->where(['order_no'=>$order_no1,'uid'=>$orderInfo1->uid])->update(['order_status'=>1,'pay_price'=>$orderInfo1->price]);
-                $data_teatil=DB::table('mt_order_detail')->where('order_no'=>$order_no1,'uid'=>$orderInfo1->uid)->update(['order_status'=>1,'pay_price'=>$order_add->price]);
+                $data_teatil=DB::table('mt_order_detail')->where(['order_no'=>$order_no1,'uid'=>$orderInfo1->uid])->update(['order_status'=>1,'pay_price'=>$order_add->price]);
                 if($datainfo && $data_teatil){
                     $data=[
                         'code'=>0,
@@ -1334,7 +1334,7 @@ class GoodsController extends Controller
                 if($order_add->order_status ==1 ){
                     $data_addd=DB::table('mt_order')->where(['order_no'=>$order_no1,'uid'=>$orderInfo1->uid])->update(['order_status'=>1,'pay_price'=>$orderInfo1->price]);
                 }
-                $data_teatil=DB::table('mt_order_detail')->where('order_no'=>$order_no1,'uid'=>$orderInfo1->uid)->update(['order_status'=>1,'pay_price'=>$order_add->price]);
+                $data_teatil=DB::table('mt_order_detail')->where(['order_no'=>$order_no1,'uid'=>$orderInfo1->uid])->update(['order_status'=>1,'pay_price'=>$order_add->price]);
                     if($data_teatil){
                         $data=[
                             'code'=>0,
