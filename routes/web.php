@@ -426,11 +426,6 @@ Route::post('admin_reseller_order_information','Amindbackstage\Headquarters@admi
 
 Route::post('admin_reseller_Apply_refundList', 'Amindbackstage\Headquarters@admin_reseller_Apply_refundList');   //分校订单-退款申请列表
 
-
-Route::get('admin_reseller_refund_examine', 'Amindbackstage\Headquarters@admin_reseller_refund_examine');   //分销订单-退款审核
-
-Route::post('wx_refund_Notify', 'Amindbackstage\Headquarters@wx_refund_Notify');   //微信退款-异步回调
-
 Route::get('admin_reseller_refund_examine', 'Amindbackstage\Headquarters@admin_reseller_refund_examine');   //分销订单-退款审核
 
 Route::post('wx_refund_Notify', 'Amindbackstage\Headquarters@wx_refund_Notify');   //微信退款-异步回调
