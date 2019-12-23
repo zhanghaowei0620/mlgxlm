@@ -1120,8 +1120,7 @@ class GoodsController extends Controller
                 $body = '服务微信支付订单-'.$datainfo1->goods_name;
             }
             $trade_type = 'JSAPI';
-            $notify_url = 'https://mt.mlgxlm.com/notify';
-            //dump($openid);die;
+            $notify_url = 'https://mt.mlgxlm.com/notify?is_big='.$is_big;
             $spbill_create_ip = $_SERVER['REMOTE_ADDR'];
 //            (int)$total_fee = $datainfo->price * 100;//因为充值金额最小是1 而且单位为分 如果是充值1元所以这里需要*100
             if($is_big == 1){
@@ -1167,6 +1166,7 @@ class GoodsController extends Controller
                 $data['package'] = 'prepay_id=' . $array['prepay_id'];//统一下单接口返回的 prepay_id 参数值，提交格式如：prepay_id=*
                 $data['paySign'] = $this->sign($tmp);//签名,具体签名方案参见微信公众号支付帮助文档;
                 $data['out_trade_no'] = $order_id;
+                $data['is_big'] = $is_big;
 
             } else {
                 $data['state'] = 0;
@@ -1299,6 +1299,7 @@ class GoodsController extends Controller
      * 微信支付回调
      */
     public function notify(){
+//        var_dump($is_big);die;
         $xml = file_get_contents("php://input");
         $xml_obj = simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA);
         $xml_arr = json_decode(json_encode($xml_obj), true);
@@ -1306,14 +1307,12 @@ class GoodsController extends Controller
         if (($xml_arr['return_code'] == 'SUCCESS') && ($xml_arr['result_code'] == 'SUCCESS')) {
             //修改订单状态
             $order_no1 = $xml_arr['out_trade_no'];
-//            var_dump($order_no1);die;
             $orderInfo1 = DB::table('mt_order')->where(['order_no'=>$order_no1])->first();
             $order_add = DB::table('mt_order_detail')->where(['uid'=>$orderInfo1->uid,'order_no'=>$order_no1])->first();
-
-            if($order_add->order_no){
-                $data_addd=DB::table('mt_order')->where(['order_no'=>$order_no1,'uid'=>$orderInfo1->uid])->update(['order_status'=>1,'pay_price'=>$orderInfo1->price]);
-                $data_lists1=DB::table('mt_order_detail')->where(['uid'=>$orderInfo1->uid,'id'=>$order_add->id])->update(['order_status'=>1,'pay_price'=>$order_add->price]);
-                if($data_lists1 && $data_addd){
+            if($is_big == 1){
+                $datainfo=DB::table('mt_order')->where(['order_no'=>$order_no1,'uid'=>$orderInfo1->uid])->update(['order_status'=>1,'pay_price'=>$orderInfo1->price]);
+                $data_teatil=DB::table('mt_order_detail')->where(['order_no'=>$order_no1,'uid'=>$orderInfo1->uid])->update(['order_status'=>1,'pay_price'=>$order_add->price]);
+                if($datainfo && $data_teatil){
                     $data=[
                         'code'=>0,
                         'msg'=>'支付成功'
@@ -1332,6 +1331,30 @@ class GoodsController extends Controller
                     ];
                     return json_encode($response,JSON_UNESCAPED_UNICODE);
                 }
+            }else if($is_big ==0){
+                if($order_add->order_status ==1 ){
+                    $data_addd=DB::table('mt_order')->where(['order_no'=>$order_no1,'uid'=>$orderInfo1->uid])->update(['order_status'=>1,'pay_price'=>$orderInfo1->price]);
+                }
+                $data_teatil=DB::table('mt_order_detail')->where(['order_no'=>$order_no1,'uid'=>$orderInfo1->uid])->update(['order_status'=>1,'pay_price'=>$order_add->price]);
+                    if($data_teatil){
+                        $data=[
+                            'code'=>0,
+                            'msg'=>'支付成功'
+                        ];
+                        $response = [
+                            'data'=>$data
+                        ];
+                        return json_encode($response,JSON_UNESCAPED_UNICODE);
+                    }else{
+                        $data=[
+                            'code'=>1,
+                            'msg'=>'支付失败'
+                        ];
+                        $response = [
+                            'data'=>$data
+                        ];
+                        return json_encode($response,JSON_UNESCAPED_UNICODE);
+                    }
             }
 //            else if($order_add->order_no){
 //                $data_lists=DB::table('mt_order_detail')->where(['uid'=>$orderInfo1->uid,'id'=>$order_add->id])->update(['order_status'=>1,'pay_price'=>$order_add->price]);
@@ -1359,17 +1382,6 @@ class GoodsController extends Controller
 //                    return json_encode($response,JSON_UNESCAPED_UNICODE);
 //                }
 //            }
-
-
-
-
-
-
-
-
-
-
-
 
 
             if ($xml_arr) {
