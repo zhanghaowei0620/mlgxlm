@@ -1106,7 +1106,6 @@ class GoodsController extends Controller
         $id = $request->input('id');
         $is_big = $request->input('is_big');
         $datainfo1=DB::table('mt_order')->where(['order_id'=>$id])->first();
-        var_dump($datainfo1);die;
         $datainfo=DB::table('mt_order_detail')->where(['id'=>$id])->first();
         if($openid){
             //var_dump($openid);exit;
