@@ -1285,22 +1285,35 @@ class GoodsController extends Controller
      * 微信支付回调
      */
     public function notify(){
-//        $is_big=$request->input('is_big');   //1为大订单   0为小订单
         $xml = file_get_contents("php://input");
         $xml_obj = simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA);
         $xml_arr = json_decode(json_encode($xml_obj), true);
         file_put_contents('/wwwroot/mlgxlm/public/logs/fuwuwechat.log', 'XML_ARR:' . print_r($xml_arr, 1) . "\r\n", FILE_APPEND);
         if (($xml_arr['return_code'] == 'SUCCESS') && ($xml_arr['result_code'] == 'SUCCESS')) {
             //修改订单状态
-//            if($is_big == 1){
-//
-//            }else if($is_big){
-//
-//            }
             $order_no1 = $xml_arr['out_trade_no'];
             $orderInfo1 = DB::table('mt_order')->where('order_no',$order_no1)->first();
             $order_uid = DB::table('mt_user')->where(['uid'=>$orderInfo1->uid])->first();
-            $order_add = DB::table('')
+            $order_add = DB::table('mt_order_detail')->where(['uid'=>$order_uid->uid,'order_no'=>$order_no1])->update(['order_status'=>1]);
+            if($order_add){
+                $data=[
+                    'code'=>0,
+                    'msg'=>'支付成功'
+                ];
+                $response = [
+                    'data'=>$data
+                ];
+                return (json_encode($response,JSON_UNESCAPED_UNICODE));
+            }else{
+                $data=[
+                    'code'=>1,
+                    'msg'=>'支付失败'
+                ];
+                $response = [
+                    'data'=>$data
+                ];
+                die(json_encode($response,JSON_UNESCAPED_UNICODE));
+            }
 
 
 
