@@ -1121,7 +1121,6 @@ class GoodsController extends Controller
             }
             $trade_type = 'JSAPI';
             $notify_url = 'https://mt.mlgxlm.com/notify';
-            dump($notify_url);die;
             $spbill_create_ip = $_SERVER['REMOTE_ADDR'];
 //            (int)$total_fee = $datainfo->price * 100;//因为充值金额最小是1 而且单位为分 如果是充值1元所以这里需要*100
             if($is_big == 1){

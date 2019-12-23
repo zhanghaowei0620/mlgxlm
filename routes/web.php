@@ -176,7 +176,7 @@ Route::get('/nearby_shop', 'Goods\GoodsController@nearby_shop');   //附近店�
 Route::post('/getInfo', 'Goods\GoodsController@getInfo');
 Route::post('/test_pay', 'Goods\GoodsController@test_pay');
 Route::post('/http_requests', 'Goods\GoodsController@http_requests');
-Route::get('/notify', 'Goods\GoodsController@notify');
+Route::post('/notify', 'Goods\GoodsController@notify');
 
 
 Route::post('index_reseller_Apply', 'Reseller\ResellerController@index_reseller_Apply');   //分销-申请
