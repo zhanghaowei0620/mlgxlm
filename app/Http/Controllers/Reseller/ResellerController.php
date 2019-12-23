@@ -481,13 +481,13 @@ class ResellerController extends Controller
         if($openid){
             $reOrderInfo = DB::table('re_order')->where('re_order_id',$re_order_id)->first();
             if($reOrderInfo->pay_type = 2){
-                if($reOrderInfo->status == 1 || $reOrderInfo->status == 2){
+                if($reOrderInfo->order_status == 1 || $reOrderInfo->order_status == 2){
                     $update = [
                         'refund_reason'=>$refund_reason,
                         'refund_reason_detail'=>$refund_reason_detail,
                         'refund_img'=>$refund_img,
                         'order_status'=>5,
-                        'wx_refund_no'=>"wx_refund:" . date("YmdHis", time()) . rand(1000, 9999)
+                        'wx_refund_no'=>"wx_refund" . date("YmdHis", time()) . rand(1000, 9999)
                     ];
                     $updateInfo = DB::table('re_order')->where('re_order_id',$re_order_id)->update($update);
                     if($updateInfo>0){
@@ -511,7 +511,7 @@ class ResellerController extends Controller
                     }
                 }
             }else{
-                if($reOrderInfo->status == 1 || $reOrderInfo->status == 2){
+                if($reOrderInfo->order_status == 1 || $reOrderInfo->order_status == 2){
                     $update = [
                         'refund_reason'=>$refund_reason,
                         'refund_reason_detail'=>$refund_reason_detail,
@@ -1176,9 +1176,9 @@ class ResellerController extends Controller
     public function re_wxpay(Request $request)
     {
         $re_order_id = $request->input('re_order_id');
-        $openid = $request->input('openid');
-//        $key = $openid1;
-//        $openid = Redis::get($key);
+        $openid1 = $request->input('openid');
+        $key = $openid1;
+        $openid = Redis::get($key);
         if($openid){
             $reOrderInfo = DB::table('re_order')->where('re_order_id',$re_order_id)->first();
             $appid = env('WX_APP_ID');
