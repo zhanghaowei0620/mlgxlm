@@ -514,7 +514,7 @@ class ResellerController extends Controller
                 if($reOrderInfo->status == 1 || $reOrderInfo->status == 2){
                     $update = [
                         'refund_reason'=>$refund_reason,
-                        'is_receipt'=>$is_receipt,
+                        'refund_reason_detail'=>$refund_reason_detail,
                         'refund_img'=>$refund_img,
                         'order_status'=>5
                     ];
