@@ -1105,6 +1105,7 @@ class GoodsController extends Controller
         $openid = Redis::get($key);
         $id = $request->input('id');
         $is_big = $request->input('is_big');
+        var_dump($is_big);die;
         $datainfo1=DB::table('mt_order')->where(['order_id'=>$id])->first();
         $datainfo=DB::table('mt_order_detail')->where(['id'=>$id])->first();
         if($openid){
