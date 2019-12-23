@@ -1122,7 +1122,7 @@ class GoodsController extends Controller
 //                $order_id = $datainfo->order_no;//测试订单号 随机生成
                 $order_id=[];
                 foreach ($datainfo as $k =>$v){
-                    $order_id=$v->order_no
+                    $order_id=$v->order_no;
                 }
             }
             $trade_type = 'JSAPI';
