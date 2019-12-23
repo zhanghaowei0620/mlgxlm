@@ -1852,49 +1852,6 @@ class Headquarters extends Controller
         return $content;
     }
 
-    public function http_requests($url, $data = null, $headers = array())
-    {
-        $curl = curl_init();
-        if (count($headers) >= 1) {
-            curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-        }
-        curl_setopt($curl, CURLOPT_URL, $url);
-        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, FALSE);
-        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, FALSE);
-        if (!empty($data)) {
-            curl_setopt($curl, CURLOPT_POST, 1);
-            curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
-        }
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-        $output = curl_exec($curl);
-        curl_close($curl);
-        return $output;
-    }
-
-    /**
-     * 异步回调处理成功时返回内容
-     * @param $msg
-     * @return string
-     */
-    public function notifyReturnSuccess($msg = 'OK')
-    {
-        return '<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[' . $msg . ']]></return_msg></xml>';
-    }
-
-    /**
-     * 异步回调处理失败时返回内容
-     * @param $msg
-     * @return string
-     */
-    public function notifyReturnFail($msg = 'FAIL')
-    {
-        return '<xml><return_code><![CDATA[FAIL]]></return_code><return_msg><![CDATA[' . $msg . ']]></return_msg></xml>';
-    }
-    /**
-     * 输出xml字符（数组转换成xml）
-     * @param $params 参数名称
-     * return string 返回组装的xml
-     **/
     public function ArrToXml($params)
     {
         if (!is_array($params) || count($params) <= 0) {
@@ -1911,15 +1868,6 @@ class Headquarters extends Controller
         $xml .= "</xml>";
         return $xml;
     }
-
-    function XmlToArr($xml)
-    {
-        if ($xml == '') return '';
-        libxml_disable_entity_loader(true);
-        $arr = json_decode(json_encode(simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA)), true);
-        return $arr;
-    }
-
     public function xml($xml)
     {
         //禁止引用外部xml实体
