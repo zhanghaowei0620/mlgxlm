@@ -1101,29 +1101,23 @@ class GoodsController extends Controller
     public function test_pay(Request $request)
     {
         $openid = $request->input('openid');
-//        var_dump($openid);die;
-//        $key = $openid1;
-//        $openid = Redis::get($key);
         $id = $request->input('id');
         $is_big = $request->input('is_big');    //1为大订单  0为小订单
-        $datainfo1=DB::table('mt_order')->where(['order_id'=>$id])->first();
+//        $openid= 'o3JM75ONzMA_EGSPmWwWsBQCgJks';
 //        var_dump($datainfo1);die;
-        $datainfo=DB::table('mt_order_detail')->where(['id'=>$id])->get();
+//        $datainfo=DB::table('mt_order_detail')->where(['id'=>$id])->();
         if($openid){
-            //var_dump($openid);exit;
             $appid = env('WX_APP_ID');
             $mch_id = env('wx_mch_id');
             $nonce_str = $this->nonce_str();
-//            $body = '服务微信支付订单-'.$datainfo->goods_name;
-            $body=[];
-            foreach ($datainfo as $k =>$v){
-                $body='服务微信支付订单-'.$v->goods_name;
-            }
 //            $order_id = $datainfo->order_no;//测试订单号 随机生成
             if($is_big == 1){
+                $datainfo1=DB::table('mt_order')->where(['order_id'=>$id])->first();
+                $body = '服务微信支付订单-pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooommmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm'.$datainfo1->wx_name;
                 $order_id = $datainfo1->order_no;//测试订单号 随机生成
             }else if ($is_big == 0){
                 $order_id = $datainfo->order_no;//测试订单号 随机生成
+                $body = '服务微信支付订单-'.$datainfo1->goods_name;
             }
             $trade_type = 'JSAPI';
             $notify_url = 'https://mt.mlgxlm.com/notify';

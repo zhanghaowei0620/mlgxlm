@@ -174,7 +174,7 @@ Route::get('/nearby_shop', 'Goods\GoodsController@nearby_shop');   //附近店�
 
 //服务微信支付
 Route::post('/getInfo', 'Goods\GoodsController@getInfo');
-Route::post('/test_pay', 'Goods\GoodsController@test_pay');
+Route::get('/test_pay', 'Goods\GoodsController@test_pay');
 Route::post('/http_requests', 'Goods\GoodsController@http_requests');
 Route::post('/notify', 'Goods\GoodsController@notify');
 
