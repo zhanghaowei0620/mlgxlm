@@ -1101,6 +1101,7 @@ class GoodsController extends Controller
     public function test_pay(Request $request)
     {
         $openid = $request->input('openid');
+        var_dump($openid);die;
 //        $key = $openid1;
 //        $openid = Redis::get($key);
         $id = $request->input('id');
@@ -1122,7 +1123,6 @@ class GoodsController extends Controller
 //            (int)$total_fee = $datainfo->price * 100;//因为充值金额最小是1 而且单位为分 如果是充值1元所以这里需要*100
             if($is_big == 1){
                 (int)$total_fee = $datainfo1->total_price * 100;//因为充值金额最小是1 而且单位为分 如果是充值1元所以这里需要*100
-                var_dump($total_fee);die;
             }else if ($is_big == 0){
                 (int)$total_fee = $datainfo->price * 100;//因为充值金额最小是1 而且单位为分 如果是充值1元所以这里需要*100
             }
@@ -1308,7 +1308,7 @@ class GoodsController extends Controller
             $order_add = DB::table('mt_order_detail')->where(['uid'=>$orderInfo1->uid,'order_no'=>$order_no1])->first();
 
             if($order_add->order_no == NULL){
-                $data_addd=DB::table('mt_order')->where(['order_no'=>$order_no1,'uid'=>$orderInfo1->uid])->update('order_status'=>1);
+                $data_addd=DB::table('mt_order')->where(['order_no'=>$order_no1,'uid'=>$orderInfo1->uid])->update(['order_status'=>1]);
                 $data_lists1=DB::table('mt_order_detail')->where(['uid'=>$orderInfo1->uid,'id'=>$order_add->id])->update(['order_status'=>1]);
             }else{
                 $data_lists=DB::table('mt_order_detail')->where(['uid'=>$orderInfo1->uid,'id'=>$order_add->id])->update(['order_status'=>1]);
