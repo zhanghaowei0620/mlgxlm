@@ -472,7 +472,8 @@ class ResellerController extends Controller
     public function index_reseller_share_Apply_refund(Request $request){
         $re_order_id = $request->input('re_order_id');
         $refund_reason = $request->input('refund_reason');  //申请理由
-        $is_receipt = $request->input('is_receipt');   //0为未收到货  1为已收到货
+        $refund_reason_detail = $request->input('refund_reason_detail');  //申请理由
+//        $is_receipt = $request->input('is_receipt');   //0为未收到货  1为已收到货
         $refund_img = $request->input('refund_img');   //图片
         $openid1 = $request->input('openid');
         $key = $openid1;
@@ -483,7 +484,7 @@ class ResellerController extends Controller
                 if($reOrderInfo->status == 1 || $reOrderInfo->status == 2){
                     $update = [
                         'refund_reason'=>$refund_reason,
-                        'is_receipt'=>$is_receipt,
+                        'refund_reason_detail'=>$refund_reason_detail,
                         'refund_img'=>$refund_img,
                         'order_status'=>5,
                         'wx_refund_no'=>"wx_refund:" . date("YmdHis", time()) . rand(1000, 9999)
@@ -1175,9 +1176,9 @@ class ResellerController extends Controller
     public function re_wxpay(Request $request)
     {
         $re_order_id = $request->input('re_order_id');
-        $openid1 = $request->input('openid');
-        $key = $openid1;
-        $openid = Redis::get($key);
+        $openid = $request->input('openid');
+//        $key = $openid1;
+//        $openid = Redis::get($key);
         if($openid){
             $reOrderInfo = DB::table('re_order')->where('re_order_id',$re_order_id)->first();
             $appid = env('WX_APP_ID');
@@ -1210,7 +1211,6 @@ class ResellerController extends Controller
             $array = $this->xml($xml);//全要大写
 //        var_dump($array);exit;
             if ($array['return_code'] == 'SUCCESS' && $array['result_code'] == 'SUCCESS') {
-
                 $time = time();
                 //$tmp = '';//临时数组用于签名
                 $tmp['appId'] = $appid;
@@ -1229,6 +1229,23 @@ class ResellerController extends Controller
                 $data['out_trade_no'] = $order_id;
 
             } else {
+//                $appid = env('WX_APP_ID');
+//                $mch_id = env('wx_mch_id');
+//                $nonce_str = $this->nonce_str();
+//                $order_id = $reOrderInfo->re_order_no;;//测试订单号 随机生成
+//                //dump($openid);die;
+//                $post1['appid'] = $appid;
+//                $post1['mch_id'] = $mch_id;
+//                $post1['nonce_str'] = $nonce_str;//随机字符串
+//                $post1['out_trade_no'] = $order_id;
+//                $post1['sign'] = $this->sign($post1);//签名
+//
+//                $post_xml = $this->ArrToXml($post1);
+//                //统一接口prepay_id
+//                $url = 'https://api.mch.weixin.qq.com/pay/orderquery';
+//                $xml = $this->curlRequest($url, $post_xml);
+//                $array = $this->xml($xml);//全要大写
+//                var_dump($array);exit;
                 $data['state'] = 0;
                 $data['text'] = "错误";
                 $data['return_code'] = $array['return_code'];
