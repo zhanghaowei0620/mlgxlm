@@ -312,7 +312,8 @@ class ResellerController extends Controller
                             'uid'=>$uid,
                             'in_money'=>$total_num,
                             'is_type'=>3,
-                            'in_time'=>time()
+                            'in_time'=>time(),
+                            'in_symbol'=>1
                         ];
                         DB::table('mt_money_list')->insertGetId($insert1);
                         if($userInfo->mt_reseller == 1){   //判断用户是否为分销员
@@ -331,21 +332,24 @@ class ResellerController extends Controller
                                                 'uid'=>$p_userInfo->uid,
                                                 'in_money'=>$total_num*$shopInfo->up_rebate/100,
                                                 'is_type'=>1,
-                                                'in_time'=>time()
+                                                'in_time'=>time(),
+                                                'in_symbol'=>0
                                             ];
                                             DB::table('mt_money_list')->insertGetId($insert1);
                                             $insert2 = [
                                                 'uid'=>$a_userInfo->uid,
                                                 'in_money'=>$total_num*$shopInfo->indirect_up_rebate/100,
                                                 'is_type'=>1,
-                                                'in_time'=>time()
+                                                'in_time'=>time(),
+                                                'in_symbol'=>0
                                             ];
                                             DB::table('mt_money_list')->insertGetId($insert2);
                                             $insert3 = [
                                                 'uid'=>$shopInfo->uid,
                                                 'in_money'=>$total_num*(100 - $shopInfo->up_rebate - $shopInfo->indirect_up_rebate)/100,
                                                 'is_type'=>1,
-                                                'in_time'=>time()
+                                                'in_time'=>time(),
+                                                'in_symbol'=>0
                                             ];
                                             DB::table('mt_money_list')->insertGetId($insert3);
                                             $data = [
@@ -375,14 +379,16 @@ class ResellerController extends Controller
                                                 'uid'=>$p_userInfo->uid,
                                                 'in_money'=>$total_num*$shopInfo->up_rebate/100,
                                                 'is_type'=>1,
-                                                'in_time'=>time()
+                                                'in_time'=>time(),
+                                                'in_symbol'=>0
                                             ];
                                             DB::table('mt_money_list')->insertGetId($insert1);
                                             $insert3 = [
                                                 'uid'=>$shopInfo->uid,
                                                 'in_money'=>$total_num*(100 - $shopInfo->up_rebate)/100,
                                                 'is_type'=>1,
-                                                'in_time'=>time()
+                                                'in_time'=>time(),
+                                                'in_symbol'=>0
                                             ];
                                             DB::table('mt_money_list')->insertGetId($insert3);
                                             $data = [
@@ -412,7 +418,8 @@ class ResellerController extends Controller
                                             'uid'=>$shopInfo->uid,
                                             'in_money'=>$total_num,
                                             'is_type'=>1,
-                                            'in_time'=>time()
+                                            'in_time'=>time(),
+                                            'in_symbol'=>0
                                         ];
                                         DB::table('mt_money_list')->insertGetId($insert3);
                                         $data = [
@@ -442,7 +449,8 @@ class ResellerController extends Controller
                                         'uid'=>$shopInfo->uid,
                                         'in_money'=>$total_num,
                                         'is_type'=>1,
-                                        'in_time'=>time()
+                                        'in_time'=>time(),
+                                        'in_symbol'=>0
                                     ];
                                     DB::table('mt_money_list')->insertGetId($insert3);
                                     $data = [
@@ -472,7 +480,8 @@ class ResellerController extends Controller
                                     'uid'=>$shopInfo->uid,
                                     'in_money'=>$total_num,
                                     'is_type'=>1,
-                                    'in_time'=>time()
+                                    'in_time'=>time(),
+                                    'in_symbol'=>0
                                 ];
                                 DB::table('mt_money_list')->insertGetId($insert3);
                                 $data = [
@@ -1401,7 +1410,8 @@ class ResellerController extends Controller
                 'uid'=>$userInfo->uid,
                 'in_money'=>$xml_arr['total_fee'],
                 'is_type'=>0,
-                'in_time'=>time()
+                'in_time'=>time(),
+                'in_symbol'=>0
             ];
             DB::table('mt_money_list')->insertGetId($insert);
         }
@@ -1555,21 +1565,24 @@ class ResellerController extends Controller
                                     'uid'=>$p_userInfo->uid,
                                     'in_money'=>$total_num*$shopInfo->up_rebate/100,
                                     'is_type'=>1,
-                                    'in_time'=>time()
+                                    'in_time'=>time(),
+                                    'in_symbol'=>0
                                 ];
                                 DB::table('mt_money_list')->insertGetId($insert1);
                                 $insert2 = [
                                     'uid'=>$a_userInfo->uid,
                                     'in_money'=>$total_num*$shopInfo->indirect_up_rebate/100,
                                     'is_type'=>1,
-                                    'in_time'=>time()
+                                    'in_time'=>time(),
+                                    'in_symbol'=>0
                                 ];
                                 DB::table('mt_money_list')->insertGetId($insert2);
                                 $insert3 = [
                                     'uid'=>$shopInfo->uid,
                                     'in_money'=>$total_num*(100 - $shopInfo->up_rebate - $shopInfo->indirect_up_rebate)/100,
                                     'is_type'=>1,
-                                    'in_time'=>time()
+                                    'in_time'=>time(),
+                                    'in_symbol'=>0
                                 ];
                                 DB::table('mt_money_list')->insertGetId($insert3);
                                 $data = [
@@ -1599,14 +1612,16 @@ class ResellerController extends Controller
                                     'uid'=>$p_userInfo->uid,
                                     'in_money'=>$total_num*$shopInfo->up_rebate/100,
                                     'is_type'=>1,
-                                    'in_time'=>time()
+                                    'in_time'=>time(),
+                                    'in_symbol'=>0
                                 ];
                                 DB::table('mt_money_list')->insertGetId($insert1);
                                 $insert2 = [
                                     'uid'=>$shopInfo->uid,
                                     'in_money'=>$total_num*(100 - $shopInfo->up_rebate)/100,
                                     'is_type'=>1,
-                                    'in_time'=>time()
+                                    'in_time'=>time(),
+                                    'in_symbol'=>0
                                 ];
                                 DB::table('mt_money_list')->insertGetId($insert2);
                                 $data = [
@@ -1643,7 +1658,8 @@ class ResellerController extends Controller
                                 'uid'=>$shopInfo->uid,
                                 'in_money'=>$total_num,
                                 'is_type'=>1,
-                                'in_time'=>time()
+                                'in_time'=>time(),
+                                'in_symbol'=>0
                             ];
                             DB::table('mt_money_list')->insertGetId($insert);
                             $data = [
@@ -1680,7 +1696,8 @@ class ResellerController extends Controller
                             'uid'=>$shopInfo->uid,
                             'in_money'=>$total_num,
                             'is_type'=>1,
-                            'in_time'=>time()
+                            'in_time'=>time(),
+                            'in_symbol'=>0
                         ];
                         DB::table('mt_money_list')->insertGetId($insert);
                         $data = [
@@ -1707,7 +1724,7 @@ class ResellerController extends Controller
                     'order_status'=>1,
                     'pay_type'=>2,
                     'pay_price'=>$total_num,
-                    'pay_time'=>time()
+                    'pay_time'=>time(),
                 ];
 
                 $reOrderInfoUpdate = DB::table('re_order')->where('re_order_no',$re_order_no)->update($update);
@@ -1717,7 +1734,8 @@ class ResellerController extends Controller
                         'uid'=>$shopInfo->uid,
                         'in_money'=>$total_num,
                         'is_type'=>1,
-                        'in_time'=>time()
+                        'in_time'=>time(),
+                        'in_symbol'=>0
                     ];
                     DB::table('mt_money_list')->insertGetId($insert);
                     $data = [
