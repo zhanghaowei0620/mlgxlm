@@ -1122,6 +1122,7 @@ class GoodsController extends Controller
 //            (int)$total_fee = $datainfo->price * 100;//因为充值金额最小是1 而且单位为分 如果是充值1元所以这里需要*100
             if($is_big == 1){
                 (int)$total_fee = $datainfo1->total_price * 100;//因为充值金额最小是1 而且单位为分 如果是充值1元所以这里需要*100
+                var_dump($total_fee);die;
             }else if ($is_big == 0){
                 (int)$total_fee = $datainfo->price * 100;//因为充值金额最小是1 而且单位为分 如果是充值1元所以这里需要*100
             }
@@ -1295,7 +1296,6 @@ class GoodsController extends Controller
      * 微信支付回调
      */
     public function notify(){
-        echo 111111;die;
         $xml = file_get_contents("php://input");
         $xml_obj = simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA);
         $xml_arr = json_decode(json_encode($xml_obj), true);
