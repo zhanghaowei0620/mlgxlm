@@ -1100,12 +1100,13 @@ class GoodsController extends Controller
 
     public function test_pay(Request $request)
     {
-        $openid1 = $request->input('openid');
-        $key = $openid1;
-        $openid = Redis::get($key);
+        $openid = $request->input('openid');
+//        $key = $openid1;
+//        $openid = Redis::get($key);
         $id = $request->input('id');
         $is_big = $request->input('is_big');
         $datainfo1=DB::table('mt_order')->where(['order_id'=>$id])->first();
+//        var_dump($datainfo1);die;
         $datainfo=DB::table('mt_order_detail')->where(['id'=>$id])->first();
         if($openid){
             //var_dump($openid);exit;
@@ -1120,12 +1121,11 @@ class GoodsController extends Controller
             $spbill_create_ip = $_SERVER['REMOTE_ADDR'];
 //            (int)$total_fee = $datainfo->price * 100;//因为充值金额最小是1 而且单位为分 如果是充值1元所以这里需要*100
             if($is_big == 1){
-                echo 11111;die;
                 (int)$total_fee = $datainfo1->total_price * 100;//因为充值金额最小是1 而且单位为分 如果是充值1元所以这里需要*100
             }else if ($is_big == 0){
                 (int)$total_fee = $datainfo->price * 100;//因为充值金额最小是1 而且单位为分 如果是充值1元所以这里需要*100
             }
-            //dump($total_fee);die;
+//            var_dump($total_fee);die;
             //这里是按照顺序的 因为下面的签名是按照顺序 排序错误 肯定出错
             $post['appid'] = $appid;
             $post['mch_id'] = $mch_id;
@@ -1138,7 +1138,7 @@ class GoodsController extends Controller
             $post['total_fee'] = $total_fee;//总金额 最低为一块钱 必须是整数
             $post['trade_type'] = $trade_type;
             $post['sign'] = $this->sign($post);//签名
-
+            var_dump($post);exit;
             $post_xml = $this->ArrToXml($post);
             //统一接口prepay_id
             $url = 'https://api.mch.weixin.qq.com/pay/unifiedorder';
