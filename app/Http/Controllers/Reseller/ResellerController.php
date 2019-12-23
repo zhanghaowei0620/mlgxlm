@@ -1334,9 +1334,9 @@ class ResellerController extends Controller
     public function share_Currency_Recharge(Request $request){
         $openid1 = $request->input('openid');
         $total_fee = $request->input('total_fee');
-//        $key = $openid1;
-//        $openid = Redis::get($key);
-        if($openid1){
+        $key = $openid1;
+        $openid = Redis::get($key);
+        if($openid){
             $appid = env('WX_APP_ID');
             $mch_id = env('wx_mch_id');
             $nonce_str = $this->nonce_str();
