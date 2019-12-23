@@ -1101,7 +1101,7 @@ class GoodsController extends Controller
     public function test_pay(Request $request)
     {
         $openid = $request->input('openid');
-        var_dump($openid);die;
+//        var_dump($openid);die;
 //        $key = $openid1;
 //        $openid = Redis::get($key);
         $id = $request->input('id');
