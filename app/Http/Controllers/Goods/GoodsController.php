@@ -1305,12 +1305,12 @@ class GoodsController extends Controller
             $orderInfo1 = DB::table('mt_order')->where(['order_no'=>$order_no1])->first();
 //            $order_uid = DB::table('mt_user')->where(['uid'=>$orderInfo1->uid])->first();
             $order_add = DB::table('mt_order_detail')->where(['uid'=>$orderInfo1->uid,'order_no'=>$order_no1])->first();
+            var_dump($order_add);die;
             if($order_add->order_no == NULL){
                 $data_addd=DB::table('mt_order')->where(['order_no'=>$order_no1,'uid'=>$orderInfo1->uid])->update('order_status'=>1);
                 $data_lists1=DB::table('mt_order_detail')->where(['uid'=>$orderInfo1->uid,'id'=>$order_add->id])->update(['order_status'=>1]);
             }else{
                 $data_lists=DB::table('mt_order_detail')->where(['uid'=>$orderInfo1->uid,'id'=>$order_add->id])->update(['order_status'=>1]);
-
             }
 
 
