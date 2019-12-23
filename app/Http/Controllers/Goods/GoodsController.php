@@ -1120,7 +1120,7 @@ class GoodsController extends Controller
                 $body = '服务微信支付订单-'.$datainfo1->goods_name;
             }
             $trade_type = 'JSAPI';
-            $notify_url = 'https://mt.mlgxlm.com/notify?is_big=11';
+            $notify_url = 'https://mt.mlgxlm.com/notify';
             //dump($openid);die;
             $spbill_create_ip = $_SERVER['REMOTE_ADDR'];
 //            (int)$total_fee = $datainfo->price * 100;//因为充值金额最小是1 而且单位为分 如果是充值1元所以这里需要*100
@@ -1298,9 +1298,9 @@ class GoodsController extends Controller
     /**
      * 微信支付回调
      */
-    public function notify($is_big){
+    public function notify(){
         echo 41353465;
-        var_dump($is_big);die;
+//        var_dump($is_big);die;
         $xml = file_get_contents("php://input");
         $xml_obj = simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA);
         $xml_arr = json_decode(json_encode($xml_obj), true);
