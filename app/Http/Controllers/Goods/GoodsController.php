@@ -1100,8 +1100,14 @@ class GoodsController extends Controller
 
     public function test_pay(Request $request)
     {
-        $id = $request->input('id');
         $openid = $request->input('openid');
+//        var_dump($openid);die;
+//        $key = $openid1;
+//        $openid = Redis::get($key);
+        $id = $request->input('id');
+        $is_big = $request->input('is_big');    //1为大订单  0为小订单
+        $datainfo1=DB::table('mt_order')->where(['order_id'=>$id])->first();
+//        var_dump($datainfo1);die;
         $datainfo=DB::table('mt_order_detail')->where(['id'=>$id])->first();
         if($openid){
             //var_dump($openid);exit;
@@ -1109,13 +1115,23 @@ class GoodsController extends Controller
             $mch_id = env('wx_mch_id');
             $nonce_str = $this->nonce_str();
             $body = '服务微信支付订单-'.$datainfo->goods_name;
-            $order_id = $datainfo->order_no;//测试订单号 随机生成
+//            $order_id = $datainfo->order_no;//测试订单号 随机生成
+            if($is_big == 1){
+                $order_id = $datainfo1->order_no;//测试订单号 随机生成
+            }else if ($is_big == 0){
+                $order_id = $datainfo->order_no;//测试订单号 随机生成
+            }
             $trade_type = 'JSAPI';
             $notify_url = 'https://mt.mlgxlm.com/notify';
             //dump($openid);die;
             $spbill_create_ip = $_SERVER['REMOTE_ADDR'];
-            (int)$total_fee = $datainfo->price * 100;//因为充值金额最小是1 而且单位为分 如果是充值1元所以这里需要*100
-            //dump($total_fee);die;
+//            (int)$total_fee = $datainfo->price * 100;//因为充值金额最小是1 而且单位为分 如果是充值1元所以这里需要*100
+            if($is_big == 1){
+                (int)$total_fee = $datainfo1->total_price * 100;//因为充值金额最小是1 而且单位为分 如果是充值1元所以这里需要*100
+            }else if ($is_big == 0){
+                (int)$total_fee = $datainfo->price * 100;//因为充值金额最小是1 而且单位为分 如果是充值1元所以这里需要*100
+            }
+//            var_dump($total_fee);die;
             //这里是按照顺序的 因为下面的签名是按照顺序 排序错误 肯定出错
             $post['appid'] = $appid;
             $post['mch_id'] = $mch_id;
@@ -1128,7 +1144,7 @@ class GoodsController extends Controller
             $post['total_fee'] = $total_fee;//总金额 最低为一块钱 必须是整数
             $post['trade_type'] = $trade_type;
             $post['sign'] = $this->sign($post);//签名
-
+//            var_dump($post);exit;
             $post_xml = $this->ArrToXml($post);
             //统一接口prepay_id
             $url = 'https://api.mch.weixin.qq.com/pay/unifiedorder';
@@ -1292,29 +1308,59 @@ class GoodsController extends Controller
         if (($xml_arr['return_code'] == 'SUCCESS') && ($xml_arr['result_code'] == 'SUCCESS')) {
             //修改订单状态
             $order_no1 = $xml_arr['out_trade_no'];
-            $orderInfo1 = DB::table('mt_order')->where('order_no',$order_no1)->first();
-            $order_uid = DB::table('mt_user')->where(['uid'=>$orderInfo1->uid])->first();
-            $order_add = DB::table('mt_order_detail')->where(['uid'=>$order_uid->uid,'order_no'=>$order_no1])->update(['order_status'=>1]);
-            if($order_add){
-                $data=[
-                    'code'=>0,
-                    'msg'=>'支付成功'
-                ];
-                $response = [
-                    'data'=>$data
-                ];
-                return (json_encode($response,JSON_UNESCAPED_UNICODE));
-            }else{
-                $data=[
-                    'code'=>1,
-                    'msg'=>'支付失败'
-                ];
-                $response = [
-                    'data'=>$data
-                ];
-                die(json_encode($response,JSON_UNESCAPED_UNICODE));
-            }
+//            var_dump($order_no1);die;
+            $orderInfo1 = DB::table('mt_order')->where(['order_no'=>$order_no1])->first();
+            $order_add = DB::table('mt_order_detail')->where(['uid'=>$orderInfo1->uid,'order_no'=>$order_no1])->first();
 
+            if($order_add->order_no){
+                $data_lists1=DB::table('mt_order_detail')->where(['uid'=>$orderInfo1->uid,'id'=>$order_add->id])->update(['order_status'=>1,'pay_price'=>$order_add->price]);
+                $data_addd=DB::table('mt_order')->where(['order_no'=>$order_no1,'uid'=>$orderInfo1->uid])->update(['order_status'=>1,'pay_price'=>$orderInfo1->price]);
+                if($data_lists1){
+                    $data=[
+                        'code'=>0,
+                        'msg'=>'支付成功'
+                    ];
+                    $response = [
+                        'data'=>$data
+                    ];
+                    return json_encode($response,JSON_UNESCAPED_UNICODE);
+                }else{
+                    $data=[
+                        'code'=>1,
+                        'msg'=>'支付失败'
+                    ];
+                    $response = [
+                        'data'=>$data
+                    ];
+                    return json_encode($response,JSON_UNESCAPED_UNICODE);
+                }
+            }
+//            else if($order_add->order_no){
+//                $data_lists=DB::table('mt_order_detail')->where(['uid'=>$orderInfo1->uid,'id'=>$order_add->id])->update(['order_status'=>1,'pay_price'=>$order_add->price]);
+//                $data_addd=DB::table('mt_order')->where(['order_no'=>$order_no1,'uid'=>$orderInfo1->uid])->update(['order_status'=>1,'pay_price'=>$orderInfo1->price]);
+////                if($order_add->order_status ==1){
+////                    $data_addd=DB::table('mt_order')->where(['order_no'=>$order_no1,'uid'=>$orderInfo1->uid])->update(['order_status'=>1,'pay_price'=>$orderInfo1->price]);
+////                }
+//                if($data_addd && $data_lists){
+//                    $data=[
+//                        'code'=>0,
+//                        'msg'=>'支付成功'
+//                    ];
+//                    $response = [
+//                        'data'=>$data
+//                    ];
+//                    return json_encode($response,JSON_UNESCAPED_UNICODE);
+//                }else{
+//                    $data=[
+//                        'code'=>1,
+//                        'msg'=>'支付失败'
+//                    ];
+//                    $response = [
+//                        'data'=>$data
+//                    ];
+//                    return json_encode($response,JSON_UNESCAPED_UNICODE);
+//                }
+//            }
 
 
 
