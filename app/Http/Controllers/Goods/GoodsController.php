@@ -1295,6 +1295,7 @@ class GoodsController extends Controller
      * 微信支付回调
      */
     public function notify(){
+        echo 111111;die;
         $xml = file_get_contents("php://input");
         $xml_obj = simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA);
         $xml_arr = json_decode(json_encode($xml_obj), true);
@@ -1303,7 +1304,6 @@ class GoodsController extends Controller
             //修改订单状态
             $order_no1 = $xml_arr['out_trade_no'];
             $orderInfo1 = DB::table('mt_order')->where(['order_no'=>$order_no1])->first();
-            var_dump($orderInfo1);die;
 //            $order_uid = DB::table('mt_user')->where(['uid'=>$orderInfo1->uid])->first();
             $order_add = DB::table('mt_order_detail')->where(['uid'=>$orderInfo1->uid,'order_no'=>$order_no1])->first();
 
