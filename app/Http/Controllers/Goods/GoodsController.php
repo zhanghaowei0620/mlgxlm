@@ -1105,7 +1105,6 @@ class GoodsController extends Controller
         $openid = Redis::get($key);
         $id = $request->input('id');
         $is_big = $request->input('is_big');
-        var_dump($is_big);die;
         $datainfo1=DB::table('mt_order')->where(['order_id'=>$id])->first();
         $datainfo=DB::table('mt_order_detail')->where(['id'=>$id])->first();
         if($openid){
@@ -1121,6 +1120,7 @@ class GoodsController extends Controller
             $spbill_create_ip = $_SERVER['REMOTE_ADDR'];
 //            (int)$total_fee = $datainfo->price * 100;//因为充值金额最小是1 而且单位为分 如果是充值1元所以这里需要*100
             if($is_big == 1){
+                echo 11111;die;
                 (int)$total_fee = $datainfo1->total_price * 100;//因为充值金额最小是1 而且单位为分 如果是充值1元所以这里需要*100
             }else if ($is_big == 0){
                 (int)$total_fee = $datainfo->price * 100;//因为充值金额最小是1 而且单位为分 如果是充值1元所以这里需要*100
