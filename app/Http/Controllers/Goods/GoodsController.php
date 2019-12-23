@@ -1113,7 +1113,7 @@ class GoodsController extends Controller
 //            $order_id = $datainfo->order_no;//测试订单号 随机生成
             if($is_big == 1){
                 $datainfo1=DB::table('mt_order')->where(['order_id'=>$id])->first();
-                $body = '服务微信支付订单-pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooommmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm'.$datainfo1->wx_name;
+                $body = '服务微信支付订单-购物车';
                 $order_id = $datainfo1->order_no;//测试订单号 随机生成
             }else if ($is_big == 0){
                 $order_id = $datainfo->order_no;//测试订单号 随机生成
