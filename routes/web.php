@@ -56,7 +56,9 @@ Route::post('/xcx_upload', 'User\UserController@upload');   //图片上传（多
 
 Route::get('/add_bankcard', 'User\UserController@add_bankcard');   //银行卡接口
 
-Route::post('/vidoes', 'User\UserController@vidoes');   //"发现"视频上传到OSS
+Route::post('share_Currency_list', 'User\UserController@share_Currency_list');   //用户分享币余额列表
+
+Route::post('/vidoes', 'User\UserController@vidoes');
 
 Route::post('/uservidoes', 'User\UserController@uservidoes');   //用户评价上传视频
 
@@ -196,6 +198,7 @@ Route::post('reseller_order_Confirm_receipt', 'Reseller\ResellerController@resel
 Route::post('re_wxpay', 'Reseller\ResellerController@re_wxpay');     //分销订单-微信支付
 
 Route::post('share_Currency_Recharge', 'Reseller\ResellerController@share_Currency_Recharge');     //分享币充值
+
 Route::post('share_Currency_wxNotify', 'Reseller\ResellerController@share_Currency_wxNotify');  //分享币充值异步回调
 
 Route::post('re_wxNotify', 'Reseller\ResellerController@re_wxNotify');   //分销订单-微信支付异步回调

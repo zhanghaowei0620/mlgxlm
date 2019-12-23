@@ -1786,6 +1786,26 @@ class UserController extends Controller
     }
 
 
+    //分享币余额详细信息
+    public function share_Currency_list(Request $request){
+        $openid1 = $request->input('openid');
+        $key = $openid1;
+        $openid = Redis::get($key);
+        if($openid){
+            $userInfo = DB::table('mt_user')->join('mt_money_list','mt_user.uid','=','mt_money_list.uid')->get()->toArray();
+            $data1 = [
+                'code'=>0,
+                'data'=>$userInfo,
+                'msg'=>'数据请求成功'
+            ];
+            $response = [
+                'data' => $data1
+            ];
+            return json_encode($response, JSON_UNESCAPED_UNICODE);
+        }
+    }
+
+
 
 
 
