@@ -1307,8 +1307,8 @@ class GoodsController extends Controller
 
 
 
-            $infos=DB::table('mt_order')->where(['order_no'=>$order_no1])->update(['pay_price'=>$orderInfo22->price,'order_status'=>1]);
-            $infoto = DB::table('mt_order_detail')->where(['order_no'=>$order_no1])->update(['pay_price'=>$order_add->price,'order_status'=>1]);
+            $infos=DB::table('mt_order')->where(['order_no'=>$order_no1])->update(['order_status'=>1]);
+            $infoto = DB::table('mt_order_detail')->where(['order_no'=>$order_no1])->update(['order_status'=>1]);
             if($infos && $infoto){
                 return '<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>';
             }else{
