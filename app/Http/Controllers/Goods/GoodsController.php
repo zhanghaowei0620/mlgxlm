@@ -1104,7 +1104,7 @@ class GoodsController extends Controller
         $id = $request->input('id');
         $is_big = $request->input('is_big');    //1为大订单  0为小订单
 //        $openid= 'o3JM75ONzMA_EGSPmWwWsBQCgJks';
-        $datainfo=DB::table('mt_order_detail')->where(['id'=>$id])->();
+        $datainfo=DB::table('mt_order_detail')->where(['id'=>$id])->first();
         $datainfo1=DB::table('mt_order')->where(['order_id'=>$id])->first();
         if($openid){
             $appid = env('WX_APP_ID');
