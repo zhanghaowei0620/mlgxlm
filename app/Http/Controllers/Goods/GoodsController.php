@@ -1307,7 +1307,7 @@ class GoodsController extends Controller
             if($q){
                 $infoto = DB::table('mt_order_detail')->where(['order_id'=>$q->order_id])->update(['order_status'=>1]);
                 $infos=DB::table('mt_order')->where(['order_no'=>$order_no1])->update(['pay_price'=>$xml_arr['total_fee'],'order_status'=>1]);
-                file_put_contents('/wwwroot/mlgxlm/public/logs/ces.log', 'XML_ARR:' . var_dump($infos, 1) . "\r\n", FILE_APPEND);
+//                file_put_contents('/wwwroot/mlgxlm/public/logs/ces.log', 'XML_ARR:' . var_dump($infos, 1) . "\r\n", FILE_APPEND);
                 if($infoto >0 && $infos>0){
                     return '<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>';
                 }else{
