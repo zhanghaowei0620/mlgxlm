@@ -26,7 +26,7 @@ class OrderController extends Controller
         $key = $openid1;
         $openid = Redis::get($key);
         $order_no = date("YmdHis", time()) . rand(1000, 9999);   //订单号
-        $order_no1 =date("YmdHis", time()) .rand(10000, 99999);   //小订单号
+        $order_no1 =date("YmdHis", time()) .rand(1000, 9999);   //小订单号
 //        $openid='o3JM75DR8-IQ3ieEL_nsEiOMrTvc';
         $userInfo = DB::table('mt_user')->where('openid', $openid)->first();
 //            var_dump($userInfo);die;
@@ -68,8 +68,8 @@ class OrderController extends Controller
                             $info=[
                                 'uid'=>$uid,
                                 'order_id'=>$order_id,
-                                'order_no'=>$order_no1,
-//                                $order_no1.$value
+                                'order_no'=>$order_no1.$value.,
+//
                                 'goods_id'=>$num->goods_id,
                                 'goods_name'=>$num->goods_name,
                                 'price'=>$num->price,
