@@ -1330,23 +1330,9 @@ class GoodsController extends Controller
                 $infos=DB::table('mt_order')->where(['order_no'=>$order_no1])->update(['pay_price'=>$orderInfo22->price,'order_status'=>1]);
                 $infoto = DB::table('mt_order_detail')->where(['order_no'=>$order_no1])->update(['pay_price'=>$order_add->price,'order_status'=>1]);
                 if($infos && $infoto){
-                    $data=[
-                        'code'=>0,
-                        'msg'=>'支付成功'
-                    ];
-                    $response = [
-                        'data'=>$data
-                    ];
-                    return json_encode($response,JSON_UNESCAPED_UNICODE);
+                    return '<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>';
                 }else{
-                    $data=[
-                        'code'=>1,
-                        'msg'=>'支付失败'
-                    ];
-                    $response = [
-                        'data'=>$data
-                    ];
-                    return json_encode($response,JSON_UNESCAPED_UNICODE);
+                    return '<xml><return_code><![CDATA[FAIL]]></return_code><return_msg><![CDATA[签名失败]]></return_msg></xml>';
                 }
             }
 
