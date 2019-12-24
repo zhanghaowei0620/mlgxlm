@@ -1408,7 +1408,7 @@ class ResellerController extends Controller
             DB::table('mt_user')->where('openid',$xml_arr['openid'])->update('money',$userInfo->money + $xml_arr['total_fee']/100);
             $insert = [
                 'uid'=>$userInfo->uid,
-                'in_money'=>$xml_arr['total_fee'],
+                'in_money'=>$xml_arr['total_fee']/100,
                 'is_type'=>0,
                 'in_time'=>time(),
                 'in_symbol'=>0
