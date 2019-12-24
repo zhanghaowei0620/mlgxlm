@@ -1302,13 +1302,10 @@ class GoodsController extends Controller
         if (($xml_arr['return_code'] == 'SUCCESS') && ($xml_arr['result_code'] == 'SUCCESS')) {
             //修改订单状态
             $order_no1 = $xml_arr['out_trade_no'];
-//            $orderInfo1 = DB::table('mt_order')->where(['order_no'=>$order_no1])->get()->toArray();
-            $orderInfo22 = DB::table('mt_order')->where(['order_no'=>$order_no1])->first();
-            $order_add = DB::table('mt_order_detail')->where(['order_no'=>$order_no1])->first();
 
 
-            $infos=DB::table('mt_order')->where(['order_no'=>$order_no1])->update(['pay_price'=>$orderInfo22->price,'order_status'=>1]);
-            $infoto = DB::table('mt_order_detail')->where(['order_no'=>$order_no1])->update(['pay_price'=>$order_add->price,'order_status'=>1]);
+            $infos=DB::table('mt_order')->where(['order_no'=>$order_no1])->update(['pay_price'=$mlx_str['total_fee'],'order_status'=>1]);
+            $infoto = DB::table('mt_order_detail')->where(['order_no'=>$order_no1])->update(['pay_price'=>$mlx_str['total_fee'],'order_status'=>1]);
             if($infos>0 && $infoto > 0){
                 return '<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>';
             }else{
