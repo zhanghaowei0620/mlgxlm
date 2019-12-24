@@ -1305,9 +1305,14 @@ class GoodsController extends Controller
             $q=DB::table('mt_order_detail')->where(['order_no'=>$order_no1])->first();
 
             $infos=DB::table('mt_order')->where(['order_no'=>$order_no1])->update(['pay_price'=>$mlx_str['total_fee'],'order_status'=>1]);
+            $infoto =[];
             foreach ($q as $k => $v){
                 $infoto = DB::table('mt_order_detail')->where(['id'=>$v->id])->update(['pay_price'=>$v->price,'order_status'=>1]);
             }
+
+
+
+
             if($infos>0 && $infoto > 0){
                 return '<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>';
             }else{
