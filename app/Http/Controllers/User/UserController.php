@@ -1792,7 +1792,7 @@ class UserController extends Controller
         $key = $openid1;
         $openid = Redis::get($key);
         if($openid){
-            $userInfo = DB::table('mt_user')->join('mt_money_list','mt_user.uid','=','mt_money_list.uid')->get()->toArray();
+            $userInfo = DB::table('mt_user')->join('mt_money_list','mt_user.uid','=','mt_money_list.uid')->where('mt_user.openid',$openid)->get()->toArray();
             $data1 = [
                 'code'=>0,
                 'data'=>$userInfo,
