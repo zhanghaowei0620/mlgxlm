@@ -1304,16 +1304,21 @@ class GoodsController extends Controller
             $order_no1 = $xml_arr['out_trade_no'];
             $q=DB::table('mt_order_detail')->where(['order_no'=>$order_no1])->first();
             $infos=DB::table('mt_order')->where(['order_no'=>$order_no1])->update(['pay_price'=>$mlx_str['total_fee'],'order_status'=>1]);
-            file_put_contents('/wwwroot/mlgxlm/public/logs/ces.log', 'XML_ARR:' . print_r($infos, 1) . "\r\n", FILE_APPEND);
-            $infoto =[];
-            foreach ($q as $k => $v){
-                $infoto = DB::table('mt_order_detail')->where(['id'=>$v->id])->update(['pay_price'=>$v->price,'order_status'=>1]);
-            }
-
-            if($infos>0 && $infoto > 0){
-                return '<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>';
+//            file_put_contents('/wwwroot/mlgxlm/public/logs/ces.log', 'XML_ARR:' . print_r($infos, 1) . "\r\n", FILE_APPEND);
+            if($infos > 0){
+                $infoto = DB::table('mt_order_detail')->where(['order_id'=>$q->order_id])->update(['order_status'=>1]);
+                if($infoto >0){
+                    return '<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>';
+                }else{
+                    return '<xml><return_code><![CDATA[FAIL]]></return_code><return_msg><![CDATA[签名失败]]></return_msg></xml>';
+                }
             }else{
-                return '<xml><return_code><![CDATA[FAIL]]></return_code><return_msg><![CDATA[签名失败]]></return_msg></xml>';
+                $infoto1 = DB::table('mt_order_detail')->where(['order_id'=>$q->order_id])->update(['pay_price'=>$mlx_str['total_fee'],'order_status'=>1]);
+                if($infoto1 >0){
+                    return '<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>';
+                }else{
+                    return '<xml><return_code><![CDATA[FAIL]]></return_code><return_msg><![CDATA[签名失败]]></return_msg></xml>';
+                }
             }
 
 
