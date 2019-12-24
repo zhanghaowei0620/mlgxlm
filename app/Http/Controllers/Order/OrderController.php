@@ -68,7 +68,7 @@ class OrderController extends Controller
                             $info=[
                                 'uid'=>$uid,
                                 'order_id'=>$order_id,
-                                'order_no'=>$order_no1.$value.,
+                                'order_no'=>$order_no1.$value,
 //
                                 'goods_id'=>$num->goods_id,
                                 'goods_name'=>$num->goods_name,
