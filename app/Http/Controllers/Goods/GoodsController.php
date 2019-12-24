@@ -1295,7 +1295,6 @@ class GoodsController extends Controller
      * 微信支付回调
      */
     public function notify(){
-//        var_dump($is_big);die;
         $xml = file_get_contents("php://input");
         $xml_obj = simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA);
         $xml_arr = json_decode(json_encode($xml_obj), true);
@@ -1306,6 +1305,7 @@ class GoodsController extends Controller
             $orderInfo1 = DB::table('mt_order')->where(['order_no'=>$order_no1])->first();
             $order_add = DB::table('mt_order_detail')->where(['uid'=>$orderInfo1->uid,'order_no'=>$order_no1])->first();
             $infos=DB::table('mt_order')->where(['order_no'=>$order_no1])->update(['pay_price'=>$orderInfo1->price,'order_status'=>1]);
+            var_dump($infos);die;
             $infoto = DB::table('mt_order_detail')->where(['uid'=>$orderInfo1->uid,'order_no'=>$order_no1])->update(['pay_price'=>$order_add->price,'order_status'=>1]);
 //            if($is_big == 1){
 //                $datainfo=DB::table('mt_order')->where(['order_no'=>$order_no1,'uid'=>$orderInfo1->uid])->update(['order_status'=>1,'pay_price'=>$orderInfo1->price]);
