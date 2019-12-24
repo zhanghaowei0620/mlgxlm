@@ -1405,7 +1405,7 @@ class ResellerController extends Controller
         file_put_contents('/wwwroot/mlgxlm/public/logs/share_Currency_wxNotify.log', 'XML_ARR:' . print_r($xml_arr, 1) . "\r\n", FILE_APPEND);
         if (($xml_arr['return_code'] == 'SUCCESS') && ($xml_arr['result_code'] == 'SUCCESS')) {
             $userInfo = DB::table('mt_user')->where('openid',$xml_arr['openid'])->first();
-            DB::table('mt_user')->where('openid',$xml_arr['openid'])->update('money',$userInfo->money + $xml_arr['total_fee']);
+            DB::table('mt_user')->where('openid',$xml_arr['openid'])->update('money',$userInfo->money + $xml_arr['total_fee']/100);
             $insert = [
                 'uid'=>$userInfo->uid,
                 'in_money'=>$xml_arr['total_fee'],
