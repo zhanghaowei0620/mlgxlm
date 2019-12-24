@@ -1414,6 +1414,7 @@ class ResellerController extends Controller
                 'in_symbol'=>0
             ];
             DB::table('mt_money_list')->insertGetId($insert);
+            return '<xml> <return_code><![CDATA[SUCCESS]]></return_code> <return_msg><![CDATA[OK]]></return_msg> </xml>';
         }
     }
 
@@ -1585,23 +1586,9 @@ class ResellerController extends Controller
                                     'in_symbol'=>0
                                 ];
                                 DB::table('mt_money_list')->insertGetId($insert3);
-                                $data = [
-                                    'code'=>0,
-                                    'msg'=>'支付成功'
-                                ];
-                                $response = [
-                                    'data' => $data
-                                ];
-                                return json_encode($response, JSON_UNESCAPED_UNICODE);
+                                return '<xml> <return_code><![CDATA[SUCCESS]]></return_code> <return_msg><![CDATA[OK]]></return_msg> </xml>';
                             }else{
-                                $data = [
-                                    'code'=>3,
-                                    'msg'=>'系统出现错误,分账失败,请重试'
-                                ];
-                                $response = [
-                                    'data' => $data
-                                ];
-                                die(json_encode($response, JSON_UNESCAPED_UNICODE));
+                                return '<xml><return_code><![CDATA[FAIL]]></return_code><return_msg><![CDATA[签名失败]]></return_msg></xml>';
                             }
                         }else{
                             $re_orderInfoUpdate = DB::table('re_order')->where('re_order_no',$re_order_no)->update(['order_status'=>1,'pay_type'=>2,'pay_price'=>$total_num,'pay_time'=>time()]);
@@ -1624,23 +1611,9 @@ class ResellerController extends Controller
                                     'in_symbol'=>0
                                 ];
                                 DB::table('mt_money_list')->insertGetId($insert2);
-                                $data = [
-                                    'code'=>0,
-                                    'msg'=>'支付成功'
-                                ];
-                                $response = [
-                                    'data' => $data
-                                ];
-                                return json_encode($response, JSON_UNESCAPED_UNICODE);
+                                return '<xml> <return_code><![CDATA[SUCCESS]]></return_code> <return_msg><![CDATA[OK]]></return_msg> </xml>';
                             }else{
-                                $data = [
-                                    'code'=>4,
-                                    'msg'=>'系统出现错误,分账失败,请重试'
-                                ];
-                                $response = [
-                                    'data' => $data
-                                ];
-                                die(json_encode($response, JSON_UNESCAPED_UNICODE));
+                                return '<xml><return_code><![CDATA[FAIL]]></return_code><return_msg><![CDATA[签名失败]]></return_msg></xml>';
                             }
                         }
                     }else{
@@ -1662,23 +1635,9 @@ class ResellerController extends Controller
                                 'in_symbol'=>0
                             ];
                             DB::table('mt_money_list')->insertGetId($insert);
-                            $data = [
-                                'code'=>0,
-                                'msg'=>'支付成功'
-                            ];
-                            $response = [
-                                'data' => $data
-                            ];
-                            return json_encode($response, JSON_UNESCAPED_UNICODE);
+                            return '<xml> <return_code><![CDATA[SUCCESS]]></return_code> <return_msg><![CDATA[OK]]></return_msg> </xml>';
                         }else{
-                            $data = [
-                                'code'=>6,
-                                'msg'=>'系统出现错误,修改订单信息失败,请重试'
-                            ];
-                            $response = [
-                                'data' => $data
-                            ];
-                            die(json_encode($response, JSON_UNESCAPED_UNICODE));
+                            return '<xml><return_code><![CDATA[FAIL]]></return_code><return_msg><![CDATA[签名失败]]></return_msg></xml>';
                         }
                     }
                 }else{
@@ -1700,23 +1659,9 @@ class ResellerController extends Controller
                             'in_symbol'=>0
                         ];
                         DB::table('mt_money_list')->insertGetId($insert);
-                        $data = [
-                            'code'=>0,
-                            'msg'=>'支付成功'
-                        ];
-                        $response = [
-                            'data' => $data
-                        ];
-                        return json_encode($response, JSON_UNESCAPED_UNICODE);
+                        return '<xml> <return_code><![CDATA[SUCCESS]]></return_code> <return_msg><![CDATA[OK]]></return_msg> </xml>';
                     }else{
-                        $data = [
-                            'code'=>6,
-                            'msg'=>'系统出现错误,修改订单信息失败,请重试'
-                        ];
-                        $response = [
-                            'data' => $data
-                        ];
-                        die(json_encode($response, JSON_UNESCAPED_UNICODE));
+                        return '<xml><return_code><![CDATA[FAIL]]></return_code><return_msg><![CDATA[签名失败]]></return_msg></xml>';
                     }
                 }
             }else{
@@ -1738,23 +1683,9 @@ class ResellerController extends Controller
                         'in_symbol'=>0
                     ];
                     DB::table('mt_money_list')->insertGetId($insert);
-                    $data = [
-                        'code'=>0,
-                        'msg'=>'支付成功'
-                    ];
-                    $response = [
-                        'data' => $data
-                    ];
-                    return json_encode($response, JSON_UNESCAPED_UNICODE);
+                    return '<xml> <return_code><![CDATA[SUCCESS]]></return_code> <return_msg><![CDATA[OK]]></return_msg> </xml>';
                 }else{
-                    $data = [
-                        'code'=>6,
-                        'msg'=>'系统出现错误,修改订单信息失败,请重试'
-                    ];
-                    $response = [
-                        'data' => $data
-                    ];
-                    die(json_encode($response, JSON_UNESCAPED_UNICODE));
+                    return '<xml><return_code><![CDATA[FAIL]]></return_code><return_msg><![CDATA[签名失败]]></return_msg></xml>';
                 }
             }
             if ($xml_arr) {
