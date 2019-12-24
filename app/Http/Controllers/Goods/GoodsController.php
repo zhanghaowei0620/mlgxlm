@@ -1104,20 +1104,17 @@ class GoodsController extends Controller
         $id = $request->input('id');
         $is_big = $request->input('is_big');    //1为大订单  0为小订单
 //        $openid= 'o3JM75ONzMA_EGSPmWwWsBQCgJks';
-//        var_dump($datainfo1);die;
-//        $datainfo=DB::table('mt_order_detail')->where(['id'=>$id])->();
+        $datainfo=DB::table('mt_order_detail')->where(['id'=>$id])->();
+        $datainfo1=DB::table('mt_order')->where(['order_id'=>$id])->first();
         if($openid){
             $appid = env('WX_APP_ID');
             $mch_id = env('wx_mch_id');
             $nonce_str = $this->nonce_str();
-//            $order_id = $datainfo->order_no;//测试订单号 随机生成
+            $body = '服务微信支付订单-购物车';
             if($is_big == 1){
-                $datainfo1=DB::table('mt_order')->where(['order_id'=>$id])->first();
-                $body = '服务微信支付订单-购物车';
                 $order_id = $datainfo1->order_no;//测试订单号 随机生成
             }else if ($is_big == 0){
                 $order_id = $datainfo->order_no;//测试订单号 随机生成
-                $body = '服务微信支付订单-'.$datainfo1->goods_name;
             }
             $trade_type = 'JSAPI';
             $notify_url = 'https://mt.mlgxlm.com/notify';
@@ -1308,53 +1305,55 @@ class GoodsController extends Controller
             $order_no1 = $xml_arr['out_trade_no'];
             $orderInfo1 = DB::table('mt_order')->where(['order_no'=>$order_no1])->first();
             $order_add = DB::table('mt_order_detail')->where(['uid'=>$orderInfo1->uid,'order_no'=>$order_no1])->first();
-            if($is_big == 1){
-                $datainfo=DB::table('mt_order')->where(['order_no'=>$order_no1,'uid'=>$orderInfo1->uid])->update(['order_status'=>1,'pay_price'=>$orderInfo1->price]);
-                $data_teatil=DB::table('mt_order_detail')->where(['order_no'=>$order_no1,'uid'=>$orderInfo1->uid])->update(['order_status'=>1,'pay_price'=>$order_add->price]);
-                if($datainfo && $data_teatil){
-                    $data=[
-                        'code'=>0,
-                        'msg'=>'支付成功'
-                    ];
-                    $response = [
-                        'data'=>$data
-                    ];
-                    return json_encode($response,JSON_UNESCAPED_UNICODE);
-                }else{
-                    $data=[
-                        'code'=>1,
-                        'msg'=>'支付失败'
-                    ];
-                    $response = [
-                        'data'=>$data
-                    ];
-                    return json_encode($response,JSON_UNESCAPED_UNICODE);
-                }
-            }else if($is_big ==0){
-                if($order_add->order_status ==1 ){
-                    $data_addd=DB::table('mt_order')->where(['order_no'=>$order_no1,'uid'=>$orderInfo1->uid])->update(['order_status'=>1,'pay_price'=>$orderInfo1->price]);
-                }
-                $data_teatil=DB::table('mt_order_detail')->where(['order_no'=>$order_no1,'uid'=>$orderInfo1->uid])->update(['order_status'=>1,'pay_price'=>$order_add->price]);
-                    if($data_teatil){
-                        $data=[
-                            'code'=>0,
-                            'msg'=>'支付成功'
-                        ];
-                        $response = [
-                            'data'=>$data
-                        ];
-                        return json_encode($response,JSON_UNESCAPED_UNICODE);
-                    }else{
-                        $data=[
-                            'code'=>1,
-                            'msg'=>'支付失败'
-                        ];
-                        $response = [
-                            'data'=>$data
-                        ];
-                        return json_encode($response,JSON_UNESCAPED_UNICODE);
-                    }
-            }
+            $infos=DB::table('mt_order')->where(['order_no'=>$order_no1])->update(['pay_price'=>$orderInfo1->price,'order_status'=>1]);
+            $infoto = DB::table('mt_order_detail')->where(['uid'=>$orderInfo1->uid,'order_no'=>$order_no1])->update([['pay_price'=>$order_add->price,'order_status'=>1]);
+//            if($is_big == 1){
+//                $datainfo=DB::table('mt_order')->where(['order_no'=>$order_no1,'uid'=>$orderInfo1->uid])->update(['order_status'=>1,'pay_price'=>$orderInfo1->price]);
+//                $data_teatil=DB::table('mt_order_detail')->where(['order_no'=>$order_no1,'uid'=>$orderInfo1->uid])->update(['order_status'=>1,'pay_price'=>$order_add->price]);
+//                if($datainfo && $data_teatil){
+//                    $data=[
+//                        'code'=>0,
+//                        'msg'=>'支付成功'
+//                    ];
+//                    $response = [
+//                        'data'=>$data
+//                    ];
+//                    return json_encode($response,JSON_UNESCAPED_UNICODE);
+//                }else{
+//                    $data=[
+//                        'code'=>1,
+//                        'msg'=>'支付失败'
+//                    ];
+//                    $response = [
+//                        'data'=>$data
+//                    ];
+//                    return json_encode($response,JSON_UNESCAPED_UNICODE);
+//                }
+//            }else if($is_big ==0){
+//                if($order_add->order_status ==1 ){
+//                    $data_addd=DB::table('mt_order')->where(['order_no'=>$order_no1,'uid'=>$orderInfo1->uid])->update(['order_status'=>1,'pay_price'=>$orderInfo1->price]);
+//                }
+//                $data_teatil=DB::table('mt_order_detail')->where(['order_no'=>$order_no1,'uid'=>$orderInfo1->uid])->update(['order_status'=>1,'pay_price'=>$order_add->price]);
+//                    if($data_teatil){
+//                        $data=[
+//                            'code'=>0,
+//                            'msg'=>'支付成功'
+//                        ];
+//                        $response = [
+//                            'data'=>$data
+//                        ];
+//                        return json_encode($response,JSON_UNESCAPED_UNICODE);
+//                    }else{
+//                        $data=[
+//                            'code'=>1,
+//                            'msg'=>'支付失败'
+//                        ];
+//                        $response = [
+//                            'data'=>$data
+//                        ];
+//                        return json_encode($response,JSON_UNESCAPED_UNICODE);
+//                    }
+//            }
 //            else if($order_add->order_no){
 //                $data_lists=DB::table('mt_order_detail')->where(['uid'=>$orderInfo1->uid,'id'=>$order_add->id])->update(['order_status'=>1,'pay_price'=>$order_add->price]);
 //                $data_addd=DB::table('mt_order')->where(['order_no'=>$order_no1,'uid'=>$orderInfo1->uid])->update(['order_status'=>1,'pay_price'=>$orderInfo1->price]);
