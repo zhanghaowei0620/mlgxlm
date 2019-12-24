@@ -1302,16 +1302,61 @@ class GoodsController extends Controller
         if (($xml_arr['return_code'] == 'SUCCESS') && ($xml_arr['result_code'] == 'SUCCESS')) {
             //修改订单状态
             $order_no1 = $xml_arr['out_trade_no'];
-            $orderInfo1 = DB::table('mt_order')->where(['order_no'=>$order_no1])->first();
-
-            $order_add = DB::table('mt_order_detail')->where(['order_no'=>$order_no1])->first();
-
-            if(strlen($order_no1 == 18)){
-                $infos=DB::table('mt_order')->where(['order_no'=>$order_no1])->update(['pay_price'=>$orderInfo1->price,'order_status'=>1]);
+            $orderInfo1 = DB::table('mt_order')->where(['order_no'=>$order_no1])->get()->toArray();
+            $orderInfo22 = DB::table('mt_order')->where(['order_no'=>$order_no1])->first();
+            if($orderInfo1 == NULL){
+                $order_add = DB::table('mt_order_detail')->where(['order_no'=>$order_no1])->first();
                 $infoto = DB::table('mt_order_detail')->where(['order_no'=>$order_no1])->update(['pay_price'=>$order_add->price,'order_status'=>1]);
-            }else if(strlen($order_no1 < 18 )){
+                if($infoto){
+                    $data=[
+                        'code'=>0,
+                        'msg'=>'支付成功'
+                    ];
+                    $response = [
+                        'data'=>$data
+                    ];
+                    return json_encode($response,JSON_UNESCAPED_UNICODE);
+                }else{
+                    $data=[
+                        'code'=>1,
+                        'msg'=>'支付失败'
+                    ];
+                    $response = [
+                        'data'=>$data
+                    ];
+                    return json_encode($response,JSON_UNESCAPED_UNICODE);
+                }
+            }else{
+                $infos=DB::table('mt_order')->where(['order_no'=>$order_no1])->update(['pay_price'=>$orderInfo22->price,'order_status'=>1]);
                 $infoto = DB::table('mt_order_detail')->where(['order_no'=>$order_no1])->update(['pay_price'=>$order_add->price,'order_status'=>1]);
+                if($infos && $infoto){
+                    $data=[
+                        'code'=>0,
+                        'msg'=>'支付成功'
+                    ];
+                    $response = [
+                        'data'=>$data
+                    ];
+                    return json_encode($response,JSON_UNESCAPED_UNICODE);
+                }else{
+                    $data=[
+                        'code'=>1,
+                        'msg'=>'支付失败'
+                    ];
+                    $response = [
+                        'data'=>$data
+                    ];
+                    return json_encode($response,JSON_UNESCAPED_UNICODE);
+                }
             }
+
+
+
+//            if(strlen($order_no1 == 18)){
+//
+//            }else if(strlen($order_no1 < 18 )){
+//                $infoto = DB::table('mt_order_detail')->where(['order_no'=>$order_no1])->update(['pay_price'=>$order_add->price,'order_status'=>1]);
+//            }
 
 
 
