@@ -1304,12 +1304,12 @@ class GoodsController extends Controller
             $order_no1 = $xml_arr['out_trade_no'];
 //            $orderInfo1 = DB::table('mt_order')->where(['order_no'=>$order_no1])->get()->toArray();
             $orderInfo22 = DB::table('mt_order')->where(['order_no'=>$order_no1])->first();
+            $order_add = DB::table('mt_order_detail')->where(['order_no'=>$order_no1])->first();
 
 
-
-            $infos=DB::table('mt_order')->where(['order_no'=>$order_no1])->update(['order_status'=>1]);
-            $infoto = DB::table('mt_order_detail')->where(['order_no'=>$order_no1])->update(['order_status'=>1]);
-            if($infos && $infoto){
+            $infos=DB::table('mt_order')->where(['order_no'=>$order_no1])->update(['pay_price'=>$orderInfo22->price,'order_status'=>1]);
+            $infoto = DB::table('mt_order_detail')->where(['order_no'=>$order_no1])->update(['pay_price'=>$order_add->price,'order_status'=>1]);
+            if($infos>0 && $infoto > 0){
                 return '<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>';
             }else{
                 return '<xml><return_code><![CDATA[FAIL]]></return_code><return_msg><![CDATA[签名失败]]></return_msg></xml>';
@@ -1320,7 +1320,7 @@ class GoodsController extends Controller
 
 
 //            if($orderInfo1 == NULL){
-//                $order_add = DB::table('mt_order_detail')->where(['order_no'=>$order_no1])->first();
+//
 //                $infoto = DB::table('mt_order_detail')->where(['order_no'=>$order_no1])->update(['pay_price'=>$order_add->price,'order_status'=>1]);
 //                if($infoto){
 //                    return '<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>';
