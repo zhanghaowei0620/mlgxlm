@@ -1304,13 +1304,13 @@ class GoodsController extends Controller
             $order_no1 = $xml_arr['out_trade_no'];
             $orderInfo1 = DB::table('mt_order')->where(['order_no'=>$order_no1])->first();
 
-            $order_add = DB::table('mt_order_detail')->where(['uid'=>$orderInfo1->uid,'order_no'=>$order_no1])->first();
+            $order_add = DB::table('mt_order_detail')->where(['order_no'=>$order_no1])->first();
 
             if(strlen($order_no1 == 18)){
                 $infos=DB::table('mt_order')->where(['order_no'=>$order_no1])->update(['pay_price'=>$orderInfo1->price,'order_status'=>1]);
-                $infoto = DB::table('mt_order_detail')->where(['uid'=>$orderInfo1->uid,'order_no'=>$order_no1])->update(['pay_price'=>$order_add->price,'order_status'=>1]);
+                $infoto = DB::table('mt_order_detail')->where(['order_no'=>$order_no1])->update(['pay_price'=>$order_add->price,'order_status'=>1]);
             }else if(strlen($order_no1 < 18 )){
-                $infoto = DB::table('mt_order_detail')->where(['uid'=>$orderInfo1->uid,'order_no'=>$order_no1])->update(['pay_price'=>$order_add->price,'order_status'=>1]);
+                $infoto = DB::table('mt_order_detail')->where(['order_no'=>$order_no1])->update(['pay_price'=>$order_add->price,'order_status'=>1]);
             }
 
 
