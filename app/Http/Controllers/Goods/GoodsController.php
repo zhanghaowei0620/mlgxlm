@@ -1306,7 +1306,7 @@ class GoodsController extends Controller
 //            file_put_contents('/wwwroot/mlgxlm/public/logs/ces.log', 'XML_ARR:' . print_r($infos, 1) . "\r\n", FILE_APPEND);
             if($q){
                 $infoto = DB::table('mt_order_detail')->where(['order_id'=>$q->order_id])->update(['order_status'=>1]);
-                $infos=DB::table('mt_order')->where(['order_no'=>$order_no1])->update(['pay_price'=>$mlx_str['total_fee'],'order_status'=>1]);
+                $infos=DB::table('mt_order')->where(['order_no'=>$order_no1])->update(['pay_price'=>$xml_arr['total_fee'],'order_status'=>1]);
                 file_put_contents('/wwwroot/mlgxlm/public/logs/ces.log', 'XML_ARR:' . var_dump($infos, 1) . "\r\n", FILE_APPEND);
                 if($infoto >0 && $infos>0){
                     return '<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>';
@@ -1314,7 +1314,7 @@ class GoodsController extends Controller
                     return '<xml><return_code><![CDATA[FAIL]]></return_code><return_msg><![CDATA[签名失败]]></return_msg></xml>';
                 }
             }else{
-                $infoto1 = DB::table('mt_order_detail')->where(['order_no'=>$order_no1])->update(['pay_price'=>$mlx_str['total_fee'],'order_status'=>1]);
+                $infoto1 = DB::table('mt_order_detail')->where(['order_no'=>$order_no1])->update(['pay_price'=>$xml_arr['total_fee'],'order_status'=>1]);
                 if($infoto1 >0){
                     return '<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>';
                 }else{
